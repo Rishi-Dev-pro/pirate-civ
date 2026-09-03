@@ -1,0 +1,536 @@
+@import url("style.css");
+
+/* Overlay */
+
+.overlay{
+
+    position:fixed;
+    inset:0;
+
+    background:
+    linear-gradient(
+        135deg,
+        rgba(15,5,40,.60),
+        rgba(0,0,0,.75)
+    );
+
+    z-index:-2;
+}
+
+/* Active Navbar */
+
+.active{
+
+    background:rgba(255,255,255,.12);
+
+    color:#d66cff !important;
+
+    border-radius:12px;
+}
+
+/* Heading */
+
+.hero h1{
+
+    font-size:4rem;
+}
+
+.hero span{
+
+    background:linear-gradient(
+        90deg,
+        #ff7bff,
+        #8b5cf6,
+        #66d9ff
+    );
+
+    -webkit-background-clip:text;
+    -webkit-text-fill-color:transparent;
+}
+
+/* Contact Layout */
+
+.contact-container{
+
+    width:90%;
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:35px;
+
+    padding-bottom:80px;
+}
+
+/* Form */
+
+.contact-form{
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(18px);
+
+    border:1px solid rgba(255,255,255,.15);
+
+    border-radius:20px;
+
+    padding:35px;
+}
+
+.contact-form h2{
+
+    margin-bottom:25px;
+
+    color:#66d9ff;
+}
+
+.contact-form form{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:18px;
+}
+
+.contact-form input,
+.contact-form textarea{
+
+    width:100%;
+
+    padding:16px;
+
+    border:none;
+
+    outline:none;
+
+    border-radius:12px;
+
+    background:rgba(255,255,255,.10);
+
+    color:white;
+
+    font-size:16px;
+
+    border:1px solid rgba(255,255,255,.12);
+}
+
+.contact-form input::placeholder,
+.contact-form textarea::placeholder{
+
+    color:rgba(255,255,255,.70);
+}
+
+.contact-form textarea{
+
+    resize:none;
+}
+
+/* Contact Info */
+
+.contact-info{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:20px;
+}
+
+.info-card{
+
+    background:rgba(255,255,255,.08);
+
+    backdrop-filter:blur(18px);
+
+    border-radius:18px;
+
+    border:1px solid rgba(255,255,255,.15);
+
+    padding:25px;
+
+    transition:.35s;
+}
+
+.info-card:hover{
+
+    transform:translateY(-8px);
+
+    border-color:#d66cff;
+}
+
+.info-card h3{
+
+    color:#d66cff;
+
+    margin-bottom:12px;
+}
+
+.info-card p{
+
+    color:rgba(255,255,255,.88);
+}
+
+/* Responsive */
+
+@media(max-width:900px){
+
+    .contact-container{
+
+        grid-template-columns:1fr;
+    }
+
+}
+
+.map-card{
+
+    padding:20px;
+}
+
+.location-text{
+
+    margin:10px 0 15px;
+
+    color:rgba(255,255,255,.85);
+
+    font-size:15px;
+}
+
+.map-card iframe{
+
+    width:100%;
+
+    height:160px;
+
+    border:none;
+
+    border-radius:12px;
+
+    overflow:hidden;
+
+    box-shadow:
+        0 8px 20px rgba(0,0,0,.35);
+}
+
+/* ===========================
+   Footer
+=========================== */
+
+.footer {
+
+    width: 92%;
+
+    margin: 40px auto 20px;
+
+    padding: 45px 40px 20px;
+
+    border-radius: 25px;
+
+    background:
+        rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(20px);
+
+    -webkit-backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255, 255, 255, 0.14);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+
+.footer-content {
+
+    display: grid;
+
+    grid-template-columns:
+        2fr 1fr 1fr;
+
+    gap: 50px;
+
+    padding-bottom: 35px;
+}
+
+
+.footer-brand h2 {
+
+    color: #67d7ff;
+
+    font-size: 1.8rem;
+
+    margin-bottom: 15px;
+
+    text-shadow:
+        0 0 12px rgba(103, 215, 255, 0.5);
+}
+
+
+.footer-brand p {
+
+    max-width: 450px;
+
+    color:
+        rgba(255, 255, 255, 0.75);
+
+    line-height: 1.8;
+}
+
+
+.footer h3 {
+
+    color: #67d7ff;
+
+    font-size: 1rem;
+
+    margin-bottom: 15px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+
+.footer-links,
+.footer-social {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+.footer a {
+
+    width: fit-content;
+
+    color:
+        rgba(255, 255, 255, 0.75);
+
+    text-decoration: none;
+
+    transition: 0.3s;
+}
+
+
+.footer a:hover {
+
+    color: #67d7ff;
+
+    transform:
+        translateX(5px);
+}
+
+
+.footer-bottom {
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.1);
+
+    text-align: center;
+}
+
+
+.footer-bottom p {
+
+    color:
+        rgba(255, 255, 255, 0.55);
+
+    font-size: 0.85rem;
+}
+
+
+/* ===========================
+   Footer Responsive
+=========================== */
+
+@media (max-width: 700px) {
+
+    .footer {
+
+        width: 94%;
+
+        padding: 35px 25px 20px;
+    }
+
+
+    .footer-content {
+
+        grid-template-columns: 1fr;
+
+        gap: 30px;
+    }
+
+
+    .footer-brand p {
+
+        max-width: 100%;
+    }
+
+
+    .footer-bottom {
+
+        margin-top: 10px;
+    }
+
+}
+
+/* ===========================
+   Success Message
+=========================== */
+
+.success-message {
+
+    margin: 20px 0 25px;
+
+    padding: 18px 20px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    border-radius: 16px;
+
+    background: rgba(0, 255, 170, 0.10);
+
+    border: 1px solid rgba(0, 255, 170, 0.35);
+
+    backdrop-filter: blur(15px);
+
+    -webkit-backdrop-filter: blur(15px);
+
+    box-shadow:
+        0 10px 30px rgba(0, 255, 170, 0.12);
+
+    animation:
+        successSlide 0.6s ease forwards;
+
+}
+
+
+/* Success Icon */
+
+.success-icon {
+
+    width: 45px;
+
+    height: 45px;
+
+    min-width: 45px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: rgba(0, 255, 170, 0.15);
+
+    border: 2px solid #00ffaa;
+
+    color: #00ffaa;
+
+    font-size: 25px;
+
+    font-weight: 700;
+
+    box-shadow:
+        0 0 20px rgba(0, 255, 170, 0.35);
+
+    animation:
+        successPop 0.6s ease 0.2s both;
+
+}
+
+
+/* Success Heading */
+
+.success-message h3 {
+
+    margin: 0 0 4px;
+
+    color: #00ffaa;
+
+    font-size: 1rem;
+
+}
+
+
+/* Success Text */
+
+.success-message p {
+
+    margin: 0;
+
+    color: rgba(255, 255, 255, 0.75);
+
+    font-size: 0.85rem;
+
+    line-height: 1.5;
+
+}
+
+
+/* ===========================
+   Success Animations
+=========================== */
+
+@keyframes successSlide {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(-20px)
+            scale(0.95);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+
+@keyframes successPop {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            scale(0.3)
+            rotate(-30deg);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            scale(1)
+            rotate(0);
+
+    }
+
+}

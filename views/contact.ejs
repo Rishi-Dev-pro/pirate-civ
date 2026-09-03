@@ -1,0 +1,222 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Contact | Rishi's Web</title>
+
+    <link rel="stylesheet" href="/css/contact.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- ===========================
+         Background Video
+    ============================ -->
+
+    <video autoplay muted loop playsinline id="bg-video">
+
+        <source
+            src="/videos/contact.mp4"
+            type="video/mp4"
+        >
+
+    </video>
+
+
+    <div class="overlay"></div>
+
+
+    <!-- ===========================
+         Reusable Navbar
+    ============================ -->
+
+    <%- include("partials/header") %>
+
+
+    <!-- ===========================
+         Hero
+    ============================ -->
+
+    <section class="hero">
+
+        <div class="hero-text">
+
+            <h1>
+                Let's
+                <span>Connect</span>
+            </h1>
+
+            <p>
+                Have a project idea or just want to say hello?
+                Feel free to reach out using the form below.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ===========================
+         Contact Section
+    ============================ -->
+
+    <section class="contact-container">
+
+
+        <!-- ===========================
+             Contact Form
+        ============================ -->
+
+        <div class="contact-form">
+
+            <h2>Send a Message</h2>
+
+            <% if (success) { %>
+
+    <div class="success-message">
+
+        <div class="success-icon">
+            ✓
+        </div>
+
+        <div>
+
+            <h3>Message Sent Successfully!</h3>
+
+            <p>
+                Thank you for contacting us. We'll get back to you soon.
+            </p>
+
+        </div>
+
+    </div>
+
+<% } %>
+
+
+            <form action="/contact" method="POST">
+
+
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="Your Name"
+                    required
+                >
+
+
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="Your Email"
+                    required
+                >
+
+
+                <input
+                    type="text"
+                    name="subject"
+                    placeholder="Subject"
+                >
+
+
+                <textarea
+                    name="message"
+                    rows="6"
+                    placeholder="Write your message..."
+                    required
+                ></textarea>
+
+
+                <button type="submit">
+                    Send Message
+                </button>
+
+
+            </form>
+
+        </div>
+
+
+        <!-- ===========================
+             Contact Information
+        ============================ -->
+
+        <div class="contact-info">
+
+
+            <div class="info-card">
+
+                <h3>📧 Email</h3>
+
+                <p>
+                    rishi@example.com
+                </p>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <h3>📱 Phone</h3>
+
+                <p>
+                    +91 98765 43210
+                </p>
+
+            </div>
+
+
+            <div class="info-card map-card">
+
+                <h3>📍 Location</h3>
+
+                <p class="location-text">
+                    Kolkata, West Bengal, India
+                </p>
+
+                <iframe
+                    src="https://www.google.com/maps?q=Kolkata,+West+Bengal,+India&output=embed"
+                    loading="lazy">
+                </iframe>
+
+            </div>
+
+
+            <div class="info-card">
+
+                <h3>🌐 Website</h3>
+
+                <p>
+                    www.rishisweb.com
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+    <!-- ===========================
+         Reusable Footer
+    ============================ -->
+
+    <%- include("partials/footer") %>
+
+
+</body>
+
+</html>
+```

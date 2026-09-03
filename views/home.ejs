@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rishi's Web</title>
+
+    <link rel="stylesheet" href="/css/style.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- ===========================
+         Background Video
+    ============================ -->
+
+    <video autoplay muted loop playsinline id="bg-video">
+
+        <source
+            src="/videos/background.mp4"
+            type="video/mp4"
+        >
+
+    </video>
+
+
+    <div class="overlay"></div>
+
+
+    <!-- ===========================
+         Reusable Navbar
+    ============================ -->
+
+    <%- include("partials/header") %>
+
+
+    <!-- ===========================
+         Hero Section
+    ============================ -->
+
+    <section class="hero">
+
+        <div class="hero-text">
+
+            <h1>
+                Welcome to
+                <span>Rishi's Web</span>
+            </h1>
+
+            <p>
+                A simple Node.js + Express + EJS project made for learning
+                server-side rendering and modern web development.
+            </p>
+
+            <button>
+                Explore More
+            </button>
+
+        </div>
+
+    </section>
+
+
+    <!-- ===========================
+         Cards
+    ============================ -->
+
+    <section class="cards">
+
+        <div class="card">
+
+            <h3>🚀 Fast</h3>
+
+            <p>
+                Express provides a lightweight backend
+                for web applications.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>🎨 Beautiful</h3>
+
+            <p>
+                Modern UI using only HTML and CSS.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>⚡ Dynamic</h3>
+
+            <p>
+                EJS allows you to create dynamic pages
+                with reusable templates.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- ===========================
+         Marks Filter
+    ============================ -->
+
+    <div class="marks-filter">
+
+        <label for="marksFilter">
+            Show students with marks above:
+        </label>
+
+        <input
+            type="number"
+            id="marksFilter"
+            placeholder="Enter marks"
+            min="0"
+            max="100"
+        >
+
+        <button onclick="filterStudents()">
+            Filter
+        </button>
+
+    </div>
+
+
+    <!-- ===========================
+         Student Table
+    ============================ -->
+
+    <table id="studentTable">
+
+        <thead>
+
+            <tr>
+
+                <th>ID</th>
+
+                <th>Name</th>
+
+                <th>Roll No</th>
+
+                <th>Course</th>
+
+                <th>Year</th>
+
+                <th>Marks</th>
+
+                <th>Grade</th>
+
+                <th>Email</th>
+
+            </tr>
+
+        </thead>
+
+
+        <tbody>
+
+            <% student_data.forEach(student => { %>
+
+                <tr>
+
+                    <td>
+                        <%= student.id %>
+                    </td>
+
+                    <td>
+                        <%= student.name %>
+                    </td>
+
+                    <td>
+                        <%= student.rollNo %>
+                    </td>
+
+                    <td>
+                        <%= student.course %>
+                    </td>
+
+                    <td>
+                        <%= student.year %>
+                    </td>
+
+                    <td class="student-marks">
+                        <%= student.marks %>
+                    </td>
+
+                    <td>
+                        <%= student.grade %>
+                    </td>
+
+                    <td>
+                        <%= student.email %>
+                    </td>
+
+                </tr>
+
+            <% }) %>
+
+        </tbody>
+
+    </table>
+
+     <!-- Footer -->
+
+    <%- include("partials/footer") %>
+
+
+    <!-- ===========================
+         Marks Filter JavaScript
+    ============================ -->
+
+    <script>
+
+        function filterStudents() {
+
+            let input = document.getElementById("marksFilter");
+
+            let marksLimit = Number(input.value);
+
+            let rows = document.querySelectorAll("#studentTable tbody tr");
+
+
+            rows.forEach(function(row) {
+
+                let marks = Number(
+                    row.querySelector(".student-marks").textContent
+                );
+
+
+                if (marks >= marksLimit) {
+
+                    row.style.display = "";
+
+                } else {
+
+                    row.style.display = "none";
+
+                }
+
+            });
+
+        }
+
+    </script>
+
+
+</body>
+
+</html>

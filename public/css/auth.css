@@ -1,0 +1,2392 @@
+/* =========================================================
+   TERRA INCOGNITA
+   PIRATE AUTHENTICATION EXPERIENCE
+   CINEMATIC DARK FANTASY
+========================================================= */
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    position: relative;
+    min-height: 100vh;
+    overflow-x: hidden;
+
+    color: #e8d5b3;
+
+    font-family: "Inter", sans-serif;
+
+    background:
+        radial-gradient(
+            ellipse at 76% 50%,
+            rgba(139, 54, 18, 0.16),
+            transparent 42%
+        ),
+
+        radial-gradient(
+            ellipse at 25% 50%,
+            rgba(54, 20, 42, 0.20),
+            transparent 42%
+        ),
+
+        linear-gradient(
+            135deg,
+            #030205 0%,
+            #08040b 45%,
+            #0c0509 72%,
+            #030205 100%
+        );
+}
+
+
+/* =========================================================
+   PAGE BACKGROUND
+========================================================= */
+
+.page-background {
+    position: fixed;
+    inset: 0;
+
+    overflow: hidden;
+
+    pointer-events: none;
+
+    z-index: -20;
+}
+
+
+/* =========================================================
+   LARGE WARM LIGHT BEHIND MAP
+========================================================= */
+
+.page-background::before {
+    content: "";
+
+    position: absolute;
+
+    width: 1000px;
+    height: 850px;
+
+    right: 1%;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(184, 68, 18, 0.18) 0%,
+            rgba(117, 39, 17, 0.11) 30%,
+            rgba(66, 23, 18, 0.06) 48%,
+            transparent 72%
+        );
+
+    filter: blur(48px);
+
+    animation:
+        mapAtmosphere 6s ease-in-out infinite alternate;
+}
+
+
+@keyframes mapAtmosphere {
+
+    0% {
+        opacity: 0.45;
+        transform:
+            translateY(-50%)
+            scale(0.94);
+    }
+
+    50% {
+        opacity: 0.78;
+        transform:
+            translateY(-50%)
+            scale(1.03);
+    }
+
+    100% {
+        opacity: 0.52;
+        transform:
+            translateY(-50%)
+            scale(0.98);
+    }
+}
+
+
+/* =========================================================
+   SECONDARY FIRE GLOW
+========================================================= */
+
+.page-background::after {
+    content: "";
+
+    position: absolute;
+
+    width: 800px;
+    height: 500px;
+
+    right: 5%;
+    bottom: -230px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(255, 67, 12, 0.18),
+            rgba(177, 48, 12, 0.08) 40%,
+            transparent 72%
+        );
+
+    filter: blur(55px);
+
+    animation:
+        lowerFireGlow 3.5s ease-in-out infinite alternate;
+}
+
+
+@keyframes lowerFireGlow {
+
+    0% {
+        opacity: 0.35;
+        transform:
+            translateX(35px)
+            scale(0.9);
+    }
+
+    50% {
+        opacity: 0.75;
+    }
+
+    100% {
+        opacity: 0.42;
+        transform:
+            translateX(-35px)
+            scale(1.12);
+    }
+}
+
+
+/* =========================================================
+   SMOKE
+========================================================= */
+
+.smoke {
+    position: absolute;
+
+    border-radius: 50%;
+
+    pointer-events: none;
+
+    filter: blur(90px);
+
+    opacity: 0.35;
+}
+
+
+.smoke-one {
+    width: 700px;
+    height: 420px;
+
+    right: 3%;
+    top: 12%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(137, 88, 58, 0.16),
+            transparent 70%
+        );
+
+    animation:
+        smokeDriftOne 15s ease-in-out infinite alternate;
+}
+
+
+.smoke-two {
+    width: 850px;
+    height: 450px;
+
+    right: 10%;
+    bottom: -100px;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(111, 43, 25, 0.16),
+            transparent 70%
+        );
+
+    animation:
+        smokeDriftTwo 18s ease-in-out infinite alternate;
+}
+
+
+@keyframes smokeDriftOne {
+
+    0% {
+        transform:
+            translate(-50px, 20px)
+            scale(0.9);
+
+        opacity: 0.25;
+    }
+
+    50% {
+        opacity: 0.55;
+    }
+
+    100% {
+        transform:
+            translate(70px, -40px)
+            scale(1.12);
+
+        opacity: 0.32;
+    }
+}
+
+
+@keyframes smokeDriftTwo {
+
+    0% {
+        transform:
+            translate(50px, 25px)
+            scale(0.9)
+            rotate(-4deg);
+
+        opacity: 0.2;
+    }
+
+    100% {
+        transform:
+            translate(-70px, -30px)
+            scale(1.15)
+            rotate(5deg);
+
+        opacity: 0.5;
+    }
+}
+
+
+/* =========================================================
+   BACKGROUND EMBERS
+========================================================= */
+
+.embers {
+    position: absolute;
+    inset: 0;
+}
+
+
+.embers span {
+    position: absolute;
+
+    width: 2px;
+    height: 2px;
+
+    border-radius: 50%;
+
+    background: #ffbd6b;
+
+    box-shadow:
+        0 0 4px #ff781c,
+        0 0 10px rgba(255, 83, 15, 0.9),
+        0 0 18px rgba(255, 55, 5, 0.5);
+
+    opacity: 0;
+
+    animation:
+        emberRise linear infinite;
+}
+
+
+/* Individual particles */
+
+.embers span:nth-child(1) {
+    left: 5%;
+    bottom: -5%;
+    animation-duration: 8s;
+    animation-delay: 1s;
+}
+
+.embers span:nth-child(2) {
+    left: 14%;
+    bottom: 5%;
+    animation-duration: 11s;
+    animation-delay: 3s;
+}
+
+.embers span:nth-child(3) {
+    left: 25%;
+    bottom: -5%;
+    animation-duration: 9s;
+    animation-delay: 5s;
+}
+
+.embers span:nth-child(4) {
+    left: 38%;
+    bottom: 0;
+    animation-duration: 12s;
+    animation-delay: 1.5s;
+}
+
+.embers span:nth-child(5) {
+    left: 51%;
+    bottom: -5%;
+    animation-duration: 8s;
+    animation-delay: 4s;
+}
+
+.embers span:nth-child(6) {
+    left: 64%;
+    bottom: 2%;
+    animation-duration: 10s;
+    animation-delay: 2s;
+}
+
+.embers span:nth-child(7) {
+    left: 76%;
+    bottom: -5%;
+    animation-duration: 13s;
+    animation-delay: 6s;
+}
+
+.embers span:nth-child(8) {
+    left: 87%;
+    bottom: 5%;
+    animation-duration: 9s;
+    animation-delay: 2.5s;
+}
+
+.embers span:nth-child(9) {
+    left: 94%;
+    bottom: -5%;
+    animation-duration: 12s;
+    animation-delay: 7s;
+}
+
+.embers span:nth-child(10) {
+    left: 45%;
+    bottom: -5%;
+    animation-duration: 14s;
+    animation-delay: 8s;
+}
+
+
+@keyframes emberRise {
+
+    0% {
+        transform:
+            translate3d(0, 0, 0)
+            scale(0.2);
+
+        opacity: 0;
+    }
+
+    10% {
+        opacity: 0.9;
+    }
+
+    35% {
+        transform:
+            translate3d(30px, -220px, 0)
+            scale(1);
+
+        opacity: 0.8;
+    }
+
+    65% {
+        transform:
+            translate3d(-35px, -450px, 0)
+            scale(0.75);
+
+        opacity: 0.5;
+    }
+
+    100% {
+        transform:
+            translate3d(45px, -720px, 0)
+            scale(0);
+
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   REALISTIC BACKGROUND FIRELIGHT
+   FIRE IS BEHIND THE MAP
+   NOT ON THE MAP
+========================================================= */
+
+.auth-container::before {
+    content: "";
+
+    position: absolute;
+
+    width: 850px;
+    height: 250px;
+
+    right: 3%;
+    bottom: -90px;
+
+    z-index: -5;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(255, 77, 12, 0.17),
+            rgba(183, 47, 10, 0.08) 35%,
+            transparent 72%
+        );
+
+    filter: blur(38px);
+
+    animation:
+        firePulse 1.8s ease-in-out infinite alternate;
+}
+
+
+@keyframes firePulse {
+
+    0% {
+        opacity: 0.35;
+        transform:
+            scale(0.88)
+            translateX(30px);
+    }
+
+    30% {
+        opacity: 0.65;
+    }
+
+    60% {
+        opacity: 0.45;
+    }
+
+    100% {
+        opacity: 0.8;
+        transform:
+            scale(1.12)
+            translateX(-25px);
+    }
+}
+
+
+/* =========================================================
+   SECOND FIRELIGHT
+========================================================= */
+
+.auth-container::after {
+    content: "";
+
+    position: absolute;
+
+    width: 650px;
+    height: 180px;
+
+    right: 15%;
+    top: -40px;
+
+    z-index: -5;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(255, 82, 17, 0.09),
+            transparent 70%
+        );
+
+    filter: blur(35px);
+
+    animation:
+        upperFirePulse 2.2s ease-in-out infinite alternate;
+}
+
+
+@keyframes upperFirePulse {
+
+    0% {
+        opacity: 0.25;
+        transform: scaleX(0.9);
+    }
+
+    100% {
+        opacity: 0.8;
+        transform: scaleX(1.1);
+    }
+}
+
+
+/* =========================================================
+   MAIN AUTH CONTAINER
+========================================================= */
+
+.auth-container {
+
+    position: relative;
+
+    width: 100%;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 55px;
+
+    padding: 35px 45px;
+
+}
+
+
+/* =========================================================
+   AUTH CARD
+========================================================= */
+
+.login-card {
+
+    position: relative;
+
+    flex-shrink: 0;
+
+    width: 500px;
+
+    min-height: 735px;
+
+    padding: 40px 48px 30px;
+
+    background:
+
+        radial-gradient(
+            circle at 50% 0%,
+            rgba(113, 57, 30, 0.10),
+            transparent 38%
+        ),
+
+        linear-gradient(
+            145deg,
+            rgba(24, 14, 27, 0.985),
+            rgba(7, 5, 10, 0.995)
+        );
+
+    border: 1px solid rgba(154, 97, 42, 0.58);
+
+    box-shadow:
+
+        inset 0 0 60px rgba(117, 57, 20, 0.055),
+
+        inset 0 0 2px rgba(255, 194, 109, 0.14),
+
+        0 30px 80px rgba(0, 0, 0, 0.78),
+
+        0 0 45px rgba(92, 34, 14, 0.12);
+
+    animation:
+        cardEntrance 1s cubic-bezier(.16, 1, .3, 1);
+
+    z-index: 5;
+}
+
+
+@keyframes cardEntrance {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateX(-65px)
+            rotateY(8deg);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateX(0)
+            rotateY(0);
+    }
+}
+
+
+/* =========================================================
+   CARD INNER FRAMES
+========================================================= */
+
+.login-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 9px;
+
+    border: 1px solid rgba(132, 82, 39, 0.42);
+
+    pointer-events: none;
+}
+
+
+.login-card::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 17px;
+
+    border: 1px solid rgba(76, 47, 29, 0.35);
+
+    pointer-events: none;
+}
+
+
+/* =========================================================
+   FRAME CORNERS
+========================================================= */
+
+.frame-corner {
+
+    position: absolute;
+
+    width: 28px;
+    height: 28px;
+
+    border-color: #99612e;
+
+    border-style: solid;
+
+    opacity: 0.85;
+
+    z-index: 8;
+}
+
+
+.frame-top-left {
+    top: 10px;
+    left: 10px;
+
+    border-width:
+        1px 0 0 1px;
+}
+
+
+.frame-top-right {
+    top: 10px;
+    right: 10px;
+
+    border-width:
+        1px 1px 0 0;
+}
+
+
+.frame-bottom-left {
+    bottom: 10px;
+    left: 10px;
+
+    border-width:
+        0 0 1px 1px;
+}
+
+
+.frame-bottom-right {
+    bottom: 10px;
+    right: 10px;
+
+    border-width:
+        0 1px 1px 0;
+}
+
+
+/* =========================================================
+   PIRATE EMBLEM
+========================================================= */
+
+.pirate-emblem {
+
+    position: relative;
+
+    width: 100px;
+    height: 82px;
+
+    margin: 0 auto 5px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+}
+
+
+.skull {
+
+    position: relative;
+
+    z-index: 3;
+
+    font-size: 57px;
+
+    color: #b67b39;
+
+    text-shadow:
+
+        0 2px 4px #000,
+
+        0 0 12px rgba(210, 130, 44, 0.25);
+
+    animation:
+        skullFloat 4s ease-in-out infinite;
+}
+
+
+@keyframes skullFloat {
+
+    0%,
+    100% {
+        transform:
+            translateY(0)
+            rotate(0deg);
+    }
+
+    50% {
+        transform:
+            translateY(-5px)
+            rotate(1deg);
+    }
+}
+
+
+/* =========================================================
+   SWORDS
+========================================================= */
+
+.sword {
+
+    position: absolute;
+
+    width: 72px;
+
+    height: 3px;
+
+    top: 51px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #805324,
+            #d7a052,
+            #805324,
+            transparent
+        );
+
+    box-shadow:
+        0 0 5px rgba(207, 137, 51, 0.22);
+}
+
+
+.sword-one {
+    transform: rotate(35deg);
+}
+
+
+.sword-two {
+    transform: rotate(-35deg);
+}
+
+
+/* =========================================================
+   COORDINATES
+========================================================= */
+
+.coordinates {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    margin-bottom: 27px;
+
+    color: #a16b32;
+
+    font-family: "Cinzel", serif;
+
+    font-size: 10px;
+
+    letter-spacing: 2px;
+}
+
+
+.coordinates .line {
+
+    width: 45px;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(148, 91, 37, 0.7)
+        );
+}
+
+
+.coordinates .line:last-child {
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(148, 91, 37, 0.7),
+            transparent
+        );
+}
+
+
+/* =========================================================
+   HEADING
+========================================================= */
+
+.heading-area {
+
+    text-align: center;
+}
+
+
+.heading-area h1 {
+
+    color: #ead9bb;
+
+    font-family: "Cinzel", serif;
+
+    font-size: 32px;
+
+    font-weight: 600;
+
+    letter-spacing: 1px;
+
+    line-height: 1.2;
+
+    text-shadow:
+        0 2px 4px #000,
+        0 0 20px rgba(213, 157, 83, 0.05);
+
+    margin-bottom: 9px;
+}
+
+
+.heading-area p {
+
+    color: #87748a;
+
+    font-size: 13px;
+
+    line-height: 1.5;
+}
+
+
+/* =========================================================
+   ORNAMENT
+========================================================= */
+
+.ornament {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin: 20px 0 25px;
+}
+
+
+.ornament span {
+
+    flex: 1;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(139, 84, 36, 0.5)
+        );
+}
+
+
+.ornament span:last-child {
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(139, 84, 36, 0.5),
+            transparent
+        );
+}
+
+
+.ornament b {
+
+    color: #b47630;
+
+    font-size: 13px;
+
+    animation:
+        ornamentGlow 2.5s ease-in-out infinite;
+}
+
+
+@keyframes ornamentGlow {
+
+    0%,
+    100% {
+        opacity: 0.45;
+
+        text-shadow: none;
+    }
+
+    50% {
+        opacity: 1;
+
+        text-shadow:
+            0 0 8px rgba(210, 112, 31, 0.6),
+            0 0 16px rgba(210, 76, 15, 0.25);
+    }
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.auth-form {
+    width: 100%;
+}
+
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+
+.input-group label {
+
+    display: block;
+
+    margin-bottom: 8px;
+
+    color: #aa7131;
+
+    font-size: 10px;
+
+    font-weight: 600;
+
+    letter-spacing: 1.6px;
+}
+
+
+/* =========================================================
+   INPUT WRAPPER
+========================================================= */
+
+.input-wrapper {
+    position: relative;
+}
+
+
+/* =========================================================
+   INPUT ICON
+========================================================= */
+
+.input-icon {
+
+    position: absolute;
+
+    left: 17px;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #a06a31;
+
+    font-size: 16px;
+
+    line-height: 1;
+
+    z-index: 2;
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================================
+   INPUT
+========================================================= */
+
+.input-wrapper input {
+
+    width: 100%;
+
+    height: 54px;
+
+    padding:
+        0 48px;
+
+    border:
+        1px solid rgba(139, 87, 38, 0.55);
+
+    border-radius: 5px;
+
+    outline: none;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(12, 8, 14, 0.97),
+            rgba(8, 6, 11, 0.97)
+        );
+
+    color: #e8dbc7;
+
+    font-family: "Inter", sans-serif;
+
+    font-size: 14px;
+
+    transition:
+        border-color .3s ease,
+        box-shadow .3s ease,
+        background .3s ease,
+        transform .3s ease;
+}
+
+
+.input-wrapper input::placeholder {
+    color: #67586a;
+}
+
+
+.input-wrapper input:hover {
+
+    border-color:
+        rgba(173, 108, 41, 0.72);
+}
+
+
+.input-wrapper input:focus {
+
+    border-color: #b87935;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(23, 13, 17, 0.99),
+            rgba(10, 7, 12, 0.99)
+        );
+
+    box-shadow:
+
+        0 0 0 1px
+        rgba(177, 116, 49, 0.12),
+
+        0 0 22px
+        rgba(173, 72, 18, 0.13);
+
+    transform:
+        translateY(-1px);
+}
+
+
+/* =========================================================
+   PASSWORD TOGGLE
+========================================================= */
+
+.password-toggle {
+
+    position: absolute;
+
+    right: 13px;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    width: 30px;
+    height: 30px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #96632e;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition:
+        color .25s ease,
+        text-shadow .25s ease,
+        transform .25s ease;
+}
+
+
+.password-toggle:hover {
+
+    color: #d49a4b;
+
+    text-shadow:
+        0 0 8px
+        rgba(211, 124, 39, 0.65);
+
+    transform:
+        translateY(-50%)
+        scale(1.08);
+}
+
+
+/* =========================================================
+   FORGOT PASSWORD
+========================================================= */
+
+.forgot-wrapper {
+
+    margin-top: -7px;
+
+    margin-bottom: 24px;
+
+    text-align: right;
+}
+
+
+.forgot-wrapper a {
+
+    color: #92704a;
+
+    font-size: 11px;
+
+    font-style: italic;
+
+    text-decoration: underline;
+
+    transition:
+        color .25s ease;
+}
+
+
+.forgot-wrapper a:hover {
+    color: #d09649;
+}
+
+
+/* =========================================================
+   SUBMIT BUTTON
+========================================================= */
+
+.enter-button {
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 10px;
+
+    width: 100%;
+
+    height: 59px;
+
+    border:
+        1px solid #9b5d25;
+
+    border-radius: 4px;
+
+    background:
+        linear-gradient(
+            180deg,
+            #681c21 0%,
+            #4c1118 45%,
+            #2a090f 100%
+        );
+
+    color: #e8bd76;
+
+    font-family: "Cinzel", serif;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    letter-spacing: 1.5px;
+
+    cursor: pointer;
+
+    box-shadow:
+
+        inset 0 1px 0
+        rgba(255, 190, 98, 0.16),
+
+        inset 0 -10px 20px
+        rgba(0, 0, 0, 0.24),
+
+        0 8px 25px
+        rgba(0, 0, 0, 0.4);
+
+    transition:
+        transform .3s ease,
+        border-color .3s ease,
+        box-shadow .3s ease;
+}
+
+
+.enter-button span {
+    position: relative;
+    z-index: 3;
+}
+
+
+.enter-button strong {
+
+    position: relative;
+
+    z-index: 3;
+
+    font-size: 26px;
+
+    font-weight: 400;
+
+    line-height: 1;
+}
+
+
+.enter-button:hover {
+
+    transform:
+        translateY(-3px);
+
+    border-color:
+        #d28a3d;
+
+    box-shadow:
+
+        0 0 15px
+        rgba(226, 71, 17, 0.18),
+
+        0 0 35px
+        rgba(188, 49, 10, 0.12),
+
+        0 12px 35px
+        rgba(0, 0, 0, 0.55);
+}
+
+
+.enter-button:active {
+
+    transform:
+        translateY(1px);
+}
+
+
+/* =========================================================
+   BUTTON SHINE
+========================================================= */
+
+.button-shine {
+
+    position: absolute;
+
+    top: 0;
+
+    left: -120%;
+
+    width: 55%;
+
+    height: 100%;
+
+    transform:
+        skewX(-25deg);
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255, 205, 132, 0.18),
+            transparent
+        );
+}
+
+
+.enter-button:hover .button-shine {
+
+    animation:
+        buttonShine .85s ease;
+}
+
+
+@keyframes buttonShine {
+
+    from {
+        left: -120%;
+    }
+
+    to {
+        left: 150%;
+    }
+}
+
+
+/* =========================================================
+   REGISTER / LOGIN LINK
+========================================================= */
+
+.register-area {
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    gap: 6px;
+
+    margin-top: 26px;
+
+    color: #69586b;
+
+    font-size: 11px;
+
+    text-align: center;
+}
+
+
+.register-area a {
+
+    color: #b47b31;
+
+    text-decoration: underline;
+
+    transition:
+        color .25s ease;
+}
+
+
+.register-area a:hover {
+
+    color: #dda04a;
+}
+
+
+/* =========================================================
+   BOTTOM ORNAMENT
+========================================================= */
+
+.bottom-ornament {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    gap: 15px;
+
+    margin-top: 25px;
+}
+
+
+.bottom-ornament span {
+
+    width: 90px;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #66401f
+        );
+}
+
+
+.bottom-ornament span:last-child {
+
+    background:
+        linear-gradient(
+            90deg,
+            #66401f,
+            transparent
+        );
+}
+
+
+.bottom-ornament div {
+
+    color: #a16a30;
+
+    font-size: 19px;
+
+    animation:
+        skullGlow 3s ease-in-out infinite;
+}
+
+
+@keyframes skullGlow {
+
+    0%,
+    100% {
+        opacity: .55;
+
+        transform:
+            scale(1);
+    }
+
+    50% {
+        opacity: 1;
+
+        transform:
+            scale(1.08);
+
+        text-shadow:
+            0 0 10px
+            rgba(190, 92, 23, .4);
+    }
+}
+
+
+/* =========================================================
+   MAP SECTION
+========================================================= */
+
+.map-section {
+
+    position: relative;
+
+    flex-shrink: 0;
+
+    width: min(820px, 52vw);
+
+    aspect-ratio: 1.28 / 1;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    isolation: isolate;
+
+    animation:
+        mapEntrance 1.25s
+        cubic-bezier(.16, 1, .3, 1);
+}
+
+
+@keyframes mapEntrance {
+
+    from {
+        opacity: 0;
+
+        transform:
+            translateX(70px)
+            scale(.94);
+    }
+
+    to {
+        opacity: 1;
+
+        transform:
+            translateX(0)
+            scale(1);
+    }
+}
+
+
+/* =========================================================
+   MAP ATMOSPHERIC GLOW
+========================================================= */
+
+.map-section::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 4%;
+
+    z-index: -2;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(214, 91, 24, 0.17) 0%,
+            rgba(140, 48, 17, 0.08) 34%,
+            transparent 72%
+        );
+
+    filter: blur(38px);
+
+    animation:
+        mapGlow 4s ease-in-out infinite alternate;
+}
+
+
+@keyframes mapGlow {
+
+    0% {
+        opacity: .35;
+
+        transform:
+            scale(.93);
+    }
+
+    50% {
+        opacity: .72;
+    }
+
+    100% {
+        opacity: .45;
+
+        transform:
+            scale(1.05);
+    }
+}
+
+
+/* =========================================================
+   MAP CONTAINER
+========================================================= */
+
+.map-container {
+
+    position: relative;
+
+    width: 100%;
+
+    height: 100%;
+
+    z-index: 3;
+
+    filter:
+
+        drop-shadow(
+            0 25px 35px
+            rgba(0, 0, 0, .82)
+        )
+
+        drop-shadow(
+            0 0 25px
+            rgba(178, 64, 15, .12)
+        );
+}
+
+
+/* =========================================================
+   TREASURE MAP
+========================================================= */
+
+.treasure-map {
+
+    width: 100%;
+
+    height: 100%;
+
+    display: block;
+
+    object-fit: contain;
+
+    animation:
+        treasureMapFloat 8s
+        ease-in-out infinite;
+
+}
+
+
+@keyframes treasureMapFloat {
+
+    0%,
+    100% {
+
+        transform:
+            translateY(0)
+            rotate(0deg);
+    }
+
+    50% {
+
+        transform:
+            translateY(-5px)
+            rotate(.12deg);
+    }
+}
+
+
+/* =========================================================
+   REMOVE OLD MAP FIRE COMPLETELY
+========================================================= */
+
+.map-fire {
+
+    display: none !important;
+
+}
+
+
+/* =========================================================
+   MAP ATMOSPHERIC EMBERS
+   THESE FLOAT AROUND THE MAP
+   THEY DO NOT FORM A BORDER
+========================================================= */
+
+.map-embers {
+
+    position: absolute;
+
+    inset: -8%;
+
+    z-index: 1;
+
+    pointer-events: none;
+}
+
+
+.map-embers span {
+
+    position: absolute;
+
+    width: 3px;
+
+    height: 3px;
+
+    border-radius: 50%;
+
+    background: #ffb45c;
+
+    box-shadow:
+
+        0 0 5px #ff6614,
+
+        0 0 12px
+        rgba(255, 62, 5, .7);
+
+    opacity: 0;
+
+    animation:
+        mapParticle 4s linear infinite;
+}
+
+
+.map-embers span:nth-child(1) {
+    left: 12%;
+    bottom: 13%;
+    animation-delay: 0s;
+}
+
+.map-embers span:nth-child(2) {
+    left: 25%;
+    bottom: 8%;
+    animation-delay: 1s;
+}
+
+.map-embers span:nth-child(3) {
+    right: 15%;
+    bottom: 10%;
+    animation-delay: 2s;
+}
+
+.map-embers span:nth-child(4) {
+    right: 7%;
+    bottom: 28%;
+    animation-delay: 3s;
+}
+
+.map-embers span:nth-child(5) {
+    left: 10%;
+    top: 22%;
+    animation-delay: .5s;
+}
+
+.map-embers span:nth-child(6) {
+    right: 12%;
+    top: 17%;
+    animation-delay: 1.5s;
+}
+
+.map-embers span:nth-child(7) {
+    left: 36%;
+    bottom: 2%;
+    animation-delay: 2.5s;
+}
+
+.map-embers span:nth-child(8) {
+    right: 35%;
+    top: 3%;
+    animation-delay: 3.5s;
+}
+
+
+@keyframes mapParticle {
+
+    0% {
+
+        transform:
+            translate(0, 20px)
+            scale(.2);
+
+        opacity: 0;
+    }
+
+    15% {
+        opacity: .9;
+    }
+
+    50% {
+
+        transform:
+            translate(20px, -40px)
+            scale(1);
+
+        opacity: .75;
+    }
+
+    100% {
+
+        transform:
+            translate(-15px, -100px)
+            scale(0);
+
+        opacity: 0;
+    }
+}
+
+
+/* =========================================================
+   CORNER COMPASSES
+========================================================= */
+
+.corner-compass {
+
+    position: fixed;
+
+    width: 55px;
+    height: 55px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border:
+        1px solid
+        rgba(153, 97, 42, .35);
+
+    border-radius: 50%;
+
+    color: #9d682f;
+
+    font-size: 24px;
+
+    box-shadow:
+
+        inset 0 0 18px
+        rgba(151, 75, 20, .08),
+
+        0 0 20px
+        rgba(150, 65, 18, .06);
+
+    z-index: 20;
+
+    animation:
+        compassPulse 4s ease-in-out infinite;
+}
+
+
+.top-left {
+
+    top: 28px;
+
+    left: 32px;
+}
+
+
+.top-right {
+
+    top: 28px;
+
+    right: 32px;
+}
+
+
+@keyframes compassPulse {
+
+    0%,
+    100% {
+
+        opacity: .4;
+
+        transform:
+            rotate(0deg);
+    }
+
+    50% {
+
+        opacity: .9;
+
+        transform:
+            rotate(7deg);
+    }
+}
+
+
+/* =========================================================
+   REGISTER PAGE
+========================================================= */
+
+.register-card {
+
+    min-height: 790px;
+
+    padding:
+        28px 48px 28px;
+}
+
+
+/* Register emblem */
+
+.register-card .pirate-emblem {
+
+    height: 68px;
+
+    margin-bottom: 2px;
+}
+
+
+.register-card .skull {
+
+    font-size: 50px;
+}
+
+
+.register-card .sword {
+
+    top: 43px;
+
+    width: 65px;
+}
+
+
+/* Coordinates */
+
+.register-card .coordinates {
+
+    margin-bottom: 18px;
+}
+
+
+/* Register heading */
+
+.register-card .heading-area h1 {
+
+    font-size: 28px;
+
+    letter-spacing: .8px;
+}
+
+
+.register-card .heading-area p {
+
+    font-size: 12px;
+}
+
+
+/* Register ornament */
+
+.register-card .ornament {
+
+    margin:
+        15px 0 18px;
+}
+
+
+/* Register inputs */
+
+.register-card .input-group {
+
+    margin-bottom: 14px;
+}
+
+
+.register-card .input-group label {
+
+    margin-bottom: 6px;
+
+    font-size: 9px;
+}
+
+
+.register-card .input-wrapper input {
+
+    height: 47px;
+
+    font-size: 13px;
+}
+
+
+/* Register icons */
+
+.register-card .input-icon {
+
+    font-size: 15px;
+
+    left: 16px;
+}
+
+
+/* Register button */
+
+.register-card .enter-button {
+
+    height: 56px;
+
+    margin-top: 4px;
+}
+
+
+/* Register bottom */
+
+.register-card .register-area {
+
+    margin-top: 20px;
+}
+
+
+.register-card .bottom-ornament {
+
+    margin-top: 19px;
+}
+
+
+/* =========================================================
+   PREVENT LOGIN-ONLY ELEMENTS ON REGISTER
+========================================================= */
+
+.register-card .forgot-wrapper {
+
+    display: none;
+}
+
+
+/* =========================================================
+   DESKTOP LARGE
+========================================================= */
+
+@media (min-width: 1500px) {
+
+    .auth-container {
+
+        gap: 65px;
+
+        padding:
+            40px 55px;
+    }
+
+    .login-card {
+
+        width: 510px;
+    }
+
+    .map-section {
+
+        width: min(850px, 53vw);
+    }
+}
+
+
+/* =========================================================
+   1350px
+========================================================= */
+
+@media (max-width: 1350px) {
+
+    .auth-container {
+
+        gap: 35px;
+
+        padding:
+            30px;
+    }
+
+    .login-card {
+
+        width: 455px;
+
+        min-height: 710px;
+
+        padding-left: 42px;
+
+        padding-right: 42px;
+    }
+
+    .register-card {
+
+        min-height: 750px;
+
+        padding-top: 25px;
+
+        padding-bottom: 25px;
+    }
+
+    .map-section {
+
+        width: min(760px, 53vw);
+    }
+
+    .heading-area h1 {
+
+        font-size: 29px;
+    }
+
+    .register-card .heading-area h1 {
+
+        font-size: 26px;
+    }
+}
+
+
+/* =========================================================
+   1150px
+========================================================= */
+
+@media (max-width: 1150px) {
+
+    .auth-container {
+
+        gap: 25px;
+
+        padding:
+            25px;
+    }
+
+    .login-card {
+
+        width: 420px;
+
+        padding-left: 35px;
+
+        padding-right: 35px;
+    }
+
+    .map-section {
+
+        width: 51vw;
+    }
+
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 950px) {
+
+    body {
+
+        overflow-x: hidden;
+    }
+
+    .auth-container {
+
+        flex-direction: column;
+
+        justify-content: flex-start;
+
+        gap: 45px;
+
+        padding:
+            55px 20px 60px;
+    }
+
+    .login-card {
+
+        width:
+            min(500px, 94vw);
+
+        min-height: auto;
+
+        padding:
+            40px 40px 32px;
+    }
+
+    .register-card {
+
+        min-height: auto;
+
+        padding:
+            35px 40px 30px;
+    }
+
+    .map-section {
+
+        width:
+            min(850px, 94vw);
+
+        max-width: 94vw;
+    }
+
+    .corner-compass {
+
+        display: none;
+    }
+
+    .page-background::before {
+
+        right: -20%;
+
+        width: 850px;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .auth-container {
+
+        padding:
+            30px 12px 45px;
+
+        gap: 35px;
+    }
+
+    .login-card {
+
+        width: 100%;
+
+        padding:
+            32px 24px 28px;
+    }
+
+    .register-card {
+
+        padding:
+            28px 24px 25px;
+    }
+
+    .pirate-emblem {
+
+        transform:
+            scale(.9);
+    }
+
+    .heading-area h1 {
+
+        font-size: 25px;
+    }
+
+    .register-card .heading-area h1 {
+
+        font-size: 22px;
+    }
+
+    .heading-area p {
+
+        font-size: 11px;
+    }
+
+    .coordinates {
+
+        font-size: 8px;
+
+        letter-spacing: 1.5px;
+    }
+
+    .coordinates .line {
+
+        width: 25px;
+    }
+
+    .input-wrapper input {
+
+        height: 52px;
+    }
+
+    .register-card .input-wrapper input {
+
+        height: 46px;
+    }
+
+    .enter-button {
+
+        height: 56px;
+
+        font-size: 13px;
+    }
+
+    .register-card .enter-button {
+
+        height: 54px;
+    }
+
+    .map-section {
+
+        width: 100%;
+
+        max-width: 100%;
+    }
+
+    .bottom-ornament span {
+
+        width: 60px;
+    }
+
+}
+
+
+/* =========================================================
+   VERY SMALL MOBILE
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .login-card {
+
+        padding:
+            28px 18px 24px;
+    }
+
+    .register-card {
+
+        padding:
+            25px 18px 23px;
+    }
+
+    .heading-area h1 {
+
+        font-size: 22px;
+    }
+
+    .register-card .heading-area h1 {
+
+        font-size: 20px;
+    }
+
+    .coordinates {
+
+        gap: 7px;
+
+        font-size: 7px;
+    }
+
+    .input-group label {
+
+        font-size: 8px;
+    }
+
+    .enter-button {
+
+        font-size: 12px;
+    }
+
+}
+
+
+.nav-users {
+    position: relative;
+
+    color: #c18a43 !important;
+
+    transition:
+        color .3s ease,
+        text-shadow .3s ease,
+        transform .3s ease;
+}
+
+
+.nav-users::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 0;
+
+    bottom: -6px;
+
+    width: 0;
+
+    height: 1px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #c18a43,
+            transparent
+        );
+
+    transition:
+        width .35s ease;
+}
+
+
+.nav-users:hover {
+
+    color: #e0ad62 !important;
+
+    text-shadow:
+        0 0 10px
+        rgba(211, 125, 36, .45);
+
+    transform:
+        translateY(-1px);
+}
+
+
+.nav-users:hover::after {
+
+    width: 100%;
+}

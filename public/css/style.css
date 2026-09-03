@@ -1,0 +1,1174 @@
+/* ===========================
+   Google Font
+=========================== */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+
+/* ===========================
+   Global
+=========================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+    font-family: 'Poppins', sans-serif;
+
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+
+    overflow-x: hidden;
+
+    color: #fff;
+
+    background: #050505;
+}
+
+
+/* ===========================
+   Background Video
+=========================== */
+
+#bg-video {
+
+    position: fixed;
+
+    inset: 0;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    z-index: -3;
+
+    animation: zoomVideo 20s ease-in-out infinite alternate;
+}
+
+
+@keyframes zoomVideo {
+
+    from {
+        transform: scale(1);
+    }
+
+    to {
+        transform: scale(1.08);
+    }
+
+}
+
+
+/* ===========================
+   Dark Overlay
+=========================== */
+
+.overlay {
+
+    position: fixed;
+
+    inset: 0;
+
+    background:
+
+        radial-gradient(
+            circle at center,
+            rgba(0, 0, 0, 0.15),
+            rgba(0, 0, 0, 0.50),
+            rgba(0, 0, 0, 0.82)
+        ),
+
+        linear-gradient(
+            135deg,
+            rgba(0, 0, 0, 0.35),
+            rgba(0, 0, 0, 0.65)
+        );
+
+    z-index: -2;
+
+    pointer-events: none;
+}
+
+
+/* ===========================
+   Navbar
+=========================== */
+
+.navbar {
+
+    width: 92%;
+
+    margin: 20px auto;
+
+    padding: 18px 35px;
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    border-radius: 20px;
+
+    background: rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(18px);
+
+    -webkit-backdrop-filter: blur(18px);
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.35);
+
+    position: relative;
+
+    z-index: 10;
+}
+
+
+/* ===========================
+   Logo
+=========================== */
+
+.logo {
+
+    font-size: 2rem;
+
+    font-weight: 700;
+
+    color: #67d7ff;
+
+    text-shadow:
+        0 0 12px rgba(103, 215, 255, 0.7);
+}
+
+
+/* ===========================
+   Navigation
+=========================== */
+
+.nav-links {
+
+    display: flex;
+
+    gap: 15px;
+}
+
+
+.nav-links a {
+
+    color: white;
+
+    text-decoration: none;
+
+    padding: 10px 18px;
+
+    border-radius: 12px;
+
+    transition: 0.35s;
+}
+
+
+.nav-links a:hover {
+
+    background: rgba(255, 255, 255, 0.12);
+
+    color: #67d7ff;
+
+    backdrop-filter: blur(10px);
+
+    transform: translateY(-2px);
+}
+
+
+/* ===========================
+   Hero
+=========================== */
+
+.hero {
+
+    min-height: 72vh;
+
+    display: flex;
+
+    justify-content: center;
+
+    align-items: center;
+
+    text-align: center;
+
+    padding: 30px;
+}
+
+
+.hero-text {
+
+    max-width: 900px;
+
+    animation: fadeUp 1.2s ease;
+}
+
+
+.hero h1 {
+
+    font-size: 4.5rem;
+
+    font-weight: 800;
+
+    line-height: 1.2;
+
+    text-shadow:
+        0 6px 25px rgba(0, 0, 0, 0.75);
+}
+
+
+.hero span {
+
+    background:
+
+        linear-gradient(
+            90deg,
+            #67d7ff,
+            #7b8cff,
+            #00ffff
+        );
+
+    -webkit-background-clip: text;
+
+    -webkit-text-fill-color: transparent;
+}
+
+
+.hero p {
+
+    margin: 30px auto;
+
+    max-width: 700px;
+
+    font-size: 1.2rem;
+
+    color: rgba(255, 255, 255, 0.92);
+
+    line-height: 1.9;
+
+    text-shadow:
+        0 2px 15px rgba(0, 0, 0, 0.7);
+}
+
+
+/* ===========================
+   Main Buttons
+=========================== */
+
+button {
+
+    margin-top: 20px;
+
+    padding: 17px 42px;
+
+    border: none;
+
+    border-radius: 50px;
+
+    cursor: pointer;
+
+    color: white;
+
+    font-size: 18px;
+
+    font-weight: 600;
+
+    background:
+
+        linear-gradient(
+            135deg,
+            #00c6ff,
+            #0072ff
+        );
+
+    box-shadow:
+        0 12px 35px rgba(0, 114, 255, 0.45);
+
+    transition: 0.35s;
+}
+
+
+button:hover {
+
+    transform:
+        translateY(-6px)
+        scale(1.03);
+
+    box-shadow:
+        0 18px 50px rgba(0, 114, 255, 0.65);
+}
+
+
+/* ===========================
+   Cards
+=========================== */
+
+.cards {
+
+    width: 92%;
+
+    margin: auto;
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(280px, 1fr));
+
+    gap: 30px;
+
+    padding-bottom: 70px;
+}
+
+
+.card {
+
+    padding: 35px;
+
+    border-radius: 22px;
+
+    background:
+        rgba(255, 255, 255, 0.08);
+
+    backdrop-filter: blur(20px);
+
+    -webkit-backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+    box-shadow:
+        0 15px 35px rgba(0, 0, 0, 0.35);
+
+    transition: 0.4s;
+}
+
+
+.card:hover {
+
+    transform:
+        translateY(-10px)
+        scale(1.02);
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    border-color: #67d7ff;
+
+    box-shadow:
+        0 20px 50px rgba(0, 0, 0, 0.45);
+}
+
+
+.card h3 {
+
+    font-size: 1.5rem;
+
+    margin-bottom: 18px;
+
+    color: #67d7ff;
+
+    text-shadow:
+        0 0 12px rgba(103, 215, 255, 0.5);
+}
+
+
+.card p {
+
+    color: rgba(255, 255, 255, 0.88);
+
+    line-height: 1.8;
+}
+
+
+/* =========================================================
+   MARKS FILTER
+========================================================= */
+
+.marks-filter {
+
+    width: 92%;
+
+    margin: 20px auto 25px;
+
+    padding: 22px 25px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 15px;
+
+    border-radius: 20px;
+
+    background:
+        rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(20px);
+
+    -webkit-backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255, 255, 255, 0.13);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.35);
+}
+
+
+/* Filter Label */
+
+.marks-filter label {
+
+    font-size: 0.95rem;
+
+    font-weight: 500;
+
+    color: rgba(255, 255, 255, 0.9);
+
+    white-space: nowrap;
+}
+
+
+/* Filter Input */
+
+.marks-filter input {
+
+    width: 150px;
+
+    padding: 12px 16px;
+
+    border: 1px solid rgba(255, 255, 255, 0.18);
+
+    border-radius: 12px;
+
+    outline: none;
+
+    background:
+        rgba(0, 0, 0, 0.35);
+
+    color: white;
+
+    font-size: 15px;
+
+    transition: 0.3s;
+}
+
+
+/* Input Focus */
+
+.marks-filter input:focus {
+
+    border-color: #67d7ff;
+
+    box-shadow:
+        0 0 15px rgba(103, 215, 255, 0.25);
+
+    background:
+        rgba(0, 0, 0, 0.5);
+}
+
+
+/* Placeholder */
+
+.marks-filter input::placeholder {
+
+    color: rgba(255, 255, 255, 0.45);
+}
+
+
+/* Remove number arrows */
+
+.marks-filter input::-webkit-inner-spin-button,
+.marks-filter input::-webkit-outer-spin-button {
+
+    -webkit-appearance: none;
+
+    margin: 0;
+}
+
+
+/* Filter Button */
+
+.marks-filter button {
+
+    margin: 0;
+
+    padding: 12px 28px;
+
+    font-size: 15px;
+
+    border-radius: 30px;
+
+    box-shadow:
+        0 8px 25px rgba(0, 114, 255, 0.35);
+}
+
+
+/* Filter Button Hover */
+
+.marks-filter button:hover {
+
+    transform:
+        translateY(-3px)
+        scale(1.03);
+}
+
+
+/* =========================================================
+   Student Table
+========================================================= */
+
+table {
+
+    width: 92%;
+
+    margin: 0 auto 100px;
+
+    border-collapse: separate;
+
+    border-spacing: 0;
+
+    overflow: hidden;
+
+    border-radius: 22px;
+
+    background:
+        rgba(255, 255, 255, 0.06);
+
+    backdrop-filter: blur(22px);
+
+    -webkit-backdrop-filter: blur(22px);
+
+    border: 1px solid rgba(255, 255, 255, 0.14);
+
+    box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.45);
+
+    animation: tableReveal 0.8s ease;
+}
+
+
+/* ===========================
+   Table Header
+=========================== */
+
+table thead {
+
+    background:
+
+        linear-gradient(
+            135deg,
+            rgba(0, 198, 255, 0.22),
+            rgba(123, 140, 255, 0.18)
+        );
+}
+
+
+table th {
+
+    padding: 19px 18px;
+
+    text-align: left;
+
+    font-size: 0.85rem;
+
+    font-weight: 600;
+
+    color: #67d7ff;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.7px;
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.15);
+
+    white-space: nowrap;
+}
+
+
+/* ===========================
+   Table Body
+=========================== */
+
+table td {
+
+    padding: 18px;
+
+    font-size: 0.88rem;
+
+    color: rgba(255, 255, 255, 0.9);
+
+    border-bottom:
+        1px solid rgba(255, 255, 255, 0.07);
+
+    transition: 0.3s;
+}
+
+
+/* Last row */
+
+table tbody tr:last-child td {
+
+    border-bottom: none;
+}
+
+
+/* ===========================
+   Row Hover
+=========================== */
+
+table tbody tr {
+
+    transition: 0.3s;
+}
+
+
+table tbody tr:hover {
+
+    background:
+        rgba(103, 215, 255, 0.08);
+}
+
+
+table tbody tr:hover td {
+
+    color: white;
+}
+
+
+/* ===========================
+   ID
+=========================== */
+
+table tbody td:first-child {
+
+    color: #67d7ff;
+
+    font-weight: 600;
+}
+
+
+/* ===========================
+   Name
+=========================== */
+
+table tbody td:nth-child(2) {
+
+    font-weight: 600;
+
+    color: white;
+}
+
+
+/* ===========================
+   Marks
+=========================== */
+
+table tbody td:nth-child(6) {
+
+    color: #67d7ff;
+
+    font-weight: 700;
+
+    text-shadow:
+        0 0 10px rgba(103, 215, 255, 0.35);
+}
+
+
+/* ===========================
+   Grade
+=========================== */
+
+table tbody td:nth-child(7) {
+
+    font-weight: 600;
+}
+
+
+/* ===========================
+   Email
+=========================== */
+
+table tbody td:last-child {
+
+    color:
+        rgba(255, 255, 255, 0.72);
+}
+
+
+/* =========================================================
+   Animations
+========================================================= */
+
+@keyframes fadeUp {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(60px);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+@keyframes tableReveal {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(30px);
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+    }
+}
+
+
+/* =========================================================
+   Tablet
+========================================================= */
+
+@media (max-width: 900px) {
+
+    .navbar {
+
+        flex-direction: column;
+
+        gap: 20px;
+
+        padding: 20px;
+    }
+
+
+    .hero h1 {
+
+        font-size: 3rem;
+    }
+
+
+    .hero p {
+
+        font-size: 1rem;
+    }
+
+
+    .marks-filter {
+
+        flex-wrap: wrap;
+    }
+
+
+    table th,
+    table td {
+
+        padding: 14px 12px;
+    }
+
+}
+
+
+/* =========================================================
+   Mobile
+========================================================= */
+
+@media (max-width: 600px) {
+
+    .navbar {
+
+        width: 94%;
+
+        padding: 16px;
+    }
+
+
+    .logo {
+
+        font-size: 1.5rem;
+    }
+
+
+    .nav-links {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 8px;
+    }
+
+
+    .nav-links a {
+
+        padding: 8px 12px;
+
+        font-size: 0.85rem;
+    }
+
+
+    .hero {
+
+        min-height: 65vh;
+
+        padding: 20px;
+    }
+
+
+    .hero h1 {
+
+        font-size: 2.2rem;
+    }
+
+
+    .hero p {
+
+        font-size: 0.95rem;
+
+        line-height: 1.7;
+
+        margin: 22px auto;
+    }
+
+
+    .cards {
+
+        width: 94%;
+
+        grid-template-columns: 1fr;
+
+        gap: 20px;
+    }
+
+
+    .card {
+
+        padding: 25px;
+    }
+
+
+    /* ===========================
+       Mobile Filter
+    ============================ */
+
+    .marks-filter {
+
+        width: 94%;
+
+        padding: 20px;
+
+        flex-direction: column;
+
+        align-items: stretch;
+
+        gap: 12px;
+    }
+
+
+    .marks-filter label {
+
+        white-space: normal;
+
+        font-size: 0.9rem;
+    }
+
+
+    .marks-filter input {
+
+        width: 100%;
+
+        padding: 13px;
+    }
+
+
+    .marks-filter button {
+
+        width: 100%;
+
+        padding: 13px;
+    }
+
+
+    /* ===========================
+       Mobile Table
+    ============================ */
+
+    table {
+
+        width: 94%;
+
+        display: block;
+
+        overflow-x: auto;
+
+        white-space: nowrap;
+
+        border-radius: 18px;
+
+        -webkit-overflow-scrolling: touch;
+
+        margin-bottom: 70px;
+    }
+
+
+    table th {
+
+        padding: 15px 14px;
+
+        font-size: 0.75rem;
+    }
+
+
+    table td {
+
+        padding: 15px 14px;
+
+        font-size: 0.78rem;
+    }
+
+}
+
+
+/* =========================================================
+   Very Small Screens
+========================================================= */
+
+@media (max-width: 400px) {
+
+    .hero h1 {
+
+        font-size: 1.9rem;
+    }
+
+
+    .hero p {
+
+        font-size: 0.88rem;
+    }
+
+
+    .logo {
+
+        font-size: 1.3rem;
+    }
+
+
+    table {
+
+        width: 96%;
+    }
+
+}
+
+
+/* ===========================
+   Footer
+=========================== */
+
+.footer {
+
+    width: 92%;
+
+    margin: 40px auto 20px;
+
+    padding: 45px 40px 20px;
+
+    border-radius: 25px;
+
+    background:
+        rgba(255, 255, 255, 0.07);
+
+    backdrop-filter: blur(20px);
+
+    -webkit-backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255, 255, 255, 0.14);
+
+    box-shadow:
+        0 15px 40px rgba(0, 0, 0, 0.4);
+}
+
+
+.footer-content {
+
+    display: grid;
+
+    grid-template-columns:
+        2fr 1fr 1fr;
+
+    gap: 50px;
+
+    padding-bottom: 35px;
+}
+
+
+.footer-brand h2 {
+
+    color: #67d7ff;
+
+    font-size: 1.8rem;
+
+    margin-bottom: 15px;
+
+    text-shadow:
+        0 0 12px rgba(103, 215, 255, 0.5);
+}
+
+
+.footer-brand p {
+
+    max-width: 450px;
+
+    color:
+        rgba(255, 255, 255, 0.75);
+
+    line-height: 1.8;
+}
+
+
+.footer h3 {
+
+    color: #67d7ff;
+
+    font-size: 1rem;
+
+    margin-bottom: 15px;
+
+    text-transform: uppercase;
+
+    letter-spacing: 1px;
+}
+
+
+.footer-links,
+.footer-social {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+.footer a {
+
+    width: fit-content;
+
+    color:
+        rgba(255, 255, 255, 0.75);
+
+    text-decoration: none;
+
+    transition: 0.3s;
+}
+
+
+.footer a:hover {
+
+    color: #67d7ff;
+
+    transform:
+        translateX(5px);
+}
+
+
+.footer-bottom {
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid rgba(255, 255, 255, 0.1);
+
+    text-align: center;
+}
+
+
+.footer-bottom p {
+
+    color:
+        rgba(255, 255, 255, 0.55);
+
+    font-size: 0.85rem;
+}
+
+
+/* ===========================
+   Footer Responsive
+=========================== */
+
+@media (max-width: 700px) {
+
+    .footer {
+
+        width: 94%;
+
+        padding: 35px 25px 20px;
+    }
+
+
+    .footer-content {
+
+        grid-template-columns: 1fr;
+
+        gap: 30px;
+    }
+
+
+    .footer-brand p {
+
+        max-width: 100%;
+    }
+
+
+    .footer-bottom {
+
+        margin-top: 10px;
+    }
+
+}
+
+
+/* ==========================
+   LOGOUT BUTTON
+========================== */
+
+.logout-btn {
+    padding: 8px 18px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+
+    color: white;
+    text-decoration: none;
+
+    transition: 0.3s ease;
+}
+
+.logout-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.6);
+}

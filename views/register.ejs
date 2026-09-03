@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><%= page_title %></title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="/css/auth.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- ==========================================
+         BACKGROUND
+    =========================================== -->
+
+    <div class="page-background">
+
+        <div class="smoke smoke-one"></div>
+        <div class="smoke smoke-two"></div>
+
+        <div class="embers">
+
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==========================================
+         CORNER DECORATIONS
+    =========================================== -->
+
+    <div class="corner-compass top-left">
+        ✦
+    </div>
+
+    <div class="corner-compass top-right">
+        ⚓
+    </div>
+
+
+
+    <!-- ==========================================
+         MAIN
+    =========================================== -->
+
+    <main class="auth-container">
+
+
+        <!-- ======================================
+             REGISTER CARD
+        ======================================= -->
+
+        <section class="login-card register-card">
+
+
+            <!-- Decorative frame -->
+
+            <div class="frame-corner frame-top-left"></div>
+            <div class="frame-corner frame-top-right"></div>
+            <div class="frame-corner frame-bottom-left"></div>
+            <div class="frame-corner frame-bottom-right"></div>
+
+
+
+            <!-- ==================================
+                 PIRATE EMBLEM
+            =================================== -->
+
+            <div class="pirate-emblem">
+
+                <div class="skull">
+                    ☠
+                </div>
+
+                <div class="sword sword-one"></div>
+                <div class="sword sword-two"></div>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 COORDINATES
+            =================================== -->
+
+            <div class="coordinates">
+
+                <span class="line"></span>
+
+                <span>
+                    COORDINATES: 41°N 74°W
+                </span>
+
+                <span class="line"></span>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 HEADING
+            =================================== -->
+
+            <div class="heading-area">
+
+                <h1>
+                    CLAIM YOUR TERRITORY
+                </h1>
+
+                <p>
+                    Create your explorer account
+                </p>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 ORNAMENT
+            =================================== -->
+
+            <div class="ornament">
+
+                <span></span>
+
+                <b>✦</b>
+
+                <span></span>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 REGISTER FORM
+            =================================== -->
+
+            <form
+                class="auth-form"
+                id="registerForm"
+                action="/register"
+                method="POST"
+            >
+
+
+                <!-- ==================================
+                     NAME
+                =================================== -->
+
+                <div class="input-group">
+
+                    <label for="name">
+                        EXPLORER NAME
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ⚓
+                        </span>
+
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Enter your name"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     EMAIL
+                =================================== -->
+
+                <div class="input-group">
+
+                    <label for="registerEmail">
+                        EMAIL ADDRESS
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ✉
+                        </span>
+
+                        <input
+                            type="email"
+                            id="registerEmail"
+                            name="email"
+                            placeholder="explorer@realm.com"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     PASSWORD
+                =================================== -->
+
+                <div class="input-group">
+
+                    <label for="registerPassword">
+                        PASSWORD
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+                        <input
+                            type="password"
+                            id="registerPassword"
+                            name="password"
+                            placeholder="Create your password"
+                            autocomplete="new-password"
+                            minlength="6"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword('registerPassword', this)"
+                        >
+                            ◉
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     CONFIRM PASSWORD
+                =================================== -->
+
+                <div class="input-group">
+
+                    <label for="confirmPassword">
+                        CONFIRM PASSWORD
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            🔐
+                        </span>
+
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Confirm your password"
+                            autocomplete="new-password"
+                            minlength="6"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword('confirmPassword', this)"
+                        >
+                            ◉
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     REGISTER BUTTON
+                =================================== -->
+
+                <button
+                    type="submit"
+                    class="enter-button"
+                >
+
+                    <span>
+                        BEGIN YOUR JOURNEY
+                    </span>
+
+                    <strong>
+                        →
+                    </strong>
+
+                    <div class="button-shine"></div>
+
+                </button>
+
+
+            </form>
+
+
+
+            <!-- ==================================
+                 LOGIN LINK
+            =================================== -->
+
+            <div class="register-area">
+
+                <span>
+                    Already an explorer?
+                </span>
+
+                <a href="/login">
+                    Return to the realm
+                </a>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 BOTTOM ORNAMENT
+            =================================== -->
+
+            <div class="bottom-ornament">
+
+                <span></span>
+
+                <div>
+                    ⚓
+                </div>
+
+                <span></span>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ======================================
+             MAP
+        ======================================= -->
+
+        <section class="map-section">
+
+
+            <div class="map-container">
+
+                <img
+                    src="/images/map.png"
+                    alt="Terra Incognita Treasure Map"
+                    class="treasure-map"
+                >
+
+            </div>
+
+
+            <!-- Atmospheric particles -->
+
+            <div class="map-embers">
+
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <script src="/js/auth.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title><%= page_title %></title>
+
+
+    <!-- Google Fonts -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- Users CSS -->
+
+    <link
+        rel="stylesheet"
+        href="/css/users.css"
+    >
+
+</head>
+
+
+<body>
+
+
+    <!-- =====================================================
+         BACKGROUND
+    ====================================================== -->
+
+    <div class="users-background">
+
+        <div class="stars"></div>
+
+        <div class="embers">
+
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- =====================================================
+         NAVBAR
+    ====================================================== -->
+
+    <%- include("partials/header") %>
+
+
+
+    <!-- =====================================================
+         MAIN
+    ====================================================== -->
+
+    <main class="users-page">
+
+
+        <!-- =================================================
+             PAGE TITLE
+        ================================================== -->
+
+        <section class="users-heading">
+
+            <div class="heading-symbol">
+                ⚓
+            </div>
+
+
+            <div class="heading-line">
+
+                <span></span>
+
+                <p>
+                    TERRA INCOGNITA
+                </p>
+
+                <span></span>
+
+            </div>
+
+
+            <h1>
+                THE EXPLORERS
+            </h1>
+
+
+            <p class="heading-subtitle">
+                Those who have claimed their territory
+            </p>
+
+
+            <div class="heading-ornament">
+                ✦
+            </div>
+
+        </section>
+
+
+
+        <!-- =================================================
+             PARCHMENT
+        ================================================== -->
+
+        <section class="parchment-wrapper">
+
+
+            <div class="parchment">
+
+
+                <!-- Parchment background -->
+
+                <img
+                    src="/images/users-parchment.png"
+                    alt=""
+                    class="parchment-image"
+                >
+
+
+                <!-- =================================================
+                     CONTENT ON PARCHMENT
+                ================================================== -->
+
+                <div class="parchment-content">
+
+
+                    <div class="parchment-title">
+
+                        <span>✦</span>
+
+                        <h2>
+                            REGISTERED EXPLORERS
+                        </h2>
+
+                        <span>✦</span>
+
+                    </div>
+
+
+                    <p class="parchment-description">
+                        The names of those brave enough
+                        to enter the unknown.
+                    </p>
+
+
+
+                    <!-- =================================================
+                         USER LIST
+                    ================================================== -->
+
+                    <div class="users-list">
+
+
+                        <% if (users.length === 0) { %>
+
+                            <div class="no-users">
+
+                                <div class="no-users-icon">
+                                    ⚓
+                                </div>
+
+                                <h3>
+                                    No Explorers Yet
+                                </h3>
+
+                                <p>
+                                    The territory remains unclaimed.
+                                </p>
+
+                            </div>
+
+
+                        <% } else { %>
+
+
+                            <% users.forEach((explorer, index) => { %>
+
+
+                                <article
+                                    class="explorer-card"
+                                    style="--delay: <%= index * 0.08 %>s;"
+                                >
+
+
+                                    <div class="explorer-number">
+
+                                        <span>
+                                            <%= String(index + 1).padStart(2, "0") %>
+                                        </span>
+
+                                    </div>
+
+
+                                    <div class="explorer-icon">
+                                        ⚓
+                                    </div>
+
+
+                                    <div class="explorer-info">
+
+
+                                        <h3>
+                                            <%= explorer.name %>
+                                        </h3>
+
+
+                                        <p>
+                                            <%= explorer.email %>
+                                        </p>
+
+
+                                        <small>
+
+                                            Joined the realm
+
+                                            <% if (explorer.createdAt) { %>
+
+                                                •
+
+                                                <%= new Date(
+                                                    explorer.createdAt
+                                                ).toLocaleDateString("en-IN", {
+                                                    day: "2-digit",
+                                                    month: "short",
+                                                    year: "numeric"
+                                                }) %>
+
+                                            <% } %>
+
+                                        </small>
+
+
+                                    </div>
+
+
+                                    <div class="explorer-mark">
+                                        ✦
+                                    </div>
+
+
+                                </article>
+
+
+                            <% }) %>
+
+
+                        <% } %>
+
+
+                    </div>
+
+
+                    <!-- =================================================
+                         FOOTER OF PARCHMENT
+                    ================================================== -->
+
+                    <div class="parchment-footer">
+
+                        <span></span>
+
+                        <div>
+                            ⚔
+                        </div>
+
+                        <span></span>
+
+                    </div>
+
+
+                    <p class="explorer-count">
+
+                        <%= users.length %>
+
+                        <%= users.length === 1
+                            ? "EXPLORER"
+                            : "EXPLORERS" %>
+
+                        HAVE ENTERED THE REALM
+
+                    </p>
+
+
+                </div>
+
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+</body>
+
+</html>

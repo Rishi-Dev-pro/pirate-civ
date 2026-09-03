@@ -1,0 +1,14 @@
+[
+    {
+        "id": 1,
+        "name": "Rishi Shaw",
+        "course": "BCA",
+        "semester": 5
+    },
+    {
+        "id": 2,
+        "name": "Rahul Kumar",
+        "course": "BCA",
+        "semester": 4
+    }
+]

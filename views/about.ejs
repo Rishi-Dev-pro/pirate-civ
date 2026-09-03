@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>About | Rishi's Web</title>
+
+    <link rel="stylesheet" href="/css/about.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- Background Video -->
+
+    <video autoplay muted loop playsinline id="bg-video">
+
+        <source
+            src="/videos/about.mp4"
+            type="video/mp4"
+        >
+
+    </video>
+
+
+    <div class="overlay"></div>
+
+
+    <!-- Reusable Navbar -->
+
+    <%- include("partials/header") %>
+
+
+    <!-- Hero -->
+
+    <section class="hero">
+
+        <div class="hero-text">
+
+            <h1>
+                About
+                <span>Rishi's Web</span>
+            </h1>
+
+            <p>
+                Rishi's Web is a modern Node.js + Express + EJS project
+                focused on building beautiful, responsive, and dynamic web
+                applications with clean UI and smooth user experiences.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- Features -->
+
+    <section class="cards">
+
+        <div class="card">
+
+            <h3>🎯 Mission</h3>
+
+            <p>
+                Build elegant, scalable, and interactive web applications
+                while learning modern backend technologies.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>💻 Technologies</h3>
+
+            <p>
+                Express.js, Node.js, EJS, HTML5, CSS3, JavaScript,
+                MongoDB and many more.
+            </p>
+
+        </div>
+
+
+        <div class="card">
+
+            <h3>🚀 Vision</h3>
+
+            <p>
+                Create projects that combine premium design with powerful
+                backend functionality.
+            </p>
+
+        </div>
+
+    </section>
+
+     <!-- Footer -->
+
+    <%- include("partials/footer") %>
+
+
+</body>
+
+</html>

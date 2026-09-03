@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title><%= page_title %></title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="/css/auth.css">
+
+</head>
+
+
+<body>
+
+
+    <!-- ==========================================
+         BACKGROUND
+    =========================================== -->
+
+    <div class="page-background">
+
+        <div class="smoke smoke-one"></div>
+        <div class="smoke smoke-two"></div>
+
+        <div class="embers">
+
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- ==========================================
+         CORNER DECORATIONS
+    =========================================== -->
+
+    <div class="corner-compass top-left">
+        ✦
+    </div>
+
+    <div class="corner-compass top-right">
+        ⚓
+    </div>
+
+
+
+    <!-- ==========================================
+         MAIN AUTH EXPERIENCE
+    =========================================== -->
+
+    <main class="auth-container">
+
+
+        <!-- ======================================
+             LOGIN CARD
+        ======================================= -->
+
+        <section class="login-card">
+
+
+            <!-- Decorative corners -->
+
+            <div class="frame-corner frame-top-left"></div>
+            <div class="frame-corner frame-top-right"></div>
+            <div class="frame-corner frame-bottom-left"></div>
+            <div class="frame-corner frame-bottom-right"></div>
+
+
+
+            <!-- ==================================
+                 PIRATE EMBLEM
+            =================================== -->
+
+            <div class="pirate-emblem">
+
+                <div class="skull">
+
+                    ☠
+
+                </div>
+
+                <div class="sword sword-one"></div>
+                <div class="sword sword-two"></div>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 COORDINATES
+            =================================== -->
+
+            <div class="coordinates">
+
+                <span class="line"></span>
+
+                <span>
+                    COORDINATES: 41°N 74°W
+                </span>
+
+                <span class="line"></span>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 HEADING
+            =================================== -->
+
+            <div class="heading-area">
+
+                <h1>
+                    ENTER IF YOU DARE
+                </h1>
+
+                <p>
+                    Sign in to continue your journey
+                </p>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 DIVIDER
+            =================================== -->
+
+            <div class="ornament">
+
+                <span></span>
+
+                <b>✦</b>
+
+                <span></span>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 LOGIN FORM
+            =================================== -->
+
+            <form
+                class="auth-form"
+                id="loginForm"
+                action="/login"
+                method="POST"
+            >
+
+
+                <!-- EMAIL -->
+
+                <div class="input-group">
+
+                    <label for="email">
+                        EMAIL ADDRESS
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ✉
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- PASSWORD -->
+
+                <div class="input-group">
+
+                    <label for="password">
+                        PASSWORD
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon lock-icon">
+                            🔒
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword('password', this)"
+                        >
+                            ◉
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- FORGOT PASSWORD -->
+
+                <div class="forgot-wrapper">
+
+                    <a href="#">
+                        Forgot your map key?
+                    </a>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     LOGIN BUTTON
+                =================================== -->
+
+                <button
+                    type="submit"
+                    class="enter-button"
+                >
+
+                    <span>
+                        ENTER THE REALM
+                    </span>
+
+                    <strong>
+                        →
+                    </strong>
+
+                    <div class="button-shine"></div>
+
+                </button>
+
+
+            </form>
+
+
+
+            <!-- ==================================
+                 REGISTER LINK
+            =================================== -->
+
+            <div class="register-area">
+
+                <span>
+                    New to this realm?
+                </span>
+
+                <a href="/register">
+                    Claim your territory
+                </a>
+
+            </div>
+
+
+
+            <!-- ==================================
+                 BOTTOM ORNAMENT
+            =================================== -->
+
+            <div class="bottom-ornament">
+
+                <span></span>
+
+                <div>
+                    ☠
+                </div>
+
+                <span></span>
+
+            </div>
+
+
+        </section>
+
+
+
+        <!-- ======================================
+             MAP SECTION
+        ======================================= -->
+
+        <section class="map-section">
+
+
+            <!-- Fire glow -->
+
+            <div class="map-fire map-fire-top"></div>
+            <div class="map-fire map-fire-right"></div>
+            <div class="map-fire map-fire-bottom"></div>
+            <div class="map-fire map-fire-left"></div>
+
+
+
+            <!-- Actual map -->
+
+            <div class="map-container">
+
+                <img
+                    src="/images/map.png"
+                    alt="Terra Incognita Treasure Map"
+                    class="treasure-map"
+                >
+
+            </div>
+
+
+
+            <!-- Floating embers -->
+
+            <div class="map-embers">
+
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+                <span></span>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+
+
+    <script src="/js/auth.js"></script>
+
+</body>
+
+</html>
