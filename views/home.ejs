@@ -4,11 +4,19 @@
 <head>
 
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Rishi's Web</title>
+    <title><%= page_title || "Rishi's Web - Home" %></title>
 
+    <!-- Google Fonts: Cinzel + Inter (Same as Login & Users) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet"
+    >
+
+    <!-- Home Page CSS -->
     <link rel="stylesheet" href="/css/style.css">
 
 </head>
@@ -16,246 +24,313 @@
 
 <body>
 
+    <!-- ==========================================
+         BACKGROUND & PIRATE ATMOSPHERE
+    =========================================== -->
 
-    <!-- ===========================
-         Background Video
-    ============================ -->
+    <div class="page-background">
 
-    <video autoplay muted loop playsinline id="bg-video">
-
-        <source
-            src="/videos/background.mp4"
-            type="video/mp4"
-        >
-
-    </video>
-
-
-    <div class="overlay"></div>
-
-
-    <!-- ===========================
-         Reusable Navbar
-    ============================ -->
-
-    <%- include("partials/header") %>
-
-
-    <!-- ===========================
-         Hero Section
-    ============================ -->
-
-    <section class="hero">
-
-        <div class="hero-text">
-
-            <h1>
-                Welcome to
-                <span>Rishi's Web</span>
-            </h1>
-
-            <p>
-                A simple Node.js + Express + EJS project made for learning
-                server-side rendering and modern web development.
-            </p>
-
-            <button>
-                Explore More
-            </button>
-
+        <!-- Nautical Grid Map Backdrop Layer -->
+        <div class="grid-map-backdrop">
+            <img
+                src="/images/nautical-grid.png"
+                alt="Nautical Chart Grid Map"
+                class="grid-map-img"
+            >
+            <div class="grid-map-vignette"></div>
         </div>
 
-    </section>
+        <!-- Atmospheric Smoke -->
+        <div class="smoke smoke-one"></div>
+        <div class="smoke smoke-two"></div>
 
-
-    <!-- ===========================
-         Cards
-    ============================ -->
-
-    <section class="cards">
-
-        <div class="card">
-
-            <h3>🚀 Fast</h3>
-
-            <p>
-                Express provides a lightweight backend
-                for web applications.
-            </p>
-
+        <!-- Animated Fire Embers -->
+        <div class="embers">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
         </div>
-
-
-        <div class="card">
-
-            <h3>🎨 Beautiful</h3>
-
-            <p>
-                Modern UI using only HTML and CSS.
-            </p>
-
-        </div>
-
-
-        <div class="card">
-
-            <h3>⚡ Dynamic</h3>
-
-            <p>
-                EJS allows you to create dynamic pages
-                with reusable templates.
-            </p>
-
-        </div>
-
-    </section>
-
-
-    <!-- ===========================
-         Marks Filter
-    ============================ -->
-
-    <div class="marks-filter">
-
-        <label for="marksFilter">
-            Show students with marks above:
-        </label>
-
-        <input
-            type="number"
-            id="marksFilter"
-            placeholder="Enter marks"
-            min="0"
-            max="100"
-        >
-
-        <button onclick="filterStudents()">
-            Filter
-        </button>
 
     </div>
 
 
-    <!-- ===========================
-         Student Table
-    ============================ -->
+    <!-- ==========================================
+         CORNER DECORATIONS (MATCHING LOGIN)
+    =========================================== -->
 
-    <table id="studentTable">
-
-        <thead>
-
-            <tr>
-
-                <th>ID</th>
-
-                <th>Name</th>
-
-                <th>Roll No</th>
-
-                <th>Course</th>
-
-                <th>Year</th>
-
-                <th>Marks</th>
-
-                <th>Grade</th>
-
-                <th>Email</th>
-
-            </tr>
-
-        </thead>
+    <div class="corner-compass top-left">✦</div>
+    <div class="corner-compass top-right">⚓</div>
 
 
-        <tbody>
+    <!-- ==========================================
+         NAVBAR (EXACT SAME AS USERS NAVBAR)
+    =========================================== -->
 
-            <% student_data.forEach(student => { %>
+    <%- include("partials/header") %>
 
-                <tr>
 
-                    <td>
-                        <%= student.id %>
-                    </td>
+    <!-- ==========================================
+         MAIN CONTENT
+    =========================================== -->
 
-                    <td>
-                        <%= student.name %>
-                    </td>
+    <main class="home-container">
 
-                    <td>
-                        <%= student.rollNo %>
-                    </td>
+        <!-- ===========================
+             Hero Section
+        ============================ -->
 
-                    <td>
-                        <%= student.course %>
-                    </td>
+        <section class="hero">
 
-                    <td>
-                        <%= student.year %>
-                    </td>
+            <div class="hero-ornament">
+                <span>✦</span>
+                <span class="hero-subtitle-tag">CHART THE UNKNOWN WATERS</span>
+                <span>✦</span>
+            </div>
 
-                    <td class="student-marks">
-                        <%= student.marks %>
-                    </td>
+            <div class="hero-text">
 
-                    <td>
-                        <%= student.grade %>
-                    </td>
+                <h1>
+                    WELCOME TO
+                    <span>RISHI'S REALM</span>
+                </h1>
 
-                    <td>
-                        <%= student.email %>
-                    </td>
+                <p>
+                    An ancient maritime voyage powered by modern craft. Inspect uncharted
+                    archipelagos, plotted coordinates, and pirate strongholds preserved upon
+                    the sacred imperial sea chart.
+                </p>
 
-                </tr>
+                <div class="hero-actions">
+                    <a href="#sea-chart-section" class="btn-pirate">
+                        Inspect Sea Chart 🗺️
+                    </a>
+                    <a href="/users" class="btn-pirate-outline">
+                        View Explorers ⚓
+                    </a>
+                </div>
 
-            <% }) %>
+            </div>
 
-        </tbody>
+        </section>
 
-    </table>
 
-     <!-- Footer -->
+        <!-- ===========================
+             Feature Cards
+        ============================ -->
+
+        <section class="cards">
+
+            <div class="card">
+                <div class="card-corner corner-tl"></div>
+                <div class="card-corner corner-br"></div>
+                <div class="card-icon">⚡</div>
+                <h3>Swift Navigation</h3>
+                <p>
+                    Engineered with Node.js & Express 5 for lightning-fast passage across stormy digital seas.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-corner corner-tl"></div>
+                <div class="card-corner corner-br"></div>
+                <div class="card-icon">🗺️</div>
+                <h3>Cartographer's Craft</h3>
+                <p>
+                    Hand-crafted dark fantasy interfaces inspired by 17th century nautical charts and burnt parchment.
+                </p>
+            </div>
+
+            <div class="card">
+                <div class="card-corner corner-tl"></div>
+                <div class="card-corner corner-br"></div>
+                <div class="card-icon">⚓</div>
+                <h3>Dynamic Ledger</h3>
+                <p>
+                    Dynamic server-rendered EJS templates coupled with persistent Mongo records and session security.
+                </p>
+            </div>
+
+        </section>
+
+
+        <!-- =================================================
+             PIRATE NAUTICAL CHART SECTION (REPLACES TABLE)
+        ================================================== -->
+
+        <section id="sea-chart-section" class="chart-section">
+
+            <div class="chart-header">
+                <div class="chart-badge">IMPERIAL ADMIRALTY ARCHIVE</div>
+                <h2>TERRA INCOGNITA SEA CHART</h2>
+                <p>Master navigation grid charted through treacherous shoals, leviathan depths, and buried treasure isles</p>
+                <div class="chart-divider">
+                    <span></span>
+                    <i>⚓</i>
+                    <span></span>
+                </div>
+            </div>
+
+
+            <!-- Interactive Map Display With Pirate Animations -->
+
+            <div class="pirate-map-wrapper">
+
+                <!-- Ambient Fire Glows (From Login Experience) -->
+                <div class="map-fire map-fire-top"></div>
+                <div class="map-fire map-fire-right"></div>
+                <div class="map-fire map-fire-bottom"></div>
+                <div class="map-fire map-fire-left"></div>
+
+                <!-- Floating Chart Embers -->
+                <div class="chart-embers">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+
+
+                <!-- Map Canvas Container -->
+
+                <div class="chart-canvas-container" id="chartContainer">
+
+                    <!-- Ornate Brass Frame Corners -->
+                    <div class="chart-corner corner-tl"></div>
+                    <div class="chart-corner corner-tr"></div>
+                    <div class="chart-corner corner-bl"></div>
+                    <div class="chart-corner corner-br"></div>
+
+                    <!-- Cleaned Nautical Grid Map Image -->
+                    <img
+                        src="/images/nautical-grid.png"
+                        alt="Nautical Chart Grid Map"
+                        class="chart-map-img"
+                        id="chartMapImg"
+                    >
+
+                    <!-- Interactive E-Commerce Cartographic Mind Map Stage -->
+                    <div id="mindmapStage" class="mindmap-stage">
+
+                        <!-- Logbook Breadcrumb Bar -->
+                        <div id="mindmapBreadcrumbs" class="mindmap-breadcrumbs"></div>
+
+                        <!-- Curvy Dashed Route Curves SVG Layer -->
+                        <svg id="mindmapCurvesLayer" class="mindmap-svg-layer" viewBox="0 0 1000 650" preserveAspectRatio="none"></svg>
+
+                        <!-- Dynamic Country Nodes Layer -->
+                        <div id="mindmapNodesLayer" class="mindmap-nodes-layer"></div>
+
+                    </div>
+
+                    <!-- Rotating Celestial Compass Ring Over Compass Rose -->
+                    <div class="compass-interactive-ring" title="Celestial Compass Rose">
+                        <div class="compass-ring-outer"></div>
+                        <div class="compass-ring-inner"></div>
+                        <div class="compass-needle-glow"></div>
+                        <span class="compass-north-mark">N</span>
+                    </div>
+
+                    <!-- Lantern Light Highlight Following Cursor -->
+                    <div class="chart-lantern-light" id="lanternLight"></div>
+
+                </div>
+
+
+                <!-- Chart Telemetry / Navigation Instrument Console -->
+
+                <div class="chart-controls-bar">
+
+                    <div class="chart-status-item">
+                        <span class="status-indicator live"></span>
+                        <span>Flagship: <strong>Queen Anne's Revenge</strong></span>
+                    </div>
+
+                    <div class="chart-status-item">
+                        <span>Chart Coordinates: <code id="coordDisplay">18°42'N, 64°31'W</code></span>
+                    </div>
+
+                    <div class="chart-status-item">
+                        <span>Trade Wind: <strong>ENE 18 Knots</strong></span>
+                    </div>
+
+                    <div class="chart-status-item">
+                        <span>Interactive Status: <strong style="color: #ffcc55;">Click Any Island to Chart Route</strong></span>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- ==========================================
+         FOOTER
+    =========================================== -->
 
     <%- include("partials/footer") %>
 
 
-    <!-- ===========================
-         Marks Filter JavaScript
-    ============================ -->
+    <!-- ==========================================
+         MIND MAP & LANTERN ENGINE SCRIPTS
+    =========================================== -->
+
+    <script src="/js/mindmap.js"></script>
 
     <script>
 
-        function filterStudents() {
+        const container = document.getElementById("chartContainer");
+        const lantern = document.getElementById("lanternLight");
+        const coordDisplay = document.getElementById("coordDisplay");
 
-            let input = document.getElementById("marksFilter");
+        if (container && lantern) {
 
-            let marksLimit = Number(input.value);
+            container.addEventListener("mousemove", (e) => {
 
-            let rows = document.querySelectorAll("#studentTable tbody tr");
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
 
+                lantern.style.opacity = "1";
+                lantern.style.left = `${x}px`;
+                lantern.style.top = `${y}px`;
 
-            rows.forEach(function(row) {
+                // Calculate faux nautical coordinates based on grid position
+                const normX = Math.round((x / rect.width) * 60);
+                const normY = Math.round((y / rect.height) * 40);
 
-                let marks = Number(
-                    row.querySelector(".student-marks").textContent
-                );
+                const lat = `${normY}°${(normX * 3) % 60}'N`;
+                const lon = `${normX}°${(normY * 4) % 60}'W`;
 
-
-                if (marks >= marksLimit) {
-
-                    row.style.display = "";
-
-                } else {
-
-                    row.style.display = "none";
-
+                if (coordDisplay) {
+                    coordDisplay.textContent = `${lat}, ${lon}`;
                 }
 
+            });
+
+            container.addEventListener("mouseleave", () => {
+                lantern.style.opacity = "0";
+                if (coordDisplay) {
+                    coordDisplay.textContent = "18°42'N, 64°31'W";
+                }
             });
 
         }
 
     </script>
-
 
 </body>
 

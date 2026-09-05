@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="74" viewBox="0 0 160 74">
+  <defs>
+    <!-- Outer Beveled Antique Brass Rim Gradient -->
+    <linearGradient id="plaqueRim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#b67b36"/>
+      <stop offset="25%" stop-color="#885023"/>
+      <stop offset="50%" stop-color="#553014"/>
+      <stop offset="75%" stop-color="#2a1408"/>
+      <stop offset="100%" stop-color="#120703"/>
+    </linearGradient>
+
+    <!-- Top Highlight on Rim -->
+    <linearGradient id="rimTopLight" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#deb068" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#885023" stop-opacity="0.1"/>
+    </linearGradient>
+
+    <!-- Deep Charred Cast-Iron Face -->
+    <radialGradient id="plaqueFace" cx="50%" cy="30%" r="70%">
+      <stop offset="0%" stop-color="#2c1a11"/>
+      <stop offset="45%" stop-color="#1c0f08"/>
+      <stop offset="85%" stop-color="#110704"/>
+      <stop offset="100%" stop-color="#0b0402"/>
+    </radialGradient>
+
+    <!-- Inner Etched Gold Filigree Pinstripe -->
+    <linearGradient id="goldFiligree" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#f0be6b" stop-opacity="0.75"/>
+      <stop offset="50%" stop-color="#b57930" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#734215" stop-opacity="0.65"/>
+    </linearGradient>
+
+    <!-- Brass Rivet Sphere Gradient -->
+    <radialGradient id="rivetGlow" cx="35%" cy="35%" r="65%">
+      <stop offset="0%" stop-color="#fff8db"/>
+      <stop offset="30%" stop-color="#e5a84e"/>
+      <stop offset="70%" stop-color="#8c511e"/>
+      <stop offset="100%" stop-color="#3d1d07"/>
+    </radialGradient>
+  </defs>
+  
+  <g>
+    <!-- Outer Beveled Notched Rim Base -->
+    <path d="M 10 2 L 150 2 L 150 7 L 157.5 7 L 157.5 67 L 150 67 L 150 72 L 10 72 L 10 67 L 2.5 67 L 2.5 7 L 10 7 Z"
+          fill="url(#plaqueFace)" stroke="url(#plaqueRim)" stroke-width="2.6" stroke-linejoin="round"/>
+    
+    <!-- Top Edge Brass Highlight Bar -->
+    <path d="M 10 2.5 L 150 2.5" stroke="url(#rimTopLight)" stroke-width="1.2" stroke-linecap="round"/>
+
+    <!-- Inner Etched Gold Pinstripe Frame -->
+    <path d="M 12 5.5 L 148 5.5 L 148 10 L 154.5 10 L 154.5 64 L 148 64 L 148 68.5 L 12 68.5 L 12 64 L 5.5 64 L 5.5 10 L 12 10 Z"
+          fill="none" stroke="url(#goldFiligree)" stroke-width="0.85" stroke-linejoin="round"/>
+
+    <!-- 4 Antique Brass Screw Rivets with Center Screw Slit -->
+    <g>
+      <!-- Top Left -->
+      <circle cx="9.5" cy="7.5" r="2.5" fill="url(#rivetGlow)" stroke="#381c08" stroke-width="0.6"/>
+      <line x1="8.2" y1="7.5" x2="10.8" y2="7.5" stroke="#381c08" stroke-width="0.5"/>
+      
+      <!-- Top Right -->
+      <circle cx="150.5" cy="7.5" r="2.5" fill="url(#rivetGlow)" stroke="#381c08" stroke-width="0.6"/>
+      <line x1="149.2" y1="7.5" x2="151.8" y2="7.5" stroke="#381c08" stroke-width="0.5"/>
+      
+      <!-- Bottom Left -->
+      <circle cx="9.5" cy="66.5" r="2.5" fill="url(#rivetGlow)" stroke="#381c08" stroke-width="0.6"/>
+      <line x1="8.2" y1="66.5" x2="10.8" y2="66.5" stroke="#381c08" stroke-width="0.5"/>
+      
+      <!-- Bottom Right -->
+      <circle cx="150.5" cy="66.5" r="2.5" fill="url(#rivetGlow)" stroke="#381c08" stroke-width="0.6"/>
+      <line x1="149.2" y1="66.5" x2="151.8" y2="66.5" stroke="#381c08" stroke-width="0.5"/>
+    </g>
+  </g>
+</svg>
