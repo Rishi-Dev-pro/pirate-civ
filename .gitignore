@@ -8,4 +8,5 @@ public/uploads/
 
 npm-debug.log*
 .DS_Store
-scratch/
+scratch/
+archive/
