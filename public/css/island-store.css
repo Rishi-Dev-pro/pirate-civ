@@ -753,3 +753,984 @@ body.island-store-body .navbar {
         grid-template-columns: 1fr;
     }
 }
+
+/* =========================================================
+   9. KRAKEN'S VAULT BIOLUMINESCENT THEME (.theme-kraken)
+========================================================= */
+
+body.theme-kraken {
+    --gold-primary: #2dd4bf;
+    --gold-bright: #5eead4;
+    --card-border: rgba(45, 212, 191, 0.32);
+    --card-border-hover: rgba(45, 212, 191, 0.85);
+    --card-bg: linear-gradient(180deg, rgba(8, 22, 28, 0.88) 0%, rgba(4, 12, 16, 0.95) 100%);
+}
+
+body.theme-kraken .store-badge-embargo {
+    color: #2dd4bf;
+    border-color: rgba(45, 212, 191, 0.5);
+    background: rgba(8, 22, 28, 0.85);
+    box-shadow: 0 0 12px rgba(45, 212, 191, 0.25);
+}
+
+body.theme-kraken .store-main-title {
+    color: #e6fffa;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 22px rgba(45, 212, 191, 0.45);
+}
+
+body.theme-kraken .store-title-icon {
+    filter: drop-shadow(0 0 10px #2dd4bf);
+}
+
+body.theme-kraken .store-subtitle {
+    color: #99f6e4;
+}
+
+body.theme-kraken .doubloons-pill {
+    border-color: rgba(45, 212, 191, 0.45);
+    background: rgba(6, 18, 24, 0.9);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(45, 212, 191, 0.15);
+}
+
+body.theme-kraken .btn-store-cart {
+    background: linear-gradient(180deg, #134e5e 0%, #0d3640 100%);
+    border-color: #2dd4bf;
+    color: #e6fffa;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.6), 0 0 14px rgba(45, 212, 191, 0.35);
+}
+
+body.theme-kraken .btn-store-cart:hover {
+    background: linear-gradient(180deg, #186377 0%, #114552 100%);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), 0 0 20px #5eead4;
+}
+
+body.theme-kraken .btn-store-close {
+    border-color: rgba(45, 212, 191, 0.55);
+    color: #5eead4;
+}
+
+body.theme-kraken .btn-store-close:hover {
+    border-color: #e6fffa;
+    color: #fff;
+    box-shadow: 0 0 16px #2dd4bf;
+}
+
+body.theme-kraken .store-sidebar {
+    border-color: rgba(45, 212, 191, 0.35);
+    background: linear-gradient(180deg, rgba(8, 20, 26, 0.92) 0%, rgba(4, 10, 14, 0.96) 100%);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(45, 212, 191, 0.1);
+}
+
+body.theme-kraken .sidebar-nav-item:hover {
+    color: #e6fffa;
+    background: rgba(45, 212, 191, 0.12);
+    border-color: rgba(45, 212, 191, 0.35);
+}
+
+body.theme-kraken .sidebar-nav-item.active {
+    color: #ffffff;
+    background: linear-gradient(90deg, rgba(45, 212, 191, 0.3) 0%, rgba(45, 212, 191, 0.06) 100%);
+    border-color: #2dd4bf;
+    box-shadow: inset 0 0 12px rgba(45, 212, 191, 0.25), 0 0 16px rgba(45, 212, 191, 0.35);
+}
+
+body.theme-kraken .store-search-input:focus {
+    border-color: #2dd4bf;
+    box-shadow: 0 0 14px rgba(45, 212, 191, 0.4), inset 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+body.theme-kraken .tag-new {
+    color: #2dd4bf;
+    border-color: rgba(45, 212, 191, 0.65);
+}
+
+body.theme-kraken .item-asset-glow {
+    background: radial-gradient(circle, rgba(45, 212, 191, 0.24) 0%, rgba(14, 165, 233, 0.08) 50%, transparent 70%);
+}
+
+body.theme-kraken .item-title {
+    color: #e6fffa;
+}
+
+body.theme-kraken .item-desc {
+    color: #94a3b8;
+}
+
+body.theme-kraken .item-meta-row {
+    border-top-color: rgba(45, 212, 191, 0.22);
+}
+
+body.theme-kraken .btn-add-cart {
+    background: linear-gradient(180deg, #134e5e 0%, #0d3640 100%);
+    border-color: #2dd4bf;
+    color: #e6fffa;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6), 0 0 10px rgba(45, 212, 191, 0.2);
+}
+
+body.theme-kraken .btn-add-cart:hover {
+    background: linear-gradient(180deg, #186377 0%, #114552 100%);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), 0 0 18px #2dd4bf;
+    color: #ffffff;
+}
+
+/* Sidebar Footer Crest */
+.sidebar-kraken-crest {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px dashed rgba(45, 212, 191, 0.25);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.kraken-crest-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 8px rgba(45, 212, 191, 0.4));
+    opacity: 0.85;
+}
+
+.kraken-quote {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #5eead4;
+    opacity: 0.8;
+    margin: 0;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+/* Quick Navigation Top Bar (Logbook & Islands) */
+.store-quick-nav-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 6px 14px;
+    background: rgba(6, 16, 22, 0.85);
+    border: 1px solid rgba(45, 212, 191, 0.35);
+    border-radius: 6px;
+    margin-bottom: 12px;
+    backdrop-filter: blur(8px);
+    flex-wrap: wrap;
+}
+
+.quick-nav-label {
+    font-family: "Cinzel", serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #5eead4;
+}
+
+.quick-nav-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 4px;
+    font-family: "Cinzel", serif;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+    color: #cfbf9e;
+    background: rgba(14, 28, 36, 0.7);
+    border: 1px solid rgba(45, 212, 191, 0.25);
+    transition: all 0.2s ease;
+}
+
+.quick-nav-btn:hover {
+    color: #ffffff;
+    background: rgba(45, 212, 191, 0.2);
+    border-color: #2dd4bf;
+    box-shadow: 0 0 10px rgba(45, 212, 191, 0.35);
+}
+
+.quick-nav-btn.btn-return-capital {
+    background: linear-gradient(135deg, rgba(153, 27, 27, 0.8), rgba(127, 29, 29, 0.8));
+    border-color: rgba(239, 68, 68, 0.6);
+    color: #fee2e2;
+}
+
+.quick-nav-btn.btn-return-capital:hover {
+    background: linear-gradient(135deg, rgba(185, 28, 28, 0.9), rgba(153, 27, 27, 0.9));
+    box-shadow: 0 0 12px rgba(239, 68, 68, 0.5);
+    color: #ffffff;
+}
+
+/* =========================================================
+   10. CHRONOS CAY TIMEKEEPING FOOTWEAR THEME (.theme-chronos)
+========================================================= */
+
+body.theme-chronos {
+    --gold-primary: #d49339;
+    --gold-bright: #ffcc55;
+    --card-border: rgba(45, 120, 160, 0.4);
+    --card-border-hover: rgba(212, 147, 57, 0.85);
+    --card-bg: linear-gradient(180deg, rgba(12, 22, 32, 0.85) 0%, rgba(6, 12, 18, 0.94) 100%);
+}
+
+body.theme-chronos .store-badge-embargo {
+    color: #f5c35c;
+    border-color: rgba(212, 147, 57, 0.5);
+    background: rgba(10, 18, 26, 0.85);
+    box-shadow: 0 0 12px rgba(212, 147, 57, 0.25);
+}
+
+body.theme-chronos .store-main-title {
+    color: #fff4dc;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 22px rgba(212, 147, 57, 0.45);
+}
+
+body.theme-chronos .store-title-icon {
+    filter: drop-shadow(0 0 10px #ffcc55);
+}
+
+body.theme-chronos .store-subtitle {
+    color: #d1c3a7;
+}
+
+body.theme-chronos .store-sidebar {
+    border-color: rgba(212, 147, 57, 0.35);
+    background: linear-gradient(180deg, rgba(10, 18, 26, 0.92) 0%, rgba(6, 10, 16, 0.96) 100%);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.8), inset 0 0 15px rgba(212, 147, 57, 0.1);
+}
+
+body.theme-chronos .sidebar-nav-item.active {
+    color: #ffffff;
+    background: linear-gradient(90deg, rgba(45, 212, 191, 0.25) 0%, rgba(212, 147, 57, 0.08) 100%);
+    border-color: #2dd4bf;
+    box-shadow: inset 0 0 12px rgba(45, 212, 191, 0.2), 0 0 16px rgba(45, 212, 191, 0.25);
+}
+
+body.theme-chronos .item-asset-glow {
+    background: radial-gradient(circle, rgba(212, 147, 57, 0.2) 0%, rgba(56, 189, 248, 0.08) 50%, transparent 70%);
+}
+
+/* Stone pedestal platform inside card */
+body.theme-chronos .item-asset-box::after {
+    content: "";
+    position: absolute;
+    bottom: 8px;
+    width: 78%;
+    height: 24px;
+    background: radial-gradient(ellipse at center, rgba(30, 48, 64, 0.7) 0%, rgba(10, 20, 30, 0.3) 60%, transparent 80%);
+    border-radius: 50%;
+    z-index: 1;
+}
+
+body.theme-chronos .sidebar-chronos-crest {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px dashed rgba(212, 147, 57, 0.25);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+body.theme-chronos .chronos-crest-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 8px rgba(212, 147, 57, 0.4));
+    opacity: 0.85;
+}
+
+body.theme-chronos .chronos-quote {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #f5c35c;
+    opacity: 0.85;
+    margin: 0;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   11. CUTLASS COVE ELECTRONICS THEME (.theme-cutlass)
+========================================================= */
+
+body.theme-cutlass {
+    --gold-primary: #d49339;
+    --gold-bright: #ffcc55;
+    --card-border: rgba(212, 147, 57, 0.42);
+    --card-border-hover: rgba(255, 204, 85, 0.85);
+    --card-bg: linear-gradient(180deg, rgba(14, 18, 24, 0.88) 0%, rgba(8, 12, 16, 0.95) 100%);
+}
+
+body.theme-cutlass .store-badge-embargo {
+    color: #ffd57e;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    padding: 2px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+body.theme-cutlass .store-badge-embargo::before,
+body.theme-cutlass .store-badge-embargo::after {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d49339, transparent);
+}
+
+body.theme-cutlass .store-main-title {
+    color: #fff6e0;
+    font-size: 2.5rem;
+    letter-spacing: 0.08em;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 0 24px rgba(212, 147, 57, 0.4);
+    margin: 2px 0;
+}
+
+body.theme-cutlass .store-title-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 12px #ffcc55);
+}
+
+body.theme-cutlass .store-subheading {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    color: #f5c35c;
+    text-transform: uppercase;
+    margin: 0 0 4px 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+
+body.theme-cutlass .store-subtitle {
+    color: #c9bda5;
+    font-size: 0.88rem;
+    letter-spacing: 0.03em;
+}
+
+body.theme-cutlass .store-sidebar {
+    border-color: rgba(212, 147, 57, 0.42);
+    background: linear-gradient(180deg, rgba(12, 16, 22, 0.94) 0%, rgba(6, 10, 14, 0.97) 100%);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.85), inset 0 0 16px rgba(212, 147, 57, 0.1);
+}
+
+body.theme-cutlass .sidebar-nav-item:hover {
+    color: #fff4dc;
+    background: rgba(212, 147, 57, 0.14);
+    border-color: rgba(212, 147, 57, 0.4);
+}
+
+body.theme-cutlass .sidebar-nav-item.active {
+    color: #ffffff;
+    background: linear-gradient(90deg, rgba(212, 147, 57, 0.28) 0%, rgba(212, 147, 57, 0.06) 100%);
+    border-color: #d49339;
+    box-shadow: inset 0 0 12px rgba(212, 147, 57, 0.22), 0 0 16px rgba(212, 147, 57, 0.25);
+}
+
+body.theme-cutlass .store-search-input:focus {
+    border-color: #d49339;
+    box-shadow: 0 0 14px rgba(212, 147, 57, 0.4), inset 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+body.theme-cutlass .store-item-card {
+    border: 1px solid rgba(212, 147, 57, 0.42);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+}
+
+body.theme-cutlass .store-item-card:hover {
+    border-color: rgba(255, 204, 85, 0.85);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.9), 0 0 22px rgba(212, 147, 57, 0.35);
+}
+
+body.theme-cutlass .item-asset-glow {
+    background: radial-gradient(circle, rgba(212, 147, 57, 0.22) 0%, rgba(14, 165, 233, 0.14) 48%, transparent 70%);
+}
+
+body.theme-cutlass .item-asset-img {
+    max-height: 125px;
+    max-width: 82%;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.85));
+    transition: transform 0.3s ease;
+}
+
+body.theme-cutlass .store-item-card:hover .item-asset-img {
+    transform: scale(1.06) translateY(-3px);
+}
+
+body.theme-cutlass .item-title {
+    color: #fff4dc;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+}
+
+body.theme-cutlass .item-desc {
+    color: #a89a84;
+}
+
+body.theme-cutlass .item-meta-row {
+    border-top-color: rgba(212, 147, 57, 0.22);
+}
+
+body.theme-cutlass .item-price {
+    color: #f5c35c;
+    font-size: 0.94rem;
+}
+
+body.theme-cutlass .btn-add-cart {
+    background: var(--btn-bronze);
+    border-color: var(--gold-primary);
+    color: #fff7e4;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6), 0 0 10px rgba(212, 147, 57, 0.2);
+}
+
+body.theme-cutlass .btn-add-cart:hover {
+    background: var(--btn-bronze-hover);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), 0 0 18px #ffcc55;
+    color: #ffffff;
+}
+
+/* Sidebar Footer Motto for Cutlass Cove */
+.sidebar-cutlass-crest {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px dashed rgba(212, 147, 57, 0.25);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.cutlass-crest-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 8px rgba(212, 147, 57, 0.4));
+    opacity: 0.9;
+}
+
+.cutlass-motto-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.cutlass-motto-lines span {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: #f5c35c;
+    opacity: 0.85;
+    line-height: 1.35;
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   12. BOOTY CAY LUXURY TREASURY BEAUTY THEME (.theme-booty)
+========================================================= */
+
+body.theme-booty {
+    --gold-primary: #e6b84d;
+    --gold-bright: #ffd778;
+    --card-border: rgba(230, 184, 77, 0.42);
+    --card-border-hover: rgba(255, 215, 120, 0.85);
+    --card-bg: linear-gradient(180deg, rgba(16, 20, 26, 0.9) 0%, rgba(8, 12, 16, 0.96) 100%);
+}
+
+body.theme-booty .store-badge-embargo {
+    color: #ffd778;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    padding: 2px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+body.theme-booty .store-badge-embargo::before,
+body.theme-booty .store-badge-embargo::after {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #e6b84d, transparent);
+}
+
+body.theme-booty .store-main-title {
+    color: #fff8e8;
+    font-size: 2.5rem;
+    letter-spacing: 0.08em;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 0 24px rgba(230, 184, 77, 0.4);
+    margin: 2px 0;
+}
+
+body.theme-booty .store-title-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 12px #ffd778);
+}
+
+body.theme-booty .store-subheading {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    color: #f5c35c;
+    text-transform: uppercase;
+    margin: 0 0 4px 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+
+body.theme-booty .store-subtitle {
+    color: #d8cdba;
+    font-size: 0.88rem;
+    letter-spacing: 0.03em;
+}
+
+body.theme-booty .store-sidebar {
+    border-color: rgba(230, 184, 77, 0.42);
+    background: linear-gradient(180deg, rgba(14, 18, 24, 0.94) 0%, rgba(6, 10, 14, 0.98) 100%);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.85), inset 0 0 16px rgba(230, 184, 77, 0.1);
+}
+
+body.theme-booty .sidebar-nav-item:hover {
+    color: #fff6e0;
+    background: rgba(230, 184, 77, 0.14);
+    border-color: rgba(230, 184, 77, 0.4);
+}
+
+body.theme-booty .sidebar-nav-item.active {
+    color: #ffffff;
+    background: linear-gradient(90deg, rgba(230, 184, 77, 0.3) 0%, rgba(230, 184, 77, 0.06) 100%);
+    border-color: #e6b84d;
+    box-shadow: inset 0 0 12px rgba(230, 184, 77, 0.25), 0 0 16px rgba(230, 184, 77, 0.3);
+}
+
+body.theme-booty .store-search-input:focus {
+    border-color: #e6b84d;
+    box-shadow: 0 0 14px rgba(230, 184, 77, 0.4), inset 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+body.theme-booty .store-item-card {
+    border: 1px solid rgba(230, 184, 77, 0.42);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+}
+
+body.theme-booty .store-item-card:hover {
+    border-color: rgba(255, 215, 120, 0.85);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.9), 0 0 22px rgba(230, 184, 77, 0.35);
+}
+
+body.theme-booty .item-asset-glow {
+    background: radial-gradient(circle, rgba(230, 184, 77, 0.24) 0%, rgba(245, 158, 11, 0.08) 50%, transparent 70%);
+}
+
+body.theme-booty .item-asset-img {
+    max-height: 125px;
+    max-width: 82%;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.85));
+    transition: transform 0.3s ease;
+}
+
+body.theme-booty .store-item-card:hover .item-asset-img {
+    transform: scale(1.06) translateY(-3px);
+}
+
+body.theme-booty .item-title {
+    color: #fff8e8;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+}
+
+body.theme-booty .item-desc {
+    color: #c4b69e;
+    font-size: 0.82rem;
+    min-height: 24px;
+    margin-bottom: 10px;
+}
+
+body.theme-booty .item-meta-row {
+    border-top-color: rgba(230, 184, 77, 0.22);
+}
+
+body.theme-booty .item-price {
+    color: #ffd778;
+    font-size: 0.96rem;
+    font-weight: 700;
+}
+
+body.theme-booty .btn-add-cart {
+    background: var(--btn-bronze);
+    border-color: var(--gold-primary);
+    color: #fff7e4;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6), 0 0 10px rgba(230, 184, 77, 0.2);
+}
+
+body.theme-booty .btn-add-cart:hover {
+    background: var(--btn-bronze-hover);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), 0 0 18px #ffd778;
+    color: #ffffff;
+}
+
+/* Sidebar Footer Motto for Booty Cay */
+.sidebar-booty-crest {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px dashed rgba(230, 184, 77, 0.25);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.booty-crest-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 8px rgba(230, 184, 77, 0.4));
+    opacity: 0.9;
+}
+
+.booty-motto-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.booty-motto-lines span {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: #ffd778;
+    opacity: 0.85;
+    line-height: 1.35;
+    text-transform: uppercase;
+}
+
+.store-footer-watermark {
+    text-align: right;
+    margin-top: 24px;
+    padding-right: 8px;
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    color: #ffd778;
+    opacity: 0.75;
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   13. VELVET ISLE HOME & LIVING RESORT THEME (.theme-velvet)
+========================================================= */
+
+body.theme-velvet {
+    --gold-primary: #d4a359;
+    --gold-bright: #ffd57e;
+    --card-border: rgba(212, 163, 89, 0.42);
+    --card-border-hover: rgba(255, 213, 126, 0.85);
+    --card-bg: linear-gradient(180deg, rgba(14, 20, 22, 0.9) 0%, rgba(8, 12, 14, 0.96) 100%);
+}
+
+body.theme-velvet .store-badge-embargo {
+    color: #ffd57e;
+    border: none;
+    background: transparent;
+    box-shadow: none;
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 0.76rem;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    padding: 2px 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+}
+
+body.theme-velvet .store-badge-embargo::before,
+body.theme-velvet .store-badge-embargo::after {
+    content: "";
+    display: inline-block;
+    width: 28px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #d4a359, transparent);
+}
+
+body.theme-velvet .store-main-title {
+    color: #fffaf0;
+    font-size: 2.5rem;
+    letter-spacing: 0.08em;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.95), 0 0 24px rgba(212, 163, 89, 0.4);
+    margin: 2px 0;
+}
+
+body.theme-velvet .store-title-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 12px #ffd57e);
+}
+
+body.theme-velvet .store-subheading {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.28em;
+    color: #dfb26a;
+    text-transform: uppercase;
+    margin: 0 0 4px 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+
+body.theme-velvet .store-subtitle {
+    color: #d6cbba;
+    font-size: 0.88rem;
+    letter-spacing: 0.03em;
+}
+
+body.theme-velvet .store-sidebar {
+    border-color: rgba(212, 163, 89, 0.42);
+    background: linear-gradient(180deg, rgba(12, 18, 20, 0.95) 0%, rgba(6, 10, 12, 0.98) 100%);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.85), inset 0 0 16px rgba(212, 163, 89, 0.1);
+}
+
+body.theme-velvet .sidebar-nav-item:hover {
+    color: #fff6e0;
+    background: rgba(212, 163, 89, 0.14);
+    border-color: rgba(212, 163, 89, 0.4);
+}
+
+body.theme-velvet .sidebar-nav-item.active {
+    color: #ffffff;
+    background: linear-gradient(90deg, rgba(212, 163, 89, 0.32) 0%, rgba(212, 163, 89, 0.06) 100%);
+    border-color: #d4a359;
+    box-shadow: inset 0 0 12px rgba(212, 163, 89, 0.22), 0 0 16px rgba(212, 163, 89, 0.3);
+}
+
+body.theme-velvet .store-search-input:focus {
+    border-color: #d4a359;
+    box-shadow: 0 0 14px rgba(212, 163, 89, 0.4), inset 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+body.theme-velvet .store-item-card {
+    border: 1px solid rgba(212, 163, 89, 0.42);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.75);
+}
+
+body.theme-velvet .store-item-card:hover {
+    border-color: rgba(255, 213, 126, 0.85);
+    box-shadow: 0 12px 36px rgba(0, 0, 0, 0.9), 0 0 22px rgba(212, 163, 89, 0.35);
+}
+
+body.theme-velvet .item-asset-glow {
+    background: radial-gradient(circle, rgba(212, 163, 89, 0.22) 0%, rgba(34, 197, 94, 0.08) 50%, transparent 70%);
+}
+
+body.theme-velvet .item-asset-img {
+    max-height: 125px;
+    max-width: 82%;
+    object-fit: contain;
+    filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.85));
+    transition: transform 0.3s ease;
+}
+
+body.theme-velvet .store-item-card:hover .item-asset-img {
+    transform: scale(1.06) translateY(-3px);
+}
+
+body.theme-velvet .item-title {
+    color: #fffaf0;
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    margin-bottom: 2px;
+}
+
+body.theme-velvet .item-desc {
+    color: #c4b8a4;
+    font-size: 0.82rem;
+    min-height: 24px;
+    margin-bottom: 10px;
+}
+
+body.theme-velvet .item-meta-row {
+    border-top-color: rgba(212, 163, 89, 0.22);
+}
+
+body.theme-velvet .item-price {
+    color: #ffd57e;
+    font-size: 0.96rem;
+    font-weight: 700;
+}
+
+body.theme-velvet .btn-add-cart {
+    background: var(--btn-bronze);
+    border-color: var(--gold-primary);
+    color: #fff7e4;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.6), 0 0 10px rgba(212, 163, 89, 0.2);
+}
+
+body.theme-velvet .btn-add-cart:hover {
+    background: var(--btn-bronze-hover);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), 0 0 18px #ffd57e;
+    color: #ffffff;
+}
+
+/* Velvet Hero Block (Matches Reference Layout) */
+.velvet-hero-block {
+    margin-bottom: 24px;
+    max-width: 620px;
+}
+
+.velvet-script-badge {
+    font-family: "Cinzel", Georgia, cursive, serif;
+    font-style: italic;
+    font-size: 1.15rem;
+    color: #dfb26a;
+    margin-bottom: 4px;
+    letter-spacing: 0.06em;
+    display: block;
+}
+
+.velvet-hero-title {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #fffaf0;
+    letter-spacing: 0.06em;
+    margin: 0 0 4px 0;
+    text-shadow: 0 3px 18px rgba(0, 0, 0, 0.95), 0 0 24px rgba(212, 163, 89, 0.35);
+}
+
+.velvet-hero-subtitle {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    letter-spacing: 0.26em;
+    color: #dfb26a;
+    text-transform: uppercase;
+    margin: 0 0 10px 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.9);
+}
+
+.velvet-hero-desc {
+    font-size: 0.9rem;
+    color: #d6cbba;
+    line-height: 1.55;
+    margin: 0 0 16px 0;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+
+.btn-explore-collection {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 22px;
+    border: 1px solid rgba(212, 163, 89, 0.75);
+    background: rgba(14, 20, 22, 0.6);
+    backdrop-filter: blur(6px);
+    border-radius: 20px;
+    color: #fff6e4;
+    font-family: "Cinzel", serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.btn-explore-collection:hover {
+    background: rgba(212, 163, 89, 0.25);
+    border-color: #ffd57e;
+    box-shadow: 0 0 16px rgba(212, 163, 89, 0.45);
+    transform: translateX(3px);
+}
+
+/* Sidebar Footer Motto for Velvet Isle */
+.sidebar-velvet-crest {
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px dashed rgba(212, 163, 89, 0.25);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+}
+
+.velvet-crest-icon {
+    font-size: 2.2rem;
+    filter: drop-shadow(0 0 8px rgba(212, 163, 89, 0.4));
+    opacity: 0.9;
+}
+
+.velvet-motto-lines {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.velvet-motto-lines span {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 0.66rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: #dfb26a;
+    opacity: 0.85;
+    line-height: 1.35;
+    text-transform: uppercase;
+}
+
+/* Decorative Footer Quotes */
+.velvet-bottom-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 32px;
+    padding: 0 8px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.velvet-quote-left {
+    font-family: "Cinzel", Georgia, cursive, serif;
+    font-style: italic;
+    font-size: 0.95rem;
+    color: #e2c08d;
+    opacity: 0.85;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.velvet-quote-right {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: #ffd57e;
+    opacity: 0.8;
+    background: rgba(14, 20, 22, 0.65);
+    border: 1px solid rgba(212, 163, 89, 0.35);
+    padding: 6px 14px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+
+
+
+

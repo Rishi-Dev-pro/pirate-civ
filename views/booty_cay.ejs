@@ -13,18 +13,18 @@
 
     <!-- Base Pirate Styles & Dedicated Island Store Styles -->
     <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
-    <link rel="stylesheet" href="/css/island-store.css?v=store_v2">
+    <link rel="stylesheet" href="/css/island-store.css?v=booty_v1">
 </head>
 
-<body class="island-store-body">
+<body class="island-store-body theme-booty">
 
-    <!-- Atmospheric Backdrop -->
+    <!-- Fixed Atmospheric Backdrop (Booty Cay Enchanted Skull Mountain & Tropical Cove Harbor Artwork) -->
     <div class="store-backdrop">
-        <img src="/images/nautical-grid.png" alt="Booty Cay" class="store-bg-img" style="opacity: 0.35;">
-        <div class="store-vignette"></div>
+        <img src="/images/booty-bg.jpg" alt="Booty Cay Enchanted Skull Mountain Cove" class="store-bg-img" style="opacity: 0.90; object-position: center 30%;">
+        <div class="store-vignette" style="background: radial-gradient(circle at 75% 45%, transparent 22%, rgba(6, 12, 18, 0.55) 65%, rgba(2, 6, 10, 0.92) 100%), linear-gradient(180deg, rgba(4, 8, 12, 0.45) 0%, transparent 22%, rgba(4, 8, 12, 0.7) 85%, #040608 100%);"></div>
     </div>
 
-    <!-- Adjusted Reusable Navbar -->
+    <!-- Adjusted Reusable Navbar (Non-colliding, Flow-Anchored) -->
     <%- include("partials/header") %>
 
     <!-- Master Store Stage -->
@@ -33,12 +33,12 @@
         <!-- Top Bar: Center Title & Right Header Controls -->
         <header class="store-top-bar">
             <div class="store-header-center">
-                <span class="store-badge-embargo"><%= island.badge || "CORSAIR TREASURY & BOOTY" %></span>
+                <span class="store-badge-embargo">TREASURY</span>
                 <h1 class="store-main-title">
-                    <span class="store-title-icon">💰</span>
                     <span><%= island.name %></span>
                 </h1>
-                <p class="store-subtitle"><%= island.desc %></p>
+                <div class="store-subheading"><%= island.title || "BEAUTY" %></div>
+                <p class="store-subtitle"><%= island.desc || "Discover treasures that bring out your true beauty." %></p>
             </div>
 
             <div class="store-header-controls">
@@ -61,30 +61,55 @@
         <!-- Body Grid: Sidebar + Store Grid Area -->
         <div class="store-body-grid">
 
-            <!-- Left Sidebar Category Filter -->
+            <!-- Left Sidebar Category Filter (Matches Reference Image) -->
             <aside class="store-sidebar">
                 <ul class="sidebar-nav-list">
                     <li class="sidebar-nav-item active" data-category="all">
-                        <span class="nav-icon">✦</span>
-                        <span>All Items</span>
+                        <span class="nav-icon">🧴</span>
+                        <span>All Beauty</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="silver">
-                        <span class="nav-icon">🍶</span>
-                        <span>Silver Flasks</span>
+                    <li class="sidebar-nav-item" data-category="skincare">
+                        <span class="nav-icon">🧴</span>
+                        <span>Skincare</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="dice">
-                        <span class="nav-icon">🎲</span>
-                        <span>Bone Dice</span>
+                    <li class="sidebar-nav-item" data-category="makeup">
+                        <span class="nav-icon">💄</span>
+                        <span>Makeup</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="chests">
-                        <span class="nav-icon">📦</span>
-                        <span>Treasure Chests</span>
+                    <li class="sidebar-nav-item" data-category="fragrances">
+                        <span class="nav-icon">🏺</span>
+                        <span>Fragrances</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="rum">
-                        <span class="nav-icon">🍾</span>
-                        <span>Dark Spiced Rum</span>
+                    <li class="sidebar-nav-item" data-category="haircare">
+                        <span class="nav-icon">🧴</span>
+                        <span>Haircare</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="bodycare">
+                        <span class="nav-icon">🛁</span>
+                        <span>Body Care</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="tools">
+                        <span class="nav-icon">🛠️</span>
+                        <span>Beauty Tools</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="gift">
+                        <span class="nav-icon">🎁</span>
+                        <span>Gift Sets</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="natural">
+                        <span class="nav-icon">🌿</span>
+                        <span>Natural & Organic Luxury</span>
                     </li>
                 </ul>
+
+                <!-- Carved Motto Crest (Matches Reference Image) -->
+                <div class="sidebar-booty-crest">
+                    <span class="booty-crest-icon">🧭</span>
+                    <div class="booty-motto-lines">
+                        <span>BEAUTY BEYOND</span>
+                        <span>BORDERS</span>
+                    </div>
+                </div>
             </aside>
 
             <!-- Main Store Area -->
@@ -94,26 +119,26 @@
                 <div class="store-filter-bar">
                     <div class="search-input-wrapper">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="storeSearchInput" class="store-search-input" placeholder="Search rum flasks, bone dice, chests...">
+                        <input type="text" id="storeSearchInput" class="store-search-input" placeholder="Search beauty products...">
                     </div>
 
                     <select id="storeSortSelect" class="store-sort-select">
-                        <option value="default">Sort by: Default ▾</option>
+                        <option value="default">Sort by: Featured ▾</option>
                         <option value="price-low">Price: Low to High</option>
                         <option value="price-high">Price: High to Low</option>
                         <option value="name">Name: A-Z</option>
                     </select>
                 </div>
 
-                <!-- Store Items Grid -->
+                <!-- Store Items Grid (6 Cards in 2 Rows of 3) -->
                 <div id="storeItemsGrid" class="store-items-grid">
                     <% island.products.forEach(function(p) { %>
                         <article class="store-item-card"
                                  data-id="<%= p.id %>"
                                  data-name="<%= p.name %>"
-                                 data-price="<%= p.price %>"
+                                 data-price="<%= p.priceNum || p.price %>"
                                  data-category="<%= p.category || 'all' %>"
-                                 data-desc="<%= p.desc %>">
+                                 data-desc="<%= p.desc || p.subTitle || '' %>">
                             
                             <div class="card-header-bar">
                                 <span class="tag-new">NEW</span>
@@ -122,24 +147,27 @@
 
                             <div class="item-asset-box">
                                 <div class="item-asset-glow"></div>
-                                <div style="font-size: 5rem; z-index: 2; filter: drop-shadow(0 10px 16px rgba(0,0,0,0.7));">
-                                    <%= p.icon || '💰' %>
-                                </div>
+                                <img src="<%= p.image %>" alt="<%= p.name %>" class="item-asset-img">
                             </div>
 
                             <h3 class="item-title"><%= p.name %></h3>
-                            <p class="item-desc"><%= p.desc %></p>
+                            <p class="item-desc"><%= p.subTitle || p.desc %></p>
 
                             <div class="item-meta-row">
-                                <span class="item-price">🪙 <%= p.price %> Doubloons</span>
+                                <span class="item-price">₹<%= p.price %></span>
                                 <span class="item-rating"><%= p.rating || '★★★★★' %></span>
                             </div>
 
-                            <button class="btn-add-cart" data-id="<%= p.id %>" data-name="<%= p.name %>" data-price="<%= p.price %>">
+                            <button class="btn-add-cart" data-id="<%= p.id %>" data-name="<%= p.name %>" data-price="<%= p.priceNum || p.price %>">
                                 <span>🛒 ADD TO CART</span>
                             </button>
                         </article>
                     <% }); %>
+                </div>
+
+                <!-- Subtle Bottom Right Tagline -->
+                <div class="store-footer-watermark">
+                    NATURAL BEAUTY ✶ TIMELESS YOU
                 </div>
 
             </section>
@@ -167,7 +195,7 @@
     </aside>
 
     <!-- Unified Island Store JS Engine -->
-    <script src="/js/island-store.js?v=store_v2"></script>
+    <script src="/js/island-store.js?v=booty_v1"></script>
 
 </body>
 

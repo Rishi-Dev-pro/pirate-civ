@@ -13,18 +13,18 @@
 
     <!-- Base Pirate Styles & Dedicated Island Store Styles -->
     <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
-    <link rel="stylesheet" href="/css/island-store.css?v=store_v2">
+    <link rel="stylesheet" href="/css/island-store.css?v=velvet_v1">
 </head>
 
-<body class="island-store-body">
+<body class="island-store-body theme-velvet">
 
-    <!-- Atmospheric Backdrop -->
+    <!-- Fixed Atmospheric Backdrop (Velvet Isle Coastal Resort Lagoon & Balcony Artwork) -->
     <div class="store-backdrop">
-        <img src="/images/nautical-grid.png" alt="Velvet Isle" class="store-bg-img" style="opacity: 0.35;">
-        <div class="store-vignette"></div>
+        <img src="/images/velvet-bg.jpg" alt="Velvet Isle Serene Coastal Resort" class="store-bg-img" style="opacity: 0.90; object-position: center 30%;">
+        <div class="store-vignette" style="background: radial-gradient(circle at 75% 45%, transparent 22%, rgba(6, 14, 16, 0.55) 65%, rgba(2, 6, 8, 0.92) 100%), linear-gradient(180deg, rgba(4, 10, 12, 0.45) 0%, transparent 22%, rgba(4, 10, 12, 0.7) 85%, #020608 100%);"></div>
     </div>
 
-    <!-- Adjusted Reusable Navbar -->
+    <!-- Adjusted Reusable Navbar (Non-colliding, Flow-Anchored) -->
     <%- include("partials/header") %>
 
     <!-- Master Store Stage -->
@@ -33,12 +33,13 @@
         <!-- Top Bar: Center Title & Right Header Controls -->
         <header class="store-top-bar">
             <div class="store-header-center">
-                <span class="store-badge-embargo"><%= island.badge || "PIRATE LORDS' REGALIA" %></span>
+                <span class="store-badge-embargo">ELEVATE EVERY SPACE</span>
                 <h1 class="store-main-title">
-                    <span class="store-title-icon">🧥</span>
+                    <span class="store-title-icon">🧭</span>
                     <span><%= island.name %></span>
                 </h1>
-                <p class="store-subtitle"><%= island.desc %></p>
+                <div class="store-subheading"><%= island.title || "HOME & LIVING" %></div>
+                <p class="store-subtitle"><%= island.desc || "Timeless living for modern explorers. Discover decor, furniture, textiles and more from the serene shores of Velvet Isle." %></p>
             </div>
 
             <div class="store-header-controls">
@@ -61,59 +62,96 @@
         <!-- Body Grid: Sidebar + Store Grid Area -->
         <div class="store-body-grid">
 
-            <!-- Left Sidebar Category Filter -->
+            <!-- Left Sidebar Category Filter (Matches Reference Mockup) -->
             <aside class="store-sidebar">
                 <ul class="sidebar-nav-list">
                     <li class="sidebar-nav-item active" data-category="all">
-                        <span class="nav-icon">✦</span>
-                        <span>All Items</span>
+                        <span class="nav-icon">🏠</span>
+                        <span>All Home & Living</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="coats">
-                        <span class="nav-icon">🧥</span>
-                        <span>Captains' Longcoats</span>
+                    <li class="sidebar-nav-item" data-category="furniture">
+                        <span class="nav-icon">🪑</span>
+                        <span>Furniture</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="tricorn">
-                        <span class="nav-icon">🎩</span>
-                        <span>Tricorn Hats</span>
+                    <li class="sidebar-nav-item" data-category="decor">
+                        <span class="nav-icon">🏺</span>
+                        <span>Home Decor</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="vests">
-                        <span class="nav-icon">🦺</span>
-                        <span>Smuggler Vests</span>
+                    <li class="sidebar-nav-item" data-category="lighting">
+                        <span class="nav-icon">💡</span>
+                        <span>Lighting</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="cloaks">
-                        <span class="nav-icon">🧣</span>
-                        <span>Sea Cloaks</span>
+                    <li class="sidebar-nav-item" data-category="bedding">
+                        <span class="nav-icon">🛏️</span>
+                        <span>Bedding & Linen</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="dining">
+                        <span class="nav-icon">🍽️</span>
+                        <span>Kitchen & Dining</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="storage">
+                        <span class="nav-icon">📦</span>
+                        <span>Storage & Organization</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="rugs">
+                        <span class="nav-icon">🧶</span>
+                        <span>Rugs & Carpets</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="furnishings">
+                        <span class="nav-icon">🪟</span>
+                        <span>Curtains & Furnishings</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="plants">
+                        <span class="nav-icon">🪴</span>
+                        <span>Indoor Plants</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="art">
+                        <span class="nav-icon">🖼️</span>
+                        <span>Wall Art</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="gift">
+                        <span class="nav-icon">🎁</span>
+                        <span>Gift Sets</span>
                     </li>
                 </ul>
+
+                <!-- Carved Motto Crest (Matches Reference Mockup) -->
+                <div class="sidebar-velvet-crest">
+                    <span class="velvet-crest-icon">🧭</span>
+                    <div class="velvet-motto-lines">
+                        <span>BEAUTIFUL SPACES</span>
+                        <span>BRIGHTER DAYS</span>
+                    </div>
+                </div>
             </aside>
 
             <!-- Main Store Area -->
             <section class="store-main-area">
 
                 <!-- Search & Sort Bar -->
-                <div class="store-filter-bar">
+                <div id="storeFilterBar" class="store-filter-bar">
                     <div class="search-input-wrapper">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="storeSearchInput" class="store-search-input" placeholder="Search longcoats, tricorns, cloaks...">
+                        <input type="text" id="storeSearchInput" class="store-search-input" placeholder="Search products, styles, inspiration...">
                     </div>
 
                     <select id="storeSortSelect" class="store-sort-select">
-                        <option value="default">Sort by: Default ▾</option>
+                        <option value="default">Sort by: Featured ▾</option>
                         <option value="price-low">Price: Low to High</option>
                         <option value="price-high">Price: High to Low</option>
                         <option value="name">Name: A-Z</option>
                     </select>
                 </div>
 
-                <!-- Store Items Grid -->
+                <!-- Store Items Grid (6 Cards in 2 Rows of 3) -->
                 <div id="storeItemsGrid" class="store-items-grid">
                     <% island.products.forEach(function(p) { %>
                         <article class="store-item-card"
                                  data-id="<%= p.id %>"
                                  data-name="<%= p.name %>"
-                                 data-price="<%= p.price %>"
+                                 data-price="<%= p.priceNum || p.price %>"
                                  data-category="<%= p.category || 'all' %>"
-                                 data-desc="<%= p.desc %>">
+                                 data-desc="<%= p.desc || p.subTitle || '' %>">
                             
                             <div class="card-header-bar">
                                 <span class="tag-new">NEW</span>
@@ -122,24 +160,33 @@
 
                             <div class="item-asset-box">
                                 <div class="item-asset-glow"></div>
-                                <div style="font-size: 5rem; z-index: 2; filter: drop-shadow(0 10px 16px rgba(0,0,0,0.7));">
-                                    <%= p.icon || '🧥' %>
-                                </div>
+                                <img src="<%= p.image %>" alt="<%= p.name %>" class="item-asset-img">
                             </div>
 
                             <h3 class="item-title"><%= p.name %></h3>
-                            <p class="item-desc"><%= p.desc %></p>
+                            <p class="item-desc"><%= p.subTitle || p.desc %></p>
 
                             <div class="item-meta-row">
-                                <span class="item-price">🪙 <%= p.price %> Doubloons</span>
+                                <span class="item-price">₹<%= p.price %></span>
                                 <span class="item-rating"><%= p.rating || '★★★★★' %></span>
                             </div>
 
-                            <button class="btn-add-cart" data-id="<%= p.id %>" data-name="<%= p.name %>" data-price="<%= p.price %>">
+                            <button class="btn-add-cart" data-id="<%= p.id %>" data-name="<%= p.name %>" data-price="<%= p.priceNum || p.price %>">
                                 <span>🛒 ADD TO CART</span>
                             </button>
                         </article>
                     <% }); %>
+                </div>
+
+                <!-- Velvet Bottom Bar (Matches Mockup Quotes) -->
+                <div class="velvet-bottom-bar">
+                    <div class="velvet-quote-left">
+                        <span>More than a home — A State of Mind</span>
+                        <span style="font-size: 1.1rem; color: #ffd57e;">✶</span>
+                    </div>
+                    <div class="velvet-quote-right">
+                        <span>A HOME FOR EVERY JOURNEY</span>
+                    </div>
                 </div>
 
             </section>
@@ -167,7 +214,7 @@
     </aside>
 
     <!-- Unified Island Store JS Engine -->
-    <script src="/js/island-store.js?v=store_v2"></script>
+    <script src="/js/island-store.js?v=velvet_v1"></script>
 
 </body>
 

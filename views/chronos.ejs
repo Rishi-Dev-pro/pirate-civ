@@ -13,18 +13,18 @@
 
     <!-- Base Pirate Styles & Dedicated Island Store Styles -->
     <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
-    <link rel="stylesheet" href="/css/island-store.css?v=store_v2">
+    <link rel="stylesheet" href="/css/island-store.css?v=chronos_v1">
 </head>
 
-<body class="island-store-body">
+<body class="island-store-body theme-chronos">
 
-    <!-- Atmospheric Backdrop -->
+    <!-- Fixed Atmospheric Backdrop (Chronos Clock Palace & Floating Islands Artwork) -->
     <div class="store-backdrop">
-        <img src="/images/nautical-grid.png" alt="Chronos Cay" class="store-bg-img" style="opacity: 0.35;">
-        <div class="store-vignette"></div>
+        <img src="/images/chronos-bg.jpg" alt="Chronos Cay Timepiece Realm" class="store-bg-img" style="opacity: 0.88; object-position: center 25%;">
+        <div class="store-vignette" style="background: radial-gradient(circle at 75% 45%, transparent 22%, rgba(6, 12, 18, 0.55) 65%, rgba(2, 6, 10, 0.92) 100%), linear-gradient(180deg, rgba(4, 8, 12, 0.45) 0%, transparent 22%, rgba(4, 8, 12, 0.7) 85%, #040608 100%);"></div>
     </div>
 
-    <!-- Adjusted Reusable Navbar -->
+    <!-- Adjusted Reusable Navbar (Non-colliding, Flow-Anchored) -->
     <%- include("partials/header") %>
 
     <!-- Master Store Stage -->
@@ -33,12 +33,12 @@
         <!-- Top Bar: Center Title & Right Header Controls -->
         <header class="store-top-bar">
             <div class="store-header-center">
-                <span class="store-badge-embargo"><%= island.badge || "MARITIME HOROLOGY HARBOR" %></span>
+                <span class="store-badge-embargo">HOROLOGY</span>
                 <h1 class="store-main-title">
-                    <span class="store-title-icon">⏳</span>
+                    <span class="store-title-icon">🧭</span>
                     <span><%= island.name %></span>
                 </h1>
-                <p class="store-subtitle"><%= island.desc %></p>
+                <p class="store-subtitle">Footwear from across time</p>
             </div>
 
             <div class="store-header-controls">
@@ -61,30 +61,44 @@
         <!-- Body Grid: Sidebar + Store Grid Area -->
         <div class="store-body-grid">
 
-            <!-- Left Sidebar Category Filter -->
+            <!-- Left Sidebar Category Filter (Matches Reference Image) -->
             <aside class="store-sidebar">
                 <ul class="sidebar-nav-list">
                     <li class="sidebar-nav-item active" data-category="all">
                         <span class="nav-icon">✦</span>
                         <span>All Items</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="horology">
-                        <span class="nav-icon">🕰️</span>
-                        <span>Horology</span>
+                    <li class="sidebar-nav-item" data-category="sandals">
+                        <span class="nav-icon">👡</span>
+                        <span>Sandals</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="sandglasses">
-                        <span class="nav-icon">⏳</span>
-                        <span>Sandglasses</span>
+                    <li class="sidebar-nav-item" data-category="sneakers">
+                        <span class="nav-icon">👟</span>
+                        <span>Sneakers</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="calendars">
-                        <span class="nav-icon">📅</span>
-                        <span>Calendars</span>
+                    <li class="sidebar-nav-item" data-category="boots">
+                        <span class="nav-icon">🥾</span>
+                        <span>Boots</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="decoratives">
-                        <span class="nav-icon">☀️</span>
-                        <span>Sundials</span>
+                    <li class="sidebar-nav-item" data-category="formal">
+                        <span class="nav-icon">👞</span>
+                        <span>Formal Shoes</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="casual">
+                        <span class="nav-icon">🥿</span>
+                        <span>Casual Shoes</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="adventure">
+                        <span class="nav-icon">🎒</span>
+                        <span>Adventure Gear</span>
                     </li>
                 </ul>
+
+                <!-- Carved Motto Crest (Matches Reference Image) -->
+                <div class="sidebar-chronos-crest">
+                    <span class="chronos-crest-icon">🧭</span>
+                    <p class="chronos-quote">EVERY STEP TELLS A STORY</p>
+                </div>
             </aside>
 
             <!-- Main Store Area -->
@@ -94,7 +108,7 @@
                 <div class="store-filter-bar">
                     <div class="search-input-wrapper">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="storeSearchInput" class="store-search-input" placeholder="Search chronometers, sandglasses, sundials...">
+                        <input type="text" id="storeSearchInput" class="store-search-input" placeholder="Search footwear, boots, sandals...">
                     </div>
 
                     <select id="storeSortSelect" class="store-sort-select">
@@ -105,7 +119,7 @@
                     </select>
                 </div>
 
-                <!-- Store Items Grid -->
+                <!-- Store Items Grid (6 Cards in 2 Rows of 3) -->
                 <div id="storeItemsGrid" class="store-items-grid">
                     <% island.products.forEach(function(p) { %>
                         <article class="store-item-card"
@@ -122,9 +136,7 @@
 
                             <div class="item-asset-box">
                                 <div class="item-asset-glow"></div>
-                                <div style="font-size: 5rem; z-index: 2; filter: drop-shadow(0 10px 16px rgba(0,0,0,0.7));">
-                                    <%= p.icon || '⏳' %>
-                                </div>
+                                <img src="<%= p.image %>" alt="<%= p.name %>" class="item-asset-img">
                             </div>
 
                             <h3 class="item-title"><%= p.name %></h3>
@@ -167,7 +179,7 @@
     </aside>
 
     <!-- Unified Island Store JS Engine -->
-    <script src="/js/island-store.js?v=store_v2"></script>
+    <script src="/js/island-store.js?v=chronos_v1"></script>
 
 </body>
 

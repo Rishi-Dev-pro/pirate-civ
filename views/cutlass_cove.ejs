@@ -13,18 +13,18 @@
 
     <!-- Base Pirate Styles & Dedicated Island Store Styles -->
     <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
-    <link rel="stylesheet" href="/css/island-store.css?v=store_v2">
+    <link rel="stylesheet" href="/css/island-store.css?v=cutlass_v1">
 </head>
 
-<body class="island-store-body">
+<body class="island-store-body theme-cutlass">
 
-    <!-- Atmospheric Backdrop -->
+    <!-- Fixed Atmospheric Backdrop (Cutlass Cove Corsair Citadel & Waterfalls Harbor Artwork) -->
     <div class="store-backdrop">
-        <img src="/images/nautical-grid.png" alt="Cutlass Cove" class="store-bg-img" style="opacity: 0.35;">
-        <div class="store-vignette"></div>
+        <img src="/images/cutlass-bg.jpg" alt="Cutlass Cove Corsair Citadel" class="store-bg-img" style="opacity: 0.90; object-position: center 25%;">
+        <div class="store-vignette" style="background: radial-gradient(circle at 75% 45%, transparent 20%, rgba(6, 12, 18, 0.55) 65%, rgba(2, 6, 10, 0.92) 100%), linear-gradient(180deg, rgba(4, 8, 12, 0.45) 0%, transparent 20%, rgba(4, 8, 12, 0.7) 85%, #040608 100%);"></div>
     </div>
 
-    <!-- Adjusted Reusable Navbar -->
+    <!-- Adjusted Reusable Navbar (Non-colliding, Flow-Anchored) -->
     <%- include("partials/header") %>
 
     <!-- Master Store Stage -->
@@ -33,12 +33,13 @@
         <!-- Top Bar: Center Title & Right Header Controls -->
         <header class="store-top-bar">
             <div class="store-header-center">
-                <span class="store-badge-embargo"><%= island.badge || "CORSAIR WEAPONRY HARBOR" %></span>
+                <span class="store-badge-embargo">WEAPONRY</span>
                 <h1 class="store-main-title">
-                    <span class="store-title-icon">🗡️</span>
+                    <span class="store-title-icon">🧭</span>
                     <span><%= island.name %></span>
                 </h1>
-                <p class="store-subtitle"><%= island.desc %></p>
+                <div class="store-subheading"><%= island.title || "ELECTRONICS" %></div>
+                <p class="store-subtitle"><%= island.desc || "Innovative tools for modern explorers. Power your journey." %></p>
             </div>
 
             <div class="store-header-controls">
@@ -61,30 +62,56 @@
         <!-- Body Grid: Sidebar + Store Grid Area -->
         <div class="store-body-grid">
 
-            <!-- Left Sidebar Category Filter -->
+            <!-- Left Sidebar Category Filter (Matches Reference Image) -->
             <aside class="store-sidebar">
                 <ul class="sidebar-nav-list">
                     <li class="sidebar-nav-item active" data-category="all">
                         <span class="nav-icon">✦</span>
                         <span>All Items</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="sabres">
-                        <span class="nav-icon">⚔️</span>
-                        <span>Boarding Sabres</span>
+                    <li class="sidebar-nav-item" data-category="smart">
+                        <span class="nav-icon">📱</span>
+                        <span>Smart Devices</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="daggers">
-                        <span class="nav-icon">🗡️</span>
-                        <span>Parrying Daggers</span>
+                    <li class="sidebar-nav-item" data-category="audio">
+                        <span class="nav-icon">🎧</span>
+                        <span>Audio & Sound</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="cutlasses">
-                        <span class="nav-icon">🔪</span>
-                        <span>Heavy Cutlasses</span>
+                    <li class="sidebar-nav-item" data-category="computing">
+                        <span class="nav-icon">💻</span>
+                        <span>Computing</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="firearms">
-                        <span class="nav-icon">💥</span>
-                        <span>Dragon Blunderbusses</span>
+                    <li class="sidebar-nav-item" data-category="gaming">
+                        <span class="nav-icon">🎮</span>
+                        <span>Gaming Gear</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="cameras">
+                        <span class="nav-icon">📷</span>
+                        <span>Cameras</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="accessories">
+                        <span class="nav-icon">🔌</span>
+                        <span>Accessories</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="power">
+                        <span class="nav-icon">🔋</span>
+                        <span>Power & Charging</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="drones">
+                        <span class="nav-icon">🛸</span>
+                        <span>Drones & Gadgets</span>
                     </li>
                 </ul>
+
+                <!-- Carved Motto Crest (Matches Reference Image) -->
+                <div class="sidebar-cutlass-crest">
+                    <span class="cutlass-crest-icon">🧭</span>
+                    <div class="cutlass-motto-lines">
+                        <span>TECHNOLOGY</span>
+                        <span>FUELS</span>
+                        <span>NEW HORIZONS</span>
+                    </div>
+                </div>
             </aside>
 
             <!-- Main Store Area -->
@@ -94,7 +121,7 @@
                 <div class="store-filter-bar">
                     <div class="search-input-wrapper">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="storeSearchInput" class="store-search-input" placeholder="Search sabres, daggers, cutlasses...">
+                        <input type="text" id="storeSearchInput" class="store-search-input" placeholder="Search electronics, gadgets, accessories...">
                     </div>
 
                     <select id="storeSortSelect" class="store-sort-select">
@@ -105,7 +132,7 @@
                     </select>
                 </div>
 
-                <!-- Store Items Grid -->
+                <!-- Store Items Grid (6 Cards in 2 Rows of 3) -->
                 <div id="storeItemsGrid" class="store-items-grid">
                     <% island.products.forEach(function(p) { %>
                         <article class="store-item-card"
@@ -122,9 +149,7 @@
 
                             <div class="item-asset-box">
                                 <div class="item-asset-glow"></div>
-                                <div style="font-size: 5rem; z-index: 2; filter: drop-shadow(0 10px 16px rgba(0,0,0,0.7));">
-                                    <%= p.icon || '🗡️' %>
-                                </div>
+                                <img src="<%= p.image %>" alt="<%= p.name %>" class="item-asset-img">
                             </div>
 
                             <h3 class="item-title"><%= p.name %></h3>
@@ -167,7 +192,7 @@
     </aside>
 
     <!-- Unified Island Store JS Engine -->
-    <script src="/js/island-store.js?v=store_v2"></script>
+    <script src="/js/island-store.js?v=cutlass_v1"></script>
 
 </body>
 

@@ -13,32 +13,40 @@
 
     <!-- Base Pirate Styles & Dedicated Island Store Styles -->
     <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
-    <link rel="stylesheet" href="/css/island-store.css?v=store_v2">
+    <link rel="stylesheet" href="/css/island-store.css?v=kraken_v1">
 </head>
 
-<body class="island-store-body">
+<body class="island-store-body theme-kraken">
 
-    <!-- Atmospheric Backdrop -->
+    <!-- Fixed Atmospheric Backdrop (Kraken Abyssal Citadel Artwork) -->
     <div class="store-backdrop">
-        <img src="/images/nautical-grid.png" alt="Kraken's Vault" class="store-bg-img" style="opacity: 0.35;">
-        <div class="store-vignette"></div>
+        <img src="/images/kraken-bg.jpg" alt="Kraken's Vault Abyssal Citadel" class="store-bg-img" style="opacity: 0.82; object-position: center 30%;">
+        <div class="store-vignette" style="background: radial-gradient(circle at 65% 45%, transparent 25%, rgba(2, 8, 12, 0.6) 65%, rgba(1, 4, 8, 0.94) 100%), linear-gradient(180deg, rgba(2, 6, 10, 0.5) 0%, transparent 25%, rgba(2, 6, 10, 0.75) 85%, #020406 100%);"></div>
     </div>
 
-    <!-- Adjusted Reusable Navbar -->
+    <!-- Adjusted Reusable Navbar (Non-colliding, Flow-Anchored) -->
     <%- include("partials/header") %>
 
     <!-- Master Store Stage -->
     <main class="island-store-wrapper">
 
+        <!-- Quick Logbook & Archipelago Navigation Bar (Matches Reference Image) -->
+        <nav class="store-quick-nav-bar">
+            <span class="quick-nav-label">📜 LOGBOOK:</span>
+            <a href="/#sea-chart-section" class="quick-nav-btn">🏰 GRAND BAZAAR</a>
+            <a href="/?branch=apparel#sea-chart-section" class="quick-nav-btn">⚔️ PORT OF CORSAIR APPAREL</a>
+            <a href="/?branch=relics#sea-chart-section" class="quick-nav-btn btn-return-capital">🔄 RETURN TO CAPITAL</a>
+        </nav>
+
         <!-- Top Bar: Center Title & Right Header Controls -->
         <header class="store-top-bar">
             <div class="store-header-center">
-                <span class="store-badge-embargo"><%= island.badge || "CURSED RELICS & TREASURE" %></span>
+                <span class="store-badge-embargo">CURSED RELICS</span>
                 <h1 class="store-main-title">
-                    <span class="store-title-icon">🔮</span>
+                    <span class="store-title-icon">🔱</span>
                     <span><%= island.name %></span>
                 </h1>
-                <p class="store-subtitle"><%= island.desc %></p>
+                <p class="store-subtitle">Accessories from the depths</p>
             </div>
 
             <div class="store-header-controls">
@@ -61,30 +69,44 @@
         <!-- Body Grid: Sidebar + Store Grid Area -->
         <div class="store-body-grid">
 
-            <!-- Left Sidebar Category Filter -->
+            <!-- Left Sidebar Category Filter (Matches Reference Image) -->
             <aside class="store-sidebar">
                 <ul class="sidebar-nav-list">
                     <li class="sidebar-nav-item active" data-category="all">
                         <span class="nav-icon">✦</span>
                         <span>All Items</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="relics">
-                        <span class="nav-icon">🖤</span>
-                        <span>Black Pearls</span>
+                    <li class="sidebar-nav-item" data-category="amulets">
+                        <span class="nav-icon">📿</span>
+                        <span>Amulets</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="doubloons">
-                        <span class="nav-icon">🪙</span>
-                        <span>Sunken Gold</span>
+                    <li class="sidebar-nav-item" data-category="rings">
+                        <span class="nav-icon">💍</span>
+                        <span>Rings</span>
                     </li>
                     <li class="sidebar-nav-item" data-category="charms">
                         <span class="nav-icon">🦷</span>
-                        <span>Eldritch Charms</span>
+                        <span>Charms</span>
                     </li>
-                    <li class="sidebar-nav-item" data-category="compasses">
-                        <span class="nav-icon">🧭</span>
-                        <span>Cursed Compasses</span>
+                    <li class="sidebar-nav-item" data-category="relics">
+                        <span class="nav-icon">❄️</span>
+                        <span>Relics</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="trinkets">
+                        <span class="nav-icon">☸️</span>
+                        <span>Trinkets</span>
+                    </li>
+                    <li class="sidebar-nav-item" data-category="artifacts">
+                        <span class="nav-icon">🔮</span>
+                        <span>Artifacts</span>
                     </li>
                 </ul>
+
+                <!-- Carved Kraken Crest & Motto (Matches Reference Image) -->
+                <div class="sidebar-kraken-crest">
+                    <span class="kraken-crest-icon">🐙</span>
+                    <p class="kraken-quote">SOME TREASURES SHOULD REMAIN LOST...</p>
+                </div>
             </aside>
 
             <!-- Main Store Area -->
@@ -94,7 +116,7 @@
                 <div class="store-filter-bar">
                     <div class="search-input-wrapper">
                         <span class="search-icon">🔍</span>
-                        <input type="text" id="storeSearchInput" class="store-search-input" placeholder="Search abyssal pearls, amulets, gold...">
+                        <input type="text" id="storeSearchInput" class="store-search-input" placeholder="Search accessories, relics, trinkets...">
                     </div>
 
                     <select id="storeSortSelect" class="store-sort-select">
@@ -122,9 +144,7 @@
 
                             <div class="item-asset-box">
                                 <div class="item-asset-glow"></div>
-                                <div style="font-size: 5rem; z-index: 2; filter: drop-shadow(0 10px 16px rgba(0,0,0,0.7));">
-                                    <%= p.icon || '🔮' %>
-                                </div>
+                                <img src="<%= p.image %>" alt="<%= p.name %>" class="item-asset-img">
                             </div>
 
                             <h3 class="item-title"><%= p.name %></h3>
@@ -167,7 +187,7 @@
     </aside>
 
     <!-- Unified Island Store JS Engine -->
-    <script src="/js/island-store.js?v=store_v2"></script>
+    <script src="/js/island-store.js?v=kraken_v1"></script>
 
 </body>
 
