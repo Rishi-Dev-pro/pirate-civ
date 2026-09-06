@@ -1,0 +1,755 @@
+/* =========================================================
+   PIRATE CARTOGRAPHIC ISLAND STORE ENGINE - MASTER STYLESHEET
+   Matches Astrolabe Atoll Reference Mockup Exactly
+   Shared across all 6 Islands with custom background themes
+========================================================= */
+
+:root {
+    --gold-primary: #d49339;
+    --gold-bright: #ffcc55;
+    --gold-gradient: linear-gradient(180deg, #fff5d6 0%, #e5b35c 50%, #b87b22 100%);
+    --gold-border: rgba(212, 147, 57, 0.55);
+    
+    --card-bg: linear-gradient(180deg, rgba(10, 20, 30, 0.82) 0%, rgba(6, 12, 18, 0.92) 100%);
+    --card-border: rgba(56, 189, 248, 0.28);
+    --card-border-hover: rgba(212, 147, 57, 0.75);
+    
+    --text-primary: #fff3d4;
+    --text-muted: #b8a892;
+    --text-accent: #f5c35c;
+    
+    --btn-bronze: linear-gradient(180deg, #9a6828 0%, #684214 100%);
+    --btn-bronze-hover: linear-gradient(180deg, #b87c30 0%, #7d4f18 100%);
+}
+
+/* Base resets & typography */
+* {
+    box-sizing: border-box;
+}
+
+body.island-store-body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    background-color: #06080c;
+    color: var(--text-primary);
+    font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow-x: hidden;
+}
+
+/* =========================================================
+   1. NAVBAR ADJUSTMENT (PREVENTS COLLISION OR OVERRIDE)
+========================================================= */
+
+body.island-store-body .navbar {
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: min(1360px, calc(100% - 48px)) !important;
+    margin: 12px auto 14px auto !important;
+    z-index: 100;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.7), 0 0 15px rgba(212, 147, 57, 0.15) !important;
+    border: 1px solid rgba(212, 147, 57, 0.35) !important;
+}
+
+/* =========================================================
+   2. FIXED FULL-PAGE ATMOSPHERIC BACKDROP
+========================================================= */
+
+.store-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.store-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 25%;
+    opacity: 0.72;
+    filter: contrast(1.08) brightness(0.85);
+}
+
+.store-vignette {
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(circle at 75% 45%, transparent 20%, rgba(4, 8, 12, 0.6) 65%, rgba(2, 4, 8, 0.92) 100%),
+        linear-gradient(180deg, rgba(4, 8, 12, 0.45) 0%, transparent 20%, rgba(4, 8, 12, 0.7) 85%, #040608 100%);
+}
+
+/* =========================================================
+   3. MASTER STORE STAGE & TOP BAR (MATCHES MOCKUP)
+========================================================= */
+
+.island-store-wrapper {
+    position: relative;
+    z-index: 10;
+    max-width: 1360px;
+    margin: 0 auto;
+    padding: 0 24px 60px 24px;
+}
+
+/* Top Bar: Center Title & Right Action Controls */
+.store-top-bar {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 10px 0 24px 0;
+    min-height: 100px;
+}
+
+/* Center Title & Subtitle */
+.store-header-center {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.store-badge-embargo {
+    display: inline-block;
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--gold-bright);
+    background: rgba(12, 16, 22, 0.75);
+    border: 1px solid rgba(212, 147, 57, 0.45);
+    padding: 3px 14px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    box-shadow: 0 0 10px rgba(212, 147, 57, 0.15);
+}
+
+.store-main-title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 2.35rem;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    color: #fff4dc;
+    text-transform: uppercase;
+    margin: 0 0 6px 0;
+    text-shadow: 0 2px 14px rgba(0, 0, 0, 0.9), 0 0 20px rgba(212, 147, 57, 0.35);
+}
+
+.store-title-icon {
+    font-size: 1.8rem;
+    filter: drop-shadow(0 0 8px var(--gold-bright));
+}
+
+.store-subtitle {
+    font-size: 0.94rem;
+    color: #d1c3a7;
+    margin: 0;
+    line-height: 1.5;
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.9);
+}
+
+/* Right Controls: Doubloons Pill, Cart Button, Close Button */
+.store-header-controls {
+    position: absolute;
+    right: 0;
+    top: 6px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.doubloons-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(14, 18, 24, 0.85);
+    border: 1px solid rgba(212, 147, 57, 0.5);
+    border-radius: 20px;
+    padding: 7px 16px;
+    font-family: "Cinzel", serif;
+    font-size: 0.86rem;
+    font-weight: 600;
+    color: #fff2d1;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.6), inset 0 0 10px rgba(212, 147, 57, 0.1);
+}
+
+.doubloons-pill .coin-icon {
+    font-size: 1rem;
+    color: #f5c35c;
+}
+
+.btn-store-cart {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--btn-bronze);
+    border: 1px solid var(--gold-primary);
+    border-radius: 6px;
+    padding: 7px 18px;
+    font-family: "Cinzel", serif;
+    font-size: 0.84rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    color: #fff8e8;
+    cursor: pointer;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.6), 0 0 12px rgba(212, 147, 57, 0.25);
+    transition: all 0.25s ease;
+}
+
+.btn-store-cart:hover {
+    background: var(--btn-bronze-hover);
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.8), 0 0 18px var(--gold-bright);
+    transform: translateY(-1px);
+}
+
+.btn-store-close {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(14, 18, 24, 0.85);
+    border: 1px solid rgba(212, 147, 57, 0.55);
+    color: #ffd880;
+    font-size: 1.3rem;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.7);
+    transition: all 0.25s ease;
+}
+
+.btn-store-close:hover {
+    border-color: #fff;
+    color: #fff;
+    background: rgba(30, 20, 15, 0.95);
+    box-shadow: 0 0 16px var(--gold-bright);
+    transform: scale(1.08);
+}
+
+/* =========================================================
+   4. TWO-COLUMN LAYOUT: SIDEBAR + MAIN STORE GRID
+========================================================= */
+
+.store-body-grid {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 28px;
+    align-items: flex-start;
+}
+
+/* Left Sidebar Categories (Matches Mockup Frame) */
+.store-sidebar {
+    background: linear-gradient(180deg, rgba(14, 18, 24, 0.88) 0%, rgba(8, 12, 16, 0.94) 100%);
+    border: 1px solid rgba(212, 147, 57, 0.35);
+    border-radius: 8px;
+    padding: 18px 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7), inset 0 0 15px rgba(212, 147, 57, 0.08);
+    position: relative;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.sidebar-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #cfbf9e;
+    cursor: pointer;
+    border: 1px solid transparent;
+    background: transparent;
+    transition: all 0.25s ease;
+    user-select: none;
+}
+
+.sidebar-nav-item .nav-icon {
+    font-size: 1.15rem;
+    filter: drop-shadow(0 0 4px rgba(212, 147, 57, 0.3));
+}
+
+.sidebar-nav-item:hover {
+    color: #fff2d1;
+    background: rgba(212, 147, 57, 0.12);
+    border-color: rgba(212, 147, 57, 0.3);
+}
+
+.sidebar-nav-item.active {
+    color: #fff9e6;
+    background: linear-gradient(90deg, rgba(212, 147, 57, 0.28) 0%, rgba(212, 147, 57, 0.06) 100%);
+    border: 1px solid var(--gold-border);
+    box-shadow: inset 0 0 12px rgba(212, 147, 57, 0.2), 0 0 14px rgba(212, 147, 57, 0.25);
+}
+
+/* =========================================================
+   5. SEARCH & SORT BAR (MATCHES MOCKUP)
+========================================================= */
+
+.store-main-area {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.store-filter-bar {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 16px;
+    align-items: center;
+}
+
+.search-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-input-wrapper .search-icon {
+    position: absolute;
+    left: 14px;
+    color: #7a8a9a;
+    font-size: 0.95rem;
+    pointer-events: none;
+}
+
+.store-search-input {
+    width: 100%;
+    height: 44px;
+    background: rgba(8, 14, 22, 0.85);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 0 16px 0 42px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.88rem;
+    color: #fff;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+    outline: none;
+    transition: all 0.25s ease;
+    backdrop-filter: blur(8px);
+}
+
+.store-search-input:focus {
+    border-color: var(--gold-primary);
+    box-shadow: 0 0 12px rgba(212, 147, 57, 0.35), inset 0 2px 8px rgba(0, 0, 0, 0.8);
+}
+
+.store-search-input::placeholder {
+    color: #6e7e8e;
+}
+
+.store-sort-select {
+    height: 44px;
+    background: rgba(8, 14, 22, 0.85);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 0 14px;
+    font-family: "Inter", sans-serif;
+    font-size: 0.86rem;
+    color: #cfbf9e;
+    cursor: pointer;
+    outline: none;
+    box-shadow: inset 0 2px 8px rgba(0, 0, 0, 0.6);
+    transition: all 0.25s ease;
+    backdrop-filter: blur(8px);
+}
+
+.store-sort-select:focus {
+    border-color: var(--gold-primary);
+}
+
+.store-sort-select option {
+    background: #0b1218;
+    color: #fff;
+}
+
+/* =========================================================
+   6. PRODUCTS GRID & ITEM BOXES (MATCHES MOCKUP EXACTLY)
+========================================================= */
+
+.store-items-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 22px;
+}
+
+.store-item-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 16px 16px 18px 16px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+    overflow: hidden;
+}
+
+.store-item-card:hover {
+    border-color: var(--card-border-hover);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75), 0 0 20px rgba(212, 147, 57, 0.25);
+    transform: translateY(-3px);
+}
+
+/* Top Card Bar: NEW Badge & Wishlist Heart */
+.card-header-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 8px;
+}
+
+.tag-new {
+    font-family: "Cinzel", serif;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    color: #f5c35c;
+    border: 1px solid rgba(212, 147, 57, 0.6);
+    border-radius: 4px;
+    padding: 2px 7px;
+    text-transform: uppercase;
+}
+
+.btn-wishlist {
+    background: none;
+    border: none;
+    color: #8da0b0;
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 2px;
+    line-height: 1;
+    transition: all 0.25s ease;
+}
+
+.btn-wishlist:hover {
+    color: #f87171;
+    transform: scale(1.18);
+}
+
+.btn-wishlist.active {
+    color: #ef4444;
+    filter: drop-shadow(0 0 6px rgba(239, 68, 68, 0.6));
+}
+
+/* Item Display Box (Transparent PNG Asset Showcase) */
+.item-asset-box {
+    width: 100%;
+    height: 185px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    margin: 4px 0 12px 0;
+}
+
+.item-asset-glow {
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(212, 147, 57, 0.15) 0%, rgba(56, 189, 248, 0.06) 45%, transparent 70%);
+    pointer-events: none;
+}
+
+.item-asset-img {
+    max-width: 90%;
+    max-height: 160px;
+    object-fit: contain;
+    filter: drop-shadow(0 14px 20px rgba(0, 0, 0, 0.75));
+    transition: transform 0.35s ease;
+    z-index: 2;
+}
+
+.store-item-card:hover .item-asset-img {
+    transform: scale(1.06) translateY(-2px);
+}
+
+/* Card Content: Title, Description, Price & Rating */
+.item-title {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    color: #fff2d1;
+    text-transform: uppercase;
+    margin: 0 0 6px 0;
+    min-height: 26px;
+}
+
+.item-desc {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: #a89a84;
+    margin: 0 0 14px 0;
+    min-height: 38px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.item-meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    padding-top: 8px;
+    border-top: 1px dashed rgba(212, 147, 57, 0.2);
+}
+
+.item-price {
+    font-family: "Cinzel", serif;
+    font-size: 0.96rem;
+    font-weight: 700;
+    color: var(--text-accent);
+}
+
+.item-rating {
+    color: #eab308;
+    font-size: 0.88rem;
+    letter-spacing: 2px;
+}
+
+/* Add to Cart Button */
+.btn-add-cart {
+    width: 100%;
+    background: var(--btn-bronze);
+    border: 1px solid var(--gold-primary);
+    border-radius: 4px;
+    padding: 10px 12px;
+    font-family: "Cinzel", serif;
+    font-size: 0.82rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    color: #fff7e4;
+    text-transform: uppercase;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+    transition: all 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-add-cart:hover {
+    background: var(--btn-bronze-hover);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.7), 0 0 14px var(--gold-bright);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* =========================================================
+   7. INTERACTIVE CARGO CART MODAL DRAWER
+========================================================= */
+
+.store-cart-drawer {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: min(420px, 90vw);
+    height: 100vh;
+    background: linear-gradient(180deg, #10161e 0%, #080c10 100%);
+    border-left: 2px solid var(--gold-primary);
+    box-shadow: -10px 0 40px rgba(0, 0, 0, 0.85);
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    transform: translateX(100%);
+    transition: transform 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.store-cart-drawer.open {
+    transform: translateX(0);
+}
+
+.cart-drawer-header {
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(212, 147, 57, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.cart-drawer-title {
+    font-family: "Cinzel", serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff2d1;
+    margin: 0;
+}
+
+.btn-cart-close {
+    background: none;
+    border: none;
+    color: #d49339;
+    font-size: 1.6rem;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.cart-drawer-items {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.cart-empty-msg {
+    text-align: center;
+    color: var(--text-muted);
+    font-style: italic;
+    margin-top: 40px;
+}
+
+.cart-item-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: rgba(18, 24, 32, 0.7);
+    border: 1px solid rgba(212, 147, 57, 0.25);
+    border-radius: 6px;
+    padding: 10px 14px;
+}
+
+.cart-item-name {
+    font-family: "Cinzel", serif;
+    font-size: 0.88rem;
+    color: #fff0d0;
+}
+
+.cart-item-price {
+    font-size: 0.85rem;
+    color: var(--text-accent);
+}
+
+.btn-remove-item {
+    background: none;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    font-size: 1rem;
+    padding: 4px;
+}
+
+.cart-drawer-footer {
+    padding: 20px 24px;
+    border-top: 1px solid rgba(212, 147, 57, 0.3);
+    background: #090e14;
+}
+
+.cart-total-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: "Cinzel", serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold-bright);
+    margin-bottom: 16px;
+}
+
+.btn-checkout-cargo {
+    width: 100%;
+    background: var(--btn-bronze);
+    border: 1px solid var(--gold-bright);
+    color: #fff;
+    padding: 12px;
+    font-family: "Cinzel", serif;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-checkout-cargo:hover {
+    background: var(--btn-bronze-hover);
+    box-shadow: 0 0 16px var(--gold-bright);
+}
+
+/* Toast Notifications */
+.store-toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: rgba(14, 20, 28, 0.95);
+    border: 1px solid var(--gold-primary);
+    color: #fff7df;
+    padding: 14px 22px;
+    border-radius: 6px;
+    font-family: "Cinzel", serif;
+    font-size: 0.9rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.8), 0 0 15px rgba(212, 147, 57, 0.4);
+    z-index: 2500;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: all 0.3s ease;
+    pointer-events: none;
+}
+
+.store-toast.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* =========================================================
+   8. RESPONSIVE DESIGN FOR SMALLER SCREENS
+========================================================= */
+
+@media (max-width: 1100px) {
+    .store-items-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 820px) {
+    .store-body-grid {
+        grid-template-columns: 1fr;
+    }
+    .store-header-controls {
+        position: static;
+        justify-content: center;
+        margin-top: 14px;
+    }
+    .store-top-bar {
+        flex-direction: column;
+        align-items: center;
+    }
+    .store-filter-bar {
+        grid-template-columns: 1fr;
+    }
+    .store-items-grid {
+        grid-template-columns: 1fr;
+    }
+}

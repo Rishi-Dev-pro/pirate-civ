@@ -253,5 +253,36 @@ router.post(
 
 
 // =====================================================
+// DEDICATED ISLAND VIEWS (6 LEAF NODES)
+// =====================================================
 
-export default router;
+import { renderIslandPage } from "../controller/islands.js";
+
+// Parametric routes
+router.get("/island/:islandId", authMiddleware, renderIslandPage());
+router.get("/islands/:islandId", authMiddleware, renderIslandPage());
+
+// Named convenience routes for the 6 islands
+router.get("/island/astrolabe", authMiddleware, renderIslandPage("astrolabe"));
+router.get("/island/chronos", authMiddleware, renderIslandPage("chronos"));
+router.get("/island/kraken_vault", authMiddleware, renderIslandPage("kraken_vault"));
+router.get("/island/kraken-vault", authMiddleware, renderIslandPage("kraken_vault"));
+router.get("/island/cutlass_cove", authMiddleware, renderIslandPage("cutlass_cove"));
+router.get("/island/cutlass-cove", authMiddleware, renderIslandPage("cutlass_cove"));
+router.get("/island/velvet_isle", authMiddleware, renderIslandPage("velvet_isle"));
+router.get("/island/velvet-isle", authMiddleware, renderIslandPage("velvet_isle"));
+router.get("/island/booty_cay", authMiddleware, renderIslandPage("booty_cay"));
+router.get("/island/booty-cay", authMiddleware, renderIslandPage("booty_cay"));
+
+// Direct shorthand routes
+router.get("/astrolabe", authMiddleware, renderIslandPage("astrolabe"));
+router.get("/chronos", authMiddleware, renderIslandPage("chronos"));
+router.get("/kraken-vault", authMiddleware, renderIslandPage("kraken_vault"));
+router.get("/cutlass-cove", authMiddleware, renderIslandPage("cutlass_cove"));
+router.get("/velvet-isle", authMiddleware, renderIslandPage("velvet_isle"));
+router.get("/booty-cay", authMiddleware, renderIslandPage("booty_cay"));
+
+
+// =====================================================
+
+export default router;

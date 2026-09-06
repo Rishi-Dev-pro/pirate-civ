@@ -294,6 +294,21 @@
         // Hide breadcrumbs initially
         renderBreadcrumbs();
 
+        // Handle return from dedicated island view (?branch=relics or ?branch=apparel)
+        const urlParams = new URLSearchParams(window.location.search);
+        const branchParam = urlParams.get("branch");
+        if (branchParam === "relics" || branchParam === "apparel") {
+            setTimeout(() => {
+                transitionToLevelTwo();
+                setTimeout(() => {
+                    const branchObj = state.branchEls.find(b => b.node.id === branchParam);
+                    if (branchObj && branchObj.node && branchObj.el) {
+                        transitionToLevelThree(branchObj.node, branchObj.el);
+                    }
+                }, 2600);
+            }, 400);
+        }
+
         // Handle resize
         let resizeTimer;
         window.addEventListener("resize", () => {
@@ -781,7 +796,8 @@
             if (!node) return;
             const leafEl = createCountryElement(node, "state-leaf is-animating", coord);
             leafEl.addEventListener("click", () => {
-                openProductModal(node);
+                // Navigate to the dedicated EJS view file for this island
+                window.location.href = `/island/${node.id}`;
             });
             nodesLayer.appendChild(leafEl);
             state.leafEls.push({ node, el: leafEl });
@@ -1000,7 +1016,7 @@
                         <h4 class="plaque-title">${titleHtml}</h4>
                         <p class="plaque-subtitle">${nodeData.title}</p>
                         <div class="plaque-action-prompt">
-                            ${nodeData.products ? "INSPECT CARGO ➔" : "CHART ROUTE ➔"}
+                            ${nodeData.products ? "EXPLORE ISLAND ➔" : "CHART ROUTE ➔"}
                         </div>
                     </div>
                 </div>
