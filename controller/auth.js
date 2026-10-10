@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import crypto from "crypto";
 import User from "../models/user.js";
+import Cart from "../models/cart.js";
 
 
 /* ==========================================
@@ -325,12 +326,18 @@ const loginUser = async (req, res) => {
             ? 1000 * 60 * 60 * 24 * 30  // 30 days
             : 1000 * 60 * 60 * 24;       // 24 hours standard session
 
+        /* ==========================
+           Capture Pre-Login Session Cart
+        ========================== */
+
+        const preLoginSessionCart = req.session.cart;
+
 
         /* ==========================
            Regenerate Session
         ========================== */
 
-        req.session.regenerate((error) => {
+        req.session.regenerate(async (error) => {
 
             if (error) {
 
@@ -358,6 +365,19 @@ const loginUser = async (req, res) => {
 
             req.session.cookie.maxAge =
                 sessionMaxAge;
+
+
+            /* ==========================
+               Migrate Session Cart to DB
+            ========================== */
+
+            if (preLoginSessionCart) {
+                try {
+                    await Cart.mergeSessionCart(user._id, preLoginSessionCart);
+                } catch (cartErr) {
+                    console.error("Cart migration error during login:", cartErr.message);
+                }
+            }
 
 
             /* ==========================

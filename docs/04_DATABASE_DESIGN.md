@@ -296,7 +296,27 @@ const cartSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+// Methods & Statics:
+// 1. cart.addItem(productId, quantity): Merges quantities without duplicating product entries
+// 2. cart.removeItem(productId, quantity): Decrements or removes items
+// 3. Cart.findByUser(userId): Queries user's persistent cart
+// 4. Cart.mergeSessionCart(userId, sessionCart): Migrates session cart upon authentication
 ```
+
+#### 2.3.1 Persistent Cart Architecture & Session Integration
+* **Cardinality:** `User (1) ──── owns ──── (1) Cart ──── contains ──── (N) Cart Items`
+* **Authoritative Source:** MongoDB is the authoritative state for authenticated users' shopping carts.
+* **Session Migration:**
+  - When an unauthenticated user logs in with an active session cart (`req.session.cart`), `Cart.mergeSessionCart(user._id, preLoginSessionCart)` migrates the session items into the database.
+  - If a product already exists in the persistent cart: `quantity = dbQuantity + sessionQuantity`.
+  - If a product is new: the item is appended to `items`.
+  - Duplicate session entries are normalized into a single product entry.
+  - Nonexistent products or invalid quantities (negative, fractional, non-integer) are safely skipped without crashing the login process.
+  - The session cart is cleared upon successful migration.
+* **Ownership & Security:** Carts belong strictly to the authenticated `User._id`. Cart operations cannot be overridden via client-provided user IDs. Sensitive authentication secrets are never stored in or leaked through Cart population.
+* **Stock Invariance:** Adding products to the cart does **not** alter or reserve `Product.stock`. Inventory deduction occurs only during order placement (Phase 2 → Milestone 2.4 / Phase 5).
+
 
 ### 2.4 The Order Collection (`models/order.js`)
 Captures transactions, snapshot pricing, buyer information, and multi-item seller references.

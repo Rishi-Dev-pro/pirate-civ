@@ -4,6 +4,24 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-11] — Phase 2 / Milestone 2.3: Persistent Cart (Cart Model & Session Integration)
+
+### Added
+* Created persistent Mongoose `Cart` model in `models/cart.js` linked to unified `User` model (`user: { type: ObjectId, ref: 'User', unique: true }`).
+* Implemented embedded `cartItemSchema` referencing `Product` (`ref: 'Product'`) with positive integer quantity validation (`min: 1`, `Number.isInteger`).
+* Implemented `cart.addItem(productId, quantity)` instance method normalizing duplicate entries and merging quantities automatically.
+* Implemented `cart.removeItem(productId, quantity)` instance method to decrement or completely remove items.
+* Implemented `Cart.findByUser(userId)` static query helper for fast indexed cart lookups.
+* Implemented `Cart.mergeSessionCart(userId, sessionCart)` static method and integrated it into `loginUser` in `controller/auth.js` to migrate guest session carts into MongoDB upon authentication.
+* Enforced safe error resilience during cart migration: nonexistent products and invalid quantities are skipped without interrupting the login flow.
+* Verified that stock is unaffected by cart operations (`Product.stock` is invariant to cart additions).
+
+### Tested
+* 42 focused automated tests in `scratch/test_milestone_2_3.js` covering Cart creation, unique user index, quantity validation (0, -1, 1.5 rejected), duplicate item merging, `findByUser`, user isolation, session cart migration, dirty item filtering, and stock invariance (42/42 passed).
+* Regression test suite covering Milestone 2.2 (42/42 passed), Milestone 2.1 (31/31 passed), and Phase 1 full suite (45/45 passed).
+
+---
+
 ## [2026-10-11] — Phase 2 / Milestone 2.2: Seller ↔ Product Relationship
 
 ### Added

@@ -115,9 +115,11 @@ Rather than fragmented templates, all marketplace items share a single, rich, re
 ## 7. Cargo Manifest (Cart), Checkout & Order Tracking
 
 1. **Persistent Cart:**
-   - Backed by MongoDB `Cart` collection.
-   - Synchronized across browser sessions and devices.
-   - Adjusting quantity verifies current product inventory before updating.
+   - Backed by MongoDB `Cart` collection (`models/cart.js`, implemented in Milestone 2.3).
+   - Synchronized across browser sessions and devices for authenticated users.
+   - Automatically migrates and merges guest session cart items into MongoDB upon user login (`Cart.mergeSessionCart`).
+   - Normalizes duplicate items and enforces positive integer quantities.
+   - Future REST endpoints (`/cart/add`, `/cart/remove`) and frontend drawer API wiring belong to Phase 3.
 2. **Checkout (`/checkout`):**
    - Review itemized cargo manifest, subtotal, and grand total in Doubloons.
    - Input delivery coordinates: Destination Port, Island, and Courier Notes.

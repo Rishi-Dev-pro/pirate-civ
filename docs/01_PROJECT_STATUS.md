@@ -28,19 +28,21 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 * **Contact Submission to DB:** Form POST `/contact` persists name, email, subject, and message into MongoDB `contacts` collection via `models/contact.js` and `controller/contact.js`.
 * **Product Model Foundation (`models/product.js`):** Foundational Mongoose model linking items to `User` (seller reference), supporting canonical island enum (6 islands), auto-slug generation, Doubloons pricing, integer non-negative stock, availability toggle, and compound indexes. Tested and verified.
 * **Seller ↔ Product Relationship (`models/product.js`):** Formalized seller ownership between unified `User` (`role: 'seller'`) and `Product` via `seller: ObjectId` reference (`ref: 'User'`). Added static `Product.findBySeller(sellerId)` utilizing `{ seller: 1, createdAt: -1 }` compound index and instance helper `product.isOwnedBy(userOrId)` for safe ownership comparisons. Tested query isolation, empty seller results, and population with secret exclusion.
+* **Persistent Cart Model & Session Integration (`models/cart.js`, `controller/auth.js`):** MongoDB-backed Cart model establishing `User 1 ──── owns ──── 1 Cart` with embedded `items: [{ product, quantity }]`. Enforces positive integer quantities (`min: 1`, `Number.isInteger`), unique user indexing (`unique: true`), duplicate item merging via `cart.addItem()`, `Cart.findByUser(userId)`, safe session cart migration upon authentication (`Cart.mergeSessionCart`), invalid product/quantity filtering without crashing, and user isolation. Tested and verified.
 
 ---
 
 ### 🟡 PARTIALLY COMPLETE
 * **Explorer Page (`/users`):** Displays all registered users from MongoDB in a nautical grid (`views/users.ejs`), but treats them as generic students/users rather than pirate merchants and marketplace sellers.
 * **Responsive UI:** Desktop layouts are polished, but certain island product grids, cart drawers, and mind map canvas scaling require mobile/tablet tuning.
+* **Cargo Cart:** Backend Cart schema, user isolation, and session-to-DB migration are complete; buyer REST endpoints (`/cart/add`, `/cart/remove`) and frontend drawer API wiring belong to Phase 3.
 
 ---
 
 ### 🟠 FRONTEND ONLY (Simulated / Non-Persistent)
 * **Item Listings:** Products displayed on island views and the sea chart mind map are hardcoded in `controller/islands.js` (`ISLANDS_DATA`) and `public/js/mindmap.js` (`REALM_DATA`). Zero products exist in MongoDB.
-* **Add to Cart:** Clicking "Add to Cart" operates strictly inside browser `localStorage` or in-memory JavaScript arrays. No network request is dispatched to Express.
-* **Shopping Cart Drawer:** The slide-out cart UI displays items from `localStorage` without server sync, stock validation, or session continuity across devices.
+* **Add to Cart UI:** Clicking "Add to Cart" on the static island views operates via browser `localStorage` in `public/js/island-store.js`. (Database persistence foundation is ready in `models/cart.js`).
+* **Shopping Cart Drawer UI:** The slide-out cart UI displays items from `localStorage` awaiting Phase 3 endpoint connection.
 * **Checkout Flow:** The checkout button triggers a simulated toast/alert without generating an order record or checking user balances.
 
 ---
@@ -51,7 +53,6 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ---
 
 ### ⚪ NOT IMPLEMENTED
-* **Cart Model (`models/cart.js`):** No server-side schema exists for tracking active user shopping carts.
 * **Order Model (`models/order.js`):** No schema exists for managing orders, order statuses, item snapshots, or shipping addresses.
 * **Product CRUD APIs:** No routes or controllers for creating, updating, or deleting products.
 * **Seller Management Platform:** The entire seller portal (registration, dashboard, inventory management, incoming order tracking) is 0% implemented.
@@ -88,6 +89,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 | **About Page** | 🟢 Nautical lore & cards | 🟢 Functional route | N/A | **100%** |
 | **Product Model** | N/A (Schema) | 🟢 Complete Mongoose model | 🟢 Validated schema & indexes | **100%** |
 | **Seller ↔ Product Relationship** | N/A (Data Architecture) | 🟢 findBySeller & isOwnedBy | 🟢 ref: 'User' & compound index | **100%** |
+| **Persistent Cart (Model & Persistence)** | 🟡 Frontend / localStorage | 🟢 Session migration & Cart helpers | 🟢 Validated schema & unique user index | **85%** |
 | **Entry Map Gateway** | ❌ Missing | ❌ Missing | N/A | **0%** |
 | **Google OAuth** | ❌ Missing | ❌ Missing | 🟡 Schema ready (`googleId`) | **20%** |
 | **Sea Chart / Home** | 🟢 Complete & animated | 🟢 Clean controller route | ❌ Products in JS files | **85%** |

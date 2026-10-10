@@ -18,13 +18,15 @@ stateDiagram-v2
     OrderPlaced --> EmptyCart: Cart Cleared in DB
 ```
 
-### 1.1 Migration from Frontend `localStorage` to MongoDB
-* **Current State:** Cart operations are restricted to client-side `localStorage`. Items vanish if the user logs in from another terminal.
-* **Target State:**
-  1. Authenticated users interact with endpoints `/cart/add`, `/cart/update`, and `/cart/remove`.
-  2. Every operation persists directly to the `Cart` collection in MongoDB.
-  3. If a guest user adds items to `localStorage` before authenticating, upon login the client sends a one-time sync request (`POST /cart/sync`) to merge local items into their MongoDB cart.
-  4. Real-time validation checks that requested quantities do not exceed available `stock` in `Product`.
+### 1.1 Migration from Frontend / Session to MongoDB (Milestone 2.3 Foundation)
+* **Foundation Implemented:**
+  1. `models/cart.js` implements persistent Cart schema linked to unified `User` (`user: { type: ObjectId, ref: 'User', unique: true }`).
+  2. Embedded items structure: `items: [{ product: ObjectId (ref: 'Product'), quantity: Number (min: 1, integer) }]`.
+  3. Built-in helpers: `cart.addItem(productId, quantity)` merges quantities without duplicating entries; `cart.removeItem(productId, quantity)` safely decrements or removes items; `Cart.findByUser(userId)` queries persistent cart.
+  4. Server-Side Session Migration: When an explorer authenticates, `Cart.mergeSessionCart(user._id, preLoginSessionCart)` migrates guest session items into MongoDB, combining existing item quantities and safely filtering nonexistent products and invalid quantities without crashing.
+  5. User Isolation: Cart is strictly bound to `req.user._id`; client-provided user IDs cannot override ownership.
+* **Remaining for Phase 3:** Buyer REST endpoints (`/cart/add`, `/cart/remove`) and client-side drawer API wiring.
+* **Scope Boundary:** Stock reservation, checkout, and order placement belong to Milestone 2.4 / Phase 5.
 
 ---
 
