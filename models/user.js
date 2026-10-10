@@ -38,6 +38,70 @@ const userSchema = new mongoose.Schema({
     },
 
 
+    role: {
+
+        type: String,
+
+        enum: ["buyer", "seller", "admin"],
+
+        default: "buyer"
+
+    },
+
+
+    storeName: {
+
+        type: String,
+
+        trim: true,
+
+        default: null
+
+    },
+
+
+    homeIsland: {
+
+        type: String,
+
+        trim: true,
+
+        default: null
+
+    },
+
+
+    bio: {
+
+        type: String,
+
+        trim: true,
+
+        default: ""
+
+    },
+
+
+    avatar: {
+
+        type: String,
+
+        default: "/images/avatars/default-pirate.png"
+
+    },
+
+
+    googleId: {
+
+        type: String,
+
+        sparse: true,
+
+        unique: true
+
+    },
+
+
     authSecretHash: {
 
         type: String,
