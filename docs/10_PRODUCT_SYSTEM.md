@@ -55,6 +55,23 @@ Every product in Pirate-Civ is classified by two axes:
 2. **Corsair Apparel & Modern Gear:** Cutlass Cove & Velvet Isle.
 3. **Provisions, Treasury & Elixirs:** Booty Cay.
 
+### 3.1 Product Database Schema (`models/product.js`)
+* **`seller`:** `mongoose.Schema.Types.ObjectId`, `ref: 'User'`, required, indexed.
+* **`name`:** `String`, required, trimmed, max 120 characters.
+* **`slug`:** `String`, required, unique, lowercase, trimmed, indexed (auto-generated in kebab-case from name if omitted).
+* **`price`:** `Number` in Doubloons (🪙), required, non-negative (`min: 0`).
+* **`description`:** `String`, required, trimmed, max 2000 characters.
+* **`image`:** `String`, required, default: `"/images/items/default-relic.png"`.
+* **`island`:** `String`, required, enum: `CANONICAL_ISLANDS` (6 islands), indexed.
+* **`category`:** `String`, required, trimmed, indexed.
+* **`stock`:** `Number`, required, default 10, integer validation, non-negative (`min: 0`).
+* **`isAvailable`:** `Boolean`, default `true`, indexed.
+* **`rating`:** `String`, default `"★★★★★"`.
+* **`timestamps`:** `createdAt` and `updatedAt` enabled.
+* **Compound Indexes:**
+  - `{ island: 1, isAvailable: 1 }`: Fast retrieval of active items on themed island pages.
+  - `{ seller: 1, createdAt: -1 }`: Fast merchant inventory lookup.
+
 ---
 
 ## 4. Controlled Product Migration & Seeding Strategy

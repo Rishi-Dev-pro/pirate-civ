@@ -216,7 +216,11 @@ const productSchema = new mongoose.Schema({
         type: Number,
         required: true,
         default: 10,
-        min: [0, "Stock cannot be negative"]
+        min: [0, "Stock cannot be negative"],
+        validate: {
+            validator: Number.isInteger,
+            message: "Stock must be an integer value"
+        }
     },
     isAvailable: {
         type: Boolean,
@@ -230,6 +234,12 @@ const productSchema = new mongoose.Schema({
 }, {
     timestamps: true
 });
+
+// Compound Indexes:
+// 1. { island: 1, isAvailable: 1 } -> Fast island shop filtering
+// 2. { seller: 1, createdAt: -1 }   -> Fast merchant product catalog queries
+productSchema.index({ island: 1, isAvailable: 1 });
+productSchema.index({ seller: 1, createdAt: -1 });
 ```
 
 ### 2.3 The Cart Collection (`models/cart.js`)

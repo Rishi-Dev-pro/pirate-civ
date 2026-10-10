@@ -26,6 +26,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 * **About Page Themed Copy (`views/about.ejs`):** Replaced placeholder text with polished Pirate-Civ dark-fantasy nautical lore, archipelago cards, and merchant trading narrative.
 * **Cleaned Dead Mock Data (`routes/web.js`):** Removed unused `studentInfo` mockup and `student_data` parameter from home route `/`.
 * **Contact Submission to DB:** Form POST `/contact` persists name, email, subject, and message into MongoDB `contacts` collection via `models/contact.js` and `controller/contact.js`.
+* **Product Model Foundation (`models/product.js`):** Foundational Mongoose model linking items to `User` (seller reference), supporting canonical island enum (6 islands), auto-slug generation, Doubloons pricing, integer non-negative stock, availability toggle, and compound indexes. Tested and verified.
 
 ---
 
@@ -50,7 +51,6 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 
 ### ⚪ NOT IMPLEMENTED
 * **Seller Model / Seller Profile:** No schema or controller exists for merchants, store profiles, merchant descriptions, or merchant ratings.
-* **Product Model (`models/product.js`):** No schema exists for catalog products, pricing, stock, categories, or seller relationships.
 * **Cart Model (`models/cart.js`):** No server-side schema exists for tracking active user shopping carts.
 * **Order Model (`models/order.js`):** No schema exists for managing orders, order statuses, item snapshots, or shipping addresses.
 * **Product CRUD APIs:** No routes or controllers for creating, updating, or deleting products.
@@ -86,11 +86,12 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 | **Remember Me** | 🟢 Checkbox styled & wired | 🟢 Dynamic maxAge handling | 🟢 Secure authSecretHash | **100%** |
 | **Contact Page** | 🟢 Clean template & styling | 🟢 Connected to MongoDB | 🟢 Model active | **100%** |
 | **About Page** | 🟢 Nautical lore & cards | 🟢 Functional route | N/A | **100%** |
+| **Product Model** | N/A (Schema) | 🟢 Complete Mongoose model | 🟢 Validated schema & indexes | **100%** |
 | **Entry Map Gateway** | ❌ Missing | ❌ Missing | N/A | **0%** |
 | **Google OAuth** | ❌ Missing | ❌ Missing | 🟡 Schema ready (`googleId`) | **20%** |
 | **Sea Chart / Home** | 🟢 Complete & animated | 🟢 Clean controller route | ❌ Products in JS files | **85%** |
-| **6 Leaf Islands** | 🟢 Complete themed views | 🟡 Hardcoded data | ❌ No DB query | **60%** |
-| **Product Detail Page** | ❌ Missing | ❌ Missing | ❌ No Product model | **0%** |
+| **6 Leaf Islands** | 🟢 Complete themed views | 🟡 Hardcoded data | 🟡 Schema ready (`models/product.js`) | **70%** |
+| **Product Detail Page** | ❌ Missing | ❌ Missing | 🟡 Schema ready (`Product`) | **25%** |
 | **Explore Sellers Directory** | ❌ (Shows generic users) | 🟡 Generic `/users` | ❌ No seller role | **15%** |
 | **Public Seller Profile** | ❌ Missing | ❌ Missing | ❌ Missing | **0%** |
 | **Cargo Cart** | 🟡 Frontend / localStorage | ❌ Missing API | ❌ No Cart model | **25%** |

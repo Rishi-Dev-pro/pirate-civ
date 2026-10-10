@@ -12,49 +12,45 @@
 ---
 
 ## 📍 1. Current Phase
-* **Active Phase:** **Phase 1 — Foundation & Authentication**
-* **Active Milestone:** **Milestone 1.3 — Authentication UX, Error Handling & Bug Cleanup**
+* **Active Phase:** **Phase 2 — Database & Core Models**
+* **Active Milestone:** **Milestone 2.1 — Product Model & Category/Island Structure**
 * **Status:** **COMPLETE**
 
 ---
 
 ## 🎯 2. Current Task
-* **Task Name:** Milestone 1.3 — Authentication UX, Error Handling & Bug Cleanup
+* **Task Name:** Milestone 2.1 — Product Model & Category/Island Structure
 * **Status:** Complete, Tested, Verified, and Documented.
-* **Phase 1 Status:** **COMPLETE**
+* **Phase 2 Progress:** Milestone 2.1 Complete.
 
 ---
 
 ## ✅ 3. Completed in This Task
-* **Authentication Error UX:**
-  - Updated `controller/auth.js` to render human-readable errors with input retention (`name`, `email`) on validation and authentication failures.
-  - Implemented generic login rejection message ("Invalid email or password.") preserving security posture.
-  - Defensive duplicate account detection catching both pre-validation duplicates and MongoDB `E11000` duplicate key errors without leaking stack traces or database internals.
-  - Registration success flow smoothly redirects to `/login`.
-* **Remember Me Functionality:**
-  - Added styled Remember Me checkbox to `views/login.ejs` paired with forgot key link inside `.auth-options`.
-  - Configured dynamic session and signed `auth_token` cookie `maxAge`: 30 days (`1000 * 60 * 60 * 24 * 30`) when Remember Me is enabled, 24 hours standard session when unchecked.
-  - Ensured passwords and plain credentials are never persisted in cookies or client storage.
-* **Styled Error Banners:**
-  - Added `.auth-error-banner` and `.remember-label` styles to `public/css/auth.css` matching dark-fantasy nautical atmosphere.
-* **Views & Routes Cleanup:**
-  - Removed rogue markdown fences (````html` and ````) from `views/contact.ejs`.
-  - Replaced generic placeholder content in `views/about.ejs` with authentic Pirate-Civ dark-fantasy nautical lore, archipelago cards, and merchant narrative.
-  - Purged dead university mock student array (`studentInfo` and `student_data`) from home route `/` in `routes/web.js`.
+* **Product Model Foundation (`models/product.js`):**
+  - Modeled product-to-seller relationship referencing the unified `User` model (`type: ObjectId`, `ref: 'User'`).
+  - Added required fields: `name`, `slug`, `price`, `description`, `image`, `island`, `category`, `stock`, `isAvailable`, `rating`.
+  - Configured auto-slug generation hook/default in kebab-case from product name.
+  - Added non-negative numeric price validation in Doubloons (`min: 0`).
+  - Added integer and non-negative stock validation (`Number.isInteger`, `min: 0`) defaulting to 10.
+  - Enforced canonical 6-island enum taxonomy: `["astrolabe", "chronos", "kraken_vault", "cutlass_cove", "velvet_isle", "booty_cay"]`.
+  - Exported canonical taxonomy arrays (`CANONICAL_ISLANDS`, `TRADING_BRANCHES`).
+  - Configured performance compound indexes: `{ island: 1, isAvailable: 1 }` and `{ seller: 1, createdAt: -1 }`.
+  - Configured automatic Mongoose timestamps (`createdAt`, `updatedAt`).
 
 ---
 
 ## ⏳ 4. Currently Working On
-* Phase 1 is officially COMPLETE (Milestones 1.1, 1.2, and 1.3 all complete and verified).
+* Milestone 2.1 is finalized. Ready to proceed to Milestone 2.2 upon user instruction.
 
 ---
 
 ## 🔮 5. Next Task
 * **Phase 2 — Database & Core Models**
-  - Milestone 2.1: Product Model & Island Catalog Schema
-  - Milestone 2.2: Database Seed Script & Data Migration
+  - **Milestone 2.2:** Seller ↔ Product Relationship
   - Milestone 2.3: Order & Cart Schemas
-  - *Note: Phase 2 is NOT started yet.*
+  - Milestone 2.4: Data Integrity & Index Optimization
+  - Milestone 2.5: Product Migration & Seed Verification
+  - *Note: Milestone 2.2 is NOT started yet.*
 
 ---
 
@@ -63,37 +59,26 @@
 
 ---
 
-## 📝 7. Files Modified in Milestone 1.3
-* [`controller/auth.js`](../controller/auth.js) — Authentication error handling and Remember Me cookie logic.
-* [`public/css/auth.css`](../public/css/auth.css) — Error banner and Remember Me checkbox styling.
-* [`routes/web.js`](../routes/web.js) — Cleaned mock data, provided default auth view parameters.
-* [`views/about.ejs`](../views/about.ejs) — Replaced placeholder copy with Pirate-Civ dark fantasy lore.
-* [`views/contact.ejs`](../views/contact.ejs) — Removed rogue markdown code fences.
-* [`views/login.ejs`](../views/login.ejs) — Added error banner, email retention, Remember Me checkbox.
-* [`views/register.ejs`](../views/register.ejs) — Added error banner, input retention.
-* [`docs/01_PROJECT_STATUS.md`](./01_PROJECT_STATUS.md) — Updated status, cleared defects.
-* [`docs/15_CHANGELOG.md`](./15_CHANGELOG.md) — Recorded Milestone 1.3 changelog.
+## 📝 7. Files Modified in Milestone 2.1
+* [`models/product.js`](../models/product.js) — Foundational Product Mongoose model and taxonomy.
+* [`docs/01_PROJECT_STATUS.md`](./01_PROJECT_STATUS.md) — Updated readiness matrix and completed product model status.
+* [`docs/04_DATABASE_DESIGN.md`](./04_DATABASE_DESIGN.md) — Aligned schema specification with compound indexes and validators.
+* [`docs/10_PRODUCT_SYSTEM.md`](./10_PRODUCT_SYSTEM.md) — Documented canonical taxonomy and schema fields.
+* [`docs/15_CHANGELOG.md`](./15_CHANGELOG.md) — Recorded Milestone 2.1 release notes.
 * [`docs/16_CURRENT_TASK.md`](./16_CURRENT_TASK.md) — Synchronized memory.
 
 ---
 
 ## 🧪 8. Tests Performed
-* 40/40 automated unit test assertions passed (`scratch/test_milestone_1_3.js`).
-* Node syntax check on all touched files (`node --check controller/auth.js routes/web.js index.js middleware/auth.js middleware/roles.js`).
-* Verified live server boot and HTTP route responses (`/login` 200, `/register` 200).
+* 31/31 automated schema & taxonomy unit tests passed (`scratch/test_milestone_2_1.js`).
+* 45/45 automated regression tests passed (`scratch/test_milestone_1_3.js`).
+* Node syntax check passed on `models/product.js`.
 * Git diff review completed.
 
 ---
 
 ## ⚠️ 9. Known Codebase Issues
-*(All initial defects identified in Milestone 1.3 have been resolved).*
-
----
-
-## 🚫 10. DO NOT TOUCH
-* **`public/js/mindmap.js` Canvas Math & Animations:** Do NOT modify SVG S-curve math, animation timers, or decor layers.
-* **`views/home.ejs` Sea Chart Grid:** Retain full layout and visual DOM elements.
-* **`views/islands/*.ejs` CSS Themes:** Retain the distinct aesthetic identities of the 6 islands.
+*(None for Milestone 2.1).*
 
 ---
 
