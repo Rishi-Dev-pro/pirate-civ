@@ -64,16 +64,16 @@
 ---
 
 ## 📝 7. Files Modified in Milestone 1.3
-* [`controller/auth.js`](file:///d:/projects%202.0/main/pirate-civ/controller/auth.js) — Authentication error handling and Remember Me cookie logic.
-* [`public/css/auth.css`](file:///d:/projects%202.0/main/pirate-civ/public/css/auth.css) — Error banner and Remember Me checkbox styling.
-* [`routes/web.js`](file:///d:/projects%202.0/main/pirate-civ/routes/web.js) — Cleaned mock data, provided default auth view parameters.
-* [`views/about.ejs`](file:///d:/projects%202.0/main/pirate-civ/views/about.ejs) — Replaced placeholder copy with Pirate-Civ dark fantasy lore.
-* [`views/contact.ejs`](file:///d:/projects%202.0/main/pirate-civ/views/contact.ejs) — Removed rogue markdown code fences.
-* [`views/login.ejs`](file:///d:/projects%202.0/main/pirate-civ/views/login.ejs) — Added error banner, email retention, Remember Me checkbox.
-* [`views/register.ejs`](file:///d:/projects%202.0/main/pirate-civ/views/register.ejs) — Added error banner, input retention.
-* [`docs/01_PROJECT_STATUS.md`](file:///d:/projects%202.0/main/pirate-civ/docs/01_PROJECT_STATUS.md) — Updated status, cleared defects.
-* [`docs/15_CHANGELOG.md`](file:///d:/projects%202.0/main/pirate-civ/docs/15_CHANGELOG.md) — Recorded Milestone 1.3 changelog.
-* [`docs/16_CURRENT_TASK.md`](file:///d:/projects%202.0/main/pirate-civ/docs/16_CURRENT_TASK.md) — Synchronized memory.
+* [`controller/auth.js`](../controller/auth.js) — Authentication error handling and Remember Me cookie logic.
+* [`public/css/auth.css`](../public/css/auth.css) — Error banner and Remember Me checkbox styling.
+* [`routes/web.js`](../routes/web.js) — Cleaned mock data, provided default auth view parameters.
+* [`views/about.ejs`](../views/about.ejs) — Replaced placeholder copy with Pirate-Civ dark fantasy lore.
+* [`views/contact.ejs`](../views/contact.ejs) — Removed rogue markdown code fences.
+* [`views/login.ejs`](../views/login.ejs) — Added error banner, email retention, Remember Me checkbox.
+* [`views/register.ejs`](../views/register.ejs) — Added error banner, input retention.
+* [`docs/01_PROJECT_STATUS.md`](./01_PROJECT_STATUS.md) — Updated status, cleared defects.
+* [`docs/15_CHANGELOG.md`](./15_CHANGELOG.md) — Recorded Milestone 1.3 changelog.
+* [`docs/16_CURRENT_TASK.md`](./16_CURRENT_TASK.md) — Synchronized memory.
 
 ---
 

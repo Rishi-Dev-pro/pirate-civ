@@ -23,13 +23,22 @@ const registerUser = async (req, res) => {
            Validate Required Fields
         ========================== */
 
-        if (!name || !email || !password || !confirmPassword) {
+        if (
+            typeof name !== "string" ||
+            typeof email !== "string" ||
+            typeof password !== "string" ||
+            typeof confirmPassword !== "string" ||
+            !name.trim() ||
+            !email.trim() ||
+            !password ||
+            !confirmPassword
+        ) {
 
             return res.status(400).render("register", {
                 page_title: "Register",
                 error: "All fields are required.",
-                name: name || "",
-                email: email || ""
+                name: typeof name === "string" ? name : "",
+                email: typeof email === "string" ? email : ""
             });
 
         }
@@ -210,12 +219,17 @@ const loginUser = async (req, res) => {
            Validate Credentials Input
         ========================== */
 
-        if (!email || !password) {
+        if (
+            typeof email !== "string" ||
+            typeof password !== "string" ||
+            !email.trim() ||
+            !password
+        ) {
 
             return res.status(400).render("login", {
                 page_title: "Login",
                 error: "Invalid email or password.",
-                email: email || ""
+                email: typeof email === "string" ? email : ""
             });
 
         }
