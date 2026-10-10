@@ -20,12 +20,67 @@ const registerUser = async (req, res) => {
 
 
         /* ==========================
-           Check Password
+           Validate Required Fields
+        ========================== */
+
+        if (!name || !email || !password || !confirmPassword) {
+
+            return res.status(400).render("register", {
+                page_title: "Register",
+                error: "All fields are required.",
+                name: name || "",
+                email: email || ""
+            });
+
+        }
+
+
+        /* ==========================
+           Validate Email Format
+        ========================== */
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email.trim())) {
+
+            return res.status(400).render("register", {
+                page_title: "Register",
+                error: "Please enter a valid email address.",
+                name: name || "",
+                email: email || ""
+            });
+
+        }
+
+
+        /* ==========================
+           Validate Password Length
+        ========================== */
+
+        if (password.length < 6) {
+
+            return res.status(400).render("register", {
+                page_title: "Register",
+                error: "Password must be at least 6 characters long.",
+                name: name || "",
+                email: email || ""
+            });
+
+        }
+
+
+        /* ==========================
+           Check Password Match
         ========================== */
 
         if (password !== confirmPassword) {
 
-            return res.send("Passwords do not match");
+            return res.status(400).render("register", {
+                page_title: "Register",
+                error: "Passwords do not match.",
+                name: name || "",
+                email: email || ""
+            });
 
         }
 
@@ -35,13 +90,18 @@ const registerUser = async (req, res) => {
         ========================== */
 
         const existingUser = await User.findOne({
-            email: email.toLowerCase()
+            email: email.toLowerCase().trim()
         });
 
 
         if (existingUser) {
 
-            return res.send("User already exists");
+            return res.status(409).render("register", {
+                page_title: "Register",
+                error: "An account with this email already exists.",
+                name: name || "",
+                email: email || ""
+            });
 
         }
 
@@ -79,9 +139,9 @@ const registerUser = async (req, res) => {
 
         const user = new User({
 
-            name: name,
+            name: name.trim(),
 
-            email: email.toLowerCase(),
+            email: email.toLowerCase().trim(),
 
             password: hashedPassword,
 
@@ -92,81 +152,40 @@ const registerUser = async (req, res) => {
 
         await user.save();
 
+        console.log(
+            "User registered successfully"
+        );
+
 
         /* ==========================
-           Regenerate Session
+           Redirect to Login
         ========================== */
 
-        req.session.regenerate((error) => {
-
-            if (error) {
-
-                console.log("Session Error:");
-                console.log(error.message);
-
-                return res.status(500).send(
-                    "Could not create session"
-                );
-
-            }
-
-
-            /* ==========================
-               Store User Information
-            ========================== */
-
-            req.session.userId =
-                user._id.toString();
-
-            req.session.authToken =
-                authSecret;
-
-
-            /* ==========================
-               Create Signed Cookie
-            ========================== */
-
-            res.cookie(
-                "auth_token",
-                authSecret,
-                {
-                    httpOnly: true,
-
-                    signed: true,
-
-                    secure:
-                        process.env.NODE_ENV === "production",
-
-                    sameSite: "lax",
-
-                    maxAge:
-                        1000 * 60 * 60 * 24 * 7
-                }
-            );
-
-
-            console.log(
-                "User registered successfully"
-            );
-
-
-            /* ==========================
-               Redirect Home
-            ========================== */
-
-            res.redirect("/");
-
-        });
+        return res.redirect("/login");
 
 
     } catch (error) {
 
-        console.log("Registration Error:");
-        console.log(error.message);
+        console.error("Registration Error:");
+        console.error(error.message);
 
-        res.status(500).send(
-            "Something went wrong during registration"
-        );
+        if (error.code === 11000) {
+
+            return res.status(409).render("register", {
+                page_title: "Register",
+                error: "An account with this email already exists.",
+                name: req.body?.name || "",
+                email: req.body?.email || ""
+            });
+
+        }
+
+        return res.status(500).render("register", {
+            page_title: "Register",
+            error: "Something went wrong during registration. Please try again.",
+            name: req.body?.name || "",
+            email: req.body?.email || ""
+        });
 
     }
 
@@ -188,21 +207,38 @@ const loginUser = async (req, res) => {
 
 
         /* ==========================
+           Validate Credentials Input
+        ========================== */
+
+        if (!email || !password) {
+
+            return res.status(400).render("login", {
+                page_title: "Login",
+                error: "Invalid email or password.",
+                email: email || ""
+            });
+
+        }
+
+
+        /* ==========================
            Find User
         ========================== */
 
         const user = await User.findOne({
 
-            email: email.toLowerCase()
+            email: email.toLowerCase().trim()
 
         });
 
 
         if (!user) {
 
-            return res.send(
-                "Invalid email or password"
-            );
+            return res.status(401).render("login", {
+                page_title: "Login",
+                error: "Invalid email or password.",
+                email: email || ""
+            });
 
         }
 
@@ -220,9 +256,11 @@ const loginUser = async (req, res) => {
 
         if (!passwordMatch) {
 
-            return res.send(
-                "Invalid email or password"
-            );
+            return res.status(401).render("login", {
+                page_title: "Login",
+                error: "Invalid email or password.",
+                email: email || ""
+            });
 
         }
 
@@ -258,6 +296,23 @@ const loginUser = async (req, res) => {
 
 
         /* ==========================
+           Remember Me Preference
+        ========================== */
+
+        const rememberMe =
+            req.body.rememberMe === "on" ||
+            req.body.rememberMe === "true" ||
+            req.body.rememberMe === true ||
+            req.body.remember === "on" ||
+            req.body.remember === "true" ||
+            req.body.remember === true;
+
+        const sessionMaxAge = rememberMe
+            ? 1000 * 60 * 60 * 24 * 30  // 30 days
+            : 1000 * 60 * 60 * 24;       // 24 hours standard session
+
+
+        /* ==========================
            Regenerate Session
         ========================== */
 
@@ -265,12 +320,14 @@ const loginUser = async (req, res) => {
 
             if (error) {
 
-                console.log("Session Error:");
-                console.log(error.message);
+                console.error("Session Error:");
+                console.error(error.message);
 
-                return res.status(500).send(
-                    "Could not create session"
-                );
+                return res.status(500).render("login", {
+                    page_title: "Login",
+                    error: "Could not create session. Please try again.",
+                    email: email || ""
+                });
 
             }
 
@@ -284,6 +341,9 @@ const loginUser = async (req, res) => {
 
             req.session.authToken =
                 authSecret;
+
+            req.session.cookie.maxAge =
+                sessionMaxAge;
 
 
             /* ==========================
@@ -304,7 +364,7 @@ const loginUser = async (req, res) => {
                     sameSite: "lax",
 
                     maxAge:
-                        1000 * 60 * 60 * 24 * 7
+                        sessionMaxAge
                 }
             );
 
@@ -325,12 +385,14 @@ const loginUser = async (req, res) => {
 
     } catch (error) {
 
-        console.log("Login Error:");
-        console.log(error.message);
+        console.error("Login Error:");
+        console.error(error.message);
 
-        res.status(500).send(
-            "Something went wrong during login"
-        );
+        return res.status(500).render("login", {
+            page_title: "Login",
+            error: "Something went wrong during login. Please try again.",
+            email: req.body?.email || ""
+        });
 
     }
 

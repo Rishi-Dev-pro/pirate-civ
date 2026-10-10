@@ -986,6 +986,32 @@ body {
 
 
 /* =========================================================
+   AUTH ERROR BANNER
+========================================================= */
+
+.auth-error-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    margin-bottom: 20px;
+    background: rgba(85, 18, 24, 0.65);
+    border: 1px solid rgba(195, 75, 45, 0.7);
+    border-radius: 4px;
+    color: #f7d2be;
+    font-size: 13px;
+    line-height: 1.4;
+    box-shadow: 0 0 16px rgba(139, 34, 25, 0.35);
+}
+
+.auth-error-banner .error-icon {
+    font-size: 15px;
+    color: #e8bd76;
+    flex-shrink: 0;
+}
+
+
+/* =========================================================
    FORM
 ========================================================= */
 
@@ -1178,8 +1204,43 @@ body {
 
 
 /* =========================================================
-   FORGOT PASSWORD
+   AUTH OPTIONS (REMEMBER ME & FORGOT PASSWORD)
 ========================================================= */
+
+.auth-options {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: -7px;
+    margin-bottom: 24px;
+}
+
+.auth-options .forgot-wrapper {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.remember-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: #b58348;
+    font-size: 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: color .25s ease;
+}
+
+.remember-label:hover {
+    color: #e5a452;
+}
+
+.remember-label input[type="checkbox"] {
+    accent-color: #8b3612;
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+}
 
 .forgot-wrapper {
 

@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [2026-10-10] — Phase 1 / Milestone 1.3: Authentication UX, Error Handling & Bug Cleanup
+
+### Added
+* Human-readable authentication error UX in `controller/auth.js`, rendering errors on the same page with retained input fields (`name`, `email`) rather than raw string responses (`res.send(...)`).
+* Styled dark-fantasy alert banners (`.auth-error-banner`, `.error-icon`) in `public/css/auth.css`, matching the atmospheric nautical aesthetics across `views/login.ejs` and `views/register.ejs`.
+* "Remember Me" checkbox on the login page wrapped in flexible `.auth-options` row with "Forgot your map key?".
+* Server-side dynamic session and signed cookie `auth_token` lifetime handling: 30 days (`maxAge: 1000 * 60 * 60 * 24 * 30`) when Remember Me is selected; 24 hours standard session when unchecked.
+* Defensive duplicate account detection catching both pre-validation duplicates and MongoDB `E11000` duplicate key errors without leaking stack traces or database internals.
+* Registration success workflow redirecting explorers directly to `/login`.
+
+### Fixed
+* Removed rogue markdown code fences (````html` and ````) from `views/contact.ejs`.
+* Replaced generic placeholder content in `views/about.ejs` with authentic Pirate-Civ dark-fantasy nautical lore, archipelago cards, and merchant narrative.
+* Purged dead university mock student array (`studentInfo` and `student_data`) from home route `/` in `routes/web.js`.
+
+### Tested
+* 40 automated test assertions across all 10 verification scenarios: login success/failure, registration validation, duplicate handling, Remember Me 30-day persistence vs 24-hour session, protected routes, role middleware integration, Contact HTML syntax, and About lore content (40/40 passed).
+* Live server boot and HTTP route responses verified (`/login` 200, `/register` 200).
+
+---
+
 ## [2026-10-10] — Phase 1 / Milestone 1.2: Role-Based Authorization Middleware
 
 ### Added

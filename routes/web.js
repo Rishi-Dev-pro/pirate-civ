@@ -26,7 +26,11 @@ router.get("/login", (req, res) => {
 
     res.render("login", {
 
-        page_title: "Login"
+        page_title: "Login",
+
+        error: null,
+
+        email: ""
 
     });
 
@@ -41,7 +45,13 @@ router.get("/register", (req, res) => {
 
     res.render("register", {
 
-        page_title: "Register"
+        page_title: "Register",
+
+        error: null,
+
+        name: "",
+
+        email: ""
 
     });
 
@@ -98,71 +108,9 @@ router.get(
     authMiddleware,
     (req, res) => {
 
-        let studentInfo = [
-
-            {
-                id: 1,
-                name: "Namm jani na",
-                rollNo: "jani na",
-                course: "jani na",
-                year: 3,
-                marks: 85,
-                grade: "hobe kichu",
-                email: "blabla@example.com"
-            },
-
-            {
-                id: 2,
-                name: "arjyaaaaaaa",
-                rollNo: "STU002",
-                course: "Electronics",
-                year: 2,
-                marks: 10,
-                grade: "A+",
-                email: "emma@example.com"
-            },
-
-            {
-                id: 3,
-                name: "chasmis taklu",
-                rollNo: "STU003",
-                course: "Mechanical Engineering",
-                year: 4,
-                marks: 80,
-                grade: "B+",
-                email: "michael@example.com"
-            },
-
-            {
-                id: 4,
-                name: "Souma Taylor",
-                rollNo: "STU004",
-                course: "Information Technology",
-                year: 1,
-                marks: 40,
-                grade: "A",
-                email: "sophia@example.com"
-            },
-
-            {
-                id: 5,
-                name: "Riya Smith",
-                rollNo: "STU005",
-                course: "Civil Engineering",
-                year: 4,
-                marks: 90,
-                grade: "B",
-                email: "david@example.com"
-            }
-
-        ];
-
-
         res.render("home", {
 
             page_title: "Home Page",
-
-            student_data: studentInfo,
 
             user: req.user
 

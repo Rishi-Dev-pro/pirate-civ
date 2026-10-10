@@ -20,13 +20,16 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 * **Island Views (Frontend Presentation):** 6 themed EJS views (`astrolabe.ejs`, `chronos.ejs`, `kraken_vault.ejs`, `cutlass_cove.ejs`, `velvet_isle.ejs`, `booty_cay.ejs`) with custom visual styling and atmospheric details.
 * **Unified User Model (`models/user.js`):** Schema supports `role` (`'buyer'` default, `'seller'`, `'admin'`), optional merchant profile fields (`storeName`, `homeIsland`, `bio`, `avatar`), and `googleId` with sparse unique index. Fully tested for backward compatibility.
 * **Role-Based Authorization Middleware (`middleware/roles.js`):** Modular RBAC middleware exporting `requireRole(...roles)`, `requireSeller`, `requireBuyer`, and `requireAdmin`. Rejects unauthorized roles with HTTP 403 and unauthenticated requests with redirect to `/login`. Fully verified.
+* **Authentication UX & Error Handling (`controller/auth.js`, `views/login.ejs`, `views/register.ejs`):** Styled dark-fantasy error banners, input retention (name/email), generic security-conscious login failures, duplicate email detection without raw MongoDB error leaks, and registration redirect to login.
+* **Remember Me Foundation & Persistence (`controller/auth.js`, `views/login.ejs`):** Dynamic session and signed `auth_token` cookie lifetime (30 days persistence when checked vs. 24 hours standard session). Passwords are never stored in cookies or localStorage.
+* **Contact View Template Fix (`views/contact.ejs`):** Removed rogue markdown fences (````html` and ````), maintaining full MongoDB submission capability and clean HTML DOM rendering.
+* **About Page Themed Copy (`views/about.ejs`):** Replaced placeholder text with polished Pirate-Civ dark-fantasy nautical lore, archipelago cards, and merchant trading narrative.
+* **Cleaned Dead Mock Data (`routes/web.js`):** Removed unused `studentInfo` mockup and `student_data` parameter from home route `/`.
 * **Contact Submission to DB:** Form POST `/contact` persists name, email, subject, and message into MongoDB `contacts` collection via `models/contact.js` and `controller/contact.js`.
 
 ---
 
 ### 🟡 PARTIALLY COMPLETE
-* **Buyer Registration:** User registration route `/register` creates users in MongoDB, but only captures `name`, `email`, `password`, and `authSecretHash`. It lacks role assignment (`role: 'buyer'`), avatar selection, validation feedback in the UI, and remember-me handling.
-* **Buyer Login:** Route `/login` validates credentials against MongoDB, but error feedback is raw text (e.g. `res.send("Invalid email or password")`) rather than styled flash messages in the EJS view. "Remember Me" checkbox is present on the frontend but not processed on the backend.
 * **Explorer Page (`/users`):** Displays all registered users from MongoDB in a nautical grid (`views/users.ejs`), but treats them as generic students/users rather than pirate merchants and marketplace sellers.
 * **Responsive UI:** Desktop layouts are polished, but certain island product grids, cart drawers, and mind map canvas scaling require mobile/tablet tuning.
 
@@ -61,18 +64,15 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ---
 
 ### ⚠️ BROKEN / DEFECTIVE
-* **Contact View Template Syntax Bug (`views/contact.ejs`):** The file begins with markdown code fence ````html` at line 1 and ends with ```` at line 222, causing raw markdown ticks to render into the HTML DOM.
-* **About Page Content Mismatch (`views/about.ejs`):** Displays generic academic/portfolio boilerplate ("Rishi's Web is a modern Node.js + Express + EJS project...") instead of Pirate-Civ maritime marketplace lore and merchant guild information.
-* **Hardcoded Student Mock Data in Home Route (`routes/web.js`):** Route `/` passes an unused array of mock university students (`studentInfo`) to `home.ejs`.
+*(None currently — all identified template syntax bugs and placeholder copy issues were resolved in Milestone 1.3).*
 
 ---
 
 ### 🛠️ TECHNICAL DEBT
 1. **Product Data Duplication:** Product data is duplicated between `controller/islands.js` (server-side data dictionary) and `public/js/mindmap.js` (client-side data dictionary) with minor discrepancies in product titles and categories.
-2. **Raw String Error Responses:** Auth controllers use `res.send("Passwords do not match")` and `res.send("User already exists")`, destroying the user's form state and breaking design consistency.
-3. **No Centralized Error Handling:** Missing express global error-handling middleware (`app.use((err, req, res, next) => ...)`).
-4. **Missing Production Seed Script:** No migration or seed script exists to populate MongoDB with the baseline catalog from the 6 islands.
-5. **Session Store In-Memory:** Express-session currently uses default memory storage; restarting the server invalidates active sessions.
+2. **No Centralized Error Handling:** Missing express global error-handling middleware (`app.use((err, req, res, next) => ...)`).
+3. **Missing Production Seed Script:** No migration or seed script exists to populate MongoDB with the baseline catalog from the 6 islands.
+4. **Session Store In-Memory:** Express-session currently uses default memory storage; restarting the server invalidates active sessions.
 
 ---
 
@@ -82,11 +82,13 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 |---|---|---|---|:---:|
 | **Unified User Model** | N/A (Schema) | 🟢 Complete Mongoose model | 🟢 Validated schema | **100%** |
 | **Role Authorization Middleware** | N/A (Middleware) | 🟢 Complete RBAC guards | 🟢 Evaluates user.role | **100%** |
+| **Buyer Auth (Register/Login)** | 🟢 Polished UI, error banner | 🟢 Validated, RBAC role assigned | 🟢 Unified User schema | **100%** |
+| **Remember Me** | 🟢 Checkbox styled & wired | 🟢 Dynamic maxAge handling | 🟢 Secure authSecretHash | **100%** |
+| **Contact Page** | 🟢 Clean template & styling | 🟢 Connected to MongoDB | 🟢 Model active | **100%** |
+| **About Page** | 🟢 Nautical lore & cards | 🟢 Functional route | N/A | **100%** |
 | **Entry Map Gateway** | ❌ Missing | ❌ Missing | N/A | **0%** |
-| **Buyer Auth (Register/Login)** | 🟡 Complete UI, poor error UX | 🟡 Missing roles & validation | 🟡 Partial user schema | **50%** |
-| **Remember Me** | 🟡 Checkbox present | ❌ Not handled | ❌ No persistent token | **20%** |
-| **Google OAuth** | ❌ Missing | ❌ Missing | ❌ No googleId | **0%** |
-| **Sea Chart / Home** | 🟢 Complete & animated | 🟢 Controller wired | ❌ Products in JS files | **80%** |
+| **Google OAuth** | ❌ Missing | ❌ Missing | 🟡 Schema ready (`googleId`) | **20%** |
+| **Sea Chart / Home** | 🟢 Complete & animated | 🟢 Clean controller route | ❌ Products in JS files | **85%** |
 | **6 Leaf Islands** | 🟢 Complete themed views | 🟡 Hardcoded data | ❌ No DB query | **60%** |
 | **Product Detail Page** | ❌ Missing | ❌ Missing | ❌ No Product model | **0%** |
 | **Explore Sellers Directory** | ❌ (Shows generic users) | 🟡 Generic `/users` | ❌ No seller role | **15%** |
@@ -98,5 +100,3 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 | **Seller Dashboard** | ❌ Missing | ❌ Missing | ❌ Missing | **0%** |
 | **Seller Product CRUD** | ❌ Missing | ❌ Missing | ❌ Missing | **0%** |
 | **Seller Order Fulfillment** | ❌ Missing | ❌ Missing | ❌ Missing | **0%** |
-| **Contact Page** | ⚠️ Buggy template wrapper | 🟢 Connected to MongoDB | 🟢 Model active | **75%** |
-| **About Page** | ⚠️ Wrong copy | 🟢 Functional route | N/A | **60%** |

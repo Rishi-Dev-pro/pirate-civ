@@ -160,6 +160,19 @@
 
 
             <!-- ==================================
+                 ERROR BANNER
+            =================================== -->
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="auth-error-banner" role="alert">
+                    <span class="error-icon">☠</span>
+                    <span><%= error %></span>
+                </div>
+            <% } %>
+
+
+
+            <!-- ==================================
                  REGISTER FORM
             =================================== -->
 
@@ -193,6 +206,7 @@
                             name="name"
                             placeholder="Enter your name"
                             autocomplete="name"
+                            value="<%= typeof name !== 'undefined' && name ? name : '' %>"
                             required
                         >
 
@@ -224,6 +238,7 @@
                             name="email"
                             placeholder="explorer@realm.com"
                             autocomplete="email"
+                            value="<%= typeof email !== 'undefined' && email ? email : '' %>"
                             required
                         >
 

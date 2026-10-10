@@ -162,6 +162,19 @@
 
 
             <!-- ==================================
+                 ERROR BANNER
+            =================================== -->
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="auth-error-banner" role="alert">
+                    <span class="error-icon">☠</span>
+                    <span><%= error %></span>
+                </div>
+            <% } %>
+
+
+
+            <!-- ==================================
                  LOGIN FORM
             =================================== -->
 
@@ -193,6 +206,7 @@
                             name="email"
                             placeholder="Enter your email"
                             autocomplete="email"
+                            value="<%= typeof email !== 'undefined' && email ? email : '' %>"
                             required
                         >
 
@@ -239,13 +253,26 @@
 
 
 
-                <!-- FORGOT PASSWORD -->
+                <!-- REMEMBER ME & FORGOT PASSWORD -->
 
-                <div class="forgot-wrapper">
+                <div class="auth-options">
 
-                    <a href="#">
-                        Forgot your map key?
-                    </a>
+                    <label class="remember-label" for="rememberMe">
+                        <input
+                            type="checkbox"
+                            id="rememberMe"
+                            name="rememberMe"
+                        >
+                        <span>Remember Me</span>
+                    </label>
+
+                    <div class="forgot-wrapper">
+
+                        <a href="#">
+                            Forgot your map key?
+                        </a>
+
+                    </div>
 
                 </div>
 
