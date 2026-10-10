@@ -19,6 +19,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 * **Home Page Sea Chart UI:** Interactive cartographic mind map with animated SVGs, fire embers, smoke backdrop, lantern cursor tracking, and celestial compass rose in `views/home.ejs` and `public/js/mindmap.js`.
 * **Island Views (Frontend Presentation):** 6 themed EJS views (`astrolabe.ejs`, `chronos.ejs`, `kraken_vault.ejs`, `cutlass_cove.ejs`, `velvet_isle.ejs`, `booty_cay.ejs`) with custom visual styling and atmospheric details.
 * **Unified User Model (`models/user.js`):** Schema supports `role` (`'buyer'` default, `'seller'`, `'admin'`), optional merchant profile fields (`storeName`, `homeIsland`, `bio`, `avatar`), and `googleId` with sparse unique index. Fully tested for backward compatibility.
+* **Role-Based Authorization Middleware (`middleware/roles.js`):** Modular RBAC middleware exporting `requireRole(...roles)`, `requireSeller`, `requireBuyer`, and `requireAdmin`. Rejects unauthorized roles with HTTP 403 and unauthenticated requests with redirect to `/login`. Fully verified.
 * **Contact Submission to DB:** Form POST `/contact` persists name, email, subject, and message into MongoDB `contacts` collection via `models/contact.js` and `controller/contact.js`.
 
 ---
@@ -45,7 +46,6 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ---
 
 ### ⚪ NOT IMPLEMENTED
-* **Role-Based Authorization Middleware:** No check exists to distinguish buyers from sellers (`requireRole('seller')`, `requireRole('buyer')`).
 * **Seller Model / Seller Profile:** No schema or controller exists for merchants, store profiles, merchant descriptions, or merchant ratings.
 * **Product Model (`models/product.js`):** No schema exists for catalog products, pricing, stock, categories, or seller relationships.
 * **Cart Model (`models/cart.js`):** No server-side schema exists for tracking active user shopping carts.
@@ -81,6 +81,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 | Component | Frontend State | Backend State | Database State | Overall Readiness |
 |---|---|---|---|:---:|
 | **Unified User Model** | N/A (Schema) | 🟢 Complete Mongoose model | 🟢 Validated schema | **100%** |
+| **Role Authorization Middleware** | N/A (Middleware) | 🟢 Complete RBAC guards | 🟢 Evaluates user.role | **100%** |
 | **Entry Map Gateway** | ❌ Missing | ❌ Missing | N/A | **0%** |
 | **Buyer Auth (Register/Login)** | 🟡 Complete UI, poor error UX | 🟡 Missing roles & validation | 🟡 Partial user schema | **50%** |
 | **Remember Me** | 🟡 Checkbox present | ❌ Not handled | ❌ No persistent token | **20%** |

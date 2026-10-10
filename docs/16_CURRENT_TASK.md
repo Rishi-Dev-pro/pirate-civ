@@ -13,40 +13,43 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 1 — Foundation & Authentication**
-* **Active Milestone:** **Milestone 1.1 — Unified User Schema**
+* **Active Milestone:** **Milestone 1.2 — Role-Based Authorization Middleware**
 * **Status:** **COMPLETE**
 
 ---
 
 ## 🎯 2. Current Task
-* **Task Name:** Milestone 1.1 — Unified User Schema Foundation
+* **Task Name:** Milestone 1.2 — Role-Based Authorization Middleware
 * **Status:** Complete, Tested, Verified, and Documented.
 
 ---
 
 ## ✅ 3. Completed in This Task
-* Updated [`models/user.js`](file:///d:/projects%202.0/main/pirate-civ/models/user.js):
-  - Added `role` field: `['buyer', 'seller', 'admin']` with default `'buyer'`.
-  - Added optional merchant profile fields: `storeName` (String, default null), `homeIsland` (String, default null), `bio` (String, default ""), and `avatar` (String, default default avatar).
-  - Added `googleId` field with `sparse: true` and `unique: true` indexes for future Google OAuth integration.
-  - Preserved all existing legacy fields (`name`, `email`, `password`, `authSecretHash`, `timestamps`).
-* Created [`docs/17_DEVELOPMENT_WORKFLOW_RULES.md`](file:///d:/projects%202.0/main/pirate-civ/docs/17_DEVELOPMENT_WORKFLOW_RULES.md) establishing permanent engineering and Ralph Loop workflow rules.
-* Ran automated validation test suite: 25 assertions covering default buyer role, seller profile fields, admin role, invalid role rejection, googleId sparse indexing, and legacy auth validation (25/25 passed).
-* Performed syntax and integrity checks on server entry point (`node --check index.js`).
-* Synchronized documentation: [`docs/01_PROJECT_STATUS.md`](file:///d:/projects%202.0/main/pirate-civ/docs/01_PROJECT_STATUS.md), [`docs/15_CHANGELOG.md`](file:///d:/projects%202.0/main/pirate-civ/docs/15_CHANGELOG.md), and [`docs/README.md`](file:///d:/projects%202.0/main/pirate-civ/docs/README.md).
+* Created [`middleware/roles.js`](file:///d:/projects%202.0/main/pirate-civ/middleware/roles.js):
+  - Implemented `requireRole(...allowedRoles)` supporting single strings, rest parameters, and role arrays.
+  - Exported convenience aliases: `requireSeller`, `requireBuyer`, and `requireAdmin`.
+  - Added defensive guard redirecting unauthenticated requests (`!req.user`) to `/login`.
+  - Enforced strict authorization: unauthorized roles (`!req.user.role` or not in `allowedRoles`) return HTTP 403 Forbidden without continuing down middleware chain.
+  - Enforced no implicit role hierarchy (admin does not automatically get seller access unless explicitly granted).
+* Ran comprehensive automated test suite (26 assertions covering seller, buyer, admin, multi-role, missing user, and invalid role scenarios — 26/26 passed).
+* Performed syntax check on middleware (`node --check middleware/roles.js`).
+* Synchronized documentation: [`docs/01_PROJECT_STATUS.md`](file:///d:/projects%202.0/main/pirate-civ/docs/01_PROJECT_STATUS.md), [`docs/15_CHANGELOG.md`](file:///d:/projects%202.0/main/pirate-civ/docs/15_CHANGELOG.md), and [`docs/16_CURRENT_TASK.md`](file:///d:/projects%202.0/main/pirate-civ/docs/16_CURRENT_TASK.md).
 
 ---
 
 ## ⏳ 4. Currently Working On
-* Milestone 1.1 is finalized. Ready to proceed to Milestone 1.2 upon instruction.
+* Milestone 1.2 is finalized. Ready to proceed to Milestone 1.3 upon user instruction.
 
 ---
 
 ## 🔮 5. Next Task
-* **Phase 1, Milestone 1.2:** Role-Based Authorization Middleware
-  - Create `middleware/roles.js` (`requireRole`, `requireSeller`, `requireBuyer`).
-  - Unit test role protection against unauthorized routes.
-  - *Note: Milestone 1.2 is NOT started yet.*
+* **Phase 1, Milestone 1.3:** Authentication UX, Error Handling & Bug Cleanup
+  - Replace raw `res.send(...)` errors in `controller/auth.js` with styled EJS flash errors.
+  - Implement Remember Me session persistence.
+  - Clean up `views/contact.ejs` markdown wrapper ticks (lines 1 & 222).
+  - Clean up `views/about.ejs` placeholder copy to reflect Pirate-Civ lore.
+  - Remove dead `studentInfo` mockup in `routes/web.js`.
+  - *Note: Milestone 1.3 is NOT started yet.*
 
 ---
 
@@ -55,19 +58,17 @@
 
 ---
 
-## 📝 7. Files Modified in Milestone 1.1
-* [`models/user.js`](file:///d:/projects%202.0/main/pirate-civ/models/user.js) — Unified User schema updates.
-* [`docs/17_DEVELOPMENT_WORKFLOW_RULES.md`](file:///d:/projects%202.0/main/pirate-civ/docs/17_DEVELOPMENT_WORKFLOW_RULES.md) — Antigravity workflow rules document.
-* [`docs/01_PROJECT_STATUS.md`](file:///d:/projects%202.0/main/pirate-civ/docs/01_PROJECT_STATUS.md) — Updated model status.
-* [`docs/15_CHANGELOG.md`](file:///d:/projects%202.0/main/pirate-civ/docs/15_CHANGELOG.md) — Milestone 1.1 changelog entry.
+## 📝 7. Files Modified in Milestone 1.2
+* [`middleware/roles.js`](file:///d:/projects%202.0/main/pirate-civ/middleware/roles.js) — Role-based authorization middleware.
+* [`docs/01_PROJECT_STATUS.md`](file:///d:/projects%202.0/main/pirate-civ/docs/01_PROJECT_STATUS.md) — Updated RBAC status and readiness matrix.
+* [`docs/15_CHANGELOG.md`](file:///d:/projects%202.0/main/pirate-civ/docs/15_CHANGELOG.md) — Milestone 1.2 changelog entry.
 * [`docs/16_CURRENT_TASK.md`](file:///d:/projects%202.0/main/pirate-civ/docs/16_CURRENT_TASK.md) — Active memory synchronization.
-* [`docs/README.md`](file:///d:/projects%202.0/main/pirate-civ/docs/README.md) — Index updated with workflow rules document.
 
 ---
 
 ## 🧪 8. Tests Performed
-* 25/25 automated schema validation assertions passed.
-* Node syntax check on `index.js` passed (exit code 0).
+* 26/26 automated unit test assertions passed.
+* Node syntax check on `middleware/roles.js` and `index.js` passed (exit code 0).
 * Git diff review completed.
 
 ---

@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ---
 
+## [2026-10-10] — Phase 1 / Milestone 1.2: Role-Based Authorization Middleware
+
+### Added
+* Created `middleware/roles.js` exporting `requireRole(...allowedRoles)`, `requireSeller`, `requireBuyer`, and `requireAdmin`.
+* Support for single and multiple role checks (e.g. `requireRole('seller')`, `requireRole('seller', 'admin')`).
+* Defensive handling for unauthenticated requests (redirects to `/login` without runtime exceptions).
+* Explicit role enforcement: rejected roles respond with HTTP 403 Forbidden without role-inheritance leakage.
+
+### Tested
+* 26 automated unit test assertions covering seller access, buyer access, admin access, unauthorized role rejections, multi-role arrays, missing user redirects, and invalid/undefined role handling (26/26 passed).
+* Node syntax check on `middleware/roles.js` (`node --check middleware/roles.js`).
+
+### Remaining
+* Phase 1 — Milestone 1.3: Authentication UX, Error Handling & Bug Cleanup (`views/contact.ejs` ticks, `views/about.ejs` copy, `routes/web.js` mock cleanup).
+
+---
+
 ## [2026-10-10] — Phase 1 / Milestone 1.1: Unified User Schema Foundation
 
 ### Added
