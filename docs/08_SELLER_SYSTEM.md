@@ -83,11 +83,12 @@ Sellers have complete lifecycle control over the products they list.
 
 ### 4.2 Product Updating (`/seller/products/:id/edit`)
 * Merchants can modify price, inventory stock, description, image, or availability flag (`isAvailable: true/false`).
-* **Strict Ownership Guard:** Backend controller validates `product.seller.toString() === req.user._id.toString()`. If a merchant attempts to edit another seller's item, Express rejects the request with HTTP 403 Forbidden.
+* **Strict Ownership Guard:** Backend controller validates ownership via `product.isOwnedBy(req.user)` (implemented in Milestone 2.2) or `product.seller.equals(req.user._id)`. If a merchant attempts to edit another seller's item, Express rejects the request with HTTP 403 Forbidden.
+* *(Note: Seller CRUD routes and dashboard UI belong to Phase 4; Milestone 2.2 establishes the underlying database ownership relationship and query foundation).*
 
 ### 4.3 Product Deletion (`/seller/products/:id/delete`)
 * Soft deletion (setting `isAvailable: false`) or hard deletion if no pending orders exist.
-* Ownership is strictly verified prior to deletion.
+* Ownership is strictly verified via `product.isOwnedBy(req.user)` prior to deletion.
 
 ---
 

@@ -4,6 +4,19 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-11] — Phase 2 / Milestone 2.2: Seller ↔ Product Relationship
+
+### Added
+* Formalized the seller-ownership relationship between the unified `User` model (`role: 'seller'`) and `Product` in `models/product.js` via `seller: ObjectId` reference (`ref: 'User'`).
+* Implemented `Product.findBySeller(sellerId, filter)` static query helper, leveraging the `{ seller: 1, createdAt: -1 }` compound index for fast merchant catalog retrieval sorted by newest item first.
+* Implemented `product.isOwnedBy(userOrId)` instance method providing robust, type-safe ownership verification supporting populated User documents, raw ObjectIds, and string comparisons.
+* Verified query isolation ensuring merchant queries never leak items across sellers, and empty sellers return an empty array `[]`.
+* Verified Mongoose `.populate('seller')` resolution and demonstrated strict exclusion of authentication secrets (`password`, `authSecretHash`).
+
+### Tested
+* 42 automated tests covering schema ownership, ObjectId comparison, `isOwnedBy` helper, static `findBySeller`, empty seller handling, live MongoDB query isolation, population with secret exclusion, and Milestone 2.1 model regression checks (42/42 passed).
+* Full regression test suite passing (45/45 passed).
+
 ---
 
 ## [2026-10-11] — Phase 2 / Milestone 2.1: Product Model & Category/Island Structure

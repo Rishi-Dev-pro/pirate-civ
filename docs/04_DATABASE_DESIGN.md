@@ -240,7 +240,31 @@ const productSchema = new mongoose.Schema({
 // 2. { seller: 1, createdAt: -1 }   -> Fast merchant product catalog queries
 productSchema.index({ island: 1, isAvailable: 1 });
 productSchema.index({ seller: 1, createdAt: -1 });
+
+// Static & Instance Helpers:
+productSchema.statics.findBySeller = function(sellerId, filter = {}) {
+    return this.find({ seller: sellerId, ...filter }).sort({ createdAt: -1 });
+};
+
+productSchema.methods.isOwnedBy = function(userOrId) {
+    if (!userOrId || !this.seller) return false;
+    const ownerId = this.seller._id || this.seller;
+    const compareId = userOrId._id || userOrId;
+    if (ownerId && typeof ownerId.equals === "function") {
+        return ownerId.equals(compareId);
+    }
+    return String(ownerId) === String(compareId);
+};
 ```
+
+#### 2.2.1 Seller ↔ Product Relationship Architecture
+* **Cardinality:** `User (1) ──── owns ──── (N) Product`
+* **Unified Merchant Model:** Merchants are unified inside the `User` collection with `role = "seller"`. No separate `Seller` or `Vendor` collection exists.
+* **Ownership Reference:** The `Product.seller` path stores the `ObjectId` of the merchant user (`ref: 'User'`).
+* **Query Isolation:** Products for a given seller are queried via `Product.findBySeller(sellerId)` or `Product.find({ seller: sellerId })`. Index `{ seller: 1, createdAt: -1 }` guarantees rapid indexed retrieval. Empty sellers return `[]`.
+* **Safe Ownership Verification:** Controllers verify ownership via `product.isOwnedBy(req.user)` before mutations.
+* **Population & Security:** Population resolves via `Product.populate('seller', '-password -authSecretHash')`, strictly omitting authentication secrets.
+
 
 ### 2.3 The Cart Collection (`models/cart.js`)
 Maintains server-persisted shopping bags for authenticated buyers.

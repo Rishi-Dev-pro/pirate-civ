@@ -153,6 +153,40 @@ productSchema.index({ island: 1, isAvailable: 1 });
 productSchema.index({ seller: 1, createdAt: -1 });
 
 
+/* =========================================================
+   SELLER ↔ PRODUCT RELATIONSHIP HELPERS
+========================================================= */
+
+/**
+ * Retrieve all products listed by a specific merchant seller.
+ * Leverages the { seller: 1, createdAt: -1 } compound index.
+ *
+ * @param {mongoose.Types.ObjectId|string} sellerId - Seller User ID
+ * @param {Object} [filter={}] - Additional query filters
+ * @returns {mongoose.Query} Mongoose query
+ */
+productSchema.statics.findBySeller = function(sellerId, filter = {}) {
+    return this.find({ seller: sellerId, ...filter }).sort({ createdAt: -1 });
+};
+
+/**
+ * Safely verify if this product is owned by a given user or user ID.
+ * Supports populated seller documents, unpopulated ObjectIds, and User models.
+ *
+ * @param {Object|mongoose.Types.ObjectId|string} userOrId - User instance or ObjectId
+ * @returns {boolean} True if owned by the specified user
+ */
+productSchema.methods.isOwnedBy = function(userOrId) {
+    if (!userOrId || !this.seller) return false;
+    const ownerId = this.seller._id || this.seller;
+    const compareId = userOrId._id || userOrId;
+    if (ownerId && typeof ownerId.equals === "function") {
+        return ownerId.equals(compareId);
+    }
+    return String(ownerId) === String(compareId);
+};
+
+
 const Product = mongoose.model("Product", productSchema);
 
 export default Product;

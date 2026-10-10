@@ -27,6 +27,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 * **Cleaned Dead Mock Data (`routes/web.js`):** Removed unused `studentInfo` mockup and `student_data` parameter from home route `/`.
 * **Contact Submission to DB:** Form POST `/contact` persists name, email, subject, and message into MongoDB `contacts` collection via `models/contact.js` and `controller/contact.js`.
 * **Product Model Foundation (`models/product.js`):** Foundational Mongoose model linking items to `User` (seller reference), supporting canonical island enum (6 islands), auto-slug generation, Doubloons pricing, integer non-negative stock, availability toggle, and compound indexes. Tested and verified.
+* **Seller ↔ Product Relationship (`models/product.js`):** Formalized seller ownership between unified `User` (`role: 'seller'`) and `Product` via `seller: ObjectId` reference (`ref: 'User'`). Added static `Product.findBySeller(sellerId)` utilizing `{ seller: 1, createdAt: -1 }` compound index and instance helper `product.isOwnedBy(userOrId)` for safe ownership comparisons. Tested query isolation, empty seller results, and population with secret exclusion.
 
 ---
 
@@ -50,7 +51,6 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ---
 
 ### ⚪ NOT IMPLEMENTED
-* **Seller Model / Seller Profile:** No schema or controller exists for merchants, store profiles, merchant descriptions, or merchant ratings.
 * **Cart Model (`models/cart.js`):** No server-side schema exists for tracking active user shopping carts.
 * **Order Model (`models/order.js`):** No schema exists for managing orders, order statuses, item snapshots, or shipping addresses.
 * **Product CRUD APIs:** No routes or controllers for creating, updating, or deleting products.
@@ -87,6 +87,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 | **Contact Page** | 🟢 Clean template & styling | 🟢 Connected to MongoDB | 🟢 Model active | **100%** |
 | **About Page** | 🟢 Nautical lore & cards | 🟢 Functional route | N/A | **100%** |
 | **Product Model** | N/A (Schema) | 🟢 Complete Mongoose model | 🟢 Validated schema & indexes | **100%** |
+| **Seller ↔ Product Relationship** | N/A (Data Architecture) | 🟢 findBySeller & isOwnedBy | 🟢 ref: 'User' & compound index | **100%** |
 | **Entry Map Gateway** | ❌ Missing | ❌ Missing | N/A | **0%** |
 | **Google OAuth** | ❌ Missing | ❌ Missing | 🟡 Schema ready (`googleId`) | **20%** |
 | **Sea Chart / Home** | 🟢 Complete & animated | 🟢 Clean controller route | ❌ Products in JS files | **85%** |

@@ -72,6 +72,18 @@ Every product in Pirate-Civ is classified by two axes:
   - `{ island: 1, isAvailable: 1 }`: Fast retrieval of active items on themed island pages.
   - `{ seller: 1, createdAt: -1 }`: Fast merchant inventory lookup.
 
+### 3.2 Seller ↔ Product Relationship Foundation
+* **Seller Ownership:** Every product references a merchant user via `seller: { type: ObjectId, ref: 'User', required: true }`.
+* **Unified Merchant Persona:** The merchant is represented directly in the unified `User` model with `role: "seller"`. No separate `Seller` collection exists.
+* **Query Foundation:**
+  - Standard Mongoose: `Product.find({ seller: sellerId })`
+  - Static Helper: `Product.findBySeller(sellerId, [filter])` queries items owned by the seller sorted by `createdAt: -1`, taking advantage of the `{ seller: 1, createdAt: -1 }` compound index.
+  - Isolation: Querying Seller A never returns Seller B's items. Valid sellers with no products return `[]`.
+* **Ownership Verification Method:**
+  - Instance Helper: `product.isOwnedBy(userOrId)` safely performs ObjectId comparison whether `seller` is an unpopulated ObjectId or a populated User document.
+* **Population & Security:**
+  - `Product.findById(id).populate('seller', '-password -authSecretHash')` resolves merchant profile details (`name`, `storeName`, `email`, `role`) while strictly omitting sensitive authentication hashes.
+
 ---
 
 ## 4. Controlled Product Migration & Seeding Strategy
