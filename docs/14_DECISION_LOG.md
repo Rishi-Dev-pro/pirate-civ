@@ -103,3 +103,15 @@ This log preserves key architectural choices, trade-offs, and design decisions m
 * **Alternatives Considered:** Dynamic lookup of Product document by ID for order totals. Rejected because past transactions would retroactively change value when product prices or titles are edited.
 * **Consequences:** Order creation must capture snapshots from current Product state. Product stock remains invariant during Order model operations until Phase 5 atomic checkout.
 
+---
+
+### Decision 009: Pre-Phase 3 Codebase Hardening & Centralized Error/Lifecycle Boundaries
+* **Date:** 2026-10-11
+* **Status:** Accepted
+* **Context:** Prior to launching Phase 3 (Marketplace & Buyer Experience), the codebase required verification that all layers are resilient against connection drops, unhandled exceptions, malformed requests, and duplicate database connections.
+* **Decision:** Implement singleton protection in `config/db.js` with lifecycle event logging and graceful shutdown (`disconnectDB()`), register `express.json()` for incoming JSON payloads, add an application-level 404 catch-all handler, and implement centralized Express error-handling middleware (`(err, req, res, next)`) that logs server-side while rendering a themed error view without exposing internal stack traces or paths to clients.
+* **Reason:** Eliminates Technical Debt #2, prevents process leakage, guarantees that unexpected server errors do not expose sensitive infrastructure details, and hardens the application before introducing complex marketplace features.
+* **Alternatives Considered:** Ad-hoc try/catch in individual controllers without a global safety net. Rejected as prone to accidental omissions and unhandled promise rejections.
+* **Consequences:** All controllers can safely pass unrecoverable errors to `next(err)` knowing that the centralized handler will render safe, styled client responses.
+
+

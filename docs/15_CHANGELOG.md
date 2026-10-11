@@ -4,6 +4,28 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-11] — Pre-Phase 3 Release Gate: Full Codebase Audit, Integration Verification & Hardening
+
+### Added & Hardened
+* **Database Connection Singleton & Lifecycle (`config/db.js`):** Added connection guard (`readyState === 1`) preventing duplicate connections on repeat calls. Added connection drop listeners (`disconnected`, `error`) and exported `disconnectDB()` helper with process signal hooks (`SIGINT`, `SIGTERM`) for graceful process exits.
+* **Centralized Express Error Handling (`index.js`):** Registered global error middleware `(err, req, res, next)` logging server-side errors and rendering themed client responses while strictly suppressing internal stack traces, filesystem paths, and secrets.
+* **Styled 404 Catch-All Middleware (`index.js`):** Registered catch-all 404 middleware after routes, replacing default raw Express "Cannot GET" responses with styled HTML templates.
+* **JSON Body Parser (`index.js`):** Added `server.use(express.json())` alongside URL-encoded parser to safely parse incoming JSON payloads.
+* **Environment Template (`.env.example`):** Verified presence of template with safe placeholder values for `PORT`, `MONGO_URI`, `SESSION_SECRET`, `COOKIE_SECRET`, and `NODE_ENV`.
+* **Audit Documentation (`docs/18_CODEBASE_AUDIT.md`):** Authored 24-section comprehensive pre-phase release gate audit report.
+
+### Audited & Verified
+* Static syntax checked across all 18 JavaScript files (`node --check`) with 100% pass rate.
+* Template compilation checked across all 20 EJS views (`ejs.compile`) with 100% pass rate.
+* Dependency review (`npm audit`) and security credential leakage checks verified.
+* Role-based authorization matrix (`anonymous`, `buyer`, `seller`, `admin`) verified with 403 enforcement.
+* Model validations tested across all 5 Mongoose models (`User`, `Product`, `Cart`, `Order`, `Contact`).
+* Failure-injection tests executed (invalid URIs, malformed ObjectIds, invalid quantities, negative prices, duplicate emails).
+* 76 focused hardening assertions in `scratch/test_pre_phase_3_gate.js` passed (76/76).
+* Full regression suite passing across all milestones: Milestone 2.6 (166/166), Milestone 2.5 (283/283), Milestone 2.4 (85/85), Milestone 2.3 (42/42), Milestone 2.2 (42/42), Milestone 2.1 (31/31), Phase 1 (45/45). Total: 770/770 passed (100%).
+
+---
+
 ## [2026-10-11] — Phase 2 / Milestone 2.6: Database Integration & Core API/SSR Verification (PHASE 2 COMPLETE)
 
 ### Added

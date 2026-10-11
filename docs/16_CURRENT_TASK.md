@@ -12,42 +12,51 @@
 ---
 
 ## 📍 1. Current Phase
-* **Active Phase:** **Phase 2 — Database & Core Models**
-* **Active Milestone:** **Milestone 2.6 — Database Integration & Core API/SSR Verification**
-* **Status:** **COMPLETE (PHASE 2 COMPLETE)**
+* **Active Phase:** **Pre-Phase 3 Release Gate**
+* **Active Gate:** **Full Codebase Audit, Integration Verification & Hardening**
+* **Status:** **COMPLETE (PRE-PHASE 3 READY)**
 
 ---
 
 ## 🎯 2. Current Task
-* **Task Name:** Milestone 2.6 — Database Integration & Core API/SSR Verification
+* **Task Name:** Pre-Phase 3 Gate — Full Codebase Audit, Integration Verification & Hardening
 * **Status:** Complete, Tested, Verified, and Documented.
-* **Phase 2 Progress:** ALL MILESTONES COMPLETE (2.1, 2.2, 2.3, 2.4, 2.5 & 2.6).
+* **Readiness:** Codebase is audited, hardened, and verified for Phase 3.
 
 ---
 
 ## ✅ 3. Completed in This Task
-* **MongoDB Product Integration in Island Controller (`controller/islands.js`):**
-  - Updated `renderIslandPage` to asynchronously query canonical products from MongoDB: `Product.find({ island: normalizedKey, isAvailable: true }).sort({ createdAt: 1 })`.
-  - Formatted Mongoose product documents to seamlessly preserve EJS template expectations (`id`, `_id`, `name`, `slug`, `price`, `priceNum`, `desc`, `description`, `image`, `island`, `category`, `stock`, `isAvailable`, `rating`, `seller`).
-  - Gracefully handles database errors/empty catalogs without crashing views.
-  - Eliminated hardcoded product dependency in server runtime while preserving legitimate static island lore and cartographic metadata (`coordinates`, `tradeWind`, `dangerRating`, `logbook`).
-* **Route Map Alignment (`routes/web.js`):**
-  - Added dedicated `/home` route rendering `views/home.ejs` with `authMiddleware` guard.
-  - Added `/islands` overview redirect to `/#sea-chart-section` with `authMiddleware` guard.
-* **Full Core API/SSR Verification (`scratch/test_milestone_2_6.js`):**
-  - Verified MongoDB connection and collection accessibility for `Product`, `User`, `Cart`, `Order`, `Contact`.
-  - Verified 32 canonical products in MongoDB attributed to canonical merchant `Grand Admiralty Cartographers`.
-  - Verified seller population with strict credential exclusion (`-password -authSecretHash`).
-  - Verified stock invariance: reading products during SSR does not mutate inventory.
-  - Verified persistent Cart integration with real MongoDB products, item merging, and user isolation.
-  - Verified Order model integration with real MongoDB products and multi-seller queries.
-  - Verified HTTP SSR responses via test server: public routes (`/login`, `/register`), unauthenticated 302 redirects, and authenticated 200 OK responses across `/`, `/home`, `/about`, `/contact`, `/users`, and all 6 island store views (`astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`).
-  - Verified that all 6 island views dynamically render real MongoDB-backed products and pricing.
+* **Full Codebase Audit (`docs/18_CODEBASE_AUDIT.md`):**
+  - Executed static analysis across all 18 JavaScript files (`node --check`) with 100% pass rate.
+  - Executed template syntax check across all 20 EJS views (`ejs.compile`) with 100% pass rate.
+  - Inspected dependencies and security credentials.
+* **Database Hardening (`config/db.js`):**
+  - Added singleton connection protection (`readyState === 1` guard).
+  - Added connection drop listeners (`disconnected`, `error`).
+  - Added graceful shutdown export (`disconnectDB`) and process signal listeners (`SIGINT`, `SIGTERM`).
+* **Application Middleware Hardening (`index.js`):**
+  - Added `express.json()` body parser.
+  - Added styled 404 catch-all middleware rendering a themed template.
+  - Added centralized Express error-handling middleware (`(err, req, res, next)`) that logs server-side and suppresses client stack trace leakage.
+* **Comprehensive Gate Audit Test Suite (`scratch/test_pre_phase_3_gate.js`):**
+  - Tested database connection lifecycle and reconnects (76 assertions).
+  - Tested failure injection (bad URI, malformed ObjectIds, invalid quantities, negative prices, duplicate emails).
+  - Tested role authorization matrix (`anonymous`, `buyer`, `seller`, `admin`).
+  - Tested error and 404 middleware responses.
+* **Full Regression Verification (770/770 passing):**
+  - Pre-Phase 3 Gate: 76/76
+  - Milestone 2.6: 166/166
+  - Milestone 2.5: 283/283
+  - Milestone 2.4: 85/85
+  - Milestone 2.3: 42/42
+  - Milestone 2.2: 42/42
+  - Milestone 2.1: 31/31
+  - Phase 1: 45/45
 
 ---
 
 ## ⏳ 4. Currently Working On
-* Milestone 2.6 and Phase 2 are finalized. Ready to proceed to Phase 3 → Milestone 3.1 upon user instruction.
+* Pre-Phase 3 Gate is finalized. Ready to proceed to Phase 3 → Milestone 3.1 upon user instruction.
 
 ---
 

@@ -71,7 +71,9 @@ flowchart LR
 3. `cookieParser(process.env.COOKIE_SECRET)` — Parses and cryptographically validates signed cookies (`auth_token`).
 4. `session({ ... })` — Configures secure HTTP-only session cookies with 7-day or 30-day lifespans.
 5. `authMiddleware` — Authenticates incoming sessions against signed cookies and MongoDB user secret hashes.
-6. `roleMiddleware` — Enforces role-based access control (`requireRole('seller')`, `requireRole('buyer')`).
+6. `roleMiddleware` — Enforces role-based access control (`requireRole('seller')`, `requireRole('buyer')`, `requireRole('admin')`).
+7. `Catch-All 404 Middleware` — Renders themed 404 page for nonexistent endpoints, bypassing raw Express default text.
+8. `Global Error-Handling Middleware` — Centralized `(err, req, res, next)` handler catching unhandled exceptions, logging diagnostics server-side, and rendering a safe 500 template while suppressing internal stack traces and server paths.
 
 ### 3.3 Routing Layer (`/routes`)
 * Centralized in `routes/web.js` (and modular sub-routers as the platform expands into `/routes/seller.js` and `/routes/api.js`).
@@ -88,7 +90,7 @@ Controllers contain business logic, coordinate models, and render views or retur
 
 ### 3.5 Data & Persistence Layer (`/models` & `/config`)
 * **ODM:** Mongoose v8/v9 with strict schemas, validation rules, timestamps, and foreign key references (`ref`).
-* **Connection:** Singleton connection in `config/db.js` with auto-reconnect and graceful error shutdown.
+* **Connection:** Singleton connection in `config/db.js` with guard against duplicate connections (`readyState === 1`), connection lifecycle listeners (`disconnected`, `error`), graceful shutdown export (`disconnectDB()`), and process signal handlers (`SIGINT`, `SIGTERM`).
 * **Collections:** `users`, `products`, `carts`, `orders`, `contacts`.
 
 ---

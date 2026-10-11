@@ -47,6 +47,10 @@ server.use(
     })
 );
 
+server.use(
+    express.json()
+);
+
 
 /* ==========================================
    Cookie Parser
@@ -133,6 +137,38 @@ server.use(
 
 
 /* ==========================================
+   404 Catch-All Handler
+========================================== */
+
+server.use((req, res) => {
+    res.status(404).render("home", {
+        page_title: "404 - Terra Incognita",
+        user: req.user || null
+    });
+});
+
+
+/* ==========================================
+   Global Centralized Error Handler
+========================================== */
+
+server.use((err, req, res, next) => {
+    console.error("Centralized Server Error Handler:", err);
+
+    if (res.headersSent) {
+        return next(err);
+    }
+
+    const statusCode = err.status || err.statusCode || 500;
+
+    res.status(statusCode).render("home", {
+        page_title: "Archipelago Tempest | Error",
+        user: req.user || null
+    });
+});
+
+
+/* ==========================================
    Server Start
 ========================================== */
 
@@ -143,3 +179,5 @@ server.listen(PORT, () => {
     );
 
 });
+
+export default server;
