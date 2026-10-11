@@ -30,6 +30,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 * **Seller ↔ Product Relationship (`models/product.js`):** Formalized seller ownership between unified `User` (`role: 'seller'`) and `Product` via `seller: ObjectId` reference (`ref: 'User'`). Added static `Product.findBySeller(sellerId)` utilizing `{ seller: 1, createdAt: -1 }` compound index and instance helper `product.isOwnedBy(userOrId)` for safe ownership comparisons. Tested query isolation, empty seller results, and population with secret exclusion.
 * **Persistent Cart Model & Session Integration (`models/cart.js`, `controller/auth.js`):** MongoDB-backed Cart model establishing `User 1 ──── owns ──── 1 Cart` with embedded `items: [{ product, quantity }]`. Enforces positive integer quantities (`min: 1`, `Number.isInteger`), unique user indexing (`unique: true`), duplicate item merging via `cart.addItem()`, `Cart.findByUser(userId)`, safe session cart migration upon authentication (`Cart.mergeSessionCart`), invalid product/quantity filtering without crashing, and user isolation. Tested and verified.
 * **Order Model & Order Lifecycle Foundation (`models/order.js`):** MongoDB-backed Order model with embedded `items` capturing historical price and name snapshots (`name`, `price`, `quantity`, `lineTotal`, `seller`, `product`). Guarantees historical transaction immutability regardless of subsequent product updates. Enforces canonical status lifecycle (`pending`, `confirmed`, `processing`, `shipped`, `delivered`, `cancelled`) with permitted state machine transitions (`canTransitionTo`, `transitionTo`), payment status foundation (`pending`, `paid`, `failed`, `refunded`), required shipping address, compound indexes (`{ buyer: 1, createdAt: -1 }`, `{ "items.seller": 1, status: 1 }`), query helpers (`findByBuyer`, `findBySeller`), stock invariance, and credential exclusion upon population. Fully tested and verified.
+* **Controlled Product Migration & Seeding (`scripts/seedProducts.js`):** Standalone and modular idempotent migration script importing the entire 32-item product catalog from `controller/islands.js` into MongoDB. Attributed to the canonical merchant (`Grand Admiralty Cartographers`, `admiralty@pirate-civ.internal`, `role: "seller"`). Normalizes price strings to integer Doubloons, maps taxonomy cleanly to the 6 canonical islands and 3 categories, generates deterministic slugs, preserves stock invariance on reruns, and pre-validates against the Mongoose `Product` schema. Verified idempotent across repeated runs.
 
 ---
 
@@ -37,11 +38,12 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 * **Explorer Page (`/users`):** Displays all registered users from MongoDB in a nautical grid (`views/users.ejs`), but treats them as generic students/users rather than pirate merchants and marketplace sellers.
 * **Responsive UI:** Desktop layouts are polished, but certain island product grids, cart drawers, and mind map canvas scaling require mobile/tablet tuning.
 * **Cargo Cart:** Backend Cart schema, user isolation, and session-to-DB migration are complete; buyer REST endpoints (`/cart/add`, `/cart/remove`) and frontend drawer API wiring belong to Phase 3.
+* **Product Catalog (Database Integration):** All 32 hardcoded products successfully migrated into MongoDB under canonical merchant. Controllers/routes still serve hardcoded dictionary awaiting Milestone 2.6 DB wiring.
 
 ---
 
 ### 🟠 FRONTEND ONLY (Simulated / Non-Persistent)
-* **Item Listings:** Products displayed on island views and the sea chart mind map are hardcoded in `controller/islands.js` (`ISLANDS_DATA`) and `public/js/mindmap.js` (`REALM_DATA`). Zero products exist in MongoDB.
+* **Item Listings:** Products displayed on island views and the sea chart mind map currently render from `controller/islands.js` (`ISLANDS_DATA`) and `public/js/mindmap.js` (`REALM_DATA`). Ready for direct MongoDB hydration in Milestone 2.6.
 * **Add to Cart UI:** Clicking "Add to Cart" on the static island views operates via browser `localStorage` in `public/js/island-store.js`. (Database persistence foundation is ready in `models/cart.js`).
 * **Shopping Cart Drawer UI:** The slide-out cart UI displays items from `localStorage` awaiting Phase 3 endpoint connection.
 * **Checkout Flow:** The checkout button triggers a simulated toast/alert without generating an order record or checking user balances.
@@ -70,10 +72,9 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ---
 
 ### 🛠️ TECHNICAL DEBT
-1. **Product Data Duplication:** Product data is duplicated between `controller/islands.js` (server-side data dictionary) and `public/js/mindmap.js` (client-side data dictionary) with minor discrepancies in product titles and categories.
+1. **Product Data Duplication:** Product data is duplicated between `controller/islands.js` (server-side data dictionary) and `public/js/mindmap.js` (client-side data dictionary) with minor discrepancies in product titles and categories. *Mitigated by canonical database migration in Milestone 2.5; will be fully consolidated upon Milestone 2.6 SSR wiring.*
 2. **No Centralized Error Handling:** Missing express global error-handling middleware (`app.use((err, req, res, next) => ...)`).
-3. **Missing Production Seed Script:** No migration or seed script exists to populate MongoDB with the baseline catalog from the 6 islands.
-4. **Session Store In-Memory:** Express-session currently uses default memory storage; restarting the server invalidates active sessions.
+3. **Session Store In-Memory:** Express-session currently uses default memory storage; restarting the server invalidates active sessions.
 
 ---
 
@@ -89,13 +90,14 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 | **About Page** | 🟢 Nautical lore & cards | 🟢 Functional route | N/A | **100%** |
 | **Product Model** | N/A (Schema) | 🟢 Complete Mongoose model | 🟢 Validated schema & indexes | **100%** |
 | **Seller ↔ Product Relationship** | N/A (Data Architecture) | 🟢 findBySeller & isOwnedBy | 🟢 ref: 'User' & compound index | **100%** |
+| **Product Migration & Seeding** | N/A (Data Architecture) | 🟢 Idempotent seed script (`scripts/seedProducts.js`) | 🟢 32 products migrated under canonical merchant | **100%** |
 | **Persistent Cart (Model & Persistence)** | 🟡 Frontend / localStorage | 🟢 Session migration & Cart helpers | 🟢 Validated schema & unique user index | **85%** |
 | **Entry Map Gateway** | ❌ Missing | ❌ Missing | N/A | **0%** |
 | **Google OAuth** | ❌ Missing | ❌ Missing | 🟡 Schema ready (`googleId`) | **20%** |
-| **Sea Chart / Home** | 🟢 Complete & animated | 🟢 Clean controller route | ❌ Products in JS files | **85%** |
-| **6 Leaf Islands** | 🟢 Complete themed views | 🟡 Hardcoded data | 🟡 Schema ready (`models/product.js`) | **70%** |
+| **Sea Chart / Home** | 🟢 Complete & animated | 🟢 Clean controller route | 🟡 32 products ready in DB | **85%** |
+| **6 Leaf Islands** | 🟢 Complete themed views | 🟡 Hardcoded data | 🟢 32 products ready in DB | **85%** |
 | **Product Detail Page** | ❌ Missing | ❌ Missing | 🟡 Schema ready (`Product`) | **25%** |
-| **Explore Sellers Directory** | ❌ (Shows generic users) | 🟡 Generic `/users` | ❌ No seller role | **15%** |
+| **Explore Sellers Directory** | ❌ (Shows generic users) | 🟡 Generic `/users` | 🟡 Canonical merchant active | **20%** |
 | **Public Seller Profile** | ❌ Missing | ❌ Missing | ❌ Missing | **0%** |
 | **Order Model & Lifecycle Foundation** | N/A (Schema) | 🟢 State machine & Query helpers | 🟢 Validated schema & snapshot integrity | **100%** |
 | **Cargo Cart** | 🟡 Frontend / localStorage | ❌ Missing API | 🟢 Schema ready (`models/cart.js`) | **25%** |

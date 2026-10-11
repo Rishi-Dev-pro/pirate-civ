@@ -4,6 +4,25 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-11] — Phase 2 / Milestone 2.5: Controlled Migration of Existing Hardcoded Products
+
+### Added
+* Created dedicated, idempotent product migration script `scripts/seedProducts.js` importing the complete 32-item hardcoded catalog from `controller/islands.js` into MongoDB.
+* Bootstrapped canonical merchant `Grand Admiralty Cartographers` (`admiralty@pirate-civ.internal`, `role: "seller"`, `homeIsland: "astrolabe"`) with idempotent user lookup and creation.
+* Implemented deterministic, URL-safe kebab-case slug generator (`generateDeterministicSlug`) ensuring 100% collision-free slugs across the product catalog.
+* Normalized product taxonomy across all 6 canonical islands (`astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`) and 3 categories (`relics`, `apparel`, `provisions`).
+* Cleaned and normalized Doubloon prices from comma-separated strings (`"24,999"`) into positive integers (`24999`).
+* Preserved visual star rating strings (`"★★★★★"`, `"★★★★☆"`) and original asset image paths (`/images/items/*.png`).
+* Implemented idempotent upsert algorithm preserving existing stock levels across repeat runs without deleting database documents.
+* Pre-validated all product objects against Mongoose `Product` schema rules before persistence.
+
+### Tested
+* 283 focused automated tests in `scratch/test_milestone_2_5.js` covering source catalog extraction, taxonomy mapping, slug uniqueness, canonical merchant bootstrap, first-run insertions, second-run idempotency, seller ownership, stock preservation, and data integrity (283/283 passed).
+* Full regression test suite passing: Milestone 2.4 (85/85), Milestone 2.3 (42/42), Milestone 2.2 (42/42), Milestone 2.1 (31/31), Phase 1 (45/45). Total: 528/528 passed.
+* Verified live MongoDB development database idempotency: Run 1 created 32 items; Run 2 updated 32 items with 0 duplicates (total count strictly 32).
+
+---
+
 ## [2026-10-11] — Phase 2 / Milestone 2.4: Order Model & Order Lifecycle Foundation
 
 ### Added

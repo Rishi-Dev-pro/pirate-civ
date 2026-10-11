@@ -86,34 +86,47 @@ Every product in Pirate-Civ is classified by two axes:
 
 ---
 
-## 4. Controlled Product Migration & Seeding Strategy
+## 4. Controlled Product Migration & Seeding Strategy (Milestone 2.5 COMPLETE)
 
-Currently, 28+ products are hardcoded inside `controller/islands.js` (`ISLANDS_DATA`) and `public/js/mindmap.js` (`REALM_DATA`).
+Historically, 32 products were hardcoded inside `controller/islands.js` (`ISLANDS_DATA`) across the 6 islands, with 13 simplified nodes in `public/js/mindmap.js` (`REALM_DATA`).
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│ MIGRATION DIRECTIVE (Decision 007):                                    │
+│ MIGRATION DIRECTIVE (Decision 007 & Milestone 2.5):                    │
 │ Existing Pirate-Civ products must NOT simply disappear or be wiped.    │
-│ During Phase 2, a controlled migration/seed script must import every   │
-│ existing product from the audit into MongoDB, attributing them to a   │
-│ canonical seed merchant ("The Grand Admiralty Guild").                 │
+│ Milestone 2.5 implemented a dedicated, idempotent migration script     │
+│ (`scripts/seedProducts.js`) that safely imports all 32 products into   │
+│ MongoDB under canonical merchant "Grand Admiralty Cartographers".      │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
-### 4.1 Seed Script Execution Plan (`scripts/seedProducts.js`)
-1. **Merchant Bootstrap:** Check if default seed merchant exists:
+### 4.1 Seed Script Implementation (`scripts/seedProducts.js`)
+1. **Canonical Merchant Bootstrap:**
    - Name: *"Grand Admiralty Cartographers"*
-   - Store Name: *"Imperial Admiralty Vault"*
+   - Store Name: *"Grand Admiralty Cartographers"*
    - Email: `admiralty@pirate-civ.internal`
    - Role: `seller`
    - Home Island: `astrolabe`
-2. **Catalog Transformation:** Extract all items from `ISLANDS_DATA` in `controller/islands.js`:
-   - Map `price` strings (`"24,999"`) into clean integers (`24999`).
-   - Assign initial stock (`stock: 15`).
-   - Ensure clean image paths (`/images/items/...`).
-   - Associate each document with the seed merchant's `_id`.
-3. **Idempotent Upsert:** Execute `Product.bulkWrite(...)` using unique slugs to ensure the script can be run repeatedly without duplicating products.
-4. **Verification:** Confirm that `/island/astrolabe`, `/island/chronos`, `/island/kraken_vault`, `/island/cutlass_cove`, `/island/velvet_isle`, and `/island/booty_cay` render the exact catalog directly from MongoDB.
+   - Implementation: Queries existing user via `User.findOne({ email })`; creates merchant if not found. Idempotent across multiple runs.
+2. **Catalog Extraction & Transformation:**
+   - 32 items extracted from `ISLANDS_DATA` in `controller/islands.js`.
+   - Prices: String formats (e.g., `"24,999"`) converted into clean positive integers (`24999`).
+   - Stock: Seeded with baseline default `stock: 15`. Subsequent runs preserve existing database stock.
+   - Images: Relative paths (`/images/items/*.png`) preserved directly.
+   - Ratings: Preserved as visual formatted strings (`"★★★★★"`, `"★★★★☆"`).
+   - Slugs: Deterministically generated from product names using URL-safe kebab-case. 100% unique across all 32 items.
+   - Taxonomy:
+     - Islands: `astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`.
+     - Categories: `relics` (`astrolabe`, `chronos`, `kraken_vault`), `apparel` (`cutlass_cove`, `velvet_isle`), `provisions` (`booty_cay`).
+3. **Idempotent Upsert Strategy:**
+   - Pre-validates documents against the Mongoose `Product` model schema.
+   - Finds existing product by `{ slug }`. If found, updates attributes while preserving existing stock. If not found, creates product.
+   - Never calls destructive operations (`deleteMany({})`).
+4. **Verification Results:**
+   - First run on clean DB: 32 created, 0 updated, 0 failed.
+   - Second run on seeded DB: 0 created, 32 updated, 0 failed. Total product count remains exactly 32.
+   - Verified 100% seller ownership under `Grand Admiralty Cartographers`.
+   - Verified SSR hydration readiness for Milestone 2.6.
 
 ---
 

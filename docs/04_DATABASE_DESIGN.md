@@ -265,6 +265,31 @@ productSchema.methods.isOwnedBy = function(userOrId) {
 * **Safe Ownership Verification:** Controllers verify ownership via `product.isOwnedBy(req.user)` before mutations.
 * **Population & Security:** Population resolves via `Product.populate('seller', '-password -authSecretHash')`, strictly omitting authentication secrets.
 
+#### 2.2.2 Canonical Merchant & Catalog Migration Architecture (Milestone 2.5)
+* **Authoritative Source Catalog:** 32 distinct items extracted from `ISLANDS_DATA` in `controller/islands.js` representing all 6 archipelago islands.
+* **Canonical Merchant Persona:**
+  - Name: `Grand Admiralty Cartographers`
+  - Store Name: `Grand Admiralty Cartographers`
+  - Email: `admiralty@pirate-civ.internal`
+  - Role: `seller`
+  - Home Island: `astrolabe`
+  - Bootstrap: Idempotently queried or created via `getOrCreateCanonicalMerchant()`. All 32 migrated products reference this merchant.
+* **Deterministic Slugs:**
+  - Slugs are generated deterministically using kebab-case from product names (e.g., `Aetherial Sextant` ➔ `aetherial-sextant`).
+  - 100% unique across all 32 items; no collision resolution needed.
+* **Taxonomy Normalization:**
+  - Islands: `astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`.
+  - Categories: `astrolabe`, `chronos`, `kraken_vault` ➔ `relics`; `cutlass_cove`, `velvet_isle` ➔ `apparel`; `booty_cay` ➔ `provisions`.
+* **Field Preservation & Types:**
+  - Price: String formats (e.g. `"24,999"`) normalized to positive integer Doubloons (`24999`).
+  - Stock: Seeded with baseline default `15`. Subsequent migration runs preserve existing stock in MongoDB to prevent overwriting active inventory.
+  - Rating: Formatted visual strings (`"★★★★★"`, `"★★★★☆"`) preserved directly.
+  - Image: Verified relative assets (`/images/items/*.png`) preserved without alteration.
+* **Idempotent Upsert Strategy:**
+  - Matches by unique `{ slug }`.
+  - First run creates 32 records.
+  - Subsequent runs update fields without duplicating products or resetting existing stock.
+
 
 ### 2.3 The Cart Collection (`models/cart.js`)
 Maintains server-persisted shopping bags for authenticated buyers.
