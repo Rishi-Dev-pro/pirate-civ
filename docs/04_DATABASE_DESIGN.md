@@ -319,39 +319,59 @@ const cartSchema = new mongoose.Schema({
 
 
 ### 2.4 The Order Collection (`models/order.js`)
-Captures transactions, snapshot pricing, buyer information, and multi-item seller references.
+Captures transactions, historical snapshot pricing, buyer information, multi-seller line items, and lifecycle transitions.
 
 ```javascript
 const orderItemSchema = new mongoose.Schema({
     product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
-        required: true
+        required: [true, "Product reference is required"]
     },
     seller: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true,
+        required: [true, "Seller reference is required"],
         index: true
     },
-    name: { type: String, required: true },
-    price: { type: Number, required: true }, // Doubloons at purchase time
-    quantity: { type: Number, required: true, min: 1 },
-    image: { type: String }
+    name: { type: String, required: [true, "Product name snapshot is required"], trim: true },
+    price: { type: Number, required: [true, "Unit price snapshot is required"], min: [0, "Unit price cannot be negative"] }, // Doubloons snapshot at purchase time
+    quantity: {
+        type: Number,
+        required: [true, "Quantity is required"],
+        min: [1, "Quantity must be at least 1"],
+        validate: { validator: Number.isInteger, message: "Quantity must be an integer" }
+    },
+    lineTotal: {
+        type: Number,
+        required: [true, "Line total is required"],
+        min: [0, "Line total cannot be negative"]
+    },
+    image: { type: String, trim: true, default: "/images/items/default-relic.png" }
 }, { _id: false });
 
 const orderSchema = new mongoose.Schema({
     buyer: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
-        required: true,
+        required: [true, "Buyer reference is required"],
         index: true
     },
-    items: [orderItemSchema],
+    items: {
+        type: [orderItemSchema],
+        validate: {
+            validator: (items) => Array.isArray(items) && items.length > 0,
+            message: "Order must contain at least one item"
+        }
+    },
+    subtotal: {
+        type: Number,
+        min: [0, "Subtotal cannot be negative"]
+    },
     totalDoubloons: {
         type: Number,
-        required: true,
-        min: 0
+        required: [true, "Total in Doubloons is required"],
+        min: [0, "Total Doubloons cannot be negative"]
     },
     status: {
         type: String,
@@ -359,15 +379,40 @@ const orderSchema = new mongoose.Schema({
         default: "pending",
         index: true
     },
+    paymentStatus: {
+        type: String,
+        enum: ["pending", "paid", "failed", "refunded"],
+        default: "pending",
+        index: true
+    },
     shippingAddress: {
-        portName: { type: String, required: true },
-        islandCoordinates: { type: String, default: "18°42'N, 64°31'W" },
-        recipientNotes: { type: String, default: "" }
+        portName: { type: String, required: [true, "Port name is required"], trim: true },
+        islandCoordinates: { type: String, default: "18°42'N, 64°31'W", trim: true },
+        recipientNotes: { type: String, default: "", trim: true }
     }
 }, {
     timestamps: true
 });
+
+// Compound Indexes:
+// 1. { buyer: 1, createdAt: -1 }      -> Fast customer order history sorting
+// 2. { "items.seller": 1, status: 1 } -> Fast merchant order fulfillment queues
+orderSchema.index({ buyer: 1, createdAt: -1 });
+orderSchema.index({ "items.seller": 1, status: 1 });
+
+// Methods & Statics:
+// 1. order.canTransitionTo(status): Validates lifecycle transition rules
+// 2. order.transitionTo(status): Advances status or throws Error if invalid
+// 3. Order.findByBuyer(buyerId, filter): Queries orders for a buyer sorted newest first
+// 4. Order.findBySeller(sellerId, filter): Queries orders containing items for a merchant
 ```
+
+#### 2.4.1 Historical Snapshot Integrity & Multi-Seller Architecture
+* **Historical Data Immutability:** When an order is placed, line items capture immutable snapshots (`name`, `price`, `quantity`, `lineTotal`, `seller`, `image`). If a merchant later alters product title, price, or description in `products`, past orders remain entirely unchanged.
+* **Stock Invariance:** The Order model database foundation does not mutate or deduct `Product.stock`. Stock deduction is atomic during Phase 5 checkout.
+* **Multi-Seller Independence:** Orders contain items from independent merchants; each item maintains `seller: ObjectId (ref: 'User')`. Merchant order queries via `Order.findBySeller(sellerId)` isolate relevant orders through the `{ "items.seller": 1, status: 1 }` compound index.
+* **Unified Security:** References strictly utilize the unified `User` model (`ref: 'User'`). Population via `.populate('buyer', '-password -authSecretHash').populate('items.seller', '-password -authSecretHash')` protects authentication hashes.
+
 
 ### 2.5 The Contact Collection (`models/contact.js`)
 Existing active collection capturing customer inquiries.

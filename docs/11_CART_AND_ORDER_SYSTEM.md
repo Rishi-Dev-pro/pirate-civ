@@ -44,9 +44,16 @@ stateDiagram-v2
                                               5. Emit Confirmation
 ```
 
-1. **Payment Abstraction:** Payments are processed in native Doubloons (🪙). No third-party payment gateways (Stripe, PayPal) are integrated unless explicitly ordered.
-2. **Snapshot Pricing:** When an order is placed, line items capture snapshot fields (`name`, `price`, `image`, `seller`) directly inside the order document. If a seller later changes the price of the product, historical orders remain unaffected.
-3. **Atomic Stock Reduction:** Product stock is decremented at the moment of order placement. If an item runs out of stock while in checkout, the transaction aborts with an alert.
+1. **Payment Abstraction:** Payments are processed in native Doubloons (🪙). No third-party payment gateways (Stripe, PayPal) are integrated. The model defines `paymentStatus: ["pending", "paid", "failed", "refunded"]` (default `"pending"`).
+2. **Snapshot Pricing & Historical Integrity:** When an order is placed, line items capture immutable snapshots (`name`, `price`, `quantity`, `lineTotal`, `seller`, `image`, `product`) directly inside `order.items`. If a merchant subsequently alters product title, price, or description in `Product`, historical orders remain completely unaffected.
+3. **Atomic Stock Reduction (Phase 5 Boundary):** In Milestone 2.4, the Order model database foundation is strictly decoupled from stock deduction; creating or updating orders does not mutate `Product.stock`. Atomic stock deduction and reservation will be implemented during Phase 5 checkout.
+4. **Order Model Implementation (Milestone 2.4):**
+   - Implemented in `models/order.js` linked to unified `User` (`buyer: ObjectId`).
+   - Items schema captures product snapshot, positive integer quantity, and line total.
+   - Automatically calculates `subtotal` and `totalDoubloons` from item line totals.
+   - Requires shipping address (`portName`, default `islandCoordinates`, `recipientNotes`).
+   - Strategic compound indexing: `{ buyer: 1, createdAt: -1 }` (buyer order history) and `{ "items.seller": 1, status: 1 }` (merchant fulfillment queues).
+   - Query helpers: `Order.findByBuyer(buyerId)` and `Order.findBySeller(sellerId)`.
 
 ---
 
@@ -70,12 +77,17 @@ stateDiagram-v2
     Cancelled --> [*]
 ```
 
-### 3.1 Permitted Transitions
+### 3.1 Permitted Transitions & Lifecycle Helpers
 * `pending` ➔ `confirmed` (System validation)
 * `confirmed` ➔ `processing` (Merchant marks item being prepared)
 * `processing` ➔ `shipped` (Merchant flags fleet departed)
 * `shipped` ➔ `delivered` (Final dock receipt)
-* `pending` / `confirmed` / `processing` ➔ `cancelled` (Order revoked; restores stock to Product)
+* `pending` / `confirmed` / `processing` ➔ `cancelled` (Order revoked; will restore stock to Product in Phase 5)
+* `delivered` and `cancelled` are terminal states (no further transitions permitted)
+* **Lifecycle Helpers:**
+  - `order.canTransitionTo(targetStatus)`: Validates if transition is permitted by `PERMITTED_STATUS_TRANSITIONS`.
+  - `order.transitionTo(targetStatus)`: Advances status or throws Error if invalid.
+
 
 ---
 

@@ -29,6 +29,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 * **Product Model Foundation (`models/product.js`):** Foundational Mongoose model linking items to `User` (seller reference), supporting canonical island enum (6 islands), auto-slug generation, Doubloons pricing, integer non-negative stock, availability toggle, and compound indexes. Tested and verified.
 * **Seller ↔ Product Relationship (`models/product.js`):** Formalized seller ownership between unified `User` (`role: 'seller'`) and `Product` via `seller: ObjectId` reference (`ref: 'User'`). Added static `Product.findBySeller(sellerId)` utilizing `{ seller: 1, createdAt: -1 }` compound index and instance helper `product.isOwnedBy(userOrId)` for safe ownership comparisons. Tested query isolation, empty seller results, and population with secret exclusion.
 * **Persistent Cart Model & Session Integration (`models/cart.js`, `controller/auth.js`):** MongoDB-backed Cart model establishing `User 1 ──── owns ──── 1 Cart` with embedded `items: [{ product, quantity }]`. Enforces positive integer quantities (`min: 1`, `Number.isInteger`), unique user indexing (`unique: true`), duplicate item merging via `cart.addItem()`, `Cart.findByUser(userId)`, safe session cart migration upon authentication (`Cart.mergeSessionCart`), invalid product/quantity filtering without crashing, and user isolation. Tested and verified.
+* **Order Model & Order Lifecycle Foundation (`models/order.js`):** MongoDB-backed Order model with embedded `items` capturing historical price and name snapshots (`name`, `price`, `quantity`, `lineTotal`, `seller`, `product`). Guarantees historical transaction immutability regardless of subsequent product updates. Enforces canonical status lifecycle (`pending`, `confirmed`, `processing`, `shipped`, `delivered`, `cancelled`) with permitted state machine transitions (`canTransitionTo`, `transitionTo`), payment status foundation (`pending`, `paid`, `failed`, `refunded`), required shipping address, compound indexes (`{ buyer: 1, createdAt: -1 }`, `{ "items.seller": 1, status: 1 }`), query helpers (`findByBuyer`, `findBySeller`), stock invariance, and credential exclusion upon population. Fully tested and verified.
 
 ---
 
@@ -53,7 +54,6 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ---
 
 ### ⚪ NOT IMPLEMENTED
-* **Order Model (`models/order.js`):** No schema exists for managing orders, order statuses, item snapshots, or shipping addresses.
 * **Product CRUD APIs:** No routes or controllers for creating, updating, or deleting products.
 * **Seller Management Platform:** The entire seller portal (registration, dashboard, inventory management, incoming order tracking) is 0% implemented.
 * **Public Seller Discovery & Profiles:** No `/sellers` directory or `/seller/:sellerId` profile view.
@@ -97,10 +97,11 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 | **Product Detail Page** | ❌ Missing | ❌ Missing | 🟡 Schema ready (`Product`) | **25%** |
 | **Explore Sellers Directory** | ❌ (Shows generic users) | 🟡 Generic `/users` | ❌ No seller role | **15%** |
 | **Public Seller Profile** | ❌ Missing | ❌ Missing | ❌ Missing | **0%** |
-| **Cargo Cart** | 🟡 Frontend / localStorage | ❌ Missing API | ❌ No Cart model | **25%** |
+| **Order Model & Lifecycle Foundation** | N/A (Schema) | 🟢 State machine & Query helpers | 🟢 Validated schema & snapshot integrity | **100%** |
+| **Cargo Cart** | 🟡 Frontend / localStorage | ❌ Missing API | 🟢 Schema ready (`models/cart.js`) | **25%** |
 | **Checkout Flow** | 🟡 Simulated UI | ❌ Missing API | ❌ Missing | **10%** |
-| **Buyer Orders & Tracking** | ❌ Missing | ❌ Missing | ❌ No Order model | **0%** |
+| **Buyer Orders & Tracking** | ❌ Missing | ❌ Missing | 🟢 Schema ready (`models/order.js`) | **20%** |
 | **Buyer Profile** | ❌ Missing | ❌ Missing | ❌ Missing | **0%** |
 | **Seller Dashboard** | ❌ Missing | ❌ Missing | ❌ Missing | **0%** |
 | **Seller Product CRUD** | ❌ Missing | ❌ Missing | ❌ Missing | **0%** |
-| **Seller Order Fulfillment** | ❌ Missing | ❌ Missing | ❌ Missing | **0%** |
+| **Seller Order Fulfillment** | ❌ Missing | ❌ Missing | 🟢 Schema ready (`models/order.js`) | **20%** |

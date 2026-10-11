@@ -122,8 +122,11 @@ Rather than fragmented templates, all marketplace items share a single, rich, re
    - Future REST endpoints (`/cart/add`, `/cart/remove`) and frontend drawer API wiring belong to Phase 3.
 2. **Checkout (`/checkout`):**
    - Review itemized cargo manifest, subtotal, and grand total in Doubloons.
-   - Input delivery coordinates: Destination Port, Island, and Courier Notes.
-   - Submit order: creates persistent record in `Order` collection, deducts product stock, and clears cart.
+   - Input delivery coordinates: Destination Port (`portName`), Island coordinates, and Courier Notes (`recipientNotes`).
+   - Submit order: creates persistent record in `Order` collection (`models/order.js`), deducts product stock, and clears cart (Phase 5).
 3. **Order Tracking (`/orders` & `/orders/:id`):**
-   - Shows active and past voyages.
-   - Visual voyage map tracking status transitions from `pending` to `delivered`.
+   - Backed by MongoDB `Order` collection (`models/order.js`, foundation implemented in Milestone 2.4).
+   - Shows active and past voyages queried via `Order.findByBuyer(buyerId)`.
+   - Immutable snapshot pricing guarantees that past orders maintain historical pricing and item names even if merchants modify products later.
+   - Visual voyage map tracking status transitions: `pending` ➔ `confirmed` ➔ `processing` ➔ `shipped` ➔ `delivered` (or `cancelled`).
+

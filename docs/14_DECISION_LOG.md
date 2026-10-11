@@ -91,3 +91,15 @@ This log preserves key architectural choices, trade-offs, and design decisions m
 * **Reason:** Preserves the visual continuity and creative lore already established in the codebase while enabling database-backed CRUD.
 * **Alternatives Considered:** Deleting existing hardcoded items and requiring manual seller re-entry. Rejected as destructive to the user experience.
 * **Consequences:** The seed script must be executable safely at any point without producing duplicate product records.
+
+---
+
+### Decision 008: Historical Order Snapshots & Doubloon Payment Status Abstraction
+* **Date:** 2026-10-11
+* **Status:** Accepted
+* **Context:** In a marketplace, products and prices change over time. Old customer orders and merchant earnings must not be corrupted when a product name, price, or image is updated. Additionally, Pirate-Civ transacts in native Doubloons rather than third-party fiat gateways.
+* **Decision:** Store historical snapshot values (`name`, `price`, `lineTotal`, `seller`, `image`) directly within each embedded order item, rather than computing line totals or fetching product details from the live `Product` document. Define `paymentStatus` as a controlled enum (`['pending', 'paid', 'failed', 'refunded']`, default `'pending'`) representing native Doubloon transaction state without external gateway dependencies.
+* **Reason:** Guarantees historical transaction immutability. If a seller raises a product price from 500 to 900 Doubloons, past orders remain anchored at 500 Doubloons. Decouples order tracking from external gateway SDKs.
+* **Alternatives Considered:** Dynamic lookup of Product document by ID for order totals. Rejected because past transactions would retroactively change value when product prices or titles are edited.
+* **Consequences:** Order creation must capture snapshots from current Product state. Product stock remains invariant during Order model operations until Phase 5 atomic checkout.
+

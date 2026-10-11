@@ -94,15 +94,20 @@ Sellers have complete lifecycle control over the products they list.
 
 ## 5. Merchant Order Management & Fulfillment (`/seller/orders`)
 
-When a buyer completes checkout, orders referencing the seller's products appear in the seller's fulfillment queue:
+When a buyer completes checkout, orders referencing the seller's products appear in the seller's fulfillment queue (backed by `models/order.js`, foundation implemented in Milestone 2.4):
 
-1. **Incoming Order Queue:** Displays Order ID, destination port coordinates, buyer name, item line items, and current status.
+1. **Incoming Order Queue:**
+   - Displays Order ID, destination port coordinates, buyer name, item line items, and current status.
+   - Queried efficiently via static helper `Order.findBySeller(sellerId)`, supported by compound index `{ "items.seller": 1, status: 1 }`.
 2. **Status Transition Engine:**
-   - Merchants advance orders through permitted sequential transitions:
-     $$\text{pending} \longrightarrow \text{processing} \longrightarrow \text{shipped} \longrightarrow \text{delivered}$$
-   - Can flag cancelled if inventory cannot be sourced.
+   - Orders follow a strictly controlled lifecycle state machine:
+     $$\text{pending} \longrightarrow \text{confirmed} \longrightarrow \text{processing} \longrightarrow \text{shipped} \longrightarrow \text{delivered}$$
+   - Cancellation transitions are permitted from `pending`, `confirmed`, and `processing`.
+   - Transitions are validated and applied via model helpers `order.canTransitionTo(status)` and `order.transitionTo(status)`.
 3. **Multi-Seller Isolation:**
-   - In orders containing items from multiple sellers, each seller can only view and update their own line-item fulfillment status.
+   - In orders containing items from multiple sellers, line items maintain individual `seller: ObjectId (ref: 'User')` links.
+   - Merchant queries isolate matching orders, and population strictly omits merchant and customer authentication secrets (`password`, `authSecretHash`).
+
 
 ---
 

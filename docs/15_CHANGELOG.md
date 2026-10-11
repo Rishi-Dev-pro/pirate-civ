@@ -4,6 +4,27 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-11] — Phase 2 / Milestone 2.4: Order Model & Order Lifecycle Foundation
+
+### Added
+* Created foundational Mongoose `Order` model in `models/order.js` linked to unified `User` model (`buyer: { type: ObjectId, ref: 'User' }`).
+* Implemented embedded `orderItemSchema` storing historical snapshots of purchased products (`name`, `price`, `quantity`, `lineTotal`, `seller`, `image`, `product`).
+* Enforced historical snapshot data integrity: changes to `Product` (name, price, stock) after purchase do not mutate or recalculate historical order line items or totals.
+* Implemented controlled order lifecycle enum (`pending`, `confirmed`, `processing`, `shipped`, `delivered`, `cancelled`) with permitted state machine transitions map (`PERMITTED_STATUS_TRANSITIONS`).
+* Added lifecycle helpers `order.canTransitionTo(targetStatus)` and `order.transitionTo(targetStatus)` to validate and execute permitted status transitions.
+* Implemented Doubloon payment status foundation (`paymentStatus: ['pending', 'paid', 'failed', 'refunded']`, default `'pending'`).
+* Implemented shipping address schema requiring `portName` and providing default `islandCoordinates` and `recipientNotes`.
+* Added compound indexes `{ buyer: 1, createdAt: -1 }` (for buyer order history sorting) and `{ "items.seller": 1, status: 1 }` (for merchant order fulfillment queues).
+* Implemented static query helpers `Order.findByBuyer(buyerId, filter)` and `Order.findBySeller(sellerId, filter)`.
+* Verified stock invariance: order operations do not mutate or deduct `Product.stock`.
+* Verified security credential protection: population strictly omits `password` and `authSecretHash`.
+
+### Tested
+* 85 focused automated tests in `scratch/test_milestone_2_4.js` covering schema validation, required fields, embedded items, positive integer quantities, negative price/total rejections, auto-calculated line totals/subtotals, lifecycle state machine transitions, invalid status rejections, live MongoDB multi-seller orders, historical data immutability, stock invariance, query isolation, and credential-free population (85/85 passed).
+* Regression test suite covering Milestone 2.3 (42/42 passed), Milestone 2.2 (42/42 passed), Milestone 2.1 (31/31 passed), and Phase 1 full suite (45/45 passed). Total: 245/245 tests passed.
+
+---
+
 ## [2026-10-11] — Phase 2 / Milestone 2.3: Persistent Cart (Cart Model & Session Integration)
 
 ### Added
