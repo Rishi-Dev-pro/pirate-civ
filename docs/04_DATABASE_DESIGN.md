@@ -290,6 +290,12 @@ productSchema.methods.isOwnedBy = function(userOrId) {
   - First run creates 32 records.
   - Subsequent runs update fields without duplicating products or resetting existing stock.
 
+#### 2.2.3 Runtime Database Integration & SSR Verification (Milestone 2.6)
+* **Single Source of Truth:** `renderIslandPage` queries MongoDB `Product.find({ island, isAvailable: true }).sort({ createdAt: 1 })`.
+* **Dynamic Hydration:** Island views render live database products. Any future updates to product pricing, descriptions, or availability reflect immediately in the customer-facing views.
+* **Stock Invariance:** Normal read and SSR rendering operations strictly preserve product inventory (`Product.stock` is invariant to reads and SSR).
+* **Security & Secret Exclusion:** Merchant and customer populations strictly omit `password` and `authSecretHash`.
+
 
 ### 2.3 The Cart Collection (`models/cart.js`)
 Maintains server-persisted shopping bags for authenticated buyers.

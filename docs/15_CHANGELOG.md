@@ -4,6 +4,23 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-11] — Phase 2 / Milestone 2.6: Database Integration & Core API/SSR Verification (PHASE 2 COMPLETE)
+
+### Added
+* Integrated MongoDB `Product` model into `renderIslandPage` controller action in `controller/islands.js`. The 6 island store views (`astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`) now dynamically query and render live products from MongoDB while preserving static cartographic lore and metadata.
+* Formatted Mongoose product documents with complete EJS compatibility (`id`, `_id`, `name`, `slug`, `price`, `priceNum`, `desc`, `description`, `image`, `island`, `category`, `stock`, `isAvailable`, `rating`, `seller`).
+* Added `/home` route in `routes/web.js` rendering `views/home.ejs` with `authMiddleware` guard per `docs/05_ROUTE_MAP.md`.
+* Added `/islands` overview redirect in `routes/web.js` pointing to `/#sea-chart-section` with `authMiddleware` guard.
+* Verified stock invariance: product reads, island page SSR renders, persistent cart operations, and order snapshot creations strictly preserve inventory (`Product.stock` is invariant).
+* Verified security & secret exclusions: User password hashes and auth secret tokens are strictly omitted from population and view data.
+
+### Tested
+* 166 focused automated tests in `scratch/test_milestone_2_6.js` covering collection access, 32-product catalog presence, canonical merchant seller ownership, taxonomy, controller SSR product injection, invalid island 404 handling, persistent cart with real MongoDB products, order model integration with real products, HTTP test server with unauthenticated 302 redirects, session login, and authenticated 200 OK SSR responses across `/`, `/home`, `/about`, `/contact`, `/users`, and all 6 island store views (166/166 passed).
+* Full regression test suite passing across all Phase 1 and Phase 2 milestones: Milestone 2.5 (283/283), Milestone 2.4 (85/85), Milestone 2.3 (42/42), Milestone 2.2 (42/42), Milestone 2.1 (31/31), Phase 1 (45/45). Total: 694/694 passed.
+* Verified manual dev server startup and MongoDB connection.
+
+---
+
 ## [2026-10-11] — Phase 2 / Milestone 2.5: Controlled Migration of Existing Hardcoded Products
 
 ### Added

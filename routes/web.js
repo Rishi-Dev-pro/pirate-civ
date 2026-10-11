@@ -119,6 +119,22 @@ router.get(
     }
 );
 
+router.get(
+    "/home",
+    authMiddleware,
+    (req, res) => {
+
+        res.render("home", {
+
+            page_title: "Home Page",
+
+            user: req.user
+
+        });
+
+    }
+);
+
 
 // =====================================================
 // ABOUT
@@ -209,6 +225,9 @@ import { renderIslandPage } from "../controller/islands.js";
 // Parametric routes
 router.get("/island/:islandId", authMiddleware, renderIslandPage());
 router.get("/islands/:islandId", authMiddleware, renderIslandPage());
+router.get("/islands", authMiddleware, (req, res) => {
+    res.redirect("/#sea-chart-section");
+});
 
 // Named convenience routes for the 6 islands
 router.get("/island/astrolabe", authMiddleware, renderIslandPage("astrolabe"));

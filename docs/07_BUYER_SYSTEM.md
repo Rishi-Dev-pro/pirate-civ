@@ -55,9 +55,10 @@ Customers navigate to any of the 6 canonical leaf islands:
   - `cutlass_cove`: Corsair blades & high-tech voyager tools.
   - `velvet_isle`: Teak wood furniture, silk cloaks & island living.
   - `booty_cay`: Fragrances, glowing botanical elixirs & cosmetics.
-* **Dynamic Product Integration:**
-  - Products displayed on each island must be loaded directly from MongoDB (`Product.find({ island: islandSlug, isAvailable: true })`).
+* **Dynamic Product Integration (Verified in Milestone 2.6):**
+  - Products displayed on each island are loaded directly from MongoDB (`Product.find({ island: islandSlug, isAvailable: true }).sort({ createdAt: 1 })`).
   - Each product card displays product title, Doubloons price badge, stock pill, and direct links to inspect or add to cargo.
+  - Hardcoded island catalog dependencies have been removed from runtime controllers.
 
 ---
 

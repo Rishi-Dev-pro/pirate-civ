@@ -26,7 +26,8 @@ stateDiagram-v2
   4. Server-Side Session Migration: When an explorer authenticates, `Cart.mergeSessionCart(user._id, preLoginSessionCart)` migrates guest session items into MongoDB, combining existing item quantities and safely filtering nonexistent products and invalid quantities without crashing.
   5. User Isolation: Cart is strictly bound to `req.user._id`; client-provided user IDs cannot override ownership.
 * **Remaining for Phase 3:** Buyer REST endpoints (`/cart/add`, `/cart/remove`) and client-side drawer API wiring.
-* **Scope Boundary:** Stock reservation, checkout, and order placement belong to Milestone 2.4 / Phase 5.
+* **Milestone 2.6 Verification:** Persistent Cart operations (`addItem`, `removeItem`, `mergeSessionCart`, `findByUser`) and Order queries were verified against the live migrated 32-product MongoDB catalog with confirmed stock invariance.
+* **Scope Boundary:** Stock reservation, checkout, and order placement belong to Phase 5.
 
 ---
 

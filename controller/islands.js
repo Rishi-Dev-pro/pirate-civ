@@ -3,6 +3,8 @@
 // 6 Distinct Leaf Islands of Rishi's Cartographic Realm
 // =====================================================
 
+import Product from "../models/product.js";
+
 export const ISLANDS_DATA = {
     astrolabe: {
         id: "astrolabe",
@@ -516,29 +518,71 @@ const SLUG_MAP = {
 };
 
 /**
- * Controller action: Render Island page by slug or param
+ * Controller action: Render Island page by slug or param with MongoDB-backed products
  */
 export const renderIslandPage = (targetSlug) => {
-    return (req, res) => {
-        const rawSlug = targetSlug || req.params.islandId || req.params.slug;
-        const normalizedKey = SLUG_MAP[rawSlug] || rawSlug;
-        const island = ISLANDS_DATA[normalizedKey];
+    return async (req, res) => {
+        try {
+            const rawSlug = targetSlug || req.params.islandId || req.params.slug;
+            const normalizedKey = SLUG_MAP[rawSlug] || rawSlug;
+            const islandMeta = ISLANDS_DATA[normalizedKey];
 
-        if (!island) {
-            return res.status(404).render("home", {
-                page_title: "Island Not Found",
-                user: req.user,
-                student_data: []
+            if (!islandMeta) {
+                return res.status(404).render("home", {
+                    page_title: "Island Not Found",
+                    user: req.user
+                });
+            }
+
+            // Query canonical products from MongoDB
+            let products = [];
+            try {
+                const dbProducts = await Product.find({
+                    island: normalizedKey,
+                    isAvailable: true
+                }).sort({ createdAt: 1 });
+
+                products = dbProducts.map(p => ({
+                    id: p._id.toString(),
+                    _id: p._id,
+                    name: p.name,
+                    slug: p.slug,
+                    price: p.price,
+                    priceNum: p.price,
+                    desc: p.description,
+                    description: p.description,
+                    image: p.image,
+                    island: p.island,
+                    category: p.category,
+                    stock: p.stock,
+                    isAvailable: p.isAvailable,
+                    rating: p.rating,
+                    seller: p.seller
+                }));
+            } catch (dbErr) {
+                console.error("Database query error in renderIslandPage:", dbErr.message);
+                products = [];
+            }
+
+            const island = {
+                ...islandMeta,
+                products: products
+            };
+
+            // View name corresponds to normalizedKey: astrolabe, chronos, kraken_vault, cutlass_cove, velvet_isle, booty_cay
+            const viewName = normalizedKey;
+
+            res.render(viewName, {
+                page_title: `${island.name} | Rishi's Web`,
+                island: island,
+                user: req.user
+            });
+        } catch (error) {
+            console.error("Error rendering island page:", error);
+            res.status(500).render("home", {
+                page_title: "Archipelago Error",
+                user: req.user
             });
         }
-
-        // View name corresponds to normalizedKey: astrolabe, chronos, kraken_vault, cutlass_cove, velvet_isle, booty_cay
-        const viewName = normalizedKey;
-
-        res.render(viewName, {
-            page_title: `${island.name} | Rishi's Web`,
-            island: island,
-            user: req.user
-        });
     };
 };

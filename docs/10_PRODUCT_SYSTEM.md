@@ -128,6 +128,12 @@ Historically, 32 products were hardcoded inside `controller/islands.js` (`ISLAND
    - Verified 100% seller ownership under `Grand Admiralty Cartographers`.
    - Verified SSR hydration readiness for Milestone 2.6.
 
+### 4.2 Runtime Database Integration & SSR Flow (Milestone 2.6 COMPLETE)
+1. **Single Source of Truth:** `renderIslandPage` in `controller/islands.js` queries `Product.find({ island: normalizedKey, isAvailable: true })`.
+2. **EJS Compatibility:** DB documents are projected with `id`, `name`, `price`, `desc`, `image`, `rating`, `island`, `category`, ensuring 100% template compatibility.
+3. **Inventory Integrity:** Read operations strictly preserve `Product.stock`.
+4. **Verification:** Verified all 6 island pages render real MongoDB products via HTTP test server.
+
 ---
 
 ## 5. Currency & Pricing: Doubloons (🪙)

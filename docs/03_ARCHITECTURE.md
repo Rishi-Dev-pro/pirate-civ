@@ -80,7 +80,7 @@ flowchart LR
 ### 3.4 Controller Layer (`/controller`)
 Controllers contain business logic, coordinate models, and render views or return JSON responses:
 * `auth.js`: User registration, credential verification, session creation, logout, and token hashing.
-* `islands.js`: Queries MongoDB for products belonging to specific islands and renders themed island views.
+* `islands.js`: Fully integrated with MongoDB in Milestone 2.6; queries `Product.find({ island, isAvailable: true })` and injects live products into themed island views while preserving static cartographic lore.
 * `products.js`: Handles product detail rendering, merchant CRUD operations, and inventory validations.
 * `cart.js`: Manages adding, updating, and removing items in the database-backed cart.
 * `orders.js`: Manages order checkout, creation, buyer tracking, and seller status transitions.
