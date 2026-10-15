@@ -42,8 +42,8 @@ This document catalogues every HTTP route within Pirate-Civ, defining its method
 | `GET` | `/islands` | `islands.js::listAllIslands` | `authMiddleware` | Overview list of 6 archipelago islands | Yes | Buyer / Any |
 | `GET` | `/island/:islandSlug` | `islands.js::renderIslandPage` | `authMiddleware` | Themed island view with MongoDB product list | Yes | Buyer / Any |
 | `GET` | `/product/:productId` | `products.js::renderProductDetail` | `authMiddleware` | Reusable Product Details sheet | Yes | Buyer / Any |
-| `GET` | `/sellers` | `sellers.js::renderSellersList` | `authMiddleware` | "Explore Sellers" merchant directory (Planned 3.4) | Yes | Buyer / Any |
-| `GET` | `/seller/:sellerId` | `sellers.js::renderSellerDiscovery` | `authMiddleware` | Merchant discovery view (Milestone 3.3 active; Full storefront in 3.4) | Yes | Buyer / Any |
+| `GET` | `/sellers` | `sellers.js::renderSellersList` | `authMiddleware` | "Explore Sellers" merchant directory (Planned Future) | Yes | Buyer / Any |
+| `GET` | `/seller/:sellerId` | `sellers.js::renderSellerStorefront` | `authMiddleware` | Public merchant storefront & catalog (Milestone 3.4 COMPLETE) | Yes | Buyer / Any |
 | `GET` | `/cart` | `cart.js::renderCart` | `authMiddleware` | View persistent Cargo Cart / Manifest | Yes | Buyer |
 | `POST` | `/cart/add` | `cart.js::addToCart` | `authMiddleware` | API: Adds product to user's MongoDB cart | Yes | Buyer |
 | `POST` | `/cart/update` | `cart.js::updateCartItem` | `authMiddleware` | API: Updates item quantity | Yes | Buyer |

@@ -111,25 +111,31 @@ When a buyer completes checkout, orders referencing the seller's products appear
 
 ---
 
-## 6. Public Seller Discovery (`/seller/:sellerId`) [MILESTONE 3.3 COMPLETE]
+## 6. Public Seller Profile & Reusable Storefront (`/seller/:sellerId`) [MILESTONE 3.4 COMPLETE]
 
-A buyer-facing, public discovery layer allowing buyers on product detail sheets to discover the merchant behind the product:
+The buyer-facing, public merchant storefront allows buyers to explore a seller's full identity, lore, and chartered product catalog:
 
-1. **Discovery Entry Points:**
-   - On `/product/:productId`, the merchant card features a clickable merchant avatar (`.seller-avatar-link`), store name (`.seller-name-link`), and dedicated `📜 DISCOVER MERCHANT` action button (`.btn-discover-seller`).
-2. **Public Identity Rendered:**
-   - Merchant store name / alias (`storeName || name`).
-   - Chartered Guild Merchant badge (`⚓ CHARTERED GUILD MERCHANT`).
-   - Home harbor affiliation (`homeIsland`).
-   - Merchant bio chronicle (`bio`).
-   - Live catalog count (`totalListings`).
-   - Sample chartered relics preview (up to 4 products).
-3. **Data Security & Privacy:**
-   - Uses the unified `User` model with `role: 'seller'`.
-   - Never exposes sensitive credentials (`password`, `authSecretHash`, `googleId`).
-   - Non-seller users, malformed ObjectIds, or non-existent IDs return clean 404 responses.
-4. **Scope Boundary:**
-   - Features a notice banner stating that full storefront catalog filtering, custom banners, and reviews dock in Milestone 3.4. Milestone 3.4 was NOT implemented in 3.3.
+1. **Storefront Entry Points:**
+   - Navigable from any Product Detail sheet (`views/product-detail.ejs`) via clickable merchant avatar, store name, or dedicated action button.
+   - Reusable across any valid merchant account in MongoDB.
+2. **Public Identity & Storefront Hero:**
+   - Merchant store name / title (`storeName || name`).
+   - Captain personal alias / name where distinct from store name.
+   - Chartered Guild Merchant badge (`⚓ CHARTERED GUILD MERCHANT`) and Admiralty Guild Verification badge.
+   - Home harbor affiliation badge with direct link to canonical island (`/island/:homeIsland`).
+   - Merchant bio chronicle and harbor lore.
+   - Live catalog count badge (`📦 XX Active Trade Listings`).
+3. **Complete Product Catalog:**
+   - Backed strictly by MongoDB query: `Product.find({ seller: seller._id, isAvailable: true }).sort({ createdAt: -1 })` utilizing compound index `{ seller: 1, createdAt: -1 }`.
+   - Renders product cards with high-res imagery, title, Doubloons price, rating, stock status badge (`In Vaults`, `Low Reserve`, `Barren`), and direct links to `/product/:id`.
+   - "Stow in Cargo" buttons (`.btn-add-cart`) integrated with `#storeCartDrawer`.
+   - Catalog isolation: only products belonging to this seller are displayed; other sellers' wares and unavailable products (`isAvailable: false`) are strictly excluded.
+4. **Themed Empty Storefront State:**
+   - If a valid seller has zero available trade wares, renders an atmospheric empty state (`.seller-empty-state`) with "Harbor Vaults Currently Barren" and return navigation.
+5. **Security & Boundary:**
+   - Strictly omits `password`, `authSecretHash`, `googleId`.
+   - Requires `role: "seller"`; buyers, nonexistent IDs, or malformed ObjectIds return clean 404 responses.
+   - *Note:* Seller management, product CRUD, and seller order fulfillment remain strictly deferred to Phase 4.
 
 ---
 

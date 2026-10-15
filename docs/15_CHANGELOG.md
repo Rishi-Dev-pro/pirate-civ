@@ -4,6 +4,27 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-15] — Phase 3 / Milestone 3.4: Seller Profile / Storefront (PHASE 3.4 COMPLETE)
+
+### Added & Implemented
+* **Public Seller Storefront Controller (`controller/sellers.js`):** Upgraded `renderSellerStorefront` (aliasing `renderSellerDiscovery`, `renderPublicSeller`, `renderSellerProfile`). Queries all available products for the target seller from MongoDB using compound-indexed `Product.find({ seller: seller._id, isAvailable: true }).sort({ createdAt: -1 })`.
+* **Reusable Public Storefront Template (`views/seller-discovery.ejs`):** Developed full-featured public storefront rendering merchant identity header (avatar, store title, captain alias, chartered merchant badge, Admiralty Guild verification), badged home harbor linking to canonical island (`/island/:homeIsland`), merchant bio chronicle, active product listing telemetry count, and complete catalog grid.
+* **Storefront Product Cards (`views/seller-discovery.ejs`, `public/css/island-store.css`):** Each card renders real MongoDB product art, title, Doubloons valuation, star rating, stock telemetry badge (`In Vaults`, `Low Reserve`, `Barren`), direct links to `/product/:productId`, and "Stow in Cargo" buttons (`.btn-add-cart`) integrated with `#storeCartDrawer`.
+* **Themed Empty Storefront State (`views/seller-discovery.ejs`, `public/css/island-store.css`):** Displays atmospheric "Harbor Vaults Currently Barren" empty state when a valid merchant has zero active wares, preventing broken templates or crashes.
+* **Catalog Isolation & Availability Filtering:** Guarantees that only products belonging to the merchant are displayed; other sellers' wares and unavailable products (`isAvailable: false`) are strictly excluded.
+* **Security & Safe 404 Guards:** Enforces `mongoose.isValidObjectId(sellerId)` and `role: "seller"`. Malformed IDs, nonexistent sellers, or non-seller users return clean 404 responses without CastError or stack trace leaks. Strictly strips sensitive credentials (`password`, `authSecretHash`, `googleId`).
+* **Route Binding (`routes/web.js`):** Bound `GET /seller/:sellerId` with `authMiddleware` pointing to `renderSellerStorefront`.
+
+### Tested & Verified
+* 72 automated assertions in `scratch/test_milestone_3_4.js` covering seller loading, complete catalog retrieval, multi-seller isolation, unavailable product exclusion, empty storefront state, credential security, malformed/nonexistent/non-seller 404 handling, and stock invariance (72/72 passed).
+* Live SSR verification script `scratch/verify_live_ssr_3_4.js` executed on port 3000 verifying canonical storefront, multi-seller isolation, empty storefront state, and 404 guards.
+* End-to-end browser verification via subagent recording navigation from Island ➔ Product Detail ➔ Click "📜 DISCOVER MERCHANT" ➔ Full Storefront with 32 wares ➔ Clicked catalog product ➔ Product Detail ➔ Cargo Hold interaction with 0 console errors (`seller_storefront_3_4_1792059622743.webp`).
+* Full regression test suite passing across all milestones (1,215/1,215 assertions passed; 1,287 total passed across entire project).
+* Static syntax: 20/20 JavaScript files passed `node --check`.
+* Template analysis: 22/22 EJS templates compiled cleanly (`ejs.compile`).
+
+---
+
 ## [2026-10-15] — Phase 3 / Milestone 3.3: Explorer → Seller Discovery (PHASE 3.3 COMPLETE)
 
 ### Added & Implemented

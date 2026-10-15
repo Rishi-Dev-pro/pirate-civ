@@ -105,10 +105,15 @@ gantt
   - Queries MongoDB `User` with indexed `_id` and strict `role: 'seller'` enforcement (non-sellers and malformed IDs return clean 404s without CastError leaks).
   - Displays public seller identity (`storeName`, `avatar`, `homeIsland`, `bio`, active trade listing count, and sample chartered wares preview up to 4 items) while strictly guarding against credential leakage (`password`, `authSecretHash`, `googleId`).
   - Added prominent Phase 3.4 scope notice banner marking full storefront as deferred to Milestone 3.4.
-  - Phase 3.4 was NOT implemented.
-* **Milestone 3.4: Public Seller Profile & Full Storefront [NEXT]**
-  - Create full merchant storefront with store banner, comprehensive catalog filtering, ratings, and merchant feedback.
-* **Milestone 3.5: Customer Account Profile**
+* **Milestone 3.4: Seller Profile / Storefront [COMPLETE]**
+  - Upgraded seller discovery page into a unified, reusable public Seller Profile / Storefront (`views/seller-discovery.ejs`) powered by `controller/sellers.js::renderSellerStorefront` at `GET /seller/:sellerId`.
+  - Queries the merchant's complete active catalog via compound-indexed `Product.find({ seller: seller._id, isAvailable: true }).sort({ createdAt: -1 })`.
+  - Displays merchant store header, avatar, chartered status, storeName, captain personal alias, home harbor badge with canonical island link, bio chronicle, active product telemetry count, and full catalog grid.
+  - Every product card links directly to `/product/:productId` with image, Doubloons price, rating, stock status badges (`In Vaults`, `Low Reserve`, `Barren`), and "Stow in Cargo Hold" action buttons integrated with `#storeCartDrawer`.
+  - Implements an atmospheric themed empty state for valid sellers with 0 active wares.
+  - Guarantees multi-seller catalog isolation, excludes unavailable products (`isAvailable: false`), safe 404 for malformed/nonexistent/non-seller IDs without CastError leaks, and strictly excludes sensitive credentials (`password`, `authSecretHash`, `googleId`).
+  - Phase 3.5 was NOT implemented.
+* **Milestone 3.5: Customer Account Profile [NEXT]**
   - Create route `/profile` for buyers to view their account info, home port, and personal preferences.
 
 ---

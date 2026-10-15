@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= page_title || "Merchant Discovery | Pirate-Civ" %></title>
+    <title><%= page_title || "Merchant Storefront | Pirate-Civ" %></title>
 
     <!-- Google Fonts: Cinzel & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -13,10 +13,10 @@
 
     <!-- Master & Dedicated Island Store Styles -->
     <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
-    <link rel="stylesheet" href="/css/island-store.css?v=seller_disc_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=seller_store_v1">
 </head>
 
-<body class="island-store-body seller-discovery-body">
+<body class="island-store-body seller-discovery-body seller-storefront-body">
 
     <!-- Fixed Atmospheric Backdrop -->
     <div class="store-backdrop">
@@ -30,8 +30,8 @@
     <!-- Reusable Main Navigation Bar -->
     <%- include("partials/header") %>
 
-    <!-- Master Seller Discovery Stage -->
-    <main class="seller-discovery-wrapper">
+    <!-- Master Seller Storefront Stage -->
+    <main class="seller-discovery-wrapper seller-storefront-wrapper">
 
         <!-- Top Navigation Bar: Breadcrumbs & Header Actions -->
         <nav class="detail-nav-bar" aria-label="Breadcrumb Navigation">
@@ -75,9 +75,18 @@
                 <div class="seller-hero-info">
                     <span class="seller-badge-charter">⚓ CHARTERED GUILD MERCHANT</span>
                     <h1 class="seller-display-name"><%= seller.storeName || seller.name %></h1>
+                    <% if (seller.storeName && seller.name && seller.name !== seller.storeName) { %>
+                        <span class="seller-captain-alias">Captain / Guildmaster: <%= seller.name %></span>
+                    <% } %>
                     <div class="seller-meta-pills">
                         <span class="seller-stat-pill">
-                            🏝️ Home Harbor: <%= island ? island.name : (seller.homeIsland || 'Archipelago Waters') %>
+                            <% if (seller.homeIsland) { %>
+                                <a href="/island/<%= seller.homeIsland %>" class="home-harbor-link" title="Sail to Home Harbor">
+                                    🏝️ Home Harbor: <%= island ? island.name : seller.homeIsland %>
+                                </a>
+                            <% } else { %>
+                                🏝️ Home Harbor: Archipelago Waters
+                            <% } %>
                         </span>
                         <span class="seller-stat-pill">
                             📦 <%= seller.totalListings %> Active Trade Listings
@@ -97,49 +106,107 @@
                 </p>
             </section>
 
-            <!-- Scope Notice: Phase 3.4 Full Storefront Milestone Notice -->
-            <aside class="seller-notice-banner" role="note">
+            <!-- Storefront Status / Charter Verification Banner -->
+            <aside class="seller-notice-banner storefront-charter-banner" role="note">
                 <span class="notice-icon">📜</span>
                 <div class="notice-content">
-                    <strong>Full Merchant Storefront Docking in Phase 3.4</strong>
+                    <strong>Archipelago Guild Storefront — Full Merchant Storefront Docking in Phase 3.4</strong>
                     <p>
-                        You are currently viewing merchant credentials in Discovery Mode. Full merchant storefront banners, comprehensive product filtering, and merchant feedback will dock in Milestone 3.4.
+                        Authorized trading post chartered by the Grand Admiralty Guild. All wares authenticated and backed by royal treasury Doubloons.
                     </p>
                 </div>
             </aside>
 
-            <!-- Preview of Sample Chartered Wares (Up to 4 Items) -->
-            <% if (sampleProducts && sampleProducts.length > 0) { %>
-                <section class="seller-wares-section">
-                    <div class="seller-wares-header">
-                        <h3 class="seller-wares-title">Chartered Relics Preview</h3>
-                        <span class="seller-wares-subtitle">Showing sample items chartered by this merchant</span>
+            <!-- Complete Merchant Product Catalog (Milestone 3.4) -->
+            <section class="seller-wares-section seller-catalog-section" aria-label="Merchant Product Catalog">
+                <div class="seller-wares-header">
+                    <div class="seller-wares-title-wrap">
+                        <h2 class="seller-wares-title">Chartered Trade Catalog</h2>
+                        <span class="seller-catalog-count-badge">
+                            <%= products ? products.length : 0 %> <%= (products && products.length === 1) ? 'Ware' : 'Wares' %> Available
+                        </span>
                     </div>
+                    <span class="seller-wares-subtitle">
+                        Authenticated relics and provisions offered by <%= seller.storeName || seller.name %>
+                    </span>
+                </div>
 
-                    <div class="seller-wares-grid">
-                        <% sampleProducts.forEach(function(p) { %>
-                            <div class="seller-sample-card">
-                                <a href="/product/<%= p.id %>" class="sample-card-link" title="Inspect <%= p.name %>">
+                <% if (products && products.length > 0) { %>
+                    <!-- Active Catalog Grid -->
+                    <div class="seller-wares-grid seller-catalog-grid" id="storeItemsGrid">
+                        <% products.forEach(function(p) { %>
+                            <div class="seller-sample-card store-item-card seller-store-card"
+                                 data-id="<%= p.id %>"
+                                 data-name="<%= p.name %>"
+                                 data-price="<%= p.price %>"
+                                 data-category="<%= p.category || 'relics' %>">
+
+                                <!-- Visual Artifact Box -->
+                                <a href="/product/<%= p.id %>" class="sample-card-link item-asset-link" title="Inspect <%= p.name %>">
                                     <div class="sample-asset-box">
                                         <img src="<%= p.image || '/images/items/default-relic.png' %>"
                                              alt="<%= p.name %>"
                                              class="sample-asset-img"
                                              onerror="this.onerror=null; this.src='/images/items/default-relic.png';">
                                     </div>
-                                    <h4 class="sample-card-title"><%= p.name %></h4>
                                 </a>
+
+                                <!-- Provenance & Stock Badges -->
+                                <div class="seller-card-provenance-row">
+                                    <% if (p.island) { %>
+                                        <span class="seller-origin-tag">🏝️ <%= p.island.replace('_', ' ') %></span>
+                                    <% } %>
+                                    <% if (p.stock > 5) { %>
+                                        <span class="stock-badge in-vaults">⚓ In Vaults (<%= p.stock %>)</span>
+                                    <% } else if (p.stock > 0) { %>
+                                        <span class="stock-badge low-reserve">⚠️ Low Reserve (<%= p.stock %>)</span>
+                                    <% } else { %>
+                                        <span class="stock-badge barren">🚫 Barren</span>
+                                    <% } %>
+                                </div>
+
+                                <!-- Title Link -->
+                                <a href="/product/<%= p.id %>" class="item-title-link" title="Inspect <%= p.name %>">
+                                    <h3 class="sample-card-title"><%= p.name %></h3>
+                                </a>
+
+                                <!-- Valuation & Star Rating -->
                                 <div class="sample-card-meta">
                                     <span class="sample-card-price">🪙 <%= p.price %> Doubloons</span>
                                     <span class="sample-card-rating"><%= p.rating || '★★★★★' %></span>
                                 </div>
-                                <a href="/product/<%= p.id %>" class="btn-sample-inspect">
-                                    <span>🔍 VIEW DETAILS</span>
-                                </a>
+
+                                <!-- Action Buttons: Details + Stow in Cargo -->
+                                <div class="seller-card-actions">
+                                    <a href="/product/<%= p.id %>" class="btn-sample-inspect btn-card-details" title="View Product Details">
+                                        <span>🔍 VIEW DETAILS</span>
+                                    </a>
+                                    <button class="btn-add-cart btn-storefront-stow"
+                                            data-id="<%= p.id %>"
+                                            data-name="<%= p.name %>"
+                                            data-price="<%= p.price %>"
+                                            title="Stow in Cargo Hold">
+                                        <span>🛒 STOW</span>
+                                    </button>
+                                </div>
+
                             </div>
                         <% }); %>
                     </div>
-                </section>
-            <% } %>
+                <% } else { %>
+                    <!-- Themed Sensible Empty Storefront State -->
+                    <div class="seller-empty-state store-empty-state">
+                        <div class="store-empty-icon">⚓</div>
+                        <h3 class="store-empty-title">Harbor Vaults Currently Barren</h3>
+                        <p class="store-empty-desc">
+                            <%= seller.storeName || seller.name %> has no active trade wares charted in the archipelago at this tide. Check back after the next trade fleet docks.
+                        </p>
+                        <a href="/home" class="btn-seller-back btn-empty-nav">
+                            <span>🧭 Return to Sea Chart</span>
+                        </a>
+                    </div>
+                <% } %>
+            </section>
 
             <!-- Primary Navigation Actions -->
             <footer class="seller-footer-actions">
@@ -176,7 +243,7 @@
     </aside>
 
     <!-- Unified Island Store JS Engine -->
-    <script src="/js/island-store.js?v=seller_disc_v1"></script>
+    <script src="/js/island-store.js?v=seller_store_v1"></script>
 
 </body>
 

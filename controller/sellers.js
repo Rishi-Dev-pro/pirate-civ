@@ -1,6 +1,6 @@
 // =====================================================
 // SELLERS CONTROLLER
-// Merchant Discovery & Public Seller Identification
+// Public Seller Profile & Reusable Storefront (Milestone 3.4)
 // =====================================================
 
 import mongoose from "mongoose";
@@ -9,10 +9,10 @@ import Product from "../models/product.js";
 import { ISLANDS_DATA } from "./islands.js";
 
 /**
- * Controller action: Render minimal Seller Discovery page (Milestone 3.3)
+ * Controller action: Render Reusable Public Seller Profile / Storefront (Milestone 3.4)
  * Route: GET /seller/:sellerId
  */
-export const renderSellerDiscovery = async (req, res) => {
+export const renderSellerStorefront = async (req, res) => {
     try {
         const rawId = req.params.sellerId || req.params.id || "";
         const sellerId = typeof rawId === "string" ? rawId.trim() : "";
@@ -52,56 +52,55 @@ export const renderSellerDiscovery = async (req, res) => {
             ? ISLANDS_DATA[seller.homeIsland]
             : null;
 
-        // 6. Preview of up to 4 available products using existing indexed query { seller: 1, createdAt: -1 }
-        let sampleProducts = [];
-        let totalListingsCount = 0;
+        // 6. Complete product catalog query for this seller:
+        //    Must strictly filter by { seller: seller._id, isAvailable: true }
+        //    Leverages compound index { seller: 1, createdAt: -1 }
+        let catalogProducts = [];
         try {
-            totalListingsCount = await Product.countDocuments({
-                seller: seller._id,
-                isAvailable: true
-            });
-
             const dbProducts = await Product.find({
                 seller: seller._id,
                 isAvailable: true
             })
             .sort({ createdAt: -1 })
-            .limit(4)
             .lean();
 
-            sampleProducts = dbProducts.map(p => ({
+            catalogProducts = dbProducts.map(p => ({
                 id: p._id.toString(),
                 _id: p._id,
                 name: p.name,
+                slug: p.slug,
                 price: p.price,
-                image: p.image,
+                image: p.image || "/images/items/default-relic.png",
                 rating: p.rating || "★★★★★",
                 island: p.island,
-                category: p.category
+                category: p.category,
+                stock: typeof p.stock === "number" ? p.stock : 10,
+                description: p.description || ""
             }));
         } catch (prodErr) {
-            console.error("Error retrieving sample products for seller discovery:", prodErr.message);
-            sampleProducts = [];
-            totalListingsCount = 0;
+            console.error("Error retrieving products for seller storefront:", prodErr.message);
+            catalogProducts = [];
         }
 
         const viewSeller = {
             ...seller,
             id: seller._id.toString(),
             _id: seller._id,
-            totalListings: totalListingsCount
+            totalListings: catalogProducts.length
         };
 
+        // Render reusable public storefront
         res.render("seller-discovery", {
-            page_title: `${seller.storeName || seller.name} — Merchant Discovery | Pirate-Civ`,
+            page_title: `${seller.storeName || seller.name} — Merchant Storefront | Pirate-Civ`,
             seller: viewSeller,
             island: islandMeta,
-            sampleProducts: sampleProducts,
+            products: catalogProducts,
+            sampleProducts: catalogProducts.slice(0, 4), // Backwards compatibility for discovery preview
             user: req.user || null
         });
 
     } catch (error) {
-        console.error("Error in renderSellerDiscovery:", error);
+        console.error("Error in renderSellerStorefront:", error);
         res.status(500).render("home", {
             page_title: "Archipelago Tempest | Error",
             user: req.user || null
@@ -109,9 +108,14 @@ export const renderSellerDiscovery = async (req, res) => {
     }
 };
 
-export const renderPublicSeller = renderSellerDiscovery;
+// Aliases for route & backwards compatibility
+export const renderSellerDiscovery = renderSellerStorefront;
+export const renderPublicSeller = renderSellerStorefront;
+export const renderSellerProfile = renderSellerStorefront;
 
 export default {
+    renderSellerStorefront,
     renderSellerDiscovery,
-    renderPublicSeller
+    renderPublicSeller,
+    renderSellerProfile
 };

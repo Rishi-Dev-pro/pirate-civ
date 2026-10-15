@@ -120,10 +120,21 @@ Rather than fragmented templates, all marketplace items share a single, rich, re
   - **Error Guards:** Malformed ObjectIds, non-existent users, and non-seller users return clean 404 responses without CastError or stack trace leakage.
   - **Milestone 3.4 Scope Banner:** Features a prominent notice banner indicating that full storefront banners, comprehensive product catalogs, and review systems dock in Milestone 3.4.
 
-### 6.2 Public Seller Profile & Full Storefront [MILESTONE 3.4 - NEXT]
-* Comprehensive merchant storefront with custom banners, complete searchable catalog, reviews, and seller analytics (NOT implemented in Milestone 3.3).
+### 6.2 Public Seller Profile & Full Storefront (`/seller/:sellerId`) [MILESTONE 3.4 COMPLETE]
+* **Upgraded Storefront Architecture:** Upgraded discovery view into the full reusable Public Seller Profile & Storefront (`views/seller-discovery.ejs`) powered by `controller/sellers.js::renderSellerStorefront`.
+* **Complete Active Catalog Querying:** Queries MongoDB using the `{ seller: 1, createdAt: -1 }` compound index:
+  `Product.find({ seller: seller._id, isAvailable: true }).sort({ createdAt: -1 })`.
+* **Storefront Capabilities:**
+  - **Merchant Identity Hero:** Large avatar with fallback, chartered merchant badge, store title, captain personal alias, and Admiralty Guild verification.
+  - **Home Island Navigation:** Badged home harbor linking directly to canonical island route (`/island/:homeIsland`).
+  - **Merchant Log:** Detailed narrative bio and trading lore.
+  - **Full Catalog Grid:** Renders all active items listed by the merchant with high-res product art, title, Doubloons valuation (`🪙 XX Doubloons`), star rating, stock telemetry badge (`In Vaults`, `Low Reserve`, `Barren`), and direct links to the Reusable Product Details sheet (`/product/:id`).
+  - **Cargo Integration:** Every product card includes a "Stow in Cargo" action button (`.btn-add-cart`) wired into the slide-out Cargo Hold drawer (`#storeCartDrawer`).
+  - **Sensible Empty State:** Valid merchants with 0 available wares render an atmospheric themed empty state (`.seller-empty-state`) with navigation back to the Sea Chart.
+  - **Catalog Isolation:** Guarantees that only products belonging to the specified merchant appear, and unavailable products (`isAvailable: false`) are strictly omitted.
+  - **Security Assurance:** Strictly excludes `password`, `authSecretHash`, `googleId`. Safe 404 on malformed/nonexistent/non-seller IDs without `CastError` leaks.
 
-### 6.3 Explore Sellers Directory (`/sellers`) [PLANNED 3.4]
+### 6.3 Explore Sellers Directory (`/sellers`) [PLANNED FUTURE]
 * Refactors the legacy `/users` page into a true **Merchant Directory** with island filtration and captain cards.
 
 ---

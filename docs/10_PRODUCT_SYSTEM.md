@@ -149,6 +149,13 @@ Historically, 32 products were hardcoded inside `controller/islands.js` (`ISLAND
 5. **Security & Projection Rules:** Populates seller presentation data (`name`, `storeName`, `homeIsland`, `bio`, `avatar`) while strictly omitting all sensitive user credentials (`password`, `authSecretHash`, `googleId`).
 6. **Unified Island Store Navigation:** Product cards across all 6 canonical island views link to `/product/:id` via image links, title links, and dedicated `.btn-card-details` buttons. Detail page includes breadcrumb navigation back to the island origin and full Cargo Hold drawer integration.
 
+### 4.5 Reusable Public Seller Storefront Catalog (Milestone 3.4 COMPLETE)
+1. **Direct Seller Catalog Retrieval:** Backed by `controller/sellers.js::renderSellerStorefront` querying `Product.find({ seller: seller._id, isAvailable: true }).sort({ createdAt: -1 })`.
+2. **Index Optimization:** Powered directly by the schema's `{ seller: 1, createdAt: -1 }` compound index for fast, deterministic sorting.
+3. **Multi-Seller Catalog Isolation:** Guarantees that only products chartered by the specific seller appear on their storefront. Other sellers' items are strictly quarantined, and unlisted products (`isAvailable: false`) are filtered out.
+4. **Product Card Architecture:** Each storefront product card renders real MongoDB product data (image, name, Doubloons price, rating, stock status) and links directly to `/product/:productId`. Cards include "Stow in Cargo" buttons (`.btn-add-cart`) integrated with `#storeCartDrawer`.
+5. **Themed Empty States:** If a valid seller has 0 available products, the catalog renders a styled empty state (`.seller-empty-state`) rather than broken cards or template crashes.
+
 ---
 
 ## 5. Currency & Pricing: Doubloons (🪙)

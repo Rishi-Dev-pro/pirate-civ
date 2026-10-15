@@ -2628,6 +2628,137 @@ body.theme-velvet .btn-add-cart:hover {
     transform: translateY(-1px);
 }
 
+/* =====================================================
+   SELLER STOREFRONT CATALOG EXTENSIONS (MILESTONE 3.4)
+   ===================================================== */
+
+.seller-captain-alias {
+    font-size: 0.88rem;
+    color: #94a3b8;
+    margin: -4px 0 10px 0;
+    font-style: italic;
+}
+
+.home-harbor-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.home-harbor-link:hover {
+    color: var(--gold-bright, #ffd57e);
+    text-decoration: underline;
+}
+
+.seller-wares-title-wrap {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+}
+
+.seller-catalog-count-badge {
+    font-family: "Cinzel", serif;
+    font-size: 0.76rem;
+    font-weight: 700;
+    background: rgba(56, 189, 248, 0.15);
+    border: 1px solid rgba(56, 189, 248, 0.4);
+    color: #7dd3fc;
+    padding: 3px 10px;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.seller-catalog-grid {
+    grid-template-columns: repeat(auto-fill, minmax(235px, 1fr)) !important;
+    gap: 20px;
+}
+
+.seller-card-provenance-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.seller-origin-tag {
+    font-family: "Cinzel", serif;
+    font-size: 0.7rem;
+    color: #94a3b8;
+    text-transform: capitalize;
+}
+
+.seller-card-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    margin-top: auto;
+}
+
+.seller-card-actions .btn-card-details {
+    flex: 1;
+}
+
+.btn-storefront-stow {
+    background: rgba(212, 147, 57, 0.18);
+    border: 1px solid rgba(212, 147, 57, 0.5);
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-family: "Cinzel", serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #ffd57e;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn-storefront-stow:hover {
+    background: rgba(212, 147, 57, 0.4);
+    border-color: var(--gold-bright);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* Themed Empty Storefront State */
+.seller-empty-state {
+    padding: 50px 24px;
+    text-align: center;
+    background: rgba(10, 18, 28, 0.6);
+    border: 1px dashed rgba(212, 147, 57, 0.35);
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.seller-empty-state .store-empty-icon {
+    font-size: 3rem;
+    margin-bottom: 14px;
+    opacity: 0.85;
+}
+
+.seller-empty-state .store-empty-title {
+    font-family: "Cinzel", serif;
+    font-size: 1.3rem;
+    color: #fff3d4;
+    margin: 0 0 10px 0;
+}
+
+.seller-empty-state .store-empty-desc {
+    color: #94a3b8;
+    max-width: 520px;
+    margin: 0 auto 20px auto;
+    font-size: 0.94rem;
+    line-height: 1.6;
+}
+
+.btn-empty-nav {
+    display: inline-block;
+}
+
 @media (max-width: 900px) {
     .seller-wares-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));

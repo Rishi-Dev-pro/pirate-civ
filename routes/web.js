@@ -264,12 +264,12 @@ router.get("/product/:productId", authMiddleware, renderProductDetail);
 
 
 // =====================================================
-// SELLER DISCOVERY ROUTE (MILESTONE 3.3)
+// REUSABLE SELLER PROFILE / STOREFRONT ROUTE (MILESTONE 3.4)
 // =====================================================
 
-import { renderSellerDiscovery } from "../controller/sellers.js";
+import { renderSellerStorefront } from "../controller/sellers.js";
 
-router.get("/seller/:sellerId", authMiddleware, renderSellerDiscovery);
+router.get("/seller/:sellerId", authMiddleware, renderSellerStorefront);
 
 
 // =====================================================

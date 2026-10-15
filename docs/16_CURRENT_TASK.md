@@ -13,44 +13,43 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 3 — Buyer Experience & Product Details**
-* **Active Milestone:** **Milestone 3.3: Explorer → Seller Discovery**
+* **Active Milestone:** **Milestone 3.4: Seller Profile / Storefront**
 * **Status:** **COMPLETE**
 
 ---
 
 ## 🎯 2. Current Task
-* **Task Name:** Milestone 3.3 — Explorer → Seller Discovery (`/seller/:sellerId`)
+* **Task Name:** Milestone 3.4 — Seller Profile / Storefront (`/seller/:sellerId`)
 * **Status:** Complete, Tested, Verified, and Documented.
-* **Readiness:** A buyer can discover the seller/merchant behind any product from the existing Product Detail sheet (`views/product-detail.ejs`), navigating via clickable avatar links, store name links, or dedicated `📜 DISCOVER MERCHANT` buttons to `/seller/:sellerId`. The reusable discovery view (`views/seller-discovery.ejs`) renders public merchant identity (`storeName`, `avatar`, `homeIsland`, `bio`, active trade listing count, and sample chartered wares preview up to 4 items) with strict credential safety (`password`, `authSecretHash`, `googleId` omitted) and safe 404 handling. Prominently displays Phase 3.4 scope notice banner marking full storefront as deferred to Milestone 3.4.
+* **Readiness:** A buyer can navigate to the full reusable public Seller Profile / Storefront (`views/seller-discovery.ejs`) from any Product Detail sheet (`views/product-detail.ejs`) or direct link. The storefront displays merchant store title, captain alias, avatar, home harbor link, bio chronicle, active listing count, and the complete catalog of available products (`Product.find({ seller: seller._id, isAvailable: true }).sort({ createdAt: -1 })`). Every product card links directly to `/product/:id` and includes "Stow in Cargo" buttons integrated with `#storeCartDrawer`. If a valid seller has 0 available wares, a themed empty state is safely rendered. Multi-seller catalog isolation, unavailable product exclusion, safe 404 handling, and credential safety are strictly enforced.
 
 ---
 
 ## ✅ 3. Completed in This Task
-* **Seller Discovery Controller (`controller/sellers.js`):**
-  - Implemented `renderSellerDiscovery` (and alias `renderPublicSeller`) action.
+* **Public Seller Storefront Controller (`controller/sellers.js`):**
+  - Upgraded `renderSellerStorefront` action (aliasing `renderSellerDiscovery`, `renderPublicSeller`, `renderSellerProfile`).
   - Validates seller identifier via `mongoose.isValidObjectId(sellerId)`.
   - Queries MongoDB with indexed `_id` and strict role enforcement: `User.findOne({ _id: sellerId, role: "seller" }).lean()`.
   - Nonexistent sellers, malformed IDs, or non-seller users return clean HTTP 404 responses without database exceptions or `CastError` leaks.
   - Strictly omits sensitive credentials (`password`, `authSecretHash`, `googleId`).
-  - Fetches associated active wares preview up to 4 items using compound-indexed `Product.find({ seller: seller._id, isAvailable: true })`.
-* **Reusable Seller Discovery View (`views/seller-discovery.ejs`):**
-  - Built reusable EJS template displaying merchant identity, `⚓ CHARTERED GUILD MERCHANT` badge, home harbor affiliation badge, bio chronicle, active listings count, breadcrumbs back to Sea Chart, and sample wares preview grid.
-  - Integrated atmospheric Phase 3.4 scope notice banner marking full storefront as deferred to Milestone 3.4.
-  - Preserved Pirate-Civ visual design system and responsive navigation.
-* **Product Detail Entry Points (`views/product-detail.ejs`):**
-  - Updated merchant card to provide clickable avatar links (`.seller-avatar-link`), clickable store name links (`.seller-name-link`), and dedicated `📜 DISCOVER MERCHANT` action button (`.btn-discover-seller`).
-  - Safely handles unpopulated or missing seller scenarios without crashing.
+  - Fetches the complete active product catalog using compound-indexed `Product.find({ seller: seller._id, isAvailable: true }).sort({ createdAt: -1 })`.
+* **Reusable Public Storefront View (`views/seller-discovery.ejs`):**
+  - Built unified EJS template displaying merchant identity hero (avatar, store title, captain personal alias, chartered merchant badge, Admiralty Guild verification), badged home harbor linking to canonical island (`/island/:homeIsland`), merchant bio chronicle, active listings count, breadcrumbs back to Sea Chart, and full catalog card grid.
+  - Product cards render image, name, Doubloons price (`🪙 XX Doubloons`), star rating, stock telemetry badges (`In Vaults`, `Low Reserve`, `Barren`), direct links to `/product/:productId`, and "Stow in Cargo" buttons (`.btn-add-cart`) wired to `#storeCartDrawer`.
+  - Themed empty state (`.seller-empty-state`) for valid sellers with 0 available wares ("Harbor Vaults Currently Barren").
+  - Guaranteed multi-seller catalog isolation (products from another seller never appear) and unavailable product exclusion (`isAvailable: false`).
 * **Route Registration (`routes/web.js`):**
-  - Registered `GET /seller/:sellerId` guarded by `authMiddleware`.
+  - Registered `GET /seller/:sellerId` guarded by `authMiddleware` pointing to `renderSellerStorefront`.
 * **Master CSS Extensions (`public/css/island-store.css`):**
-  - Added CSS for `.seller-avatar-link`, `.seller-name-link`, `.btn-discover-seller`, `.seller-discovery-wrapper`, `.seller-card-container`, `.seller-hero`, `.seller-large-avatar`, `.seller-stat-pill`, `.seller-bio-box`, `.seller-notice-banner`, `.seller-wares-grid`, `.seller-sample-card`, and mobile responsive media queries.
-* **Milestone 3.3 Automated Test Suite (`scratch/test_milestone_3_3.js`):**
-  - 54 assertions covering seller relationship, real ObjectId resolution, multi-merchant isolation, credential exclusion, non-seller 404 handling, malformed ObjectId 404 handling, live SSR HTTP rendering, and product detail link integration (54/54 passed).
-* **Live SSR Verification (`scratch/verify_live_ssr_3_3.js`):**
-  - Verified live HTTP endpoints on port 3000 across multiple island products, credential exclusion, scope banner presence, and 404 guards.
+  - Added CSS for `.seller-captain-alias`, `.home-harbor-link`, `.seller-wares-title-wrap`, `.seller-catalog-count-badge`, `.seller-catalog-grid`, `.seller-card-provenance-row`, `.seller-origin-tag`, `.seller-card-actions`, `.btn-storefront-stow`, `.seller-empty-state`, and responsive media queries.
+* **Milestone 3.4 Automated Test Suite (`scratch/test_milestone_3_4.js`):**
+  - 72 assertions covering seller loading, complete catalog retrieval, multi-seller isolation, unavailable product exclusion, empty storefront state, credential security, malformed/nonexistent/non-seller 404 handling, and stock invariance (72/72 passed).
+* **Live SSR Verification (`scratch/verify_live_ssr_3_4.js`):**
+  - Verified live HTTP endpoints on port 3000 across multiple merchants, catalog isolation, empty state rendering, credential exclusion, and 404 guards.
 * **Browser Verification (`browser_subagent`):**
-  - Verified user registration, login, navigation to `/island/astrolabe`, opening product detail, clicking `📜 DISCOVER MERCHANT`, verifying discovery page elements, navigating to `/island/cutlass_cove`, verifying second product's seller discovery, and checking browser console for zero errors (`seller_discovery_3_3_1792044976709.webp`).
-* **Full Regression Verification (1,215/1,215 passing):**
+  - Verified user registration, login, navigation to `/island/astrolabe`, opening product detail, clicking `📜 DISCOVER MERCHANT`, verifying full storefront with 32 wares, clicking a catalog product, verifying product detail, adding to cargo hold, and checking browser console for zero errors (`seller_storefront_3_4_1792059622743.webp`).
+* **Full Regression Verification (1,287/1,287 passing):**
+  - Milestone 3.4: 72/72
   - Milestone 3.3: 54/54
   - Milestone 3.2: 231/231
   - Milestone 3.1: 160/160
@@ -69,14 +68,14 @@
 ---
 
 ## ⏳ 4. Currently Working On
-* Phase 3.3 is completed. Ready for review and handoff.
+* Phase 3.4 is completed. Ready for review and handoff.
 
 ---
 
 ## 🔮 5. Next Task
 * **Phase 3 — Buyer Experience & Product Details**
-  - **Milestone 3.4:** Public Seller Profile & Full Storefront
-  - *Note: Milestone 3.4 was NOT implemented in Milestone 3.3.*
+  - **Milestone 3.5:** Customer Account Profile (`/profile`)
+  - *Note: Milestone 3.5 was NOT implemented in Milestone 3.4.*
 
 ---
 
@@ -85,36 +84,36 @@
 
 ---
 
-## 📝 7. Files Modified / Created in Milestone 3.3
-* [`controller/sellers.js`](../controller/sellers.js) — Created seller discovery controller actions `renderSellerDiscovery` and `renderPublicSeller`.
-* [`views/seller-discovery.ejs`](../views/seller-discovery.ejs) — Created reusable Seller Discovery View template with Phase 3.4 scope notice banner.
-* [`views/product-detail.ejs`](../views/product-detail.ejs) — Added clickable merchant avatar, store name links, and `📜 DISCOVER MERCHANT` button.
-* [`routes/web.js`](../routes/web.js) — Registered `GET /seller/:sellerId` with `authMiddleware`.
-* [`public/css/island-store.css`](../public/css/island-store.css) — Added seller card link styles, discovery container, hero, pills, banner, and sample wares grid styles.
-* [`docs/01_PROJECT_STATUS.md`](./01_PROJECT_STATUS.md) — Documented Milestone 3.3 completion.
-* [`docs/02_MASTER_ROADMAP.md`](./02_MASTER_ROADMAP.md) — Marked Milestone 3.3 COMPLETE, 3.4 [NEXT].
-* [`docs/05_ROUTE_MAP.md`](./05_ROUTE_MAP.md) — Updated `/seller/:sellerId` controller and purpose.
-* [`docs/07_BUYER_SYSTEM.md`](./07_BUYER_SYSTEM.md) — Updated Section 6 with Milestone 3.3 implementation and 3.4 scope boundary.
-* [`docs/08_SELLER_SYSTEM.md`](./08_SELLER_SYSTEM.md) — Added Section 6 Public Seller Discovery.
-* [`docs/15_CHANGELOG.md`](./15_CHANGELOG.md) — Recorded Milestone 3.3 release notes.
+## 📝 7. Files Modified / Created in Milestone 3.4
+* [`controller/sellers.js`](../controller/sellers.js) — Upgraded controller action `renderSellerStorefront` to query complete catalog.
+* [`views/seller-discovery.ejs`](../views/seller-discovery.ejs) — Upgraded reusable Public Seller Storefront template with full catalog and empty states.
+* [`routes/web.js`](../routes/web.js) — Updated `GET /seller/:sellerId` controller binding.
+* [`public/css/island-store.css`](../public/css/island-store.css) — Added storefront catalog grid, empty state, and responsive styles.
+* [`docs/01_PROJECT_STATUS.md`](./01_PROJECT_STATUS.md) — Documented Milestone 3.4 completion.
+* [`docs/02_MASTER_ROADMAP.md`](./02_MASTER_ROADMAP.md) — Marked Milestone 3.4 COMPLETE, 3.5 [NEXT].
+* [`docs/05_ROUTE_MAP.md`](./05_ROUTE_MAP.md) — Updated `/seller/:sellerId` entry.
+* [`docs/07_BUYER_SYSTEM.md`](./07_BUYER_SYSTEM.md) — Updated Section 6.2 with Milestone 3.4 architecture.
+* [`docs/08_SELLER_SYSTEM.md`](./08_SELLER_SYSTEM.md) — Updated Section 6 Public Seller Profile & Reusable Storefront.
+* [`docs/10_PRODUCT_SYSTEM.md`](./10_PRODUCT_SYSTEM.md) — Added Section 4.5 Seller Storefront Catalog Architecture.
+* [`docs/15_CHANGELOG.md`](./15_CHANGELOG.md) — Recorded Milestone 3.4 release notes.
 * [`docs/16_CURRENT_TASK.md`](./16_CURRENT_TASK.md) — Synchronized memory.
-* [`scratch/test_milestone_3_3.js`](../scratch/test_milestone_3_3.js) — 54-assertion automated test suite for Milestone 3.3.
-* [`scratch/verify_live_ssr_3_3.js`](../scratch/verify_live_ssr_3_3.js) — Live SSR verification script for Milestone 3.3.
+* [`scratch/test_milestone_3_4.js`](../scratch/test_milestone_3_4.js) — 72-assertion automated test suite for Milestone 3.4.
+* [`scratch/verify_live_ssr_3_4.js`](../scratch/verify_live_ssr_3_4.js) — Live SSR verification script for Milestone 3.4.
 
 ---
 
 ## 🧪 8. Tests Performed
-* 54/54 focused automated tests passed (`scratch/test_milestone_3_3.js`).
-* Live SSR verification script passed against port 3000 (`scratch/verify_live_ssr_3_3.js`).
-* Browser subagent verification passed with 0 console errors (`seller_discovery_3_3_1792044976709.webp`).
-* 1,161/1,161 regression tests passed across all previous milestones.
-* Total: 1,215/1,215 automated assertions passed across the repository (100%).
+* 72/72 focused automated tests passed (`scratch/test_milestone_3_4.js`).
+* Live SSR verification script passed against port 3000 (`scratch/verify_live_ssr_3_4.js`).
+* Browser subagent verification passed with 0 console errors (`seller_storefront_3_4_1792059622743.webp`).
+* 1,215/1,215 regression tests passed across all previous milestones.
+* Total: 1,287/1,287 automated assertions passed across the repository (100%).
 * Static syntax: 20/20 JS files and 22/22 EJS templates compiled without errors.
 
 ---
 
 ## ⚠️ 9. Known Codebase Issues
-*(None for Milestone 3.3).*
+*(None for Milestone 3.4).*
 
 ---
 
