@@ -4,6 +4,26 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-15] — Phase 3 / Milestone 3.5: Persistent Cart Integration (PHASE 3.5 COMPLETE)
+
+### Added & Implemented
+* **Persistent Cart Controller (`controller/cart.js`):** Built complete controller handling `getCart`, `addToCart`, `updateCartItem`, `removeCartItem`, and `clearCart`. Dynamically populates authoritative product information from MongoDB (`Product`), ensures non-negative integer quantities, formats safe client payloads, rejects client-side price overrides, and handles guest session carts with automatic migration to MongoDB on login.
+* **Optional Authentication Middleware (`middleware/auth.js`):** Exported `optionalAuth` middleware that attaches `req.user` if a valid signed `auth_token` and matching active session exist, but permits unauthenticated visitors to proceed with session carts.
+* **RESTful Cart Routes (`routes/web.js`):** Registered `GET /cart`, `POST /cart/add`, `POST /cart/update`, `POST /cart/remove`, and `POST /cart/clear` routes using `optionalAuth`.
+* **Dedicated Cargo Hold Manifest Page (`views/cart.ejs`):** Developed full SSR Cargo Manifest view featuring an itemized cargo table, product art, unit valuation in Doubloons, quantity increment/decrement controls, line totals, item discharge buttons, summary manifest card (item count, subtotal, exempt trade port fee, grand total), empty state with link to Sea Chart, and voyage checkout trigger.
+* **Client-Side Cargo Engine (`public/js/island-store.js`, `public/css/island-store.css`):** Refactored cart engine to communicate directly with backend `/cart` endpoints. Dynamically syncs topbar Doubloons pill and `#cartCountBadge`, animates the slide-out `#storeCartDrawer`, updates the manifest view on quantity adjustment/removal/jettison, and dispatches toast notifications. Added complete styling for table, controls, and manifest layout.
+* **Security & Invariants:** Excludes sensitive user fields (`password`, `authSecretHash`, `googleId`) from all cart responses. Zero stock deductions and zero orders created (Phase 5 boundary strictly maintained).
+* **Scope Boundary:** Phase 3.6 / Phase 4 / Phase 5 were strictly NOT implemented.
+
+### Tested & Verified
+* 82 automated assertions in `scratch/test_milestone_3_5.js` covering login & initial cart loading, multi-island product additions, quantity increment/decrement, line and grand total calculations, item removal, hold clearing, invalid/unavailable product rejection, user cart isolation, client price override prevention, sensitive field exclusion, guest session cart migration to MongoDB on login, stock invariance, zero order creation, and MongoDB persistence (82/82 passed).
+* Interactive browser testing via subagent confirmed multi-island additions, badge and drawer updates, quantity increment/decrement, `/cart` manifest rendering, line totals and grand totals, item removal, persistent MongoDB cart across logout/login, "Jettison All Cargo" empty state, and 0 console errors/warnings.
+* Full regression test suite passing across all active milestones (Milestone 3.5: 82/82, Milestone 3.4: 72/72, Milestone 3.3: 54/54, Milestone 3.2: 231/231, Milestone 3.1: 160/160; 599 total passed assertions, 0 failed).
+* Static syntax: all JavaScript files passed `node --check`.
+* Template analysis: `views/cart.ejs` and all EJS templates compiled cleanly (`ejs.compile`).
+
+---
+
 ## [2026-10-15] — Phase 3 / Milestone 3.4: Seller Profile / Storefront (PHASE 3.4 COMPLETE)
 
 ### Added & Implemented

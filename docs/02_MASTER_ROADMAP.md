@@ -112,9 +112,18 @@ gantt
   - Every product card links directly to `/product/:productId` with image, Doubloons price, rating, stock status badges (`In Vaults`, `Low Reserve`, `Barren`), and "Stow in Cargo Hold" action buttons integrated with `#storeCartDrawer`.
   - Implements an atmospheric themed empty state for valid sellers with 0 active wares.
   - Guarantees multi-seller catalog isolation, excludes unavailable products (`isAvailable: false`), safe 404 for malformed/nonexistent/non-seller IDs without CastError leaks, and strictly excludes sensitive credentials (`password`, `authSecretHash`, `googleId`).
-  - Phase 3.5 was NOT implemented.
-* **Milestone 3.5: Customer Account Profile [NEXT]**
-  - Create route `/profile` for buyers to view their account info, home port, and personal preferences.
+* **Milestone 3.5: Persistent Cart Integration [COMPLETE]**
+  - Built persistent MongoDB cart endpoints (`GET /cart`, `POST /cart/add`, `POST /cart/update`, `POST /cart/remove`, `POST /cart/clear`) with optional authentication (`optionalAuth`) and session fallback.
+  - Developed full SSR Cargo Manifest view (`views/cart.ejs`) with itemized table, line totals, trade port fee exemption, grand total, empty state, and action buttons.
+  - Wired client-side engine (`public/js/island-store.js`) to sync topbar badge, drawer (`#storeCartDrawer`), and `/cart` manifest with backend state.
+  - Seamlessly migrates guest session cart to MongoDB on login (`Cart.mergeSessionCart`).
+  - Supports multi-island product additions, quantity increment/decrement, and item removal / jettison all.
+  - Strictly enforces authoritative server-side pricing, inventory verification, client price override rejection, user isolation, and credential protection.
+  - Guaranteed stock invariance and zero orders created (Phase 5 boundary preserved).
+  - Validated with 82/82 automated milestone tests, full regression suite (599 assertions), and browser verification with 0 console errors.
+* **Milestone 3.6: Customer Account Profile & Checkout Preparation [NOT IMPLEMENTED]**
+  - Planned route `/profile` for buyers to view their account info, home port, and order preparation.
+  - Phase 3.6 is NOT implemented.
 
 ---
 

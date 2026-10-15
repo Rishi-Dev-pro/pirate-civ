@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Cargo Hold Manifest | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p35_v1">
+</head>
+
+<body class="island-store-body cart-manifest-body">
+
+    <!-- Fixed Atmospheric Backdrop -->
+    <div class="store-backdrop">
+        <img src="/images/kraken-bg.jpg" alt="Cargo Hold Atmospheric Backdrop" class="store-bg-img" onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
+
+    <!-- Reusable Main Navigation Bar -->
+    <%- include("partials/header") %>
+
+    <!-- Master Cargo Hold Manifest Container -->
+    <main class="cart-manifest-container">
+
+        <!-- Header / Breadcrumb Bar -->
+        <nav class="detail-nav-bar" aria-label="Cargo Breadcrumbs">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Cargo Hold Manifest</span>
+            </div>
+
+            <div class="store-header-controls">
+                <div class="doubloons-pill">
+                    <span class="coin-icon">🪙</span>
+                    <span id="pageTotalBadge"><%= (cart && cart.totalDoubloons) ? cart.totalDoubloons.toLocaleString() : 0 %> Doubloons</span>
+                </div>
+
+                <button id="btnOpenCart" class="btn-store-cart" title="Toggle Cargo Hold Drawer">
+                    <span>🛒 HOLD</span>
+                    <span id="cartCountBadge">(<%= (cart && cart.itemCount) ? cart.itemCount : 0 %>)</span>
+                </button>
+
+                <a href="/home" class="btn-store-close" title="Return to Archipelago Sea Chart">
+                    &times;
+                </a>
+            </div>
+        </nav>
+
+        <!-- Manifest Banner -->
+        <header class="cart-manifest-header">
+            <div class="cart-header-icon">⚓</div>
+            <div>
+                <h1 class="cart-manifest-title">Shipboard Cargo Manifest</h1>
+                <p class="cart-manifest-subtitle">
+                    Official bill of lading stowed in your ship's hold. Prices verified by Archipelago Trade Guilds.
+                </p>
+            </div>
+        </header>
+
+        <!-- Dynamic Content: Items Table or Empty State -->
+        <div id="cartManifestContent">
+            <% if (!cart || !cart.items || cart.items.length === 0) { %>
+                <div class="cart-empty-state">
+                    <div class="cart-empty-icon">⚓</div>
+                    <h2 class="cart-empty-title">Your Cargo Hold is Empty, Captain</h2>
+                    <p class="cart-empty-desc">
+                        No trade crates, spices, weapons, or enchanted relics are currently stowed aboard.
+                        Plot a course across the six trading islands to stow plunder into your hold.
+                    </p>
+                    <div class="cart-empty-actions">
+                        <a href="/home#sea-chart-section" class="btn-manifest-cta">
+                            🗺️ Chart Course to Islands
+                        </a>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="cart-manifest-layout">
+                    <!-- Items Table -->
+                    <div class="cart-table-wrapper">
+                        <table class="cart-manifest-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-item">Cargo Item</th>
+                                    <th class="col-price">Unit Value</th>
+                                    <th class="col-qty">Quantity</th>
+                                    <th class="col-total">Line Total</th>
+                                    <th class="col-action">Discharge</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% cart.items.forEach(function(item) { %>
+                                    <tr class="cart-table-row" data-product-id="<%= item.id || item.productId %>">
+                                        <td class="col-item">
+                                            <div class="manifest-item-info">
+                                                <img src="<%= item.image || '/images/items/default-relic.png' %>" alt="<%= item.name %>" class="manifest-item-thumb" onerror="this.onerror=null; this.src='/images/items/default-relic.png';">
+                                                <div>
+                                                    <a href="/product/<%= item.id || item.productId %>" class="manifest-item-name"><%= item.name %></a>
+                                                    <span class="manifest-item-island">Island: <%= item.island || 'Archipelago' %></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="col-price">
+                                            <span class="price-val">🪙 <%= (item.price || 0).toLocaleString() %></span>
+                                        </td>
+                                        <td class="col-qty">
+                                            <div class="cart-qty-ctrls">
+                                                <button type="button" class="btn-qty-ctrl btn-qty-minus" data-id="<%= item.id || item.productId %>" title="Decrease Quantity">-</button>
+                                                <span class="qty-display"><%= item.quantity || item.qty || 1 %></span>
+                                                <button type="button" class="btn-qty-ctrl btn-qty-plus" data-id="<%= item.id || item.productId %>" title="Increase Quantity">+</button>
+                                            </div>
+                                        </td>
+                                        <td class="col-total">
+                                            <span class="total-val">🪙 <%= ((item.price || 0) * (item.quantity || item.qty || 1)).toLocaleString() %></span>
+                                        </td>
+                                        <td class="col-action">
+                                            <button type="button" class="btn-item-remove-direct" data-id="<%= item.id || item.productId %>" title="Discharge Item">&times;</button>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Summary & Actions Panel -->
+                    <aside class="cart-summary-card">
+                        <h2 class="summary-card-title">Hold Summary</h2>
+                        <div class="summary-line">
+                            <span>Stowed Crates:</span>
+                            <span id="summaryItemCount"><%= cart.itemCount || 0 %> items</span>
+                        </div>
+                        <div class="summary-line">
+                            <span>Trade Port Fee:</span>
+                            <span class="summary-free">0 Doubloons (Exempt)</span>
+                        </div>
+                        <div class="summary-line summary-total-line">
+                            <span>Cargo Total:</span>
+                            <span id="summaryTotalVal" class="summary-total-gold">🪙 <%= (cart.totalDoubloons || 0).toLocaleString() %> Doubloons</span>
+                        </div>
+
+                        <div class="summary-actions">
+                            <button id="btnManifestCheckout" class="btn-manifest-checkout">
+                                ⚓ Secure Cargo Hold
+                            </button>
+                            <button id="btnClearHold" class="btn-manifest-clear">
+                                🗑️ Jettison All Cargo
+                            </button>
+                            <a href="/home#sea-chart-section" class="btn-manifest-continue">
+                                🗺️ Continue Island Plunder
+                            </a>
+                        </div>
+                    </aside>
+                </div>
+            <% } %>
+        </div>
+
+    </main>
+
+    <!-- Cargo Hold Drawer (Accessible from all pages) -->
+    <aside id="storeCartDrawer" class="store-cart-drawer">
+        <div class="cart-drawer-header">
+            <h3 class="cart-drawer-title">⚓ Cargo Hold</h3>
+            <button id="btnCloseCart" class="btn-cart-close" title="Close Cargo Hold">&times;</button>
+        </div>
+        <div id="cartDrawerItems" class="cart-drawer-items"></div>
+        <div class="cart-drawer-footer">
+            <div class="cart-total-row">
+                <span>Total Cargo:</span>
+                <span id="cartDrawerTotal">🪙 0 Doubloons</span>
+            </div>
+            <button id="btnCheckoutCargo" class="btn-checkout-cargo">
+                Secure Cargo (Hold)
+            </button>
+        </div>
+    </aside>
+
+    <!-- Unified Island Store JS Engine -->
+    <script src="/js/island-store.js?v=p35_v1"></script>
+
+</body>
+
+</html>

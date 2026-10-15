@@ -12,7 +12,7 @@ import {
     getAllUsers
 } from "../controller/users.js";
 
-import authMiddleware from "../middleware/auth.js";
+import authMiddleware, { optionalAuth } from "../middleware/auth.js";
 
 
 const router = express.Router();
@@ -270,6 +270,25 @@ router.get("/product/:productId", authMiddleware, renderProductDetail);
 import { renderSellerStorefront } from "../controller/sellers.js";
 
 router.get("/seller/:sellerId", authMiddleware, renderSellerStorefront);
+
+
+// =====================================================
+// CARGO CART / CARGO HOLD ROUTES (MILESTONE 3.5)
+// =====================================================
+
+import {
+    getCart,
+    addToCart,
+    updateCartItem,
+    removeCartItem,
+    clearCart
+} from "../controller/cart.js";
+
+router.get("/cart", optionalAuth, getCart);
+router.post("/cart/add", optionalAuth, addToCart);
+router.post("/cart/update", optionalAuth, updateCartItem);
+router.post("/cart/remove", optionalAuth, removeCartItem);
+router.post("/cart/clear", optionalAuth, clearCart);
 
 
 // =====================================================

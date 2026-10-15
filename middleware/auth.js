@@ -132,4 +132,42 @@ const authMiddleware = async (req, res, next) => {
 };
 
 
+export const optionalAuth = async (req, res, next) => {
+    try {
+        if (!req.session || !req.session.userId || !req.session.authToken) {
+            req.user = null;
+            return next();
+        }
+
+        const cookieToken = req.signedCookies ? req.signedCookies.auth_token : null;
+        if (!cookieToken || req.session.authToken !== cookieToken) {
+            req.user = null;
+            return next();
+        }
+
+        const user = await User.findById(req.session.userId);
+        if (!user) {
+            req.user = null;
+            return next();
+        }
+
+        const tokenHash = crypto
+            .createHash("sha256")
+            .update(cookieToken)
+            .digest("hex");
+
+        if (tokenHash !== user.authSecretHash) {
+            req.user = null;
+            return next();
+        }
+
+        req.user = user;
+        next();
+    } catch (error) {
+        req.user = null;
+        next();
+    }
+};
+
+
 export default authMiddleware;

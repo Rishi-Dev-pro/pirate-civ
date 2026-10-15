@@ -141,13 +141,17 @@ Rather than fragmented templates, all marketplace items share a single, rich, re
 
 ## 7. Cargo Manifest (Cart), Checkout & Order Tracking
 
-1. **Persistent Cart:**
-   - Backed by MongoDB `Cart` collection (`models/cart.js`, implemented in Milestone 2.3).
-   - Synchronized across browser sessions and devices for authenticated users.
-   - Automatically migrates and merges guest session cart items into MongoDB upon user login (`Cart.mergeSessionCart`).
-   - Normalizes duplicate items and enforces positive integer quantities.
-   - Future REST endpoints (`/cart/add`, `/cart/remove`) and frontend drawer API wiring belong to Phase 3.
-2. **Checkout (`/checkout`):**
+1. **Persistent Cart (Milestone 3.5 COMPLETE):**
+   - Backed by MongoDB `Cart` collection (`models/cart.js`) and persistent controller (`controller/cart.js`).
+   - Synchronized across browser sessions and devices for authenticated users via MongoDB persistence.
+   - For unauthenticated explorers, guest cart is maintained in session storage and seamlessly migrated/merged into MongoDB upon login via `Cart.mergeSessionCart`.
+   - Dedicated SSR Cargo Hold Manifest page at `GET /cart` (`views/cart.ejs`) with itemized table, line totals, port fee exemption, grand total, empty state, and action buttons.
+   - RESTful endpoints (`GET /cart`, `POST /cart/add`, `POST /cart/update`, `POST /cart/remove`, `POST /cart/clear`) wrapped with `optionalAuth`.
+   - Client engine (`public/js/island-store.js`) dynamically syncs the topbar doubloon/hold badge, slide-out drawer (`#storeCartDrawer`), and manifest view with server responses.
+   - Supports multi-island product additions, quantity increments/decrements, item removal, and full hold discharge ("Jettison All Cargo").
+   - Authoritative server-side pricing directly from `Product` collection; client-side price manipulation is strictly prevented.
+   - Zero stock deduction and zero orders created (Phase 5 boundary strictly respected).
+2. **Checkout (`/checkout`) [Phase 3.6 / Phase 5]:**
    - Review itemized cargo manifest, subtotal, and grand total in Doubloons.
    - Input delivery coordinates: Destination Port (`portName`), Island coordinates, and Courier Notes (`recipientNotes`).
    - Submit order: creates persistent record in `Order` collection (`models/order.js`), deducts product stock, and clears cart (Phase 5).

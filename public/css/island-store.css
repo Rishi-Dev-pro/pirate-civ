@@ -2799,3 +2799,472 @@ body.theme-velvet .btn-add-cart:hover {
 }
 
 
+/* =========================================================
+   MILESTONE 3.5: CARGO HOLD DRAWER & MANIFEST ENHANCEMENTS
+========================================================= */
+
+/* Drawer Item Row Enhancements */
+.cart-item-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: rgba(18, 24, 32, 0.85);
+    border: 1px solid rgba(212, 147, 57, 0.3);
+    border-radius: 8px;
+    padding: 10px 12px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+    transition: border-color 0.2s ease, transform 0.2s ease;
+}
+
+.cart-item-row:hover {
+    border-color: rgba(255, 213, 126, 0.5);
+    transform: translateY(-1px);
+}
+
+.cart-item-thumb {
+    width: 44px;
+    height: 44px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid rgba(212, 147, 57, 0.4);
+    background: #090e14;
+    flex-shrink: 0;
+}
+
+.cart-item-details {
+    flex: 1;
+    min-width: 0;
+}
+
+.cart-item-name {
+    font-family: "Cinzel", serif;
+    font-size: 0.86rem;
+    font-weight: 700;
+    color: #fff2d1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    text-decoration: none;
+    margin-bottom: 3px;
+}
+
+.cart-item-name:hover {
+    color: #ffd57e;
+}
+
+.cart-item-meta {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.78rem;
+    color: var(--text-accent, #e5b869);
+}
+
+.cart-item-qty-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(8, 12, 16, 0.8);
+    border: 1px solid rgba(212, 147, 57, 0.3);
+    border-radius: 4px;
+    padding: 2px 4px;
+}
+
+.btn-qty-adjust {
+    background: none;
+    border: none;
+    color: #d49339;
+    font-size: 0.95rem;
+    font-weight: 700;
+    cursor: pointer;
+    padding: 0 5px;
+    line-height: 1;
+    transition: color 0.15s ease;
+}
+
+.btn-qty-adjust:hover {
+    color: #ffd57e;
+}
+
+.cart-qty-text {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #fff;
+    min-width: 16px;
+    text-align: center;
+}
+
+.cart-item-subtotal {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #ffd57e;
+    white-space: nowrap;
+}
+
+.btn-remove-item {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 1.25rem;
+    cursor: pointer;
+    padding: 4px;
+    line-height: 1;
+    opacity: 0.75;
+    transition: opacity 0.2s, transform 0.2s;
+}
+
+.btn-remove-item:hover {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+/* Standalone Cargo Hold Manifest Page */
+.cart-manifest-container {
+    max-width: 1200px;
+    margin: 30px auto 80px auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 10;
+}
+
+.cart-manifest-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin: 24px 0 32px 0;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(212, 147, 57, 0.3);
+}
+
+.cart-header-icon {
+    font-size: 2.8rem;
+    background: rgba(18, 24, 32, 0.7);
+    border: 2px solid var(--gold-primary);
+    border-radius: 50%;
+    width: 68px;
+    height: 68px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 20px rgba(212, 147, 57, 0.25);
+    flex-shrink: 0;
+}
+
+.cart-manifest-title {
+    font-family: "Cinzel", serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #fff2d1;
+    margin: 0 0 6px 0;
+    letter-spacing: 0.04em;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
+}
+
+.cart-manifest-subtitle {
+    color: #94a3b8;
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+.cart-empty-state {
+    text-align: center;
+    padding: 70px 30px;
+    background: rgba(18, 24, 32, 0.75);
+    border: 1px dashed rgba(212, 147, 57, 0.4);
+    border-radius: 12px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+}
+
+.cart-empty-icon {
+    font-size: 3.5rem;
+    margin-bottom: 16px;
+    opacity: 0.85;
+}
+
+.cart-empty-title {
+    font-family: "Cinzel", serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #ffd57e;
+    margin-bottom: 10px;
+}
+
+.cart-empty-desc {
+    color: #94a3b8;
+    font-size: 1rem;
+    max-width: 540px;
+    margin: 0 auto 28px auto;
+    line-height: 1.6;
+}
+
+.btn-manifest-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--btn-bronze);
+    border: 1px solid var(--gold-bright);
+    color: #fff;
+    padding: 12px 28px;
+    border-radius: 6px;
+    font-family: "Cinzel", serif;
+    font-weight: 700;
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+}
+
+.btn-manifest-cta:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(212, 147, 57, 0.4);
+}
+
+/* Manifest Layout Grid */
+.cart-manifest-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 28px;
+    align-items: start;
+}
+
+.cart-table-wrapper {
+    background: rgba(18, 24, 32, 0.8);
+    border: 1px solid rgba(212, 147, 57, 0.35);
+    border-radius: 10px;
+    overflow-x: auto;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+}
+
+.cart-manifest-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.cart-manifest-table thead tr {
+    background: rgba(10, 15, 20, 0.9);
+    border-bottom: 1px solid rgba(212, 147, 57, 0.3);
+}
+
+.cart-manifest-table th {
+    font-family: "Cinzel", serif;
+    font-size: 0.85rem;
+    color: #ffd57e;
+    padding: 16px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+}
+
+.cart-table-row {
+    border-bottom: 1px solid rgba(212, 147, 57, 0.15);
+    transition: background 0.15s ease;
+}
+
+.cart-table-row:hover {
+    background: rgba(26, 34, 46, 0.5);
+}
+
+.cart-manifest-table td {
+    padding: 16px;
+    vertical-align: middle;
+}
+
+.manifest-item-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.manifest-item-thumb {
+    width: 52px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 6px;
+    border: 1px solid rgba(212, 147, 57, 0.4);
+    background: #090e14;
+}
+
+.manifest-item-name {
+    font-family: "Cinzel", serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #fff0d0;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.manifest-item-name:hover {
+    color: #ffd57e;
+}
+
+.manifest-item-island {
+    font-size: 0.78rem;
+    color: #94a3b8;
+    text-transform: capitalize;
+}
+
+.cart-qty-ctrls {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(8, 12, 16, 0.8);
+    border: 1px solid rgba(212, 147, 57, 0.4);
+    border-radius: 6px;
+    padding: 4px 8px;
+}
+
+.btn-qty-ctrl {
+    background: none;
+    border: none;
+    color: #d49339;
+    font-size: 1.1rem;
+    font-weight: 700;
+    cursor: pointer;
+    line-height: 1;
+    padding: 0 4px;
+}
+
+.btn-qty-ctrl:hover {
+    color: #ffd57e;
+}
+
+.qty-display {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #fff;
+    min-width: 20px;
+    text-align: center;
+}
+
+.price-val, .total-val {
+    font-size: 0.92rem;
+    font-weight: 600;
+    color: #ffd57e;
+}
+
+.btn-item-remove-direct {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 1.3rem;
+    cursor: pointer;
+    line-height: 1;
+    opacity: 0.8;
+}
+
+.btn-item-remove-direct:hover {
+    opacity: 1;
+    transform: scale(1.15);
+}
+
+/* Summary Card */
+.cart-summary-card {
+    background: rgba(18, 24, 32, 0.85);
+    border: 1px solid rgba(212, 147, 57, 0.4);
+    border-radius: 10px;
+    padding: 24px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+}
+
+.summary-card-title {
+    font-family: "Cinzel", serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff2d1;
+    margin: 0 0 18px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(212, 147, 57, 0.3);
+}
+
+.summary-line {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 0.92rem;
+    color: #cbd5e1;
+}
+
+.summary-free {
+    color: #10b981;
+    font-weight: 600;
+}
+
+.summary-total-line {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(212, 147, 57, 0.3);
+    font-family: "Cinzel", serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.summary-total-gold {
+    color: var(--gold-bright, #ffd57e);
+}
+
+.summary-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 24px;
+}
+
+.btn-manifest-checkout {
+    background: var(--btn-bronze);
+    border: 1px solid var(--gold-bright);
+    color: #fff;
+    padding: 13px;
+    border-radius: 6px;
+    font-family: "Cinzel", serif;
+    font-size: 0.92rem;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
+    transition: all 0.2s ease;
+}
+
+.btn-manifest-checkout:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(212, 147, 57, 0.35);
+}
+
+.btn-manifest-clear {
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.4);
+    color: #fca5a5;
+    padding: 10px;
+    border-radius: 6px;
+    font-family: "Cinzel", serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.btn-manifest-clear:hover {
+    background: rgba(239, 68, 68, 0.3);
+}
+
+.btn-manifest-continue {
+    text-align: center;
+    color: #94a3b8;
+    text-decoration: none;
+    font-size: 0.88rem;
+    margin-top: 6px;
+    transition: color 0.2s;
+}
+
+.btn-manifest-continue:hover {
+    color: #ffd57e;
+}
+
+@media (max-width: 900px) {
+    .cart-manifest-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+
