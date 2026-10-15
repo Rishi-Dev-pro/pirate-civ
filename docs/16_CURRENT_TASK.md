@@ -13,61 +13,55 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 3 — Buyer Experience & Product Details**
-* **Active Milestone:** **Milestone 3.5: Persistent Cart Integration**
+* **Active Milestone:** **Milestone 3.6: Buyer Regression & UX Verification**
 * **Status:** **COMPLETE**
 
 ---
 
 ## 🎯 2. Current Task
-* **Task Name:** Milestone 3.5 — Persistent Cart Integration (`/cart`)
+* **Task Name:** Milestone 3.6 — Buyer Regression & UX Verification
 * **Status:** Complete, Tested, Verified, and Documented.
-* **Readiness:** Persistent buyer cart architecture integrating MongoDB `Cart` collection with Express controllers, views, and client scripts. Added RESTful endpoints (`GET /cart`, `POST /cart/add`, `POST /cart/update`, `POST /cart/remove`, `POST /cart/clear`) with optional authentication (`optionalAuth`). Rendered `/cart` cargo hold manifest page (`views/cart.ejs`) with itemized table, line totals, port fee exemption, grand total, empty state, and action buttons. Synchronized `#storeCartDrawer` and topbar badge across all island and product pages with live server cart for authenticated users and session cart for guests. Seamlessly migrates guest session cart to MongoDB on login (`Cart.mergeSessionCart`). Enforces authoritative server-side pricing, stock verification, multi-island addition, user isolation, client price override rejection, and zero sensitive credential leakage. Zero stock deduction and zero orders created (Phase 5 boundary strictly maintained).
+* **Readiness:** Complete verification of the entire Phase 3 Buyer Journey: Login → Astrolabe → Product Detail → Discover Merchant → Seller Storefront → Catalog Navigation → Add to Cargo Hold → Cargo Hold Drawer → `/cart` Manifest → Increase/decrease quantity → Remove item → Multi-island add (Chronos) → Logout → Login again → Persistent MongoDB Cart verified → Jettison All Cargo → Empty State verified. Multi-user cart isolation verified. 6 canonical trading islands verified (Astrolabe, Chronos, Kraken Vault, Cutlass Cove, Velvet Isle, Booty Cay) with active products, images, Doubloon prices, ratings, and navigation. Zero unexpected console errors or warnings in real browser execution. Automated regression suite 695/695 passing across all milestones (3.1 to 3.6). Phase 4.1 marked as NEXT.
 
 ---
 
 ## ✅ 3. Completed in This Task
-* **Persistent Cart Controller (`controller/cart.js`):**
-  - Exported `getCart`, `addToCart`, `updateCartItem`, `removeCartItem`, `clearCart`, and formatting helper `formatCartResponse`.
-  - Enforces authoritative product details and prices strictly from MongoDB `Product` records.
-  - Validates positive integer quantities, rejects non-numeric/negative quantities, and ignores client-provided price tampering.
-  - Automatically migrates guest session cart into MongoDB document upon authenticated login.
-* **Optional Authentication Middleware (`middleware/auth.js`):**
-  - Created and exported `optionalAuth` middleware that attaches `req.user` if valid credentials are present, falling back gracefully to unauthenticated request without redirecting or erroring.
-* **Route Registration (`routes/web.js`):**
-  - Registered `/cart`, `/cart/add`, `/cart/update`, `/cart/remove`, and `/cart/clear` routes using `optionalAuth`.
-* **Cargo Hold Manifest View (`views/cart.ejs`):**
-  - Built full SSR cargo manifest template rendering itemized table, product art, unit Doubloons valuation, quantity controls (+ / -), line totals, direct item discharge buttons, manifest summary card (item count, subtotal, exempt trade port fee, cargo total), checkout trigger, jettison button, and themed empty state.
-* **Client-Side Cargo Engine (`public/js/island-store.js`, `public/css/island-store.css`):**
-  - Refactored cart engine to communicate directly with backend `/cart` endpoints.
-  - Dynamically updates topbar Doubloons pill and `#cartCountBadge`.
-  - Renders slide-out `#storeCartDrawer` dynamically from live server cart.
-  - Handles real-time DOM updates on the `/cart` manifest view on quantity adjustment, removal, or clear.
-  - Added comprehensive styles for cart manifest layout, tables, buttons, and summary sidebar.
-* **Milestone 3.5 Automated Test Suite (`scratch/test_milestone_3_5.js`):**
-  - 82 automated assertions covering buyer login, initial cart creation, multi-island addition, quantity adjustments, item removal, hold clearing, invalid/unavailable product rejection, isolation between users, client price override rejection, credential security, session-to-DB migration, stock invariance, zero order creation, and MongoDB persistence (82/82 passed).
-* **Browser Verification:**
-  - Verified multi-island additions, badge and drawer updates, quantity increment/decrement, `/cart` manifest table, line and grand totals, item removal, persistent MongoDB cart across logout/login, "Jettison All Cargo" empty state, and 0 console errors or warnings.
-* **Full Regression Verification (599 assertions passing):**
+* **End-to-End Browser Journey Verification:**
+  - Real browser subagent verified full buyer workflow on port 3000.
+  - Successfully authenticated as `buyer@pirate-civ.internal` / `password123`.
+  - Navigated through Astrolabe island, inspected Gilded Celestial Astrolabe product detail page.
+  - Explored merchant card and linked to public Seller Storefront (`/seller/:id`) for Grand Admiralty Cartographers.
+  - Navigated merchant catalog wares, stowed products into Cargo Hold, verified drawer `#storeCartDrawer` animation and live badge count updates.
+  - Inspected `/cart` manifest table, verified line totals, grand total in Doubloons, quantity increment/decrement, and single item discharge.
+  - Added multi-island product from Chronos Cay, verified cross-session persistence in MongoDB after full logout and login.
+  - Triggered "Jettison All Cargo" and verified nautical empty hold state (`.cart-empty-state`).
+  - Inspected all 6 canonical islands with active products, images, and prices.
+  - Verified 0 unexpected browser console errors or warnings.
+* **Automated Regression Suite (`scratch/test_milestone_3_6.js`):**
+  - 96 automated assertions covering end-to-end journey, authentication guards, user cart isolation, price integrity, stock immutability, 404 security handling, and multi-island persistence (96/96 passed).
+* **Full Regression Verification (695/695 passed):**
+  - Milestone 3.6: 96/96
   - Milestone 3.5: 82/82
   - Milestone 3.4: 72/72
   - Milestone 3.3: 54/54
   - Milestone 3.2: 231/231
   - Milestone 3.1: 160/160
-* **Static Syntax Checks:**
-  - 21/21 JavaScript files passed `node --check`.
-  - 23/23 EJS templates compiled cleanly.
+  - Total: 695/695 passed (100%).
+* **Static Syntax & Templates:**
+  - All JavaScript files pass `node --check`.
+  - 23/23 EJS templates compile cleanly.
 
 ---
 
 ## ⏳ 4. Currently Working On
-* Milestone 3.5 is completed. Ready for commit and push.
+* Phase 3 is fully verified and complete. Ready for Phase 4.
 
 ---
 
 ## 🔮 5. Next Task
-* **Phase 3 — Buyer Experience & Product Details**
-  - **Milestone 3.6:** Customer Account Profile & Checkout Preparation
-  - *Note: Phase 3.6 = NOT IMPLEMENTED.*
+* **Phase 4 — Seller Platform**
+  - **Milestone 4.1:** Dedicated Seller Auth & Onboarding (`/seller/register`, `/seller/login`)
+  - *Status: NEXT (0% started)*
 
 ---
 
@@ -76,36 +70,27 @@
 
 ---
 
-## 📝 7. Files Modified / Created in Milestone 3.5
-* [`controller/cart.js`](../controller/cart.js) — Created persistent Cart controller actions.
-* [`middleware/auth.js`](../middleware/auth.js) — Exported `optionalAuth` middleware.
-* [`routes/web.js`](../routes/web.js) — Registered `/cart` routes.
-* [`views/cart.ejs`](../views/cart.ejs) — Created Cargo Hold Manifest EJS template.
-* [`public/js/island-store.js`](../public/js/island-store.js) — Integrated client engine with `/cart` API.
-* [`public/css/island-store.css`](../public/css/island-store.css) — Added cart manifest and summary styling.
-* [`docs/01_PROJECT_STATUS.md`](./01_PROJECT_STATUS.md) — Documented Milestone 3.5 completion.
-* [`docs/02_MASTER_ROADMAP.md`](./02_MASTER_ROADMAP.md) — Marked Milestone 3.5 COMPLETE, 3.6 NOT IMPLEMENTED.
-* [`docs/07_BUYER_SYSTEM.md`](./07_BUYER_SYSTEM.md) — Updated Section 7 with Milestone 3.5 persistent cart.
-* [`docs/11_CART_AND_ORDER_SYSTEM.md`](./11_CART_AND_ORDER_SYSTEM.md) — Added Section 1.2 Cart Integration architecture.
-* [`docs/15_CHANGELOG.md`](./15_CHANGELOG.md) — Recorded Milestone 3.5 changelog entry.
+## 📝 7. Files Modified / Created in Milestone 3.6
+* [`scratch/test_milestone_3_6.js`](../scratch/test_milestone_3_6.js) — 96-assertion automated test suite for Phase 3.6.
+* [`docs/01_PROJECT_STATUS.md`](./01_PROJECT_STATUS.md) — Documented Phase 3.6 completion.
+* [`docs/02_MASTER_ROADMAP.md`](./02_MASTER_ROADMAP.md) — Marked Phase 3 COMPLETE, Phase 4.1 NEXT.
+* [`docs/07_BUYER_SYSTEM.md`](./07_BUYER_SYSTEM.md) — Updated Buyer Journey & verification status.
+* [`docs/11_CART_AND_ORDER_SYSTEM.md`](./11_CART_AND_ORDER_SYSTEM.md) — Updated Cart verification status.
+* [`docs/15_CHANGELOG.md`](./15_CHANGELOG.md) — Recorded Phase 3.6 changelog entry.
 * [`docs/16_CURRENT_TASK.md`](./16_CURRENT_TASK.md) — Synchronized memory.
-* [`scratch/test_milestone_3_5.js`](../scratch/test_milestone_3_5.js) — 82-assertion automated test suite for Milestone 3.5.
-* [`scratch/verify_live_ssr_3_4.js`](../scratch/verify_live_ssr_3_4.js) — Live SSR verification script for Milestone 3.4.
 
 ---
 
 ## 🧪 8. Tests Performed
-* 72/72 focused automated tests passed (`scratch/test_milestone_3_4.js`).
-* Live SSR verification script passed against port 3000 (`scratch/verify_live_ssr_3_4.js`).
-* Browser subagent verification passed with 0 console errors (`seller_storefront_3_4_1792059622743.webp`).
-* 1,215/1,215 regression tests passed across all previous milestones.
-* Total: 1,287/1,287 automated assertions passed across the repository (100%).
-* Static syntax: 20/20 JS files and 22/22 EJS templates compiled without errors.
+* 96/96 automated tests passed (`scratch/test_milestone_3_6.js`).
+* Real browser journey subagent passed with 0 console errors.
+* 695/695 regression tests passed across all Phase 3 milestones.
+* Static syntax: 21/21 JS files and 23/23 EJS templates compiled without errors.
 
 ---
 
 ## ⚠️ 9. Known Codebase Issues
-*(None for Milestone 3.4).*
+* None.
 
 ---
 

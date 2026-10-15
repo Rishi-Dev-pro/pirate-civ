@@ -4,6 +4,26 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-15] — Phase 3 / Milestone 3.6: Buyer Regression & UX Verification (PHASE 3 COMPLETE)
+
+### Added & Verified
+* **End-to-End Real Browser Journey Verification:**
+  - Authenticated login with test buyer credentials (`buyer@pirate-civ.internal` / `password123`) on port 3000.
+  - Full voyage path verified: Login → Astrolabe → Product Detail (`/product/:productId`) → Discover Merchant → Seller Storefront (`/seller/:sellerId`) → Catalog item inspection → Product Detail → Add to Cargo Hold → Cargo Hold Drawer `#storeCartDrawer` animation & real-time badge updates.
+  - Full `/cart` manifest verification: itemized table inspection, price line totals, grand total in Doubloons, quantity increment (`+`), quantity decrement (`-`), and individual item discharge.
+  - Multi-island product addition: navigated to Chronos Cay, added product to Cargo Hold, verified presence on `/cart`.
+  - Session and persistence verification: logged out, logged back in, confirmed persistent cart in MongoDB survived across logout/login sessions.
+  - Hold discharge: clicked "Jettison All Cargo", verified empty hold state (`.cart-empty-state`).
+  - Canonical island store check: verified all 6 leaf islands (Astrolabe, Chronos, Kraken Vault, Cutlass Cove, Velvet Isle, Booty Cay) load with active MongoDB products, images, Doubloons prices, star ratings, and working links.
+  - Verified 0 unexpected console errors or warnings in real browser console.
+* **Automated Regression Suite (`scratch/test_milestone_3_6.js`):**
+  - 96 automated assertions covering buyer journey, authentication middleware, user cart isolation, price manipulation rejection, stock immutability, zero order creation, and 404 security guards (96/96 passed).
+* **Comprehensive Regression Suite:**
+  - 695/695 passed across all Phase 3 automated test suites (Milestone 3.1: 160/160, Milestone 3.2: 231/231, Milestone 3.3: 54/54, Milestone 3.4: 72/72, Milestone 3.5: 82/82, Milestone 3.6: 96/96).
+* **Scope Boundary:** Phase 4 (Seller platform) and Phase 5 (Checkout, payment, orders) strictly NOT implemented. Phase 3 is officially COMPLETE.
+
+---
+
 ## [2026-10-15] — Phase 3 / Milestone 3.5: Persistent Cart Integration (PHASE 3.5 COMPLETE)
 
 ### Added & Implemented

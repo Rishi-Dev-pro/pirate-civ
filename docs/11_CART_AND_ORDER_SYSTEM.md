@@ -50,7 +50,8 @@ stateDiagram-v2
   - Authoritative prices calculated strictly from MongoDB `Product` records; client price overrides are rejected.
   - Sensitive user fields (`password`, `authSecretHash`, `googleId`) are strictly excluded from cart responses.
   - Zero stock deductions and zero orders created (Phase 5 boundary strictly maintained).
-  - Phase 3.6 / Phase 5 functionality is NOT implemented.
+  - Milestone 3.6 Buyer Regression & UX Verification fully verified in real browser (multi-island stow, drawer, manifest, increment/decrement, remove, logout/login persistence, jettison all, empty state, 0 console errors).
+  - Phase 4 / Phase 5 functionality is NOT implemented.
 
 ---
 

@@ -151,13 +151,10 @@ Rather than fragmented templates, all marketplace items share a single, rich, re
    - Supports multi-island product additions, quantity increments/decrements, item removal, and full hold discharge ("Jettison All Cargo").
    - Authoritative server-side pricing directly from `Product` collection; client-side price manipulation is strictly prevented.
    - Zero stock deduction and zero orders created (Phase 5 boundary strictly respected).
-2. **Checkout (`/checkout`) [Phase 3.6 / Phase 5]:**
-   - Review itemized cargo manifest, subtotal, and grand total in Doubloons.
-   - Input delivery coordinates: Destination Port (`portName`), Island coordinates, and Courier Notes (`recipientNotes`).
-   - Submit order: creates persistent record in `Order` collection (`models/order.js`), deducts product stock, and clears cart (Phase 5).
-3. **Order Tracking (`/orders` & `/orders/:id`):**
-   - Backed by MongoDB `Order` collection (`models/order.js`, foundation implemented in Milestone 2.4).
-   - Shows active and past voyages queried via `Order.findByBuyer(buyerId)`.
-   - Immutable snapshot pricing guarantees that past orders maintain historical pricing and item names even if merchants modify products later.
-   - Visual voyage map tracking status transitions: `pending` ➔ `confirmed` ➔ `processing` ➔ `shipped` ➔ `delivered` (or `cancelled`).
+4. **Buyer Regression & UX Verification (Milestone 3.6 COMPLETE):**
+   - End-to-end browser verification of the complete buyer journey across all 6 canonical islands.
+   - Flow verified: Login → Astrolabe → Product Detail → Discover Merchant → Seller Storefront → Catalog Navigation → Add to Cargo Hold → Cargo Hold Drawer → `/cart` Manifest → Quantity +/- → Item Removal → Multi-island Add (Chronos) → Logout → Re-login → Persistent MongoDB Cart → Jettison All → Empty State.
+   - Verified multi-user isolation, credential omission (`password`, `authSecretHash`, `googleId`), 404 security on malformed/nonexistent routes, stock invariance, and 0 console errors.
+   - 695/695 regression tests passing across entire Phase 3 suite. Phase 3 is COMPLETE.
+
 

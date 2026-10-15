@@ -121,16 +121,19 @@ gantt
   - Strictly enforces authoritative server-side pricing, inventory verification, client price override rejection, user isolation, and credential protection.
   - Guaranteed stock invariance and zero orders created (Phase 5 boundary preserved).
   - Validated with 82/82 automated milestone tests, full regression suite (599 assertions), and browser verification with 0 console errors.
-* **Milestone 3.6: Customer Account Profile & Checkout Preparation [NOT IMPLEMENTED]**
-  - Planned route `/profile` for buyers to view their account info, home port, and order preparation.
-  - Phase 3.6 is NOT implemented.
+* **Milestone 3.6: Buyer Regression & UX Verification [COMPLETE]**
+  - Verified complete buyer journey in real browser: Login → Astrolabe → Product Detail → Discover Merchant → Seller Storefront → Catalog Navigation → Add to Cargo Hold → Cargo Hold Drawer → `/cart` Manifest → Quantity increment/decrement → Item removal → Multi-island add (Chronos) → Logout → Login again → Persistent MongoDB Cart verified → Jettison All Cargo → Empty State verified.
+  - Verified all 6 canonical islands (Astrolabe, Chronos, Kraken Vault, Cutlass Cove, Velvet Isle, Booty Cay) with real MongoDB products, images, Doubloons prices, ratings, and navigation.
+  - Verified user cart isolation, 404 security handling, stock invariance, zero credential leaks, and 0 unexpected console errors in browser subagent execution.
+  - Automated regression suite: 695/695 passed (Phase 3.1: 160/160, Phase 3.2: 231/231, Phase 3.3: 54/54, Phase 3.4: 72/72, Phase 3.5: 82/82, Phase 3.6: 96/96).
+  - Phase 3 is fully verified and COMPLETE.
 
 ---
 
-### 📍 PHASE 4 — SELLER PLATFORM
+### 📍 PHASE 4 — SELLER PLATFORM [NEXT]
 **Goal:** Empower merchants to establish stores, manage inventory, and list products within the 6 islands.
 
-* **Milestone 4.1: Dedicated Seller Auth & Onboarding**
+* **Milestone 4.1: Dedicated Seller Auth & Onboarding [NEXT]**
   - Add `/seller/register` and `/seller/login` routes with merchant-specific onboarding fields.
 * **Milestone 4.2: Seller Command Deck (Dashboard)**
   - Create route `/seller/dashboard` and view `views/seller/dashboard.ejs`.
