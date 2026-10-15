@@ -4,6 +4,28 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-15] — Phase 3 / Milestone 3.2: Reusable Product Detail Page (PHASE 3.2 COMPLETE)
+
+### Added & Implemented
+* **Reusable Product Details Controller (`controller/products.js`):** Created `renderProductDetail` controller action exporting clean, modular product resolution logic. Validates product identifiers using a safe dual strategy: MongoDB `ObjectId` (`mongoose.isValidObjectId`) or URL slug (`/^[a-z0-9]+(?:-[a-z0-9]+)*$/i`). Malformed or nonexistent identifiers return clean HTTP 404 responses without database exceptions or `CastError` leaks.
+* **Single Reusable Detail View (`views/product-detail.ejs`):** Developed one comprehensive, responsive EJS view for all marketplace items across all 6 canonical islands. Displays visual artifact showcase with radial glowing halo, island origin badge, category pill, guild repute badge, Doubloons price valuation (`🪙 XX Doubloons`), three-tier stock telemetry (`In Vaults`, `Low Reserve`, `Barren`), full safe-escaped description, and populated seller store info (`name`, `storeName`, `homeIsland`, `avatar`).
+* **Route Registration (`routes/web.js`):** Bound `GET /product/:productId` with `authMiddleware` matching `docs/05_ROUTE_MAP.md`.
+* **Island Listing Product Links (`views/*.ejs`, `public/css/island-store.css`):** Connected all dynamic product cards across all 6 canonical island views (`astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`) to `/product/:id` via clickable image wrappers (`.item-asset-link`), title links (`.item-title-link`), and dedicated action buttons (`.btn-card-details`).
+* **Product Detail Styles (`public/css/island-store.css`):** Added comprehensive nautical styling for `.product-detail-wrapper`, `.detail-nav-bar`, `.detail-breadcrumbs`, `.detail-container`, `.detail-visual-col`, `.detail-asset-box`, `.detail-asset-img`, `.detail-pills-row`, `.detail-pill`, `.detail-info-col`, `.detail-title`, `.detail-price-box`, `.detail-stock-row`, `.stock-badge`, `.detail-desc-box`, `.detail-seller-box`, `.detail-actions-bar`, `.btn-detail-add-cart`, `.btn-detail-wishlist`, `.btn-detail-back`, and mobile responsive media queries.
+* **Security & Credential Protection:** Populated seller document strictly excludes sensitive fields (`password`, `authSecretHash`, `googleId`).
+* **Stock Immutability:** Viewing a product never mutates stock, quantities, or database availability states.
+* **Cargo Hold Cart Integration:** Integrated Cargo Hold slide-out drawer (`#storeCartDrawer`) and unified `island-store.js` engine on the product detail page, allowing seamless "Stow in Cargo Hold" action and drawer interactions.
+
+### Tested & Verified
+* 231 focused automated assertions in `scratch/test_milestone_3_2.js` covering product retrieval across all 6 canonical islands, ObjectId & slug queries, unavailable product exclusion (`isAvailable: false`), malformed identifier 404 handling, stock invariance, seller secret protection, unauthenticated 302 redirects, live HTTP SSR rendering, and island card navigation links (231/231 passed).
+* 87 live SSR assertions in `scratch/verify_live_ssr_3_2.js` executed against running server (87/87 passed).
+* End-to-end browser verification via subagent recording user registration, login, navigation to `/astrolabe`, clicking `🔍 DETAILS`, verifying detail elements, adding item to cargo hold, opening/closing cart drawer, navigating back to island, opening product on `/chronos`, and verifying 0 console errors (`product_detail_check_1792042442719.webp`).
+* Full regression test suite passing across all milestones (1,161/1,161 assertions passed, 100%).
+* Static syntax: 19/19 JavaScript files passed `node --check`.
+* Template analysis: 21/21 EJS template files compiled cleanly (`ejs.compile`).
+
+---
+
 ## [2026-10-15] — Phase 3 / Milestone 3.1: Dynamic Island Listings (PHASE 3.1 COMPLETE)
 
 ### Added & Hardened

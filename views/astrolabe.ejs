@@ -121,12 +121,16 @@
                                     <button class="btn-wishlist" data-id="<%= p.id %>" data-name="<%= p.name %>" title="Add to Wishlist">♡</button>
                                 </div>
 
-                                <div class="item-asset-box">
-                                    <div class="item-asset-glow"></div>
-                                    <img src="<%= p.image %>" alt="<%= p.name %>" class="item-asset-img">
-                                </div>
+                                <a href="/product/<%= p.id %>" class="item-asset-link" title="Inspect <%= p.name %>">
+                                    <div class="item-asset-box">
+                                        <div class="item-asset-glow"></div>
+                                        <img src="<%= p.image %>" alt="<%= p.name %>" class="item-asset-img" onerror="this.onerror=null; this.src='/images/items/default-relic.png';">
+                                    </div>
+                                </a>
 
-                                <h3 class="item-title"><%= p.name %></h3>
+                                <h3 class="item-title">
+                                    <a href="/product/<%= p.id %>" class="item-title-link" title="Inspect <%= p.name %>"><%= p.name %></a>
+                                </h3>
                                 <p class="item-desc"><%= p.desc %></p>
 
                                 <div class="item-meta-row">
@@ -134,9 +138,14 @@
                                     <span class="item-rating"><%= p.rating || '★★★★★' %></span>
                                 </div>
 
-                                <button class="btn-add-cart" data-id="<%= p.id %>" data-name="<%= p.name %>" data-price="<%= p.price %>">
-                                    <span>🛒 ADD TO CART</span>
-                                </button>
+                                <div class="card-action-row">
+                                    <button class="btn-add-cart" data-id="<%= p.id %>" data-name="<%= p.name %>" data-price="<%= p.price %>">
+                                        <span>🛒 ADD TO CART</span>
+                                    </button>
+                                    <a href="/product/<%= p.id %>" class="btn-card-details" title="View details of <%= p.name %>">
+                                        <span>🔍 DETAILS</span>
+                                    </a>
+                                </div>
                             </article>
                         <% }); %>
                     <% } else { %>

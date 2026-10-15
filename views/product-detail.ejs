@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Trade Cargo Manifest | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Dedicated Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=detail_v1">
+</head>
+
+<body class="island-store-body product-detail-body">
+
+    <!-- Fixed Atmospheric Backdrop -->
+    <div class="store-backdrop">
+        <img src="<%= island.image || '/images/astrolabe-bg.jpg' %>" alt="<%= island.name %> Atmospheric Backdrop" class="store-bg-img" onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
+
+    <!-- Reusable Main Navigation Bar -->
+    <%- include("partials/header") %>
+
+    <!-- Master Product Detail Stage -->
+    <main class="product-detail-wrapper">
+
+        <!-- Top Navigation Bar: Breadcrumbs & Header Actions -->
+        <nav class="detail-nav-bar" aria-label="Breadcrumb Navigation">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <a href="/island/<%= product.island %>" class="crumb-link"><%= island.name %></a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current"><%= product.name %></span>
+            </div>
+
+            <div class="store-header-controls">
+                <div class="doubloons-pill">
+                    <span class="coin-icon">🪙</span>
+                    <span>1,240 Doubloons</span>
+                </div>
+
+                <button id="btnOpenCart" class="btn-store-cart" title="Open Cargo Hold">
+                    <span>🛒 CART</span>
+                    <span id="cartCountBadge">(0)</span>
+                </button>
+
+                <a href="/island/<%= product.island %>" class="btn-store-close" title="Return to <%= island.name %>">
+                    &times;
+                </a>
+            </div>
+        </nav>
+
+        <!-- Master Product Showcase Container -->
+        <article class="detail-container">
+
+            <!-- Left Column: Visual Artifact Showcase -->
+            <div class="detail-visual-col">
+                <div class="detail-asset-box">
+                    <div class="detail-asset-glow"></div>
+                    <img src="<%= product.image || '/images/items/default-relic.png' %>"
+                         alt="<%= product.name %>"
+                         class="detail-asset-img"
+                         onerror="this.onerror=null; this.src='/images/items/default-relic.png';">
+                </div>
+
+                <div class="detail-pills-row">
+                    <span class="detail-pill island-pill">
+                        <%= island.icon || '🏝️' %> <%= island.name %>
+                    </span>
+                    <span class="detail-pill category-pill">
+                        📜 <%= product.category %>
+                    </span>
+                    <span class="detail-pill badge-pill">
+                        ⚓ <%= island.badge || 'MERCHANT REPUTE' %>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Right Column: Trade Manifest & Specifications -->
+            <div class="detail-info-col">
+                <span class="detail-overtitle"><%= (island.name || product.island).toUpperCase() %> • ARCHIPELAGO CARGO MANIFEST</span>
+
+                <h1 class="detail-title"><%= product.name %></h1>
+
+                <div class="detail-meta-header">
+                    <span class="detail-rating"><%= product.rating || '★★★★★' %></span>
+                    <span class="detail-rating-label">Archipelago Certified Relic</span>
+                </div>
+
+                <div class="detail-price-box">
+                    <span class="detail-price-label">Valuation:</span>
+                    <span class="detail-price-amount">🪙 <%= product.price %> Doubloons</span>
+                </div>
+
+                <div class="detail-stock-row">
+                    <% if (product.stock > 5) { %>
+                        <span class="stock-badge in-stock">⚓ In Vaults (<%= product.stock %> units available)</span>
+                    <% } else if (product.stock > 0) { %>
+                        <span class="stock-badge limited-stock">⚠️ Low Reserve (<%= product.stock %> units remaining)</span>
+                    <% } else { %>
+                        <span class="stock-badge out-of-stock">🚫 Barren (0 units available)</span>
+                    <% } %>
+                </div>
+
+                <div class="detail-desc-box">
+                    <h4>Item Chronicle & Provenance</h4>
+                    <p class="detail-desc-text"><%= product.description %></p>
+                </div>
+
+                <% if (product.seller) { %>
+                    <div class="detail-seller-box">
+                        <img src="<%= product.seller.avatar || '/images/avatars/default-pirate.png' %>"
+                             alt="<%= product.seller.storeName || product.seller.name %>"
+                             class="seller-avatar"
+                             onerror="this.onerror=null; this.src='/images/avatars/default-pirate.png';">
+                        <div class="seller-info">
+                            <span class="seller-role">Chartered Merchant</span>
+                            <span class="seller-name"><%= product.seller.storeName || product.seller.name %></span>
+                            <% if (product.seller.homeIsland) { %>
+                                <span class="seller-port">Home Port: <%= product.seller.homeIsland %></span>
+                            <% } %>
+                        </div>
+                    </div>
+                <% } %>
+
+                <div class="detail-actions-bar">
+                    <button class="btn-add-cart btn-detail-add-cart"
+                            data-id="<%= product.id %>"
+                            data-name="<%= product.name %>"
+                            data-price="<%= product.price %>">
+                        <span>🛒 STOW IN CARGO HOLD</span>
+                    </button>
+
+                    <button class="btn-wishlist btn-detail-wishlist"
+                            data-id="<%= product.id %>"
+                            data-name="<%= product.name %>"
+                            title="Add to Wishlist">
+                        ♡
+                    </button>
+
+                    <a href="/island/<%= product.island %>" class="btn-detail-back" title="Return to <%= island.name %>">
+                        <span>⚓ Back to Island</span>
+                    </a>
+                </div>
+            </div>
+
+        </article>
+
+    </main>
+
+    <!-- Cargo Hold Drawer -->
+    <aside id="storeCartDrawer" class="store-cart-drawer">
+        <div class="cart-drawer-header">
+            <h3 class="cart-drawer-title">⚓ Cargo Hold</h3>
+            <button id="btnCloseCart" class="btn-cart-close">&times;</button>
+        </div>
+        <div id="cartDrawerItems" class="cart-drawer-items"></div>
+        <div class="cart-drawer-footer">
+            <div class="cart-total-row">
+                <span>Total Cargo:</span>
+                <span id="cartDrawerTotal">🪙 0 Doubloons</span>
+            </div>
+            <button id="btnCheckoutCargo" class="btn-checkout-cargo">
+                Secure Cargo (Checkout)
+            </button>
+        </div>
+    </aside>
+
+    <!-- Unified Island Store JS Engine -->
+    <script src="/js/island-store.js?v=detail_v1"></script>
+
+</body>
+
+</html>

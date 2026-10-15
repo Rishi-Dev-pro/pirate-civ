@@ -255,5 +255,14 @@ router.get("/booty_cay", authMiddleware, renderIslandPage("booty_cay"));
 
 
 // =====================================================
+// REUSABLE PRODUCT DETAIL ROUTE
+// =====================================================
+
+import { renderProductDetail } from "../controller/products.js";
+
+router.get("/product/:productId", authMiddleware, renderProductDetail);
+
+
+// =====================================================
 
 export default router;

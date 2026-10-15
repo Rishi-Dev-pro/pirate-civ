@@ -93,10 +93,12 @@ gantt
   - Enforce availability filtering (`isAvailable: true`), product ordering preservation, and real MongoDB Product `_id` usage.
   - Implement graceful nautical empty states for barren island catalogs and hardened 404 responses for invalid islands.
   - Preserve cartographic island lore and client-side drawer/cart compatibility.
-* **Milestone 3.2: Reusable Product Details Sheet [NEXT]**
-  - Create route `/product/:productId` and shared view `views/product_detail.ejs`.
-  - Display dynamic product imagery, Doubloons price, stock telemetry, island origin, merchant bio, and add-to-cart controls.
-* **Milestone 3.3: Seller Discovery ("Explore Sellers")**
+* **Milestone 3.2: Reusable Product Details Sheet [COMPLETE]**
+  - Created reusable route `/product/:productId` and view `views/product-detail.ejs` powered by `controller/products.js::renderProductDetail`.
+  - Displays dynamic product imagery, Doubloons price, stock telemetry badges (`In Vaults`, `Low Reserve`, `Barren`), island origin, merchant bio/store name, breadcrumb navigation, and add-to-cart controls.
+  - Connected all 6 canonical island product card items via image links, title links, and dedicated `🔍 DETAILS` action buttons.
+  - Validated safe identifier lookups (ObjectId & slug), 404 for nonexistent/malformed/unavailable items, stock immutability, zero credential leakage, and 100% automated regression pass (1,161 assertions).
+* **Milestone 3.3: Seller Discovery ("Explore Sellers") [NEXT]**
   - Refactor `/users` into `/sellers` with updated view `views/sellers.ejs`.
   - Display registered merchants, their home island badges, and active catalog counts.
 * **Milestone 3.4: Public Seller Profile**

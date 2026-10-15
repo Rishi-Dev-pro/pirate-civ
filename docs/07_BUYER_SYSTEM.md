@@ -65,39 +65,40 @@ Customers navigate to any of the 6 canonical leaf islands:
 
 ---
 
-## 5. Reusable Product Details Page (`/product/:productId`)
+## 5. Reusable Product Details Page (`/product/:productId`) [Milestone 3.2 COMPLETE]
 
-Rather than fragmented templates, all marketplace items share a single, rich, responsive detail template (`views/product_detail.ejs`):
+Rather than fragmented templates, all marketplace items share a single, rich, responsive detail template (`views/product-detail.ejs`) served by `controller/products.js::renderProductDetail`:
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
-│ [← Back to Island]              [Flagship Cart (3 items)]              │
+│ [← Sea Chart > Astrolabe Atoll > Gilded Astrolabe]    [Flagship Cart]  │
 ├────────────────────────────────────────────────────────────────────────┤
-│ ┌──────────────────────────┐   ★ ★ ★ ★ ★ (4.9 Rating)                 │
-│ │                          │   ASTROLABE ATOLL • INSTRUMENTS           │
+│ ┌──────────────────────────┐   ASTROLABE ATOLL • ARCHIPELAGO MANIFEST  │
+│ │                          │   ★ ★ ★ ★ ★ (Archipelago Certified)       │
 │ │                          │                                           │
-│ │   [High-Res Imagery]     │   GILDED CELESTIAL ASTROLABE              │
-│ │                          │   85 Doubloons (🪙)                        │
+│ │   [Visual Artifact Glow] │   GILDED CELESTIAL ASTROLABE              │
+│ │   [High-Res Relic Image] │   Trade Valuation: 🪙 85 Doubloons        │
 │ │                          │                                           │
-│ └──────────────────────────┘   "Forged in Seville, calibrated for... " │
+│ └──────────────────────────┘   [⚓ In Vaults (15 units available)]     │
 │                                                                        │
-│ Sold by: Captain Thorne's Guild  [View Merchant Profile]               │
-│ Stock Remaining: 14 units in vault                                     │
+│ Item Chronicle & Provenance:   "Forged in Seville, calibrated for... " │
 │                                                                        │
-│ Quantity: [-] [ 1 ] [+]        [ 🛒 Add to Cargo Manifest ]            │
+│ Chartered Merchant: Grand Admiralty Cartographers (Home Port: Astrolabe)
+│                                                                        │
+│ [ 🛒 STOW IN CARGO HOLD ]      [ ♡ ]       [ ⚓ Back to Island ]        │
 └────────────────────────────────────────────────────────────────────────┘
 ```
 
 **Attributes Dynamically Rendered:**
-1. Product Image with zoom / lightbox.
-2. Product Name and Subtitle.
-3. Price in Doubloons (🪙).
-4. Full Lore Description.
-5. Island Origin badge & Category tag.
-6. Available Stock indicator (with out-of-stock guard).
-7. Merchant Information (Store name, captain avatar, link to public seller profile).
-8. Interactive Quantity Stepper.
-9. Persistent "Add to Cart" CTA.
+1. **Visual Artifact Box:** Glowing halo backdrop with high-res PNG relic image and fallback on broken images.
+2. **Provenance Badges:** Island origin badge (`🏝️ Astrolabe Atoll`), category pill, and guild badge.
+3. **Valuation:** Price formatted cleanly in Doubloons (`🪙 XX Doubloons`).
+4. **Item Chronicle:** Full safe-escaped description from MongoDB.
+5. **Stock Telemetry:** Dynamic stock indicator (`⚓ In Vaults` for >5, `⚠️ Low Reserve` for 1-5, `🚫 Barren` for 0).
+6. **Merchant Presentation:** Populated seller store name/name, avatar, and home port with zero credential exposure (`password`, `authSecretHash`, `googleId` omitted).
+7. **Interactive Cargo Actions:** "Stow in Cargo Hold" (`.btn-add-cart`) button with real MongoDB `_id`, Wishlist toggle, and seamless Cargo Hold drawer integration.
+8. **Breadcrumb Navigation:** Full hierarchical links (`Sea Chart` ➔ `[Origin Island]` ➔ `[Product Name]`) and Back to Island button.
+9. **Safe Error Handling:** Nonexistent products, malformed IDs, and unavailable products (`isAvailable: false`) return safe 404 responses with 0 stack trace leakage.
 
 ---
 

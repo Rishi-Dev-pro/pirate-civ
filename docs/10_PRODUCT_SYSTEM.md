@@ -141,6 +141,14 @@ Historically, 32 products were hardcoded inside `controller/islands.js` (`ISLAND
 4. **Resilient Empty States:** Island EJS templates render themed `.store-empty-state` elements when an island has 0 active products, preventing broken templates or undefined JavaScript variables.
 5. **Real MongoDB ObjectIds:** All product cards, wishlist buttons, and Add to Cart triggers operate on genuine 24-character hex MongoDB `_id` strings.
 
+### 4.4 Reusable Product Detail Page (Milestone 3.2 COMPLETE)
+1. **Single Reusable Architecture:** Implemented `controller/products.js::renderProductDetail` paired with a single master detail template `views/product-detail.ejs` routed at `GET /product/:productId`.
+2. **Dual-Identifier Strategy:** Validates whether the incoming parameter is a valid 24-character MongoDB `ObjectId` (`mongoose.isValidObjectId(param)`) or a valid URL slug (`/^[a-z0-9]+(?:-[a-z0-9]+)*$/i`). Malformed parameters return clean 404 responses without database queries or `CastError` leaks.
+3. **Availability Enforcement:** Only items satisfying `{ isAvailable: true }` are exposed through the buyer detail route. Unavailable products return safe 404 responses.
+4. **Stock Immutability:** Viewing a product never mutates `stock` or availability. Stock remains strictly immutable across view requests.
+5. **Security & Projection Rules:** Populates seller presentation data (`name`, `storeName`, `homeIsland`, `bio`, `avatar`) while strictly omitting all sensitive user credentials (`password`, `authSecretHash`, `googleId`).
+6. **Unified Island Store Navigation:** Product cards across all 6 canonical island views link to `/product/:id` via image links, title links, and dedicated `.btn-card-details` buttons. Detail page includes breadcrumb navigation back to the island origin and full Cargo Hold drawer integration.
+
 ---
 
 ## 5. Currency & Pricing: Doubloons (🪙)
@@ -149,3 +157,4 @@ Historically, 32 products were hardcoded inside `controller/islands.js` (`ISLAND
 * Prices are positive integers stored in the database as numbers.
 * Frontend formatting renders Doubloons with comma separation (e.g., `24,999 🪙`).
 * No fractional cents or fiat currencies (USD/EUR) exist in the Pirate-Civ world.
+
