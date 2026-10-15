@@ -49,6 +49,10 @@
                     <span>Merchant Deck</span>
                 </div>
 
+                <a href="/seller/products" id="headerProductsLink" class="btn-store-cart" style="text-decoration: none;" title="Manage Products">
+                    <span>⚖️ PRODUCTS</span>
+                </a>
+
                 <a href="<%= storefrontUrl %>" id="headerStorefrontLink" class="btn-store-cart" style="text-decoration: none;" title="Open Public Storefront">
                     <span>📜 STOREFRONT</span>
                 </a>
@@ -210,18 +214,19 @@
                         </span>
                     </div>
 
-                    <!-- 3. Manage Inventory (Placeholder / Phase 4.3) -->
-                    <div class="deck-tile locked-tile" id="tileInventory" title="Vault Inventory (Unlocks Phase 4.3)">
+                    <!-- 3. Manage Inventory / Products (Milestone 4.2 Active) -->
+                    <a href="/seller/products" id="tileManageProducts" class="deck-tile active-tile" title="Manage Vault Products">
                         <div class="tile-top">
                             <span class="tile-icon">⚖️</span>
-                            <span class="tile-badge badge-locked">PHASE 4.3</span>
+                            <span class="tile-badge badge-available">ACTIVE</span>
                         </div>
-                        <h4 class="tile-title">Vault Inventory</h4>
-                        <p class="tile-desc">Update valuations, Doubloons prices, stock reserves, and market availability.</p>
-                        <span class="tile-btn btn-locked-action">
-                            <span>Unlocks Phase 4.3</span>
+                        <h4 class="tile-title">Vault Products</h4>
+                        <p class="tile-desc">Inspect your catalog, edit valuations and stock, toggle market availability, and manage wares.</p>
+                        <span class="tile-btn btn-primary-action">
+                            <span>Manage Products</span>
+                            <span>→</span>
                         </span>
-                    </div>
+                    </a>
 
                     <!-- 4. Fulfillment Queue (Placeholder / Phase 4.4) -->
                     <div class="deck-tile locked-tile" id="tileOrders" title="Fulfillment Queue (Unlocks Phase 4.4)">

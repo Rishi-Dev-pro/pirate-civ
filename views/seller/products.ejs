@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Product Management | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Dedicated Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p4_products_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p4_products_v1">
+</head>
+
+<body class="island-store-body seller-products-body">
+
+    <!-- Fixed Atmospheric Backdrop -->
+    <div class="store-backdrop">
+        <img src="<%= (island && island.image) ? island.image : '/images/astrolabe-bg.jpg' %>"
+             alt="Archipelago Backdrop"
+             class="store-bg-img"
+             onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
+
+    <!-- Reusable Main Navigation Bar -->
+    <%- include("../partials/header") %>
+
+    <!-- Master Stage -->
+    <main class="seller-dashboard-wrapper">
+
+        <!-- Top Navigation Bar: Breadcrumbs & Header Controls -->
+        <nav class="detail-nav-bar" aria-label="Breadcrumb Navigation">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <a href="/seller/dashboard" class="crumb-link">Command Deck</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Vault Products</span>
+            </div>
+
+            <div class="store-header-controls">
+                <div class="doubloons-pill">
+                    <span class="coin-icon">🪙</span>
+                    <span>Merchant Vault</span>
+                </div>
+
+                <a href="/seller/dashboard" class="btn-store-cart" style="text-decoration: none;" title="Return to Command Deck">
+                    <span>⚓ DECK</span>
+                </a>
+
+                <a href="<%= storefrontUrl %>" class="btn-store-cart" style="text-decoration: none;" title="Open Public Storefront">
+                    <span>📜 STOREFRONT</span>
+                </a>
+
+                <a href="/home" class="btn-store-close" title="Return to Sea Chart">
+                    &times;
+                </a>
+            </div>
+        </nav>
+
+        <!-- Master Products Card -->
+        <article class="seller-dashboard-card">
+
+            <!-- Header with Title & Stats -->
+            <header class="seller-products-header">
+                <div>
+                    <h1>⚖️ Vault Product Management</h1>
+                    <p>Manage chartered wares, adjust Doubloons valuations and reserves, and toggle market availability.</p>
+                </div>
+
+                <div class="seller-stat-badges">
+                    <span class="seller-stat-badge" id="badgeTotalProducts">
+                        Total Holdings: <%= totalCount %>
+                    </span>
+                    <span class="seller-stat-badge badge-active" id="badgeActiveProducts">
+                        Active in Markets: <%= activeCount %>
+                    </span>
+                </div>
+            </header>
+
+            <!-- Notification Messages -->
+            <% if (query && query.updated) { %>
+                <div class="seller-alert-banner" id="bannerSuccessUpdated" role="alert">
+                    <span>✨</span>
+                    <span>Artifact details successfully updated and re-chartered in vault.</span>
+                </div>
+            <% } %>
+
+            <% if (query && query.toggled) { %>
+                <div class="seller-alert-banner" id="bannerSuccessToggled" role="alert">
+                    <span>👁️</span>
+                    <span>Artifact market availability toggled successfully.</span>
+                </div>
+            <% } %>
+
+            <% if (query && query.deleted) { %>
+                <div class="seller-alert-banner" id="bannerSuccessDeleted" role="alert">
+                    <span>🗑️</span>
+                    <span>Artifact safely discharged from your merchant vault catalog.</span>
+                </div>
+            <% } %>
+
+            <!-- Products List or Empty State -->
+            <% if (products.length === 0) { %>
+                <div class="empty-vault-banner" id="emptyProductsNotice">
+                    <div class="empty-vault-icon">📦</div>
+                    <h4 class="empty-vault-title">Vault Currently Barren</h4>
+                    <p class="empty-vault-text">You have no registered products in your vault catalog. Products forged will appear here.</p>
+                    <div style="margin-top: 18px;">
+                        <a href="/seller/dashboard" class="btn-action-edit" style="display: inline-block;">
+                            ← Return to Command Deck
+                        </a>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="seller-table-container">
+                    <table class="seller-products-table" aria-label="Seller Products Table">
+                        <thead>
+                            <tr>
+                                <th>Artifact</th>
+                                <th>Price</th>
+                                <th>Stock</th>
+                                <th>Island</th>
+                                <th>Category</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% products.forEach(function(p) { %>
+                                <tr id="rowProduct_<%= p._id %>">
+                                    <td>
+                                        <div class="product-cell-main">
+                                            <img src="<%= p.image || '/images/items/default-relic.png' %>"
+                                                 alt="<%= p.name %>"
+                                                 class="product-thumb"
+                                                 onerror="this.onerror=null; this.src='/images/items/default-relic.png';">
+                                            <div class="product-info-col">
+                                                <a href="/product/<%= p._id %>" class="product-name-link" title="Inspect Public Details Sheet">
+                                                    <%= p.name %>
+                                                </a>
+                                                <span class="product-slug-text">slug: <%= p.slug %></span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="product-price-cell">
+                                        🪙 <%= p.price %>
+                                    </td>
+                                    <td>
+                                        <span class="stock-badge <%= p.stock <= 3 ? 'stock-low' : 'stock-normal' %>">
+                                            <%= p.stock %> units
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span style="text-transform: capitalize; color: #94a3b8;">
+                                            🏝️ <%= p.island.replace('_', ' ') %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span style="text-transform: capitalize; color: #cbd5e1;">
+                                            <%= p.category %>
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <% if (p.isAvailable) { %>
+                                            <span class="badge-status badge-status-available" id="statusBadge_<%= p._id %>">
+                                                ● Active
+                                            </span>
+                                        <% } else { %>
+                                            <span class="badge-status badge-status-unavailable" id="statusBadge_<%= p._id %>">
+                                                ○ Hidden
+                                            </span>
+                                        <% } %>
+                                    </td>
+                                    <td>
+                                        <div class="seller-row-actions">
+                                            <!-- Edit Action -->
+                                            <a href="/seller/products/<%= p._id %>/edit"
+                                               class="btn-action-edit"
+                                               id="btnEditProduct_<%= p._id %>"
+                                               title="Edit Product Details">
+                                                ✏️ Edit
+                                            </a>
+
+                                            <!-- Toggle Availability Action -->
+                                            <form method="POST"
+                                                  action="/seller/products/<%= p._id %>/toggle-availability"
+                                                  style="display: inline; margin: 0;">
+                                                <button type="submit"
+                                                        class="btn-action-toggle"
+                                                        id="btnToggleAvailability_<%= p._id %>"
+                                                        title="<%= p.isAvailable ? 'Hide from public markets' : 'Make available in markets' %>">
+                                                    <%= p.isAvailable ? "👁️ Hide" : "👁️ List" %>
+                                                </button>
+                                            </form>
+
+                                            <!-- Safe Delete Action -->
+                                            <form method="POST"
+                                                  action="/seller/products/<%= p._id %>/delete"
+                                                  style="display: inline; margin: 0;"
+                                                  onsubmit="return confirm('Are you sure you wish to discharge this artifact from your catalog? Historical orders will remain preserved.');">
+                                                <button type="submit"
+                                                        class="btn-action-delete"
+                                                        id="btnDeleteProduct_<%= p._id %>"
+                                                        title="Delete Product">
+                                                    🗑️ Delete
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+
+        </article>
+
+    </main>
+
+</body>
+
+</html>

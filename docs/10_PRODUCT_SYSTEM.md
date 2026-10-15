@@ -154,7 +154,15 @@ Historically, 32 products were hardcoded inside `controller/islands.js` (`ISLAND
 2. **Index Optimization:** Powered directly by the schema's `{ seller: 1, createdAt: -1 }` compound index for fast, deterministic sorting.
 3. **Multi-Seller Catalog Isolation:** Guarantees that only products chartered by the specific seller appear on their storefront. Other sellers' items are strictly quarantined, and unlisted products (`isAvailable: false`) are filtered out.
 4. **Product Card Architecture:** Each storefront product card renders real MongoDB product data (image, name, Doubloons price, rating, stock status) and links directly to `/product/:productId`. Cards include "Stow in Cargo" buttons (`.btn-add-cart`) integrated with `#storeCartDrawer`.
-5. **Themed Empty States:** If a valid seller has 0 available products, the catalog renders a styled empty state (`.seller-empty-state`) rather than broken cards or template crashes.
+### 4.6 Seller Product Management, Lifecycle & Order Preservation (Milestone 4.2 COMPLETE)
+1. **Authenticated Management Hub:** Accessible at `/seller/products` guarded by `[authMiddleware, requireSeller]`. Queries `Product.find({ seller: req.user._id }).sort({ createdAt: -1 })` utilizing compound index `{ seller: 1, createdAt: -1 }`.
+2. **Product Editing:** Endpoint `GET /seller/products/:productId/edit` and handler `POST /seller/products/:productId/edit`. Validates ownership via `product.isOwnedBy(req.user)`. Rejects non-owners with HTTP 403. Updates name, description, price, stock, category, island, image, and availability after validating field schemas and constraints.
+3. **Availability Toggling:** Endpoint `POST /seller/products/:productId/toggle-availability`. Inverts `isAvailable` without deleting product or modifying stock. Unavailable products instantly vanish from public island catalogs and seller storefronts while remaining visible and manageable in the seller's catalog table.
+4. **Safe Deletion Protocol & Historical Order Invariance:**
+   - Soft or hard removal via `POST /seller/products/:productId/delete` verifies ownership prior to deletion.
+   - Historical orders in `models/order.js` utilize self-contained embedded snapshots (`orderItemSchema`: `name`, `price`, `quantity`, `lineTotal`, `seller`, `product`). Product updates or deletions never mutate historical transactions, order item snapshots, or historical revenues.
+   - `controller/cart.js` safely ignores missing or deleted products upon population, ensuring zero buyer cart crashes.
+5. **Cross-Seller Isolation:** Cross-seller view, edit, toggle, or delete operations strictly forbidden by ownership checks.
 
 ---
 
@@ -164,4 +172,5 @@ Historically, 32 products were hardcoded inside `controller/islands.js` (`ISLAND
 * Prices are positive integers stored in the database as numbers.
 * Frontend formatting renders Doubloons with comma separation (e.g., `24,999 🪙`).
 * No fractional cents or fiat currencies (USD/EUR) exist in the Pirate-Civ world.
+
 

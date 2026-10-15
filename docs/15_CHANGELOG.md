@@ -4,6 +4,54 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-15] — Phase 4 / Milestone 4.2: Seller Product Management (MILESTONE 4.2 COMPLETE)
+
+### Added & Implemented
+* **Seller Product Management Hub (`controller/sellers.js`::`renderSellerProducts`, `views/seller/products.ejs`):**
+  - Secured route `GET /seller/products` using `[authMiddleware, requireSeller]`.
+  - Queries strictly authenticated seller's products via indexed query `Product.find({ seller: req.user._id }).sort({ createdAt: -1 })`.
+  - Renders responsive nautical catalog table with thumbnail images, product names, categories, canonical island origins, Doubloons prices, stock numbers, active/hidden status badges, and management actions (Edit, Toggle Availability, Delete).
+  - Displays catalog telemetry summaries (total wares, active wares, unavailable wares).
+  - Renders atmospheric empty state (`.products-empty-state`) when the merchant vault has no products.
+* **Product Editing Workflow (`controller/sellers.js`::`renderEditProduct`, `updateProduct`, `views/seller/product-edit.ejs`):**
+  - Secured routes `GET /seller/products/:productId/edit` and `POST /seller/products/:productId/edit`.
+  - Validates ObjectId, loads product, and enforces strict ownership guard via `product.isOwnedBy(req.user)` (rejects cross-seller attempts with HTTP 403).
+  - Validates input fields against Product schema constraints (non-empty name/description, numeric non-negative price, non-negative integer stock, canonical 6-island enum, canonical category enum).
+  - Persists updates directly to MongoDB and redirects back to `/seller/products` with a success alert banner.
+* **Availability Toggling (`controller/sellers.js`::`toggleProductAvailability`):**
+  - Secured route `POST /seller/products/:productId/toggle-availability`.
+  - Inverts `isAvailable` flag and persists to MongoDB.
+  - Automatically synchronizes with public island listings and public storefronts (hidden products immediately disappear from public view while remaining manageable in the seller's console).
+* **Safe Product Deletion (`controller/sellers.js`::`deleteProduct`):**
+  - Secured route `POST /seller/products/:productId/delete` with strict ownership verification.
+  - Safely deletes product from `products` collection via `Product.deleteOne`.
+  - Preserves historical order snapshot immutability (`orderItemSchema`: `name`, `price`, `quantity`, `lineTotal`, `seller`, `product`), ensuring past orders and revenues are never altered.
+  - Ensures buyer cart resilience (unpopulated products filtered out gracefully).
+* **Command Deck & Navigation Updates (`views/seller/dashboard.ejs`, `views/partials/header.ejs`):**
+  - Activated "Vault Products" action tile (`#tileManageProducts`) linking directly to `/seller/products`.
+  - Added "Products" direct quick link (`#headerProductsLink`) in the Command Deck header actions bar.
+  - Maintained Phase 4.3 boundaries (Forge New Cargo remains locked).
+
+### Tested & Verified
+* 67 automated assertions in `scratch/test_milestone_4_2.js` covering access control, multi-seller catalog isolation, ownership verification on edit, data persistence in MongoDB, input validation rejection, availability toggling, storefront synchronization, safe deletion, cross-seller deletion rejection, malformed/nonexistent ID guards, historical order snapshot preservation, cart item invariance, and credential exclusion (67/67 passed).
+* Regression test suites:
+  - Phase 4.1 regression: 64/64 passed (`scratch/test_milestone_4_1.js`).
+  - Phase 3 regression: 96/96 passed (`scratch/test_milestone_3_6.js`).
+* Real browser verification via subagent:
+  - Seller login as `admiralty@pirate-civ.internal`.
+  - Navigated to Command Deck (`/seller/dashboard`) and verified "Vault Products" action card and header link.
+  - Navigated to `/seller/products` and inspected catalog table.
+  - Edited product details (price and description), saved, verified updated data and success banner.
+  - Toggled availability to hidden, verified badge updated to "Hidden", opened public storefront (`/seller/:sellerId`) and verified hidden product disappeared.
+  - Restored availability to active, verified product reappeared on public storefront.
+  - Deleted disposable test product with confirmation, verified row removed from catalog.
+  - Logged out seller, logged in as buyer (`buyer@pirate-civ.internal`), attempted to access `/seller/products`, verified HTTP 403 Access Denied.
+  - 0 unexpected console errors.
+* Static syntax checks passed (16/16 JS files).
+* Template compilation passed (25/25 EJS views).
+
+---
+
 ## [2026-10-15] — Phase 4 / Milestone 4.1: Seller Portal & Onboarding (MILESTONE 4.1 COMPLETE)
 
 ### Added & Implemented

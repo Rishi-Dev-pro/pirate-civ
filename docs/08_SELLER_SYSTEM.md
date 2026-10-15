@@ -70,7 +70,7 @@ The seller dashboard is a high-contrast nautical command center designed for ope
 ### 3.4 Command Operations Deck (Action Tiles)
 * 📜 **Public Storefront (ACTIVE):** Direct link to the merchant's live public storefront (`/seller/:sellerId`).
 * ➕ **Forge New Cargo (Phase 4.3):** Tile indicating listing creation capability docking in Phase 4.3.
-* ⚖️ **Vault Inventory (Phase 4.3):** Tile indicating valuation, stock, and availability editing in Phase 4.3.
+* ⚖️ **Vault Products (MILESTONE 4.2 ACTIVE):** Direct management hub (`/seller/products`) for catalog inspection, valuations, stock updates, availability toggling, and product deletion.
 * 📦 **Dispatch Manifests (Phase 4.4):** Tile indicating order fulfillment queue docking in Phase 4.4.
 
 ### 3.5 Corner Cases & Invariants
@@ -80,38 +80,40 @@ The seller dashboard is a high-contrast nautical command center designed for ope
 
 ---
 
-## 4. Product Catalog Management (CRUD)
+## 4. Product Catalog Management (CRUD) [MILESTONE 4.2 COMPLETE]
 
-Sellers have complete lifecycle control over the products they list.
+Sellers have complete lifecycle control over their existing catalog products via `/seller/products`.
 
-### 4.1 Product Creation Flow (`/seller/products/new`)
-1. **Island Selection:** Dropdown strictly limited to the **6 canonical islands**:
-   - Astrolabe Atoll
-   - Chronos Cay
-   - Kraken's Vault
-   - Cutlass Cove
-   - Velvet Isle
-   - Booty Cay
-2. **Category / Trade Branch Selection:** Selection constrained to the **3 major trading branches/categories**:
-   - Ancient Relics & Instruments
-   - Corsair Apparel & Modern Gear
-   - Provisions, Treasury & Elixirs
-3. **Product Information Fields:**
-   - **Name:** Clear, evocative title (e.g., *"Gilded Seville Sextant"*).
-   - **Doubloons Price (🪙):** Positive numeric value.
-   - **Available Stock:** Initial physical inventory count.
-   - **Description / Lore:** Item background, craftsmanship, and specifications.
-   - **Image Selection:** File path or upload of product imagery.
-4. **Submission:** Product is validated, assigned `seller: req.user._id`, and written to MongoDB. It becomes immediately discoverable on the respective island page.
+### 4.1 Product Catalog Listing (`GET /seller/products`)
+* **Guards:** `[authMiddleware, requireSeller]`.
+* **Data Scoping:** Queries strictly `Product.find({ seller: req.user._id }).sort({ createdAt: -1 })` utilizing the compound index `{ seller: 1, createdAt: -1 }`.
+* **Catalog Telemetry:** Displays total wares, active wares, and unavailable wares.
+* **Product Table:** Renders thumbnail image, authoritative name, category, canonical island origin, Doubloons valuation (`🪙`), real-time stock count, and active/hidden status badges.
+* **Action Controls:** Provides direct links to edit (`/seller/products/:id/edit`), instant availability toggle button, and safe deletion button with confirmation.
+* **Multi-Seller Isolation:** Strict isolation ensures sellers cannot view, edit, toggle, or delete wares belonging to other merchants.
 
-### 4.2 Product Updating (`/seller/products/:id/edit`)
-* Merchants can modify price, inventory stock, description, image, or availability flag (`isAvailable: true/false`).
-* **Strict Ownership Guard:** Backend controller validates ownership via `product.isOwnedBy(req.user)` (implemented in Milestone 2.2) or `product.seller.equals(req.user._id)`. If a merchant attempts to edit another seller's item, Express rejects the request with HTTP 403 Forbidden.
-* *(Note: Seller CRUD routes and dashboard UI belong to Phase 4; Milestone 2.2 establishes the underlying database ownership relationship and query foundation).*
+### 4.2 Product Updating (`GET /seller/products/:id/edit`, `POST /seller/products/:id/edit`)
+* **Edit Form:** Accessible at `GET /seller/products/:id/edit`. Prepopulates name, price, description, image path, category dropdown, canonical island dropdown, stock, and availability checkbox.
+* **Ownership Verification:** Before updating, validates ObjectId and confirms ownership via `product.isOwnedBy(req.user)`. Rejects non-owners with HTTP 403.
+* **Field Validation & Sanitization:**
+  - Validates non-empty names and descriptions.
+  - Enforces numeric non-negative price (`min: 0`) and stock (`min: 0`, integer).
+  - Enforces canonical island enum (`astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`).
+  - Enforces canonical category enum (`weapon`, `apparel`, `relic`, `cartography`, `provisions`, `treasure`).
+* **Persistence:** Saves changes directly to MongoDB and redirects back to `/seller/products` with a success notice.
 
-### 4.3 Product Deletion (`/seller/products/:id/delete`)
-* Soft deletion (setting `isAvailable: false`) or hard deletion if no pending orders exist.
-* Ownership is strictly verified via `product.isOwnedBy(req.user)` prior to deletion.
+### 4.3 Availability Toggle (`POST /seller/products/:id/toggle-availability`)
+* Allows instant flipping of `isAvailable` without modifying stock or deleting the record.
+* Unavailable products immediately disappear from public island listings and seller public storefronts.
+* Products remain fully visible and manageable within the seller's `/seller/products` console.
+
+### 4.4 Safe Product Deletion (`POST /seller/products/:id/delete`)
+* Ownership verified via `product.isOwnedBy(req.user)`. Cross-seller attempts return HTTP 403.
+* Safely deletes product from `products` collection via `Product.deleteOne`.
+* **Historical Order Snapshot Preservation:** Historical orders in `models/order.js` store embedded snapshots (`name`, `price`, `quantity`, `lineTotal`, `seller`, `product`). Product deletion never mutates past order records or alters historic revenues.
+* **Cart Resilience:** `controller/cart.js` safely filters out non-existent or deleted products, preventing buyer cart crashes.
+
+*(Note: Product Creation is deferred to Phase 4.3).*
 
 ---
 

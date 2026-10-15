@@ -5,7 +5,7 @@
 
 import mongoose from "mongoose";
 import User from "../models/user.js";
-import Product from "../models/product.js";
+import Product, { CANONICAL_ISLANDS } from "../models/product.js";
 import { ISLANDS_DATA } from "./islands.js";
 
 /**
@@ -162,6 +162,406 @@ export const renderSellerDashboard = async (req, res) => {
     }
 };
 
+/**
+ * Controller action: Render Seller Products List (Milestone 4.2)
+ * Route: GET /seller/products
+ * Protected by: authMiddleware, requireSeller
+ */
+export const renderSellerProducts = async (req, res) => {
+    try {
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        const products = await Product.find({ seller: sellerUser._id })
+            .sort({ createdAt: -1 })
+            .lean();
+
+        const islandMeta = sellerUser.homeIsland && ISLANDS_DATA[sellerUser.homeIsland]
+            ? ISLANDS_DATA[sellerUser.homeIsland]
+            : null;
+
+        const seller = {
+            id: sellerUser._id.toString(),
+            _id: sellerUser._id,
+            name: sellerUser.name || "Unknown Captain",
+            storeName: sellerUser.storeName || "",
+            homeIsland: sellerUser.homeIsland || "",
+            avatar: sellerUser.avatar || "/images/avatars/default-pirate.png",
+            role: sellerUser.role
+        };
+
+        const activeCount = products.filter(p => p.isAvailable).length;
+        const totalCount = products.length;
+
+        res.render("seller/products", {
+            page_title: `${seller.storeName || seller.name} — Product Management | Pirate-Civ`,
+            seller,
+            island: islandMeta,
+            products,
+            activeCount,
+            totalCount,
+            storefrontUrl: `/seller/${seller.id}`,
+            user: req.user,
+            query: req.query || {}
+        });
+
+    } catch (error) {
+        console.error("Error in renderSellerProducts:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
+/**
+ * Controller action: Render Edit Product Page (Milestone 4.2)
+ * Route: GET /seller/products/:productId/edit
+ * Protected by: authMiddleware, requireSeller
+ */
+export const renderEditProduct = async (req, res) => {
+    try {
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        const { productId } = req.params;
+        if (!productId || !mongoose.isValidObjectId(productId)) {
+            return res.status(404).render("home", {
+                page_title: "Artifact Not Found | Pirate-Civ",
+                user: req.user || null
+            });
+        }
+
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).render("home", {
+                page_title: "Artifact Not Found | Pirate-Civ",
+                user: req.user || null
+            });
+        }
+
+        // Ownership verification: seller can only edit their own products
+        if (!product.isOwnedBy(sellerUser)) {
+            return res.status(403).send("Access denied: you do not own this product.");
+        }
+
+        const islandMeta = sellerUser.homeIsland && ISLANDS_DATA[sellerUser.homeIsland]
+            ? ISLANDS_DATA[sellerUser.homeIsland]
+            : null;
+
+        const seller = {
+            id: sellerUser._id.toString(),
+            _id: sellerUser._id,
+            name: sellerUser.name || "Unknown Captain",
+            storeName: sellerUser.storeName || "",
+            homeIsland: sellerUser.homeIsland || "",
+            avatar: sellerUser.avatar || "/images/avatars/default-pirate.png",
+            role: sellerUser.role
+        };
+
+        res.render("seller/product-edit", {
+            page_title: `Edit ${product.name} — Vault Management | Pirate-Civ`,
+            seller,
+            island: islandMeta,
+            product,
+            canonicalIslands: CANONICAL_ISLANDS,
+            error: null,
+            user: req.user
+        });
+
+    } catch (error) {
+        console.error("Error in renderEditProduct:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
+/**
+ * Controller action: Update Product Details (Milestone 4.2)
+ * Route: POST /seller/products/:productId/edit
+ * Protected by: authMiddleware, requireSeller
+ */
+export const updateProduct = async (req, res) => {
+    try {
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        const { productId } = req.params;
+        if (!productId || !mongoose.isValidObjectId(productId)) {
+            return res.status(404).render("home", {
+                page_title: "Artifact Not Found | Pirate-Civ",
+                user: req.user || null
+            });
+        }
+
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).render("home", {
+                page_title: "Artifact Not Found | Pirate-Civ",
+                user: req.user || null
+            });
+        }
+
+        // Ownership verification
+        if (!product.isOwnedBy(sellerUser)) {
+            return res.status(403).send("Access denied: you do not own this product.");
+        }
+
+        const {
+            name,
+            price,
+            description,
+            stock,
+            island,
+            category,
+            isAvailable,
+            image,
+            rating
+        } = req.body;
+
+        const islandMeta = sellerUser.homeIsland && ISLANDS_DATA[sellerUser.homeIsland]
+            ? ISLANDS_DATA[sellerUser.homeIsland]
+            : null;
+
+        // Validation: Name
+        const trimmedName = typeof name === "string" ? name.trim() : "";
+        if (!trimmedName || trimmedName.length > 120) {
+            return res.status(400).render("seller/product-edit", {
+                page_title: `Edit ${product.name} — Vault Management | Pirate-Civ`,
+                seller: sellerUser,
+                island: islandMeta,
+                product: { ...product.toObject(), ...req.body },
+                canonicalIslands: CANONICAL_ISLANDS,
+                error: "Product name is required and cannot exceed 120 characters.",
+                user: req.user
+            });
+        }
+
+        // Validation: Price
+        const numPrice = Number(price);
+        if (isNaN(numPrice) || numPrice < 0) {
+            return res.status(400).render("seller/product-edit", {
+                page_title: `Edit ${product.name} — Vault Management | Pirate-Civ`,
+                seller: sellerUser,
+                island: islandMeta,
+                product: { ...product.toObject(), ...req.body },
+                canonicalIslands: CANONICAL_ISLANDS,
+                error: "Price must be a valid non-negative number.",
+                user: req.user
+            });
+        }
+
+        // Validation: Description
+        const trimmedDesc = typeof description === "string" ? description.trim() : "";
+        if (!trimmedDesc || trimmedDesc.length > 2000) {
+            return res.status(400).render("seller/product-edit", {
+                page_title: `Edit ${product.name} — Vault Management | Pirate-Civ`,
+                seller: sellerUser,
+                island: islandMeta,
+                product: { ...product.toObject(), ...req.body },
+                canonicalIslands: CANONICAL_ISLANDS,
+                error: "Product description is required and cannot exceed 2000 characters.",
+                user: req.user
+            });
+        }
+
+        // Validation: Stock
+        const numStock = Number(stock);
+        if (!Number.isInteger(numStock) || numStock < 0) {
+            return res.status(400).render("seller/product-edit", {
+                page_title: `Edit ${product.name} — Vault Management | Pirate-Civ`,
+                seller: sellerUser,
+                island: islandMeta,
+                product: { ...product.toObject(), ...req.body },
+                canonicalIslands: CANONICAL_ISLANDS,
+                error: "Stock must be a non-negative integer.",
+                user: req.user
+            });
+        }
+
+        // Validation: Island
+        if (island && !CANONICAL_ISLANDS.includes(island.trim())) {
+            return res.status(400).render("seller/product-edit", {
+                page_title: `Edit ${product.name} — Vault Management | Pirate-Civ`,
+                seller: sellerUser,
+                island: islandMeta,
+                product: { ...product.toObject(), ...req.body },
+                canonicalIslands: CANONICAL_ISLANDS,
+                error: "Selected island must be one of the 6 canonical trading islands.",
+                user: req.user
+            });
+        }
+
+        // Validation: Category
+        const trimmedCat = typeof category === "string" ? category.trim() : "";
+        if (!trimmedCat) {
+            return res.status(400).render("seller/product-edit", {
+                page_title: `Edit ${product.name} — Vault Management | Pirate-Civ`,
+                seller: sellerUser,
+                island: islandMeta,
+                product: { ...product.toObject(), ...req.body },
+                canonicalIslands: CANONICAL_ISLANDS,
+                error: "Product category is required.",
+                user: req.user
+            });
+        }
+
+        // Apply validated changes
+        product.name = trimmedName;
+        product.price = numPrice;
+        product.description = trimmedDesc;
+        product.stock = numStock;
+        if (island) product.island = island.trim();
+        product.category = trimmedCat;
+
+        if (isAvailable !== undefined) {
+            product.isAvailable = isAvailable === true || isAvailable === "true" || isAvailable === "on" || isAvailable === 1 || isAvailable === "1";
+        }
+
+        if (typeof image === "string" && image.trim()) {
+            product.image = image.trim();
+        }
+
+        if (typeof rating === "string" && rating.trim()) {
+            product.rating = rating.trim();
+        }
+
+        await product.save();
+
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.json({ success: true, product });
+        }
+
+        return res.redirect("/seller/products?updated=1");
+
+    } catch (error) {
+        console.error("Error in updateProduct:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
+/**
+ * Controller action: Toggle Product Availability (Milestone 4.2)
+ * Route: POST /seller/products/:productId/toggle-availability
+ * Protected by: authMiddleware, requireSeller
+ */
+export const toggleProductAvailability = async (req, res) => {
+    try {
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        const { productId } = req.params;
+        if (!productId || !mongoose.isValidObjectId(productId)) {
+            return res.status(404).render("home", {
+                page_title: "Artifact Not Found | Pirate-Civ",
+                user: req.user || null
+            });
+        }
+
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).render("home", {
+                page_title: "Artifact Not Found | Pirate-Civ",
+                user: req.user || null
+            });
+        }
+
+        // Ownership verification
+        if (!product.isOwnedBy(sellerUser)) {
+            return res.status(403).send("Access denied: you do not own this product.");
+        }
+
+        product.isAvailable = !product.isAvailable;
+        await product.save();
+
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.json({
+                success: true,
+                productId: product._id,
+                isAvailable: product.isAvailable
+            });
+        }
+
+        return res.redirect("/seller/products?toggled=1");
+
+    } catch (error) {
+        console.error("Error in toggleProductAvailability:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
+/**
+ * Controller action: Safe Delete Seller Product (Milestone 4.2)
+ * Route: POST /seller/products/:productId/delete
+ * Protected by: authMiddleware, requireSeller
+ */
+export const deleteProduct = async (req, res) => {
+    try {
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        const { productId } = req.params;
+        if (!productId || !mongoose.isValidObjectId(productId)) {
+            return res.status(404).render("home", {
+                page_title: "Artifact Not Found | Pirate-Civ",
+                user: req.user || null
+            });
+        }
+
+        const product = await Product.findById(productId);
+        if (!product) {
+            return res.status(404).render("home", {
+                page_title: "Artifact Not Found | Pirate-Civ",
+                user: req.user || null
+            });
+        }
+
+        // Ownership verification: strictly verify seller owns this product
+        if (!product.isOwnedBy(sellerUser)) {
+            return res.status(403).send("Access denied: you do not own this product.");
+        }
+
+        // Safe catalog deletion
+        // Note: Historical Orders embed subdocuments storing complete price/name snapshots,
+        // so removing the active catalog record does NOT alter past Orders.
+        await Product.deleteOne({ _id: product._id, seller: sellerUser._id });
+
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.json({
+                success: true,
+                deletedId: product._id
+            });
+        }
+
+        return res.redirect("/seller/products?deleted=1");
+
+    } catch (error) {
+        console.error("Error in deleteProduct:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
 // Aliases for route & backwards compatibility
 export const renderSellerDiscovery = renderSellerStorefront;
 export const renderPublicSeller = renderSellerStorefront;
@@ -172,5 +572,10 @@ export default {
     renderSellerDiscovery,
     renderPublicSeller,
     renderSellerProfile,
-    renderSellerDashboard
+    renderSellerDashboard,
+    renderSellerProducts,
+    renderEditProduct,
+    updateProduct,
+    toggleProductAvailability,
+    deleteProduct
 };

@@ -142,14 +142,17 @@ gantt
   - Provides graceful fallbacks for missing optional profile fields and empty catalogs, plus placeholder operation tiles for future milestones.
   - Strictly protects sensitive credentials (`password`, `authSecretHash`, `googleId`).
   - Fully tested: 64/64 automated tests, 96/96 Phase 3 regression tests, and real browser verification with 0 console errors.
-* **Milestone 4.2: Seller Command Deck Metrics & Alerts [NEXT]**
-  - Display revenue in Doubloons, out-of-stock alerts, and incoming orders metrics on the Command Deck.
-* **Milestone 4.3: Product Catalog Management (CRUD)**
-  - Create product route `/seller/products/new` with island selection (limited to 6 islands) and category selection.
-  - Implement product edit (`/seller/products/:id/edit`) and delete (`/seller/products/:id/delete`).
-  - Enforce ownership validation: sellers can modify only their own products.
-* **Milestone 4.4: Stock & Inventory Management**
-  - Quick-update stock toggle and availability flags from the seller dashboard.
+* **Milestone 4.2: Seller Product Management [COMPLETE]**
+  - Built seller product management hub at `/seller/products` guarded by `[authMiddleware, requireSeller]`.
+  - Queries strictly authenticated seller's products using compound index `{ seller: 1, createdAt: -1 }`.
+  - Full product list with image, name, category, canonical island, Doubloons valuation, stock, availability status badges, and actions.
+  - Implemented product edit flow (`GET /seller/products/:productId/edit`, `POST /seller/products/:productId/edit`) with field validation, safe sanitization, and strict ownership checks (`product.isOwnedBy(req.user)`).
+  - Implemented instant availability toggle (`POST /seller/products/:productId/toggle-availability`) synchronized with public storefronts and listings.
+  - Implemented safe product deletion (`POST /seller/products/:productId/delete`) with cross-seller guards, preserving historical Order snapshots and Cart integrity.
+  - Fully tested: 67/67 automated tests, Phase 4.1 regression pass (64/64), Phase 3 regression pass (96/96), and real browser verification with 0 console errors.
+* **Milestone 4.3: Product Creation [NEXT]**
+  - Add product creation route `/seller/products/new` with island selection (limited to 6 canonical islands) and category selection.
+  - Safe product creation attributing new listings to authenticated seller (`req.user._id`).
 
 ---
 

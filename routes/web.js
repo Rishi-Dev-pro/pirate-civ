@@ -264,15 +264,33 @@ router.get("/product/:productId", authMiddleware, renderProductDetail);
 
 
 // =====================================================
-// SELLER PORTAL & COMMAND DECK (MILESTONE 4.1)
+// SELLER PORTAL & COMMAND DECK (MILESTONE 4.1 & 4.2)
 // =====================================================
 
 import { requireSeller } from "../middleware/roles.js";
-import { renderSellerDashboard, renderSellerStorefront } from "../controller/sellers.js";
+import {
+    renderSellerDashboard,
+    renderSellerProducts,
+    renderEditProduct,
+    updateProduct,
+    toggleProductAvailability,
+    deleteProduct,
+    renderSellerStorefront
+} from "../controller/sellers.js";
 
 router.get("/seller/dashboard", authMiddleware, requireSeller, renderSellerDashboard);
 router.get("/seller/portal", authMiddleware, requireSeller, (req, res) => res.redirect("/seller/dashboard"));
 router.get("/seller", authMiddleware, requireSeller, (req, res) => res.redirect("/seller/dashboard"));
+
+// Seller Product Management (Milestone 4.2)
+router.get("/seller/products", authMiddleware, requireSeller, renderSellerProducts);
+router.get("/seller/products/:productId/edit", authMiddleware, requireSeller, renderEditProduct);
+router.post("/seller/products/:productId/edit", authMiddleware, requireSeller, updateProduct);
+router.post("/seller/products/:productId/update", authMiddleware, requireSeller, updateProduct);
+router.post("/seller/products/:productId/toggle-availability", authMiddleware, requireSeller, toggleProductAvailability);
+router.post("/seller/products/:productId/toggle", authMiddleware, requireSeller, toggleProductAvailability);
+router.post("/seller/products/:productId/delete", authMiddleware, requireSeller, deleteProduct);
+router.delete("/seller/products/:productId", authMiddleware, requireSeller, deleteProduct);
 
 
 // =====================================================
