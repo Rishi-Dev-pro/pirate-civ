@@ -245,9 +245,13 @@ router.get("/island/booty-cay", authMiddleware, renderIslandPage("booty_cay"));
 router.get("/astrolabe", authMiddleware, renderIslandPage("astrolabe"));
 router.get("/chronos", authMiddleware, renderIslandPage("chronos"));
 router.get("/kraken-vault", authMiddleware, renderIslandPage("kraken_vault"));
+router.get("/kraken_vault", authMiddleware, renderIslandPage("kraken_vault"));
 router.get("/cutlass-cove", authMiddleware, renderIslandPage("cutlass_cove"));
+router.get("/cutlass_cove", authMiddleware, renderIslandPage("cutlass_cove"));
 router.get("/velvet-isle", authMiddleware, renderIslandPage("velvet_isle"));
+router.get("/velvet_isle", authMiddleware, renderIslandPage("velvet_isle"));
 router.get("/booty-cay", authMiddleware, renderIslandPage("booty_cay"));
+router.get("/booty_cay", authMiddleware, renderIslandPage("booty_cay"));
 
 
 // =====================================================

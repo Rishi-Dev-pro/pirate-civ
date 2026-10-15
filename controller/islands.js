@@ -3,7 +3,7 @@
 // 6 Distinct Leaf Islands of Rishi's Cartographic Realm
 // =====================================================
 
-import Product from "../models/product.js";
+import Product, { CANONICAL_ISLANDS } from "../models/product.js";
 
 export const ISLANDS_DATA = {
     astrolabe: {
@@ -523,24 +523,27 @@ const SLUG_MAP = {
 export const renderIslandPage = (targetSlug) => {
     return async (req, res) => {
         try {
-            const rawSlug = targetSlug || req.params.islandId || req.params.slug;
+            const rawParam = targetSlug || req.params.islandId || req.params.slug || "";
+            const rawSlug = typeof rawParam === "string" ? rawParam.trim().toLowerCase() : "";
             const normalizedKey = SLUG_MAP[rawSlug] || rawSlug;
             const islandMeta = ISLANDS_DATA[normalizedKey];
 
-            if (!islandMeta) {
+            if (!normalizedKey || !islandMeta || !CANONICAL_ISLANDS.includes(normalizedKey)) {
                 return res.status(404).render("home", {
                     page_title: "Island Not Found",
-                    user: req.user
+                    user: req.user || null
                 });
             }
 
-            // Query canonical products from MongoDB
+            // Query canonical products from MongoDB using compound index { island: 1, isAvailable: 1 }
             let products = [];
             try {
                 const dbProducts = await Product.find({
                     island: normalizedKey,
                     isAvailable: true
-                }).sort({ createdAt: 1 });
+                })
+                .sort({ createdAt: 1 })
+                .lean();
 
                 products = dbProducts.map(p => ({
                     id: p._id.toString(),
@@ -551,21 +554,24 @@ export const renderIslandPage = (targetSlug) => {
                     priceNum: p.price,
                     desc: p.description,
                     description: p.description,
+                    subTitle: p.description,
                     image: p.image,
                     island: p.island,
                     category: p.category,
                     stock: p.stock,
                     isAvailable: p.isAvailable,
-                    rating: p.rating,
-                    seller: p.seller
+                    rating: p.rating || "★★★★★",
+                    seller: p.seller?._id ? p.seller._id.toString() : (p.seller ? p.seller.toString() : null)
                 }));
             } catch (dbErr) {
                 console.error("Database query error in renderIslandPage:", dbErr.message);
                 products = [];
             }
 
+            // Strip static product catalog from island metadata to guarantee MongoDB is single source of truth
+            const { products: _staticCatalog, ...cleanIslandMeta } = islandMeta;
             const island = {
-                ...islandMeta,
+                ...cleanIslandMeta,
                 products: products
             };
 
@@ -575,13 +581,13 @@ export const renderIslandPage = (targetSlug) => {
             res.render(viewName, {
                 page_title: `${island.name} | Rishi's Web`,
                 island: island,
-                user: req.user
+                user: req.user || null
             });
         } catch (error) {
             console.error("Error rendering island page:", error);
             res.status(500).render("home", {
                 page_title: "Archipelago Error",
-                user: req.user
+                user: req.user || null
             });
         }
     };

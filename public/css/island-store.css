@@ -396,6 +396,45 @@ body.island-store-body .navbar {
     gap: 22px;
 }
 
+/* Empty State for Island Listings */
+.store-empty-state {
+    grid-column: 1 / -1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 60px 24px;
+    background: rgba(18, 24, 32, 0.7);
+    border: 1px dashed rgba(212, 147, 57, 0.35);
+    border-radius: 8px;
+    margin: 20px 0;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+.store-empty-icon {
+    font-size: 2.8rem;
+    margin-bottom: 14px;
+    opacity: 0.85;
+}
+
+.store-empty-title {
+    font-family: "Cinzel", serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #ffd57e;
+    margin-bottom: 8px;
+    letter-spacing: 0.05em;
+}
+
+.store-empty-desc {
+    color: var(--text-muted, #94a3b8);
+    font-size: 0.95rem;
+    max-width: 480px;
+    line-height: 1.6;
+    margin: 0;
+}
+
 .store-item-card {
     background: var(--card-bg);
     border: 1px solid var(--card-border);

@@ -85,19 +85,24 @@ gantt
 
 ---
 
-### 📍 PHASE 3 — BUYER EXPERIENCE
+### 📍 PHASE 3 — BUYER EXPERIENCE & PRODUCT DETAILS
 **Goal:** Deliver a dynamic, end-to-end shopping experience from exploration to product sheets and merchant discovery.
 
-* **Milestone 3.1: Reusable Product Details Sheet**
+* **Milestone 3.1: Dynamic Island Listings [COMPLETE]**
+  - Ensure all 6 canonical island store listings query dynamically from MongoDB `Product` collection.
+  - Enforce availability filtering (`isAvailable: true`), product ordering preservation, and real MongoDB Product `_id` usage.
+  - Implement graceful nautical empty states for barren island catalogs and hardened 404 responses for invalid islands.
+  - Preserve cartographic island lore and client-side drawer/cart compatibility.
+* **Milestone 3.2: Reusable Product Details Sheet [NEXT]**
   - Create route `/product/:productId` and shared view `views/product_detail.ejs`.
   - Display dynamic product imagery, Doubloons price, stock telemetry, island origin, merchant bio, and add-to-cart controls.
-* **Milestone 3.2: Seller Discovery ("Explore Sellers")**
+* **Milestone 3.3: Seller Discovery ("Explore Sellers")**
   - Refactor `/users` into `/sellers` with updated view `views/sellers.ejs`.
   - Display registered merchants, their home island badges, and active catalog counts.
-* **Milestone 3.3: Public Seller Profile**
+* **Milestone 3.4: Public Seller Profile**
   - Create route `/seller/:sellerId` and view `views/seller_profile.ejs`.
   - Show merchant store banner, lore, ratings, and all products listed by this seller.
-* **Milestone 3.4: Customer Account Profile**
+* **Milestone 3.5: Customer Account Profile**
   - Create route `/profile` for buyers to view their account info, home port, and personal preferences.
 
 ---

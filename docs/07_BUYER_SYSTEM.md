@@ -55,10 +55,13 @@ Customers navigate to any of the 6 canonical leaf islands:
   - `cutlass_cove`: Corsair blades & high-tech voyager tools.
   - `velvet_isle`: Teak wood furniture, silk cloaks & island living.
   - `booty_cay`: Fragrances, glowing botanical elixirs & cosmetics.
-* **Dynamic Product Integration (Verified in Milestone 2.6):**
-  - Products displayed on each island are loaded directly from MongoDB (`Product.find({ island: islandSlug, isAvailable: true }).sort({ createdAt: 1 })`).
-  - Each product card displays product title, Doubloons price badge, stock pill, and direct links to inspect or add to cargo.
-  - Hardcoded island catalog dependencies have been removed from runtime controllers.
+* **Dynamic Product Integration (Milestone 3.1 COMPLETE):**
+  - Products displayed on each island are loaded directly and exclusively from MongoDB (`Product.find({ island: normalizedKey, isAvailable: true }).sort({ createdAt: 1 }).lean()`).
+  - Compound indexed retrieval on `{ island: 1, isAvailable: 1 }` guarantees sub-millisecond query performance.
+  - Unavailable products (`isAvailable: false`) are strictly omitted from public island listings.
+  - Each product card displays product title, Doubloons price badge (`🪙 XX Doubloons`), star rating, real MongoDB `_id` in `data-id` attributes, and direct Add to Cart buttons.
+  - Barren/empty catalogs render a dedicated nautical empty state (`.store-empty-state`) rather than blank spaces or broken templates.
+  - Hardcoded island catalog dependencies have been removed from runtime controllers; MongoDB is the sole source of truth.
 
 ---
 

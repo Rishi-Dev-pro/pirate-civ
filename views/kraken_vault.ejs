@@ -129,37 +129,45 @@
 
                 <!-- Store Items Grid -->
                 <div id="storeItemsGrid" class="store-items-grid">
-                    <% island.products.forEach(function(p) { %>
-                        <article class="store-item-card"
-                                 data-id="<%= p.id %>"
-                                 data-name="<%= p.name %>"
-                                 data-price="<%= p.price %>"
-                                 data-category="<%= p.category || 'all' %>"
-                                 data-desc="<%= p.desc %>">
-                            
-                            <div class="card-header-bar">
-                                <span class="tag-new">NEW</span>
-                                <button class="btn-wishlist" data-id="<%= p.id %>" data-name="<%= p.name %>" title="Add to Wishlist">♡</button>
-                            </div>
+                    <% if (island.products && island.products.length > 0) { %>
+                        <% island.products.forEach(function(p) { %>
+                            <article class="store-item-card"
+                                     data-id="<%= p.id %>"
+                                     data-name="<%= p.name %>"
+                                     data-price="<%= p.price %>"
+                                     data-category="<%= p.category || 'all' %>"
+                                     data-desc="<%= p.desc %>">
+                                
+                                <div class="card-header-bar">
+                                    <span class="tag-new">NEW</span>
+                                    <button class="btn-wishlist" data-id="<%= p.id %>" data-name="<%= p.name %>" title="Add to Wishlist">♡</button>
+                                </div>
 
-                            <div class="item-asset-box">
-                                <div class="item-asset-glow"></div>
-                                <img src="<%= p.image %>" alt="<%= p.name %>" class="item-asset-img">
-                            </div>
+                                <div class="item-asset-box">
+                                    <div class="item-asset-glow"></div>
+                                    <img src="<%= p.image %>" alt="<%= p.name %>" class="item-asset-img">
+                                </div>
 
-                            <h3 class="item-title"><%= p.name %></h3>
-                            <p class="item-desc"><%= p.desc %></p>
+                                <h3 class="item-title"><%= p.name %></h3>
+                                <p class="item-desc"><%= p.desc %></p>
 
-                            <div class="item-meta-row">
-                                <span class="item-price">🪙 <%= p.price %> Doubloons</span>
-                                <span class="item-rating"><%= p.rating || '★★★★★' %></span>
-                            </div>
+                                <div class="item-meta-row">
+                                    <span class="item-price">🪙 <%= p.price %> Doubloons</span>
+                                    <span class="item-rating"><%= p.rating || '★★★★★' %></span>
+                                </div>
 
-                            <button class="btn-add-cart" data-id="<%= p.id %>" data-name="<%= p.name %>" data-price="<%= p.price %>">
-                                <span>🛒 ADD TO CART</span>
-                            </button>
-                        </article>
-                    <% }); %>
+                                <button class="btn-add-cart" data-id="<%= p.id %>" data-name="<%= p.name %>" data-price="<%= p.price %>">
+                                    <span>🛒 ADD TO CART</span>
+                                </button>
+                            </article>
+                        <% }); %>
+                    <% } else { %>
+                        <div class="store-empty-state">
+                            <span class="store-empty-icon">⚓</span>
+                            <h3 class="store-empty-title">No Trade Cargo Available</h3>
+                            <p class="store-empty-desc">The merchant vaults of <%= island.name %> are currently barren. No goods are chartered for trading at this hour.</p>
+                        </div>
+                    <% } %>
                 </div>
 
             </section>

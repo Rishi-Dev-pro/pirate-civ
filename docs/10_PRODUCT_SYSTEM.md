@@ -134,6 +134,13 @@ Historically, 32 products were hardcoded inside `controller/islands.js` (`ISLAND
 3. **Inventory Integrity:** Read operations strictly preserve `Product.stock`.
 4. **Verification:** Verified all 6 island pages render real MongoDB products via HTTP test server.
 
+### 4.3 Dynamic Island Listings & Catalog Isolation (Milestone 3.1 COMPLETE)
+1. **Decoupled Architecture:** `renderIslandPage` strips static catalog arrays from `ISLANDS_DATA` metadata prior to view dispatch, guaranteeing MongoDB is the sole runtime source of truth.
+2. **Indexed Performance:** Direct indexed query `Product.find({ island: normalizedKey, isAvailable: true }).sort({ createdAt: 1 }).lean()` leverages compound index `{ island: 1, isAvailable: 1 }`.
+3. **Canonical Island Whitelisting:** Enforces canonical whitelist validation against `CANONICAL_ISLANDS`, returning clean 404 responses without database query execution or stack trace leakage for invalid inputs.
+4. **Resilient Empty States:** Island EJS templates render themed `.store-empty-state` elements when an island has 0 active products, preventing broken templates or undefined JavaScript variables.
+5. **Real MongoDB ObjectIds:** All product cards, wishlist buttons, and Add to Cart triggers operate on genuine 24-character hex MongoDB `_id` strings.
+
 ---
 
 ## 5. Currency & Pricing: Doubloons (🪙)

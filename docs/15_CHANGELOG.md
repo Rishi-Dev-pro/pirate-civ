@@ -4,6 +4,26 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-15] — Phase 3 / Milestone 3.1: Dynamic Island Listings (PHASE 3.1 COMPLETE)
+
+### Added & Hardened
+* **Dynamic Island Listings (`controller/islands.js`):** Island store pages for all 6 canonical islands (`astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`) are now genuinely dynamic, backed strictly and exclusively by the MongoDB `Product` model via direct indexed query `Product.find({ island: normalizedKey, isAvailable: true }).sort({ createdAt: 1 }).lean()`.
+* **Decoupled Architecture & Catalog Stripping (`controller/islands.js`):** Static product arrays are explicitly stripped from `ISLANDS_DATA` metadata prior to template dispatch (`const { products: _staticCatalog, ...cleanIslandMeta } = islandMeta;`), ensuring zero fallback to or leakage of outdated hardcoded data.
+* **Canonical Whitelist Validation & Safe 404 Handling (`controller/islands.js`):** Enforces canonical island slug validation against `CANONICAL_ISLANDS`, returning clean HTTP 404 responses without database query execution or stack trace leakage for invalid inputs.
+* **Themed Empty States (`views/*.ejs`, `public/css/island-store.css`):** Added `.store-empty-state`, `.store-empty-icon`, `.store-empty-title`, and `.store-empty-desc` CSS styles and updated all 6 island EJS templates to render graceful, atmospheric empty states when an island has zero available products.
+* **Unified Doubloon Pricing (`views/velvet_isle.ejs`, `views/booty_cay.ejs`):** Standardized currency display across Velvet Isle and Booty Cay to use Doubloons (`🪙 XX Doubloons`) matching the canonical economy of Pirate-Civ.
+* **Underscore Alias Direct Routes (`routes/web.js`):** Added `/kraken_vault`, `/cutlass_cove`, `/velvet_isle`, and `/booty_cay` shorthand routes matching `docs/05_ROUTE_MAP.md`.
+
+### Tested & Verified
+* 160 focused automated assertions in `scratch/test_milestone_3_1.js` covering database queries, availability filtering, cross-island product isolation, security exclusions (no password or secret leakage), empty state handling, and live Express HTTP SSR verification across all routes and invalid cases (160/160 passed).
+* 65 live SSR assertions in `scratch/verify_live_ssr.js` against running dev server on port 3000 (65/65 passed).
+* Interactive browser testing via subagent: verified page load, product card rendering, images, prices, ratings, Add to Cart interaction, toast alerts, cart drawer contents, and zero console errors.
+* Full regression test suite passing across all active milestones: Milestone 3.1 (160/160), Pre-Phase 3 Gate (76/76), Milestone 2.6 (166/166), Milestone 2.5 (283/283), Milestone 2.4 (85/85), Milestone 2.3 (42/42), Milestone 2.2 (42/42), Milestone 2.1 (31/31), Phase 1 (45/45). Total: 930/930 passed (100%).
+* Static analysis: 18/18 JavaScript files passed syntax check (`node --check`).
+* Template analysis: 20/20 EJS template files compiled cleanly (`ejs.compile`).
+
+---
+
 ## [2026-10-11] — Pre-Phase 3 Release Gate: Full Codebase Audit, Integration Verification & Hardening
 
 ### Added & Hardened
