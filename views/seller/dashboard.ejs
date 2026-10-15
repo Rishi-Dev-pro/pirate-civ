@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Seller Command Deck | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Dedicated Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p4_deck_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p4_deck_v1">
+</head>
+
+<body class="island-store-body seller-dashboard-body">
+
+    <!-- Fixed Atmospheric Backdrop -->
+    <div class="store-backdrop">
+        <img src="<%= (island && island.image) ? island.image : '/images/astrolabe-bg.jpg' %>"
+             alt="Archipelago Backdrop"
+             class="store-bg-img"
+             onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
+
+    <!-- Reusable Main Navigation Bar -->
+    <%- include("../partials/header") %>
+
+    <!-- Master Command Deck Stage -->
+    <main class="seller-dashboard-wrapper">
+
+        <!-- Top Navigation Bar: Breadcrumbs & Header Controls -->
+        <nav class="detail-nav-bar" aria-label="Breadcrumb Navigation">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-link">Seller Portal</span>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Command Deck</span>
+            </div>
+
+            <div class="store-header-controls">
+                <div class="doubloons-pill">
+                    <span class="coin-icon">🪙</span>
+                    <span>Merchant Deck</span>
+                </div>
+
+                <a href="<%= storefrontUrl %>" id="headerStorefrontLink" class="btn-store-cart" style="text-decoration: none;" title="Open Public Storefront">
+                    <span>📜 STOREFRONT</span>
+                </a>
+
+                <a href="/home" class="btn-store-close" title="Return to Sea Chart">
+                    &times;
+                </a>
+            </div>
+        </nav>
+
+        <!-- Master Seller Command Deck Card -->
+        <article class="seller-dashboard-card">
+
+            <!-- Hero Section: Avatar + Identity + Store Link -->
+            <header class="seller-dashboard-hero">
+                <div class="seller-dash-avatar-frame">
+                    <img src="<%= seller.avatar || '/images/avatars/default-pirate.png' %>"
+                         alt="<%= seller.storeName || seller.name %>"
+                         class="seller-dash-avatar"
+                         onerror="this.onerror=null; this.src='/images/avatars/default-pirate.png';">
+                </div>
+
+                <div class="seller-dash-hero-info">
+                    <span class="seller-dash-badge">⚓ CHARTERED GUILD MERCHANT</span>
+                    <h1 class="seller-dash-title" id="sellerStoreName"><%= seller.storeName || seller.name %></h1>
+                    <% if (seller.storeName && seller.name && seller.storeName !== seller.name) { %>
+                        <span class="seller-dash-captain" id="sellerCaptainName">Captain / Guildmaster: <%= seller.name %></span>
+                    <% } else { %>
+                        <span class="seller-dash-captain" id="sellerCaptainName">Captain: <%= seller.name %></span>
+                    <% } %>
+
+                    <div class="seller-dash-pills">
+                        <span class="seller-dash-pill">
+                            <% if (seller.homeIsland) { %>
+                                <a href="/island/<%= seller.homeIsland %>" class="home-harbor-link" title="Sail to Home Harbor">
+                                    🏝️ Home Harbor: <%= island ? island.name : seller.homeIsland %>
+                                </a>
+                            <% } else { %>
+                                🏝️ Home Harbor: Archipelago Waters
+                            <% } %>
+                        </span>
+                        <span class="seller-dash-pill gold-pill">
+                            ⚓ Status: <%= (seller.role || 'seller').toUpperCase() %>
+                        </span>
+                        <span class="seller-dash-pill gold-pill">
+                            ✦ Admiralty Guild Verified
+                        </span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Merchant Bio / Chronicle Lore Section -->
+            <section class="seller-dash-bio-section" aria-label="Merchant Bio Lore">
+                <h3>📜 Merchant Charter Chronicle</h3>
+                <% if (seller.bio && seller.bio.trim().length > 0) { %>
+                    <p class="seller-dash-bio-text" id="sellerBio"><%= seller.bio %></p>
+                <% } else { %>
+                    <p class="seller-dash-bio-text seller-dash-bio-empty" id="sellerBio">This merchant has not yet penned their trade charter lore.</p>
+                <% } %>
+            </section>
+
+            <!-- Metric Telemetry Cards Grid -->
+            <section class="seller-telemetry-grid" aria-label="Command Deck Telemetry">
+                <div class="seller-metric-card" id="cardActiveProducts">
+                    <div class="metric-header">
+                        <span>📦</span>
+                        <span>Active Listings</span>
+                    </div>
+                    <div class="metric-value highlight-gold" id="statActiveCount">
+                        <%= activeProductCount %>
+                    </div>
+                    <div class="metric-subtext">
+                        Live wares discoverable across the archipelago
+                    </div>
+                </div>
+
+                <div class="seller-metric-card" id="cardTotalProducts">
+                    <div class="metric-header">
+                        <span>🏺</span>
+                        <span>Total Catalog</span>
+                    </div>
+                    <div class="metric-value" id="statTotalCount">
+                        <%= totalProductCount %>
+                    </div>
+                    <div class="metric-subtext">
+                        Total wares registered in merchant vault
+                    </div>
+                </div>
+
+                <div class="seller-metric-card" id="cardHomeHarbor">
+                    <div class="metric-header">
+                        <span>🏝️</span>
+                        <span>Registry Port</span>
+                    </div>
+                    <div class="metric-value" style="font-size: 1.35rem;" id="statHomePort">
+                        <%= island ? island.name : (seller.homeIsland || 'Open Waters') %>
+                    </div>
+                    <div class="metric-subtext">
+                        Chartered home anchorage & trading hub
+                    </div>
+                </div>
+
+                <div class="seller-metric-card" id="cardMerchantStanding">
+                    <div class="metric-header">
+                        <span>⚖️</span>
+                        <span>Guild Standing</span>
+                    </div>
+                    <div class="metric-value highlight-gold" style="font-size: 1.35rem;" id="statGuildStanding">
+                        Charter Active
+                    </div>
+                    <div class="metric-subtext">
+                        Sovereign commerce clearance approved
+                    </div>
+                </div>
+            </section>
+
+            <!-- Empty Vault Notice when totalProductCount === 0 -->
+            <% if (totalProductCount === 0) { %>
+                <div class="empty-vault-banner" id="emptyVaultBanner">
+                    <div class="empty-vault-icon">📦</div>
+                    <h4 class="empty-vault-title">Vault Currently Barren</h4>
+                    <p class="empty-vault-text">No wares have been forged under this trade charter yet. New listings will automatically appear in your active island storefront.</p>
+                </div>
+            <% } %>
+
+            <!-- Command Operations / Harbor Deck Actions -->
+            <section class="seller-operations-section" aria-label="Harbor Operations Deck">
+                <h3 class="seller-section-title">
+                    <span>⚓</span>
+                    <span>Command Operations</span>
+                </h3>
+
+                <div class="seller-actions-grid">
+
+                    <!-- 1. Public Storefront (Active & Functional) -->
+                    <a href="<%= storefrontUrl %>" id="tileViewStorefront" class="deck-tile active-tile" title="View Public Storefront">
+                        <div class="tile-top">
+                            <span class="tile-icon">📜</span>
+                            <span class="tile-badge badge-available">ACTIVE</span>
+                        </div>
+                        <h4 class="tile-title">Public Storefront</h4>
+                        <p class="tile-desc">Inspect how buyers and corsairs discover your merchant house and active catalog wares.</p>
+                        <span class="tile-btn btn-primary-action">
+                            <span>Open Storefront</span>
+                            <span>→</span>
+                        </span>
+                    </a>
+
+                    <!-- 2. Forge New Cargo (Placeholder / Phase 4.3) -->
+                    <div class="deck-tile locked-tile" id="tileAddProduct" title="Forge New Cargo (Unlocks Phase 4.3)">
+                        <div class="tile-top">
+                            <span class="tile-icon">➕</span>
+                            <span class="tile-badge badge-locked">PHASE 4.3</span>
+                        </div>
+                        <h4 class="tile-title">Forge New Cargo</h4>
+                        <p class="tile-desc">Charter new relics, corsair weaponry, or apparel for listing on the 6 islands.</p>
+                        <span class="tile-btn btn-locked-action">
+                            <span>Unlocks Phase 4.3</span>
+                        </span>
+                    </div>
+
+                    <!-- 3. Manage Inventory (Placeholder / Phase 4.3) -->
+                    <div class="deck-tile locked-tile" id="tileInventory" title="Vault Inventory (Unlocks Phase 4.3)">
+                        <div class="tile-top">
+                            <span class="tile-icon">⚖️</span>
+                            <span class="tile-badge badge-locked">PHASE 4.3</span>
+                        </div>
+                        <h4 class="tile-title">Vault Inventory</h4>
+                        <p class="tile-desc">Update valuations, Doubloons prices, stock reserves, and market availability.</p>
+                        <span class="tile-btn btn-locked-action">
+                            <span>Unlocks Phase 4.3</span>
+                        </span>
+                    </div>
+
+                    <!-- 4. Fulfillment Queue (Placeholder / Phase 4.4) -->
+                    <div class="deck-tile locked-tile" id="tileOrders" title="Fulfillment Queue (Unlocks Phase 4.4)">
+                        <div class="tile-top">
+                            <span class="tile-icon">📦</span>
+                            <span class="tile-badge badge-locked">PHASE 4.4</span>
+                        </div>
+                        <h4 class="tile-title">Dispatch Manifests</h4>
+                        <p class="tile-desc">Review incoming voyage manifests, pack supplies, and dispatch cargo couriers.</p>
+                        <span class="tile-btn btn-locked-action">
+                            <span>Unlocks Phase 4.4</span>
+                        </span>
+                    </div>
+
+                </div>
+            </section>
+
+        </article>
+
+    </main>
+
+</body>
+
+</html>

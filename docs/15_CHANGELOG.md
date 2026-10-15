@@ -4,6 +4,43 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-15] — Phase 4 / Milestone 4.1: Seller Portal & Onboarding (MILESTONE 4.1 COMPLETE)
+
+### Added & Implemented
+* **Seller Access Control & RBAC (`middleware/roles.js`, `routes/web.js`):**
+  - Secured `/seller/dashboard`, `/seller`, and `/seller/portal` using `[authMiddleware, requireSeller]`.
+  - Rejects non-seller roles (`buyer`, `admin`) with HTTP 403 Forbidden ("Access denied: insufficient permissions.").
+  - Redirects unauthenticated explorers to `/login` (HTTP 302).
+  - Aliased `/seller` and `/seller/portal` to redirect directly to `/seller/dashboard`.
+  - Prioritized `/seller/dashboard` route ahead of parametric `/seller/:sellerId` in `routes/web.js`.
+* **Seller Dashboard Controller (`controller/sellers.js`::`renderSellerDashboard`):**
+  - Derives seller identity strictly from authenticated `req.user._id` without relying on client-supplied parameters.
+  - Leverages indexed queries (`Product.countDocuments`) to calculate `activeProductCount` (`isAvailable: true`) and `totalProductCount` in parallel without memory bloat.
+  - Resolves home harbor lore metadata from `ISLANDS_DATA`.
+  - Defensively scrubs sensitive fields (`password`, `authSecretHash`, `googleId`).
+* **Reusable Seller Command Deck View (`views/seller/dashboard.ejs`, `public/css/island-store.css`):**
+  - Designed full-featured Command Deck adhering to Pirate-Civ dark-fantasy nautical aesthetics.
+  - Renders merchant identity hero card (avatar with fallback, store title, captain alias, chartered status, home harbor port link).
+  - Displays Merchant Charter Chronicle bio section with graceful fallback for empty lore.
+  - Displays 4 telemetry metric cards: Active Listings, Total Catalog, Registry Port, and Guild Standing.
+  - Features empty state banner (`Vault Currently Barren`) when catalog count is 0.
+  - Renders 4 operations tiles: active "Public Storefront" link (`/seller/:id`) and placeholder tiles (Forge New Cargo Phase 4.3, Vault Inventory Phase 4.3, Dispatch Manifests Phase 4.4).
+* **Global Navigation Integration (`views/partials/header.ejs`):**
+  - Added conditional `⚓ Command Deck` navigation link (`#navSellerDeck`) rendered exclusively for authenticated sellers (`user.role === 'seller'`).
+
+### Tested & Verified
+* 64 automated assertions in `scratch/test_milestone_4_1.js` covering seller access, buyer 403 denial, admin 403 denial, unauthenticated redirect, identity rendering, telemetry counts, unavailable item handling, empty vault state, missing profile fallbacks, user isolation, credential omission, storefront linking, convenience route redirects, stock invariance, and zero order creation (64/64 passed).
+* Real browser verification via subagent:
+  - Buyer access denied: verified HTTP 403.
+  - Seller login: verified Command Deck renders store name, chartered merchant badge, telemetry metrics, and tiles.
+  - Storefront navigation: opened public storefront, navigated to product detail, returned to dashboard.
+  - Console inspection: clean execution with 0 unexpected errors or warnings.
+* Phase 3 regression suite: 96/96 assertions passed (`scratch/test_milestone_3_6.js`).
+* Static syntax: all JavaScript files pass `node --check`.
+* Template analysis: all 24 EJS templates compile cleanly.
+
+---
+
 ## [2026-10-15] — Phase 3 / Milestone 3.6: Buyer Regression & UX Verification (PHASE 3 COMPLETE)
 
 ### Added & Verified

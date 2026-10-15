@@ -264,10 +264,20 @@ router.get("/product/:productId", authMiddleware, renderProductDetail);
 
 
 // =====================================================
-// REUSABLE SELLER PROFILE / STOREFRONT ROUTE (MILESTONE 3.4)
+// SELLER PORTAL & COMMAND DECK (MILESTONE 4.1)
 // =====================================================
 
-import { renderSellerStorefront } from "../controller/sellers.js";
+import { requireSeller } from "../middleware/roles.js";
+import { renderSellerDashboard, renderSellerStorefront } from "../controller/sellers.js";
+
+router.get("/seller/dashboard", authMiddleware, requireSeller, renderSellerDashboard);
+router.get("/seller/portal", authMiddleware, requireSeller, (req, res) => res.redirect("/seller/dashboard"));
+router.get("/seller", authMiddleware, requireSeller, (req, res) => res.redirect("/seller/dashboard"));
+
+
+// =====================================================
+// REUSABLE SELLER PROFILE / STOREFRONT ROUTE (MILESTONE 3.4)
+// =====================================================
 
 router.get("/seller/:sellerId", authMiddleware, renderSellerStorefront);
 

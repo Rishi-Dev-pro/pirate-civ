@@ -40,20 +40,43 @@ The user is assigned `role: 'seller'` in the unified `User` collection.
 
 ---
 
-## 3. The Seller Command Deck (`/seller/dashboard`)
+## 3. The Seller Command Deck (`/seller/dashboard`) [MILESTONE 4.1 COMPLETE]
 
-The seller dashboard is a high-contrast nautical command center designed for rapid operational management:
+The seller dashboard is a high-contrast nautical command center designed for operational management and merchant identity:
 
-### 3.1 Metric Telemetry Cards
-* **Total Revenue:** Accumulated earnings in Doubloons (🪙).
-* **Active Vault Listings:** Total count of live products in catalog.
-* **Pending Dispatches:** Count of unfulfilled orders awaiting shipment.
-* **Depleted Stocks:** Instant warning banner for items with stock ≤ 3 units.
+### 3.1 Access Control & Security
+* **Route:** `GET /seller/dashboard` (aliased by `GET /seller` and `GET /seller/portal`).
+* **Middleware Guard:** `[authMiddleware, requireSeller]`.
+* **RBAC Enforcement:** Permits strictly `User.role === 'seller'`.
+  - Buyers receive `HTTP 403 Access denied: insufficient permissions.`
+  - Admins receive `HTTP 403 Access denied: insufficient permissions.`
+  - Unauthenticated visitors redirect to `/login` (HTTP 302).
+* **Identity Source:** Derived strictly from authenticated session `req.user`. Query parameters and body overrides are ignored.
+* **Credential Protection:** Passwords, `authSecretHash`, and `googleId` are defensively stripped and never passed to views or responses.
 
-### 3.2 Quick Actions Bar
-* ➕ **Forge New Cargo (Add Product):** Direct link to creation form.
-* 📦 **Review Ship Manifests (Orders):** Jump to fulfillment queue.
-* ⚓ **Update Harbor Profile:** Modify store banner and description.
+### 3.2 Merchant Hero & Identity Header
+* **Avatar & Charter:** Displays custom avatar (or default fallback) with `⚓ CHARTERED GUILD MERCHANT` gold badge.
+* **Titles:** Displays Merchant Storefront Title (`seller.storeName`) and Captain Alias (`seller.name`).
+* **Harbor Anchor:** Badged link to home island (`/island/:homeIsland`) or fallback to `Archipelago Waters`.
+* **Charter Chronicle:** Narrative bio lore section with graceful empty-lore fallback.
+* **Public Storefront Link:** Direct action button and navbar links pointing to `/seller/:sellerId`.
+
+### 3.3 Metric Telemetry Cards
+* **Active Vault Listings:** Live count of products available in the market (`Product.countDocuments({ seller, isAvailable: true })`).
+* **Total Catalog Listings:** Total wares registered in merchant vault (`Product.countDocuments({ seller })`).
+* **Registry Port:** Canonical trading harbor name and settlement status.
+* **Guild Standing:** Verified Admiralty Guild credentialing status.
+
+### 3.4 Command Operations Deck (Action Tiles)
+* 📜 **Public Storefront (ACTIVE):** Direct link to the merchant's live public storefront (`/seller/:sellerId`).
+* ➕ **Forge New Cargo (Phase 4.3):** Tile indicating listing creation capability docking in Phase 4.3.
+* ⚖️ **Vault Inventory (Phase 4.3):** Tile indicating valuation, stock, and availability editing in Phase 4.3.
+* 📦 **Dispatch Manifests (Phase 4.4):** Tile indicating order fulfillment queue docking in Phase 4.4.
+
+### 3.5 Corner Cases & Invariants
+* **Empty Vaults:** When `totalProductCount === 0`, an atmospheric "Vault Currently Barren" notice is displayed.
+* **Missing Fields:** Sellers lacking storeName, bio, or homeIsland render with graceful defaults without crashing.
+* **Stock & Order Immutability:** Accessing the dashboard never alters product stock or creates orders.
 
 ---
 

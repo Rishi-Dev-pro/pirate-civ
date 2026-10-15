@@ -3267,4 +3267,393 @@ body.theme-velvet .btn-add-cart:hover {
     }
 }
 
+/* =========================================================
+   SELLER COMMAND DECK / DASHBOARD (MILESTONE 4.1)
+========================================================= */
+
+.seller-dashboard-wrapper {
+    max-width: 1240px;
+    margin: 0 auto;
+    padding: 24px 20px 80px 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.seller-dashboard-card {
+    background: linear-gradient(180deg, rgba(10, 20, 32, 0.94) 0%, rgba(6, 12, 20, 0.98) 100%);
+    border: 1px solid rgba(212, 147, 57, 0.45);
+    border-radius: 12px;
+    padding: 36px 32px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(212, 147, 57, 0.12);
+    position: relative;
+    overflow: hidden;
+}
+
+.seller-dashboard-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, #d49339, #ffcc55, #d49339, transparent);
+}
+
+.seller-dashboard-hero {
+    display: flex;
+    gap: 32px;
+    align-items: center;
+    border-bottom: 1px solid rgba(212, 147, 57, 0.25);
+    padding-bottom: 28px;
+    margin-bottom: 32px;
+}
+
+@media (max-width: 768px) {
+    .seller-dashboard-hero {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+.seller-dash-avatar-frame {
+    position: relative;
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    border: 3px solid #d49339;
+    padding: 4px;
+    background: radial-gradient(circle, rgba(212, 147, 57, 0.25) 0%, rgba(10, 20, 32, 0.9) 100%);
+    box-shadow: 0 0 25px rgba(212, 147, 57, 0.35);
+    flex-shrink: 0;
+}
+
+.seller-dash-avatar {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.seller-dash-hero-info {
+    flex: 1;
+}
+
+.seller-dash-badge {
+    display: inline-block;
+    background: rgba(212, 147, 57, 0.15);
+    border: 1px solid rgba(212, 147, 57, 0.45);
+    color: #ffcc55;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    font-family: "Cinzel", serif;
+    margin-bottom: 8px;
+}
+
+.seller-dash-title {
+    margin: 4px 0 6px 0;
+    font-family: "Cinzel", serif;
+    font-size: 2.1rem;
+    color: #fff3d4;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.seller-dash-captain {
+    display: block;
+    font-size: 0.95rem;
+    color: #b8a892;
+    margin-bottom: 14px;
+}
+
+.seller-dash-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+@media (max-width: 768px) {
+    .seller-dash-pills {
+        justify-content: center;
+    }
+}
+
+.seller-dash-pill {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(56, 189, 248, 0.3);
+    color: #93c5fd;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+
+.seller-dash-pill.gold-pill {
+    border-color: rgba(212, 147, 57, 0.4);
+    color: #ffd57e;
+    background: rgba(30, 20, 10, 0.6);
+}
+
+.seller-dash-pill a {
+    color: inherit;
+    text-decoration: none;
+}
+
+.seller-dash-pill a:hover {
+    color: #ffcc55;
+}
+
+.seller-dash-bio-section {
+    background: rgba(12, 22, 34, 0.65);
+    border: 1px solid rgba(212, 147, 57, 0.22);
+    border-radius: 8px;
+    padding: 20px 24px;
+    margin-bottom: 32px;
+}
+
+.seller-dash-bio-section h3 {
+    margin: 0 0 10px 0;
+    font-family: "Cinzel", serif;
+    font-size: 1.05rem;
+    color: #ffd57e;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.seller-dash-bio-text {
+    margin: 0;
+    line-height: 1.65;
+    color: #cbd5e1;
+    font-size: 0.95rem;
+}
+
+.seller-dash-bio-empty {
+    color: #64748b;
+    font-style: italic;
+}
+
+/* Telemetry Grid */
+.seller-telemetry-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 18px;
+    margin-bottom: 36px;
+}
+
+.seller-metric-card {
+    background: linear-gradient(180deg, rgba(15, 25, 40, 0.85) 0%, rgba(9, 15, 25, 0.95) 100%);
+    border: 1px solid rgba(212, 147, 57, 0.35);
+    border-radius: 10px;
+    padding: 22px 20px;
+    text-align: center;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.seller-metric-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(212, 147, 57, 0.65);
+}
+
+.metric-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    color: #b8a892;
+    font-family: "Cinzel", serif;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+}
+
+.metric-value {
+    font-family: "Cinzel", serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #fff3d4;
+    line-height: 1.1;
+    margin-bottom: 8px;
+    text-shadow: 0 2px 10px rgba(212, 147, 57, 0.3);
+}
+
+.metric-value.highlight-gold {
+    color: #ffcc55;
+}
+
+.metric-subtext {
+    font-size: 0.8rem;
+    color: #94a3b8;
+    line-height: 1.4;
+}
+
+/* Operation Tiles */
+.seller-operations-section {
+    margin-top: 36px;
+}
+
+.seller-section-title {
+    font-family: "Cinzel", serif;
+    font-size: 1.25rem;
+    color: #ffd57e;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-bottom: 1px solid rgba(212, 147, 57, 0.2);
+    padding-bottom: 10px;
+}
+
+.seller-actions-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 20px;
+}
+
+.deck-tile {
+    background: linear-gradient(180deg, rgba(16, 28, 44, 0.85) 0%, rgba(10, 18, 30, 0.95) 100%);
+    border: 1px solid rgba(212, 147, 57, 0.3);
+    border-radius: 10px;
+    padding: 24px;
+    text-decoration: none;
+    color: #fff3d4;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.deck-tile.active-tile {
+    cursor: pointer;
+    border-color: rgba(212, 147, 57, 0.55);
+}
+
+.deck-tile.active-tile:hover {
+    transform: translateY(-3px);
+    border-color: #ffcc55;
+    box-shadow: 0 8px 25px rgba(212, 147, 57, 0.25);
+}
+
+.deck-tile.locked-tile {
+    opacity: 0.65;
+    cursor: not-allowed;
+    border-color: rgba(148, 163, 184, 0.25);
+    background: linear-gradient(180deg, rgba(12, 18, 26, 0.7) 0%, rgba(8, 12, 18, 0.8) 100%);
+}
+
+.tile-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 14px;
+}
+
+.tile-icon {
+    font-size: 1.8rem;
+}
+
+.tile-badge {
+    font-family: "Cinzel", serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.05em;
+}
+
+.tile-badge.badge-available {
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.tile-badge.badge-locked {
+    background: rgba(148, 163, 184, 0.15);
+    color: #94a3b8;
+    border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.tile-title {
+    font-family: "Cinzel", serif;
+    font-size: 1.15rem;
+    color: #fff3d4;
+    margin: 0 0 8px 0;
+}
+
+.tile-desc {
+    font-size: 0.88rem;
+    color: #94a3b8;
+    line-height: 1.5;
+    margin: 0 0 18px 0;
+}
+
+.tile-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 18px;
+    border-radius: 6px;
+    font-family: "Cinzel", serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+.tile-btn.btn-primary-action {
+    background: linear-gradient(180deg, #d49339 0%, #a66a1a 100%);
+    color: #1a0f00;
+    border: 1px solid #ffcc55;
+    font-weight: 700;
+}
+
+.tile-btn.btn-primary-action:hover {
+    background: linear-gradient(180deg, #ffcc55 0%, #d49339 100%);
+    box-shadow: 0 0 15px rgba(255, 204, 85, 0.4);
+}
+
+.tile-btn.btn-locked-action {
+    background: rgba(148, 163, 184, 0.1);
+    color: #64748b;
+    border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+/* Empty Vault Notice */
+.empty-vault-banner {
+    background: rgba(212, 147, 57, 0.08);
+    border: 1px dashed rgba(212, 147, 57, 0.4);
+    border-radius: 8px;
+    padding: 24px;
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.empty-vault-icon {
+    font-size: 2.2rem;
+    margin-bottom: 8px;
+}
+
+.empty-vault-title {
+    font-family: "Cinzel", serif;
+    font-size: 1.1rem;
+    color: #ffd57e;
+    margin: 0 0 6px 0;
+}
+
+.empty-vault-text {
+    font-size: 0.88rem;
+    color: #b8a892;
+    margin: 0;
+}
+
+
 

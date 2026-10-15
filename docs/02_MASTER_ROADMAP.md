@@ -130,14 +130,20 @@ gantt
 
 ---
 
-### 📍 PHASE 4 — SELLER PLATFORM [NEXT]
+### 📍 PHASE 4 — SELLER PLATFORM
 **Goal:** Empower merchants to establish stores, manage inventory, and list products within the 6 islands.
 
-* **Milestone 4.1: Dedicated Seller Auth & Onboarding [NEXT]**
-  - Add `/seller/register` and `/seller/login` routes with merchant-specific onboarding fields.
-* **Milestone 4.2: Seller Command Deck (Dashboard)**
-  - Create route `/seller/dashboard` and view `views/seller/dashboard.ejs`.
-  - Display revenue in Doubloons, total products, out-of-stock alerts, and incoming orders.
+* **Milestone 4.1: Seller Portal & Onboarding [COMPLETE]**
+  - Established authenticated seller portal at `/seller/dashboard`, `/seller`, and `/seller/portal` guarded by `[authMiddleware, requireSeller]`.
+  - Rejects buyers and admins with HTTP 403, and unauthenticated visitors with redirect to `/login`.
+  - Derives seller identity strictly from authenticated `req.user`.
+  - Renders reusable Seller Command Deck (`views/seller/dashboard.ejs`) displaying store name, captain alias, chartered merchant status badge, home harbor port link, bio chronicle, and real-time MongoDB telemetry counts (active vs. total catalog products) via indexed count queries.
+  - Links directly to existing public storefront (`/seller/:id`).
+  - Provides graceful fallbacks for missing optional profile fields and empty catalogs, plus placeholder operation tiles for future milestones.
+  - Strictly protects sensitive credentials (`password`, `authSecretHash`, `googleId`).
+  - Fully tested: 64/64 automated tests, 96/96 Phase 3 regression tests, and real browser verification with 0 console errors.
+* **Milestone 4.2: Seller Command Deck Metrics & Alerts [NEXT]**
+  - Display revenue in Doubloons, out-of-stock alerts, and incoming orders metrics on the Command Deck.
 * **Milestone 4.3: Product Catalog Management (CRUD)**
   - Create product route `/seller/products/new` with island selection (limited to 6 islands) and category selection.
   - Implement product edit (`/seller/products/:id/edit`) and delete (`/seller/products/:id/delete`).

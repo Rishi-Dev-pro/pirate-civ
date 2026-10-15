@@ -18,6 +18,12 @@
     ⚓ Explorers
 </a>
 
+        <% if (typeof user !== 'undefined' && user && user.role === 'seller') { %>
+            <a href="/seller/dashboard" class="nav-seller-deck" id="navSellerDeck">
+                ⚓ Command Deck
+            </a>
+        <% } %>
+
     </div>
 
 </nav>

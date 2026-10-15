@@ -108,6 +108,60 @@ export const renderSellerStorefront = async (req, res) => {
     }
 };
 
+/**
+ * Controller action: Render Reusable Seller Dashboard / Command Deck (Milestone 4.1)
+ * Route: GET /seller/dashboard
+ * Protected by: authMiddleware, requireSeller
+ */
+export const renderSellerDashboard = async (req, res) => {
+    try {
+        // Authenticated seller is derived securely from req.user
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        // Parallel count operations using existing indexed fields (seller + isAvailable)
+        const [activeProductCount, totalProductCount] = await Promise.all([
+            Product.countDocuments({ seller: sellerUser._id, isAvailable: true }),
+            Product.countDocuments({ seller: sellerUser._id })
+        ]);
+
+        // Defensive data scrub: ensure no sensitive credentials leak to view
+        const seller = {
+            id: sellerUser._id.toString(),
+            _id: sellerUser._id,
+            name: sellerUser.name || "Unknown Captain",
+            storeName: sellerUser.storeName || "",
+            homeIsland: sellerUser.homeIsland || "",
+            bio: sellerUser.bio || "",
+            avatar: sellerUser.avatar || "/images/avatars/default-pirate.png",
+            role: sellerUser.role
+        };
+
+        const islandMeta = seller.homeIsland && ISLANDS_DATA[seller.homeIsland]
+            ? ISLANDS_DATA[seller.homeIsland]
+            : null;
+
+        res.render("seller/dashboard", {
+            page_title: `${seller.storeName || seller.name} — Command Deck | Pirate-Civ`,
+            seller,
+            island: islandMeta,
+            activeProductCount,
+            totalProductCount,
+            storefrontUrl: `/seller/${seller.id}`,
+            user: req.user
+        });
+
+    } catch (error) {
+        console.error("Error in renderSellerDashboard:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
 // Aliases for route & backwards compatibility
 export const renderSellerDiscovery = renderSellerStorefront;
 export const renderPublicSeller = renderSellerStorefront;
@@ -117,5 +171,6 @@ export default {
     renderSellerStorefront,
     renderSellerDiscovery,
     renderPublicSeller,
-    renderSellerProfile
+    renderSellerProfile,
+    renderSellerDashboard
 };
