@@ -164,6 +164,30 @@ Historically, 32 products were hardcoded inside `controller/islands.js` (`ISLAND
    - `controller/cart.js` safely ignores missing or deleted products upon population, ensuring zero buyer cart crashes.
 5. **Cross-Seller Isolation:** Cross-seller view, edit, toggle, or delete operations strictly forbidden by ownership checks.
 
+### 4.7 Seller Product Creation & Storefront Integration (Milestone 4.3 COMPLETE)
+1. **Creation Endpoints & Security:**
+   - Dedicated GET route `GET /seller/products/new` and POST handler `POST /seller/products/new` (with alias `POST /seller/products`).
+   - Guarded strictly by `[authMiddleware, requireSeller]`. Unauthenticated requests redirect to `/login`; buyers and unauthorized roles receive HTTP 403.
+   - Ownership is immutably pinned to `req.user._id`; client-submitted seller fields are strictly ignored.
+2. **Schema Validation & Boundary Rules:**
+   - `name`: Required, non-empty, max 120 characters, trimmed.
+   - `price`: Required, numeric, non-negative (`>= 0`).
+   - `stock`: Integer, non-negative (`>= 0`, default 15).
+   - `description`: Required, non-empty, max 2000 characters, trimmed.
+   - `island`: Validated strictly against canonical enum (`astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`).
+   - `category`: Validated strictly against canonical enum (`relics`, `apparel`, `provisions`).
+   - `isAvailable`: Strict boolean parsing.
+   - `image`: Uses existing schema relative paths/URLs with fallback (`/images/items/astrolabe_quadrant.png`). No unnecessary file upload dependencies added.
+3. **Deterministic Slug Collision Safety:**
+   - Slugs are generated from product names using standard kebab-case formatting.
+   - Pre-save lookup verifies slug uniqueness. If a duplicate slug exists, product creation returns HTTP 400 with a clean, user-friendly notice without crashing the server.
+   - Catches MongoDB `E11000` duplicate key index violations gracefully as a defensive fallback.
+4. **Form Retention & Error Feedback:**
+   - On validation errors, the form re-renders with descriptive error banners (`#createErrorAlert`) and pre-populates entered values so merchants do not lose their draft.
+5. **Storefront & Catalog Sync:**
+   - Upon creation with `isAvailable: true`, the ware automatically becomes queryable and visible in the seller's product console (`/seller/products`), seller's public storefront (`/seller/:sellerId`), canonical island bazaar, and product detail route (`/product/:slug`).
+   - If created with `isAvailable: false`, it remains private to the seller's management catalog.
+
 ---
 
 ## 5. Currency & Pricing: Doubloons (🪙)

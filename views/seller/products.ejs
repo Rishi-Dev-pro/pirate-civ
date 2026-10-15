@@ -80,10 +80,21 @@
                     <span class="seller-stat-badge badge-active" id="badgeActiveProducts">
                         Active in Markets: <%= activeCount %>
                     </span>
+                    <a href="/seller/products/new" id="btnForgeCargo" class="btn-form-submit" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; font-size: 0.85rem;" title="Forge New Cargo">
+                        <span>➕</span>
+                        <span>Forge Cargo</span>
+                    </a>
                 </div>
             </header>
 
             <!-- Notification Messages -->
+            <% if (query && query.created) { %>
+                <div class="seller-alert-banner" id="bannerSuccessCreated" role="alert">
+                    <span>🎉</span>
+                    <span>New artifact wares successfully forged and chartered in your merchant catalog!</span>
+                </div>
+            <% } %>
+
             <% if (query && query.updated) { %>
                 <div class="seller-alert-banner" id="bannerSuccessUpdated" role="alert">
                     <span>✨</span>
@@ -111,7 +122,10 @@
                     <div class="empty-vault-icon">📦</div>
                     <h4 class="empty-vault-title">Vault Currently Barren</h4>
                     <p class="empty-vault-text">You have no registered products in your vault catalog. Products forged will appear here.</p>
-                    <div style="margin-top: 18px;">
+                    <div style="margin-top: 18px; display: flex; gap: 12px; justify-content: center; align-items: center;">
+                        <a href="/seller/products/new" class="btn-form-submit" style="text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                            <span>➕ Forge First Cargo</span>
+                        </a>
                         <a href="/seller/dashboard" class="btn-action-edit" style="display: inline-block;">
                             ← Return to Command Deck
                         </a>

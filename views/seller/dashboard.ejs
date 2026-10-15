@@ -49,6 +49,10 @@
                     <span>Merchant Deck</span>
                 </div>
 
+                <a href="/seller/products/new" id="headerForgeLink" class="btn-store-cart" style="text-decoration: none;" title="Forge New Cargo">
+                    <span>➕ FORGE</span>
+                </a>
+
                 <a href="/seller/products" id="headerProductsLink" class="btn-store-cart" style="text-decoration: none;" title="Manage Products">
                     <span>⚖️ PRODUCTS</span>
                 </a>
@@ -201,18 +205,19 @@
                         </span>
                     </a>
 
-                    <!-- 2. Forge New Cargo (Placeholder / Phase 4.3) -->
-                    <div class="deck-tile locked-tile" id="tileAddProduct" title="Forge New Cargo (Unlocks Phase 4.3)">
+                    <!-- 2. Forge New Cargo (Milestone 4.3 Active) -->
+                    <a href="/seller/products/new" class="deck-tile active-tile" id="tileAddProduct" title="Forge New Cargo">
                         <div class="tile-top">
                             <span class="tile-icon">➕</span>
-                            <span class="tile-badge badge-locked">PHASE 4.3</span>
+                            <span class="tile-badge badge-available">ACTIVE</span>
                         </div>
                         <h4 class="tile-title">Forge New Cargo</h4>
                         <p class="tile-desc">Charter new relics, corsair weaponry, or apparel for listing on the 6 islands.</p>
-                        <span class="tile-btn btn-locked-action">
-                            <span>Unlocks Phase 4.3</span>
+                        <span class="tile-btn btn-primary-action">
+                            <span>Forge Cargo</span>
+                            <span>→</span>
                         </span>
-                    </div>
+                    </a>
 
                     <!-- 3. Manage Inventory / Products (Milestone 4.2 Active) -->
                     <a href="/seller/products" id="tileManageProducts" class="deck-tile active-tile" title="Manage Vault Products">

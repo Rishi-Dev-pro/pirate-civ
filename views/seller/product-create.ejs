@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Forge New Cargo | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Dedicated Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p43_create_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p43_create_v1">
+</head>
+
+<body class="island-store-body seller-edit-body">
+
+    <!-- Fixed Atmospheric Backdrop -->
+    <div class="store-backdrop">
+        <img src="<%= (island && island.image) ? island.image : '/images/astrolabe-bg.jpg' %>"
+             alt="Archipelago Backdrop"
+             class="store-bg-img"
+             onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
+
+    <!-- Reusable Main Navigation Bar -->
+    <%- include("../partials/header") %>
+
+    <!-- Master Stage -->
+    <main class="seller-dashboard-wrapper">
+
+        <!-- Top Navigation Bar: Breadcrumbs & Header Controls -->
+        <nav class="detail-nav-bar" aria-label="Breadcrumb Navigation">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <a href="/seller/dashboard" class="crumb-link">Command Deck</a>
+                <span class="crumb-separator">›</span>
+                <a href="/seller/products" class="crumb-link">Vault Products</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Forge New Cargo</span>
+            </div>
+
+            <div class="store-header-controls">
+                <div class="doubloons-pill">
+                    <span class="coin-icon">🪙</span>
+                    <span>Forge Deck</span>
+                </div>
+
+                <a href="/seller/products" class="btn-store-cart" style="text-decoration: none;" title="Return to Products">
+                    <span>← CANCEL</span>
+                </a>
+
+                <a href="/home" class="btn-store-close" title="Return to Sea Chart">
+                    &times;
+                </a>
+            </div>
+        </nav>
+
+        <!-- Product Creation Form Card -->
+        <article class="seller-edit-form-card">
+
+            <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px; border-bottom: 1px solid rgba(212, 147, 57, 0.25); padding-bottom: 18px;">
+                <div style="width: 60px; height: 60px; border-radius: 8px; border: 1px solid #d49339; background: rgba(212, 147, 57, 0.15); display: flex; align-items: center; justify-content: center; font-size: 1.8rem;">
+                    ⚒️
+                </div>
+                <div>
+                    <h1 style="font-family: 'Cinzel', serif; font-size: 1.6rem; color: #fff3d4; margin: 0 0 4px 0;">
+                        ⚓ Forge New Cargo Wares
+                    </h1>
+                    <span style="font-size: 0.85rem; color: #94a3b8;">
+                        Charter and register new artifacts into your merchant house vault
+                    </span>
+                </div>
+            </div>
+
+            <!-- Error Banner -->
+            <% if (error) { %>
+                <div class="seller-alert-banner alert-error" role="alert" id="createErrorBanner">
+                    <span>☠</span>
+                    <span><%= error %></span>
+                </div>
+            <% } %>
+
+            <!-- Form -->
+            <form method="POST" action="/seller/products/new" id="formCreateProduct">
+
+                <!-- Row 1: Name -->
+                <div class="seller-form-group">
+                    <label for="inputName">Artifact Title *</label>
+                    <input type="text"
+                           id="inputName"
+                           name="name"
+                           class="seller-form-input"
+                           maxlength="120"
+                           placeholder="e.g. Gilded Astrolabe of Alexandria"
+                           value="<%= product && product.name ? product.name : '' %>"
+                           required>
+                </div>
+
+                <!-- Row 2: Price & Stock -->
+                <div class="seller-form-row">
+                    <div class="seller-form-group">
+                        <label for="inputPrice">Valuation (🪙 Doubloons) *</label>
+                        <input type="number"
+                               id="inputPrice"
+                               name="price"
+                               class="seller-form-input"
+                               min="0"
+                               step="1"
+                               placeholder="e.g. 150"
+                               value="<%= product && product.price !== undefined ? product.price : '' %>"
+                               required>
+                    </div>
+
+                    <div class="seller-form-group">
+                        <label for="inputStock">Vault Reserve Stock (Units) *</label>
+                        <input type="number"
+                               id="inputStock"
+                               name="stock"
+                               class="seller-form-input"
+                               min="0"
+                               step="1"
+                               placeholder="10"
+                               value="<%= product && product.stock !== undefined ? product.stock : '10' %>"
+                               required>
+                    </div>
+                </div>
+
+                <!-- Row 3: Island & Category -->
+                <div class="seller-form-row">
+                    <div class="seller-form-group">
+                        <label for="selectIsland">Trading Island Origin *</label>
+                        <select id="selectIsland" name="island" class="seller-form-select" required>
+                            <% canonicalIslands.forEach(function(isl) { %>
+                                <option value="<%= isl %>" <%= (product && product.island === isl) ? 'selected' : '' %>>
+                                    🏝️ <%= isl.replace('_', ' ').toUpperCase() %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+
+                    <div class="seller-form-group">
+                        <label for="selectCategory">Trade Branch / Category *</label>
+                        <select id="selectCategory" name="category" class="seller-form-select" required>
+                            <% tradingBranches.forEach(function(cat) { %>
+                                <option value="<%= cat %>" <%= (product && product.category === cat) ? 'selected' : '' %>>
+                                    📦 <%= cat.toUpperCase() %>
+                                </option>
+                            <% }); %>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Row 4: Description -->
+                <div class="seller-form-group">
+                    <label for="inputDescription">Artifact Chronicle & Lore Description *</label>
+                    <textarea id="inputDescription"
+                              name="description"
+                              class="seller-form-textarea"
+                              maxlength="2000"
+                              placeholder="Chronicle the history, craftsmanship, provenance, and specifications of this cargo..."
+                              required><%= product && product.description ? product.description : '' %></textarea>
+                </div>
+
+                <!-- Row 5: Image & Rating -->
+                <div class="seller-form-row">
+                    <div class="seller-form-group">
+                        <label for="inputImage">Image Asset Path</label>
+                        <input type="text"
+                               id="inputImage"
+                               name="image"
+                               class="seller-form-input"
+                               placeholder="/images/items/default-relic.png"
+                               value="<%= product && product.image ? product.image : '/images/items/default-relic.png' %>">
+                    </div>
+
+                    <div class="seller-form-group">
+                        <label for="inputRating">Rating Stars</label>
+                        <input type="text"
+                               id="inputRating"
+                               name="rating"
+                               class="seller-form-input"
+                               value="<%= product && product.rating ? product.rating : '★★★★★' %>">
+                    </div>
+                </div>
+
+                <!-- Row 6: Availability Checkbox -->
+                <div class="seller-checkbox-group">
+                    <input type="checkbox"
+                           id="checkAvailable"
+                           name="isAvailable"
+                           value="true"
+                           <%= (product && (product.isAvailable === false || product.isAvailable === 'false')) ? '' : 'checked' %>>
+                    <label for="checkAvailable">
+                        <strong>List as Active:</strong> Make immediately discoverable on public island bazaars and public merchant storefront.
+                    </label>
+                </div>
+
+                <!-- Action Controls -->
+                <div class="seller-form-actions">
+                    <a href="/seller/products" class="btn-form-cancel">
+                        Discard & Cancel
+                    </a>
+                    <button type="submit" class="btn-form-submit" id="btnSubmitCreate">
+                        <span>⚒️ Charter & Forge Cargo</span>
+                    </button>
+                </div>
+
+            </form>
+
+        </article>
+
+    </main>
+
+    <!-- Global Footer -->
+    <%- include("../partials/footer") %>
+
+</body>
+</html>

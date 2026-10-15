@@ -5,7 +5,7 @@
 
 import mongoose from "mongoose";
 import User from "../models/user.js";
-import Product, { CANONICAL_ISLANDS } from "../models/product.js";
+import Product, { CANONICAL_ISLANDS, TRADING_BRANCHES } from "../models/product.js";
 import { ISLANDS_DATA } from "./islands.js";
 
 /**
@@ -562,6 +562,232 @@ export const deleteProduct = async (req, res) => {
     }
 };
 
+/**
+ * Controller action: Render Create Product Page (Milestone 4.3)
+ * Route: GET /seller/products/new
+ * Protected by: authMiddleware, requireSeller
+ */
+export const renderCreateProduct = async (req, res) => {
+    try {
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        const islandMeta = sellerUser.homeIsland && ISLANDS_DATA[sellerUser.homeIsland]
+            ? ISLANDS_DATA[sellerUser.homeIsland]
+            : null;
+
+        const seller = {
+            id: sellerUser._id.toString(),
+            _id: sellerUser._id,
+            name: sellerUser.name || "Unknown Captain",
+            storeName: sellerUser.storeName || "",
+            homeIsland: sellerUser.homeIsland || "",
+            avatar: sellerUser.avatar || "/images/avatars/default-pirate.png",
+            role: sellerUser.role
+        };
+
+        res.render("seller/product-create", {
+            page_title: "Forge New Cargo — Vault Management | Pirate-Civ",
+            seller,
+            island: islandMeta,
+            product: {
+                name: "",
+                price: "",
+                description: "",
+                stock: 10,
+                island: sellerUser.homeIsland && CANONICAL_ISLANDS.includes(sellerUser.homeIsland) ? sellerUser.homeIsland : "astrolabe",
+                category: "relics",
+                image: "/images/items/default-relic.png",
+                isAvailable: true,
+                rating: "★★★★★"
+            },
+            canonicalIslands: CANONICAL_ISLANDS,
+            tradingBranches: TRADING_BRANCHES,
+            error: null,
+            user: req.user
+        });
+
+    } catch (error) {
+        console.error("Error in renderCreateProduct:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
+/**
+ * Controller action: Create New Seller Product (Milestone 4.3)
+ * Route: POST /seller/products/new or POST /seller/products
+ * Protected by: authMiddleware, requireSeller
+ */
+export const createProduct = async (req, res) => {
+    try {
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        const {
+            name,
+            price,
+            description,
+            stock,
+            island,
+            category,
+            isAvailable,
+            image,
+            rating
+        } = req.body;
+
+        const islandMeta = sellerUser.homeIsland && ISLANDS_DATA[sellerUser.homeIsland]
+            ? ISLANDS_DATA[sellerUser.homeIsland]
+            : null;
+
+        const seller = {
+            id: sellerUser._id.toString(),
+            _id: sellerUser._id,
+            name: sellerUser.name || "Unknown Captain",
+            storeName: sellerUser.storeName || "",
+            homeIsland: sellerUser.homeIsland || "",
+            avatar: sellerUser.avatar || "/images/avatars/default-pirate.png",
+            role: sellerUser.role
+        };
+
+        const renderFormError = (errorMessage) => {
+            return res.status(400).render("seller/product-create", {
+                page_title: "Forge New Cargo — Vault Management | Pirate-Civ",
+                seller,
+                island: islandMeta,
+                product: { ...req.body },
+                canonicalIslands: CANONICAL_ISLANDS,
+                tradingBranches: TRADING_BRANCHES,
+                error: errorMessage,
+                user: req.user
+            });
+        };
+
+        // 1. Validation: Name
+        const trimmedName = typeof name === "string" ? name.trim() : "";
+        if (!trimmedName || trimmedName.length > 120) {
+            return renderFormError("Product name is required and cannot exceed 120 characters.");
+        }
+
+        // 2. Validation: Price
+        const numPrice = Number(price);
+        if (price === "" || price === undefined || isNaN(numPrice) || numPrice < 0) {
+            return renderFormError("Valuation price must be a non-negative number in Doubloons.");
+        }
+
+        // 3. Validation: Description
+        const trimmedDesc = typeof description === "string" ? description.trim() : "";
+        if (!trimmedDesc || trimmedDesc.length > 2000) {
+            return renderFormError("Product description is required and cannot exceed 2000 characters.");
+        }
+
+        // 4. Validation: Stock
+        const numStock = stock === "" || stock === undefined ? 10 : Number(stock);
+        if (isNaN(numStock) || !Number.isInteger(numStock) || numStock < 0) {
+            return renderFormError("Stock must be a non-negative integer.");
+        }
+
+        // 5. Validation: Island
+        const trimmedIsland = typeof island === "string" ? island.trim() : "";
+        if (!trimmedIsland || !CANONICAL_ISLANDS.includes(trimmedIsland)) {
+            return renderFormError("Selected island must be one of the 6 canonical trading islands.");
+        }
+
+        // 6. Validation: Category
+        const trimmedCategory = typeof category === "string" ? category.trim() : "";
+        if (!trimmedCategory || !TRADING_BRANCHES.includes(trimmedCategory)) {
+            return renderFormError("Selected category must be one of the canonical trading branches (relics, apparel, provisions).");
+        }
+
+        // 7. Validation: Availability
+        const parsedAvailability = isAvailable === undefined
+            ? false
+            : (isAvailable === true || isAvailable === "true" || isAvailable === "on" || isAvailable === 1 || isAvailable === "1");
+
+        // 8. Image & Rating
+        const trimmedImage = typeof image === "string" && image.trim()
+            ? image.trim()
+            : "/images/items/default-relic.png";
+        const trimmedRating = typeof rating === "string" && rating.trim()
+            ? rating.trim()
+            : "★★★★★";
+
+        // 9. Slug Pre-Check & Duplicate Protection
+        const baseSlug = trimmedName
+            .toLowerCase()
+            .replace(/[^\w\s-]/g, "")
+            .replace(/[\s_-]+/g, "-")
+            .replace(/^-+|-+$/g, "");
+
+        if (baseSlug) {
+            const existingProductWithSlug = await Product.findOne({ slug: baseSlug });
+            if (existingProductWithSlug) {
+                return renderFormError("A product with a conflicting title/slug already exists in the archipelago. Please choose a distinct title.");
+            }
+        }
+
+        // 10. Instantiate & Save Product
+        const newProduct = new Product({
+            seller: sellerUser._id, // Strictly authenticated seller identity
+            name: trimmedName,
+            price: numPrice,
+            description: trimmedDesc,
+            stock: numStock,
+            island: trimmedIsland,
+            category: trimmedCategory,
+            isAvailable: parsedAvailability,
+            image: trimmedImage,
+            rating: trimmedRating
+        });
+
+        await newProduct.save();
+
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.status(201).json({
+                success: true,
+                product: newProduct
+            });
+        }
+
+        return res.redirect("/seller/products?created=1");
+
+    } catch (error) {
+        // Handle MongoDB duplicate key error gracefully
+        if (error.code === 11000) {
+            return res.status(400).render("seller/product-create", {
+                page_title: "Forge New Cargo — Vault Management | Pirate-Civ",
+                seller: {
+                    id: req.user._id.toString(),
+                    _id: req.user._id,
+                    name: req.user.name || "Unknown Captain",
+                    storeName: req.user.storeName || "",
+                    homeIsland: req.user.homeIsland || "",
+                    avatar: req.user.avatar || "/images/avatars/default-pirate.png",
+                    role: req.user.role
+                },
+                island: req.user.homeIsland && ISLANDS_DATA[req.user.homeIsland] ? ISLANDS_DATA[req.user.homeIsland] : null,
+                product: { ...req.body },
+                canonicalIslands: CANONICAL_ISLANDS,
+                tradingBranches: TRADING_BRANCHES,
+                error: "A ware with a conflicting title/slug already exists. Please choose a unique title.",
+                user: req.user
+            });
+        }
+
+        console.error("Error in createProduct:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
 // Aliases for route & backwards compatibility
 export const renderSellerDiscovery = renderSellerStorefront;
 export const renderPublicSeller = renderSellerStorefront;
@@ -577,5 +803,7 @@ export default {
     renderEditProduct,
     updateProduct,
     toggleProductAvailability,
-    deleteProduct
+    deleteProduct,
+    renderCreateProduct,
+    createProduct
 };

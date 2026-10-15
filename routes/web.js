@@ -271,6 +271,8 @@ import { requireSeller } from "../middleware/roles.js";
 import {
     renderSellerDashboard,
     renderSellerProducts,
+    renderCreateProduct,
+    createProduct,
     renderEditProduct,
     updateProduct,
     toggleProductAvailability,
@@ -282,8 +284,12 @@ router.get("/seller/dashboard", authMiddleware, requireSeller, renderSellerDashb
 router.get("/seller/portal", authMiddleware, requireSeller, (req, res) => res.redirect("/seller/dashboard"));
 router.get("/seller", authMiddleware, requireSeller, (req, res) => res.redirect("/seller/dashboard"));
 
-// Seller Product Management (Milestone 4.2)
+// Seller Product Management (Milestone 4.2 & 4.3)
 router.get("/seller/products", authMiddleware, requireSeller, renderSellerProducts);
+router.get("/seller/products/new", authMiddleware, requireSeller, renderCreateProduct);
+router.post("/seller/products/new", authMiddleware, requireSeller, createProduct);
+router.post("/seller/products", authMiddleware, requireSeller, createProduct);
+
 router.get("/seller/products/:productId/edit", authMiddleware, requireSeller, renderEditProduct);
 router.post("/seller/products/:productId/edit", authMiddleware, requireSeller, updateProduct);
 router.post("/seller/products/:productId/update", authMiddleware, requireSeller, updateProduct);

@@ -4,6 +4,61 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-16] — Phase 4 / Milestone 4.3: Seller Product Creation (MILESTONE 4.3 COMPLETE)
+
+### Added & Implemented
+* **Seller Product Creation Page & Form (`controller/sellers.js`::`renderCreateProduct`, `views/seller/product-create.ejs`):**
+  - Secured route `GET /seller/products/new` using `[authMiddleware, requireSeller]`.
+  - Built dark-fantasy pirate themed creation form styled consistently with Command Deck and product edit views.
+  - Form fields include: authoritative item name, Doubloons price, stock count, canonical category dropdown, canonical island dropdown, image URL/path with default fallback, description, and availability toggle.
+  - Form input retention on validation failure preserving user-entered values with clean alerts.
+* **Product Creation Submission Handler (`controller/sellers.js`::`createProduct`, `routes/web.js`):**
+  - Secured route `POST /seller/products/new` (and alias `POST /seller/products`).
+  - Strict seller identity pinning: `product.seller = req.user._id`, discarding any client-provided seller ID.
+  - Comprehensive field validation:
+    - Name: required, non-empty, trimmed, max 120 chars.
+    - Price: required, numeric, non-negative (`>= 0`).
+    - Stock: non-negative integer (`>= 0`, default 15).
+    - Description: required, non-empty, trimmed, max 2000 chars.
+    - Island: canonical 6-island whitelist (`astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`).
+    - Category: canonical 3-category whitelist (`relics`, `apparel`, `provisions`).
+    - Availability: strict boolean parsing.
+    - Image: preserves existing schema architecture (`/images/items/*.png`), avoiding unnecessary upload libraries.
+  - Slug safety and collision handling:
+    - Deterministic kebab-case slug generator.
+    - Pre-save duplicate slug collision check returning HTTP 400 user-friendly alert.
+    - Graceful `E11000` duplicate key handling without crashing.
+* **Command Deck & Navigation Integration (`views/seller/dashboard.ejs`, `views/seller/products.ejs`):**
+  - Activated "Forge New Cargo" action tile (`#tileAddProduct`) in the Command Deck dashboard linking to `/seller/products/new`.
+  - Added "Forge Cargo" quick link (`#headerForgeLink`) in Command Deck header.
+  - Added "Forge New Cargo" action button (`#btnForgeCargo`) in the product catalog header.
+  - Added catalog alert banner acknowledging newly forged wares (`?created=1`).
+* **Catalog & Storefront Integration:**
+  - Wares created with `isAvailable: true` automatically become visible across the seller's catalog (`/seller/products`), seller's public storefront (`/seller/:sellerId`), canonical island bazaar (`/island/:islandName`), and product detail (`/product/:slug`).
+  - Wares created with `isAvailable: false` remain in the seller's vault management catalog but are excluded from public listings.
+
+### Tested & Verified
+* 78 automated assertions in `scratch/test_milestone_4_3.js` covering access control, buyer/admin denial, seller authorization, product creation persistence, owner binding, validation constraints (name, price, stock, description, canonical island, canonical category, availability), duplicate slug handling, form input retention, catalog and storefront visibility, detail route lookup, cross-seller editing isolation, cart invariance, and order snapshot preservation (78/78 passed).
+* Regression test suites:
+  - Phase 4.2 regression: 67/67 passed (`scratch/test_milestone_4_2.js`).
+  - Phase 4.1 regression: 64/64 passed (`scratch/test_milestone_4_1.js`).
+  - Phase 3 regression: 96/96 passed (`scratch/test_milestone_3_6.js`).
+  - Total automated assertions: 305/305 passed.
+* Real browser verification via native Chrome DevTools Protocol (CDP) WebSocket:
+  - Seller login as `admiralty@pirate-civ.internal`.
+  - Command Deck (`/seller/dashboard`) inspection verifying active `#tileAddProduct` tile and `#headerForgeLink`.
+  - Navigated to `/seller/products/new`, verified form inputs and canonical dropdowns.
+  - Tested invalid form submission (negative price), verified retention and validation banner.
+  - Submitted valid product, verified redirect to `/seller/products?created=1` with success banner and new catalog entry.
+  - Inspected public storefront (`/seller/:sellerId`), verified new product card visible with correct price and island tag.
+  - Inspected product detail (`/product/:slug`), verified item title, Doubloons price, lore description, and seller charter badge.
+  - Verified RBAC: logged out, logged in as buyer (`buyer@pirate-civ.internal`), attempted access to `/seller/products/new`, verified HTTP 403 Access Denied.
+  - Captured 6 screenshot artifacts; 0 unexpected console errors/warnings.
+* Static syntax checks passed (16/16 JS files).
+* Template compilation passed (27/27 EJS views).
+
+---
+
 ## [2026-10-15] — Phase 4 / Milestone 4.2: Seller Product Management (MILESTONE 4.2 COMPLETE)
 
 ### Added & Implemented

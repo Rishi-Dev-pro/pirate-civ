@@ -150,9 +150,15 @@ gantt
   - Implemented instant availability toggle (`POST /seller/products/:productId/toggle-availability`) synchronized with public storefronts and listings.
   - Implemented safe product deletion (`POST /seller/products/:productId/delete`) with cross-seller guards, preserving historical Order snapshots and Cart integrity.
   - Fully tested: 67/67 automated tests, Phase 4.1 regression pass (64/64), Phase 3 regression pass (96/96), and real browser verification with 0 console errors.
-* **Milestone 4.3: Product Creation [NEXT]**
-  - Add product creation route `/seller/products/new` with island selection (limited to 6 canonical islands) and category selection.
-  - Safe product creation attributing new listings to authenticated seller (`req.user._id`).
+* **Milestone 4.3: Product Creation [COMPLETE]**
+  - Added authenticated product creation routes `GET /seller/products/new` and `POST /seller/products/new` guarded by `[authMiddleware, requireSeller]`.
+  - Reusable creation form (`views/seller/product-create.ejs`) with canonical island validation (6 islands), canonical category validation (relics, apparel, provisions), non-negative price, non-negative integer stock, and availability toggle.
+  - Implemented pre-check slug conflict detection and MongoDB E11000 duplicate handling without server crashes.
+  - Activated "Forge New Cargo" action card (`#tileAddProduct`) and header quick link on the Command Deck.
+  - Full catalog synchronization: newly created active products immediately appear in the seller catalog, public storefront, island listing, and product detail sheet, while unavailable products remain private to the seller.
+  - Tested: 78/78 dedicated automated tests, full regressions (305 passed total), live server tests on port 3000, and end-to-end real browser CDP execution with 0 console errors.
+* **Milestone 4.4: Stock & Inventory Management [NEXT]**
+  - Quick-update stock toggle and availability flags from the seller dashboard and inventory table.
 
 ---
 

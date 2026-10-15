@@ -69,7 +69,7 @@ The seller dashboard is a high-contrast nautical command center designed for ope
 
 ### 3.4 Command Operations Deck (Action Tiles)
 * 📜 **Public Storefront (ACTIVE):** Direct link to the merchant's live public storefront (`/seller/:sellerId`).
-* ➕ **Forge New Cargo (Phase 4.3):** Tile indicating listing creation capability docking in Phase 4.3.
+* ➕ **Forge New Cargo (MILESTONE 4.3 ACTIVE):** Direct action tile (`#tileAddProduct`) linking to `/seller/products/new` for listing creation.
 * ⚖️ **Vault Products (MILESTONE 4.2 ACTIVE):** Direct management hub (`/seller/products`) for catalog inspection, valuations, stock updates, availability toggling, and product deletion.
 * 📦 **Dispatch Manifests (Phase 4.4):** Tile indicating order fulfillment queue docking in Phase 4.4.
 
@@ -80,16 +80,16 @@ The seller dashboard is a high-contrast nautical command center designed for ope
 
 ---
 
-## 4. Product Catalog Management (CRUD) [MILESTONE 4.2 COMPLETE]
+## 4. Product Catalog Management (CRUD) [MILESTONE 4.3 COMPLETE]
 
-Sellers have complete lifecycle control over their existing catalog products via `/seller/products`.
+Sellers have complete lifecycle control over their catalog products via `/seller/products`.
 
 ### 4.1 Product Catalog Listing (`GET /seller/products`)
 * **Guards:** `[authMiddleware, requireSeller]`.
 * **Data Scoping:** Queries strictly `Product.find({ seller: req.user._id }).sort({ createdAt: -1 })` utilizing the compound index `{ seller: 1, createdAt: -1 }`.
 * **Catalog Telemetry:** Displays total wares, active wares, and unavailable wares.
 * **Product Table:** Renders thumbnail image, authoritative name, category, canonical island origin, Doubloons valuation (`🪙`), real-time stock count, and active/hidden status badges.
-* **Action Controls:** Provides direct links to edit (`/seller/products/:id/edit`), instant availability toggle button, and safe deletion button with confirmation.
+* **Action Controls:** Provides direct links to edit (`/seller/products/:id/edit`), instant availability toggle button, and safe deletion button with confirmation. Includes quick access to "Forge New Cargo" (`/seller/products/new`).
 * **Multi-Seller Isolation:** Strict isolation ensures sellers cannot view, edit, toggle, or delete wares belonging to other merchants.
 
 ### 4.2 Product Updating (`GET /seller/products/:id/edit`, `POST /seller/products/:id/edit`)
@@ -99,7 +99,7 @@ Sellers have complete lifecycle control over their existing catalog products via
   - Validates non-empty names and descriptions.
   - Enforces numeric non-negative price (`min: 0`) and stock (`min: 0`, integer).
   - Enforces canonical island enum (`astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`).
-  - Enforces canonical category enum (`weapon`, `apparel`, `relic`, `cartography`, `provisions`, `treasure`).
+  - Enforces canonical category enum (`relics`, `apparel`, `provisions`).
 * **Persistence:** Saves changes directly to MongoDB and redirects back to `/seller/products` with a success notice.
 
 ### 4.3 Availability Toggle (`POST /seller/products/:id/toggle-availability`)
@@ -113,7 +113,27 @@ Sellers have complete lifecycle control over their existing catalog products via
 * **Historical Order Snapshot Preservation:** Historical orders in `models/order.js` store embedded snapshots (`name`, `price`, `quantity`, `lineTotal`, `seller`, `product`). Product deletion never mutates past order records or alters historic revenues.
 * **Cart Resilience:** `controller/cart.js` safely filters out non-existent or deleted products, preventing buyer cart crashes.
 
-*(Note: Product Creation is deferred to Phase 4.3).*
+### 4.5 Product Creation (`GET /seller/products/new`, `POST /seller/products/new`) [MILESTONE 4.3 COMPLETE]
+* **Guards:** Strict `[authMiddleware, requireSeller]`. Unauthenticated users redirect to `/login`; buyers receive HTTP 403; admins receive HTTP 403 unless assigned seller role.
+* **Creation Form:** Accessible at `GET /seller/products/new`. Renders Pirate-Civ themed form (`views/seller/product-create.ejs`) with name, price, stock, canonical category, canonical island, image path/URL, description, and availability toggle.
+* **Seller Ownership:** Strictly enforced as `req.user._id`. Client-provided seller IDs in query/body are discarded.
+* **Field Validation & Sanitization:**
+  - `name`: Required, trimmed, max 120 chars.
+  - `price`: Required, numeric, non-negative (`>= 0`).
+  - `stock`: Integer, non-negative (`>= 0`).
+  - `description`: Required, trimmed, max 2000 chars.
+  - `island`: Required, strictly member of canonical 6 islands (`astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`).
+  - `category`: Required, strictly member of canonical categories (`relics`, `apparel`, `provisions`).
+  - `isAvailable`: Strict boolean parsing.
+  - `image`: Retains existing Product schema fallback/URL architecture; no unnecessary upload infrastructure.
+* **Slug Safety & Collision Handling:**
+  - Auto-generated slug checked via `Product.findOne({ slug })` prior to creation.
+  - MongoDB unique index `E11000` duplicate slug errors caught gracefully, rendering user-friendly feedback without server crash.
+* **Error Resilience & State Retention:**
+  - If validation fails, re-renders the creation form with descriptive error banner and retains safe user inputs.
+* **Storefront Integration:**
+  - Newly created wares with `isAvailable: true` immediately show in seller's management catalog (`/seller/products`), seller's public storefront (`/seller/:sellerId`), canonical island bazaar (`/island/:islandName`), and product detail (`/product/:slug`).
+  - Wares created with `isAvailable: false` are cataloged in seller management but excluded from public views.
 
 ---
 
