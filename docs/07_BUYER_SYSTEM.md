@@ -103,17 +103,28 @@ Rather than fragmented templates, all marketplace items share a single, rich, re
 ---
 
 ## 6. Explore Sellers & Public Seller Profiles
+ 
+### 6.1 Explorer → Seller Discovery (`/seller/:sellerId`) [MILESTONE 3.3 COMPLETE]
+* **Discovery Flow:** Buyer navigates from `Island ➔ Product Detail ➔ Merchant Discovery`.
+* **Entry Points on Product Detail:**
+  - Clickable Merchant Avatar (`.seller-avatar-link`)
+  - Clickable Merchant Store Name (`.seller-name-link`)
+  - Prominent Action Button: `📜 DISCOVER MERCHANT` (`.btn-discover-seller`)
+* **Reusable Discovery View (`views/seller-discovery.ejs`):**
+  - Powered by `controller/sellers.js::renderSellerDiscovery` at `GET /seller/:sellerId`.
+  - Requires authenticated session (`authMiddleware`).
+  - Indexed lookup against MongoDB `User` by `_id`, strictly enforcing `{ role: 'seller' }`.
+  - Exposes only sanitized public credentials: `name`, `storeName`, `avatar`, `homeIsland`, `bio`, and active trade listing count.
+  - Queries active wares chartered by the merchant, rendering a sample preview grid of up to 4 items.
+  - **Security Guarantee:** Strictly omits `password`, `authSecretHash`, and `googleId`.
+  - **Error Guards:** Malformed ObjectIds, non-existent users, and non-seller users return clean 404 responses without CastError or stack trace leakage.
+  - **Milestone 3.4 Scope Banner:** Features a prominent notice banner indicating that full storefront banners, comprehensive product catalogs, and review systems dock in Milestone 3.4.
 
-### 6.1 Explore Sellers (`/sellers`)
-* Refactors the legacy `/users` page into a true **Merchant Directory**.
-* Displays merchant cards: Storefront Name, Captain Alias, Home Island emblem, and total active listings.
-* Search and filter merchants by Home Island.
+### 6.2 Public Seller Profile & Full Storefront [MILESTONE 3.4 - NEXT]
+* Comprehensive merchant storefront with custom banners, complete searchable catalog, reviews, and seller analytics (NOT implemented in Milestone 3.3).
 
-### 6.2 Public Seller Profile (`/seller/:sellerId`)
-* When a customer clicks on a merchant's card or the "Sold by" link on a product sheet, they arrive at the seller's dedicated public storefront (`views/seller_profile.ejs`).
-* **Header:** Merchant's custom store banner, bio, home island affiliation, and seller rating.
-* **Catalog Grid:** All products currently listed by this merchant in MongoDB.
-* Clicking any product transitions directly into the Reusable Product Details page.
+### 6.3 Explore Sellers Directory (`/sellers`) [PLANNED 3.4]
+* Refactors the legacy `/users` page into a true **Merchant Directory** with island filtration and captain cards.
 
 ---
 

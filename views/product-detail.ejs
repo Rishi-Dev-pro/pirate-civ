@@ -115,18 +115,39 @@
                 </div>
 
                 <% if (product.seller) { %>
+                    <% const sellerId = product.seller._id ? product.seller._id.toString() : (product.seller.id ? product.seller.id.toString() : null); %>
                     <div class="detail-seller-box">
-                        <img src="<%= product.seller.avatar || '/images/avatars/default-pirate.png' %>"
-                             alt="<%= product.seller.storeName || product.seller.name %>"
-                             class="seller-avatar"
-                             onerror="this.onerror=null; this.src='/images/avatars/default-pirate.png';">
+                        <% if (sellerId) { %>
+                            <a href="/seller/<%= sellerId %>" class="seller-avatar-link" title="Discover Merchant <%= product.seller.storeName || product.seller.name %>">
+                                <img src="<%= product.seller.avatar || '/images/avatars/default-pirate.png' %>"
+                                     alt="<%= product.seller.storeName || product.seller.name %>"
+                                     class="seller-avatar"
+                                     onerror="this.onerror=null; this.src='/images/avatars/default-pirate.png';">
+                            </a>
+                        <% } else { %>
+                            <img src="<%= product.seller.avatar || '/images/avatars/default-pirate.png' %>"
+                                 alt="<%= product.seller.storeName || product.seller.name %>"
+                                 class="seller-avatar"
+                                 onerror="this.onerror=null; this.src='/images/avatars/default-pirate.png';">
+                        <% } %>
                         <div class="seller-info">
                             <span class="seller-role">Chartered Merchant</span>
-                            <span class="seller-name"><%= product.seller.storeName || product.seller.name %></span>
+                            <% if (sellerId) { %>
+                                <a href="/seller/<%= sellerId %>" class="seller-name-link" title="Discover Merchant <%= product.seller.storeName || product.seller.name %>">
+                                    <span class="seller-name"><%= product.seller.storeName || product.seller.name %></span>
+                                </a>
+                            <% } else { %>
+                                <span class="seller-name"><%= product.seller.storeName || product.seller.name %></span>
+                            <% } %>
                             <% if (product.seller.homeIsland) { %>
                                 <span class="seller-port">Home Port: <%= product.seller.homeIsland %></span>
                             <% } %>
                         </div>
+                        <% if (sellerId) { %>
+                            <a href="/seller/<%= sellerId %>" class="btn-discover-seller" title="Discover Merchant <%= product.seller.storeName || product.seller.name %>">
+                                <span>📜 DISCOVER MERCHANT</span>
+                            </a>
+                        <% } %>
                     </div>
                 <% } %>
 

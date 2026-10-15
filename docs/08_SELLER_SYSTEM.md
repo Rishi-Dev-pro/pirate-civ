@@ -111,7 +111,29 @@ When a buyer completes checkout, orders referencing the seller's products appear
 
 ---
 
-## 6. Strict Merchant Security Rules
+## 6. Public Seller Discovery (`/seller/:sellerId`) [MILESTONE 3.3 COMPLETE]
+
+A buyer-facing, public discovery layer allowing buyers on product detail sheets to discover the merchant behind the product:
+
+1. **Discovery Entry Points:**
+   - On `/product/:productId`, the merchant card features a clickable merchant avatar (`.seller-avatar-link`), store name (`.seller-name-link`), and dedicated `📜 DISCOVER MERCHANT` action button (`.btn-discover-seller`).
+2. **Public Identity Rendered:**
+   - Merchant store name / alias (`storeName || name`).
+   - Chartered Guild Merchant badge (`⚓ CHARTERED GUILD MERCHANT`).
+   - Home harbor affiliation (`homeIsland`).
+   - Merchant bio chronicle (`bio`).
+   - Live catalog count (`totalListings`).
+   - Sample chartered relics preview (up to 4 products).
+3. **Data Security & Privacy:**
+   - Uses the unified `User` model with `role: 'seller'`.
+   - Never exposes sensitive credentials (`password`, `authSecretHash`, `googleId`).
+   - Non-seller users, malformed ObjectIds, or non-existent IDs return clean 404 responses.
+4. **Scope Boundary:**
+   - Features a notice banner stating that full storefront catalog filtering, custom banners, and reviews dock in Milestone 3.4. Milestone 3.4 was NOT implemented in 3.3.
+
+---
+
+## 7. Strict Merchant Security Rules
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐

@@ -98,12 +98,16 @@ gantt
   - Displays dynamic product imagery, Doubloons price, stock telemetry badges (`In Vaults`, `Low Reserve`, `Barren`), island origin, merchant bio/store name, breadcrumb navigation, and add-to-cart controls.
   - Connected all 6 canonical island product card items via image links, title links, and dedicated `🔍 DETAILS` action buttons.
   - Validated safe identifier lookups (ObjectId & slug), 404 for nonexistent/malformed/unavailable items, stock immutability, zero credential leakage, and 100% automated regression pass (1,161 assertions).
-* **Milestone 3.3: Seller Discovery ("Explore Sellers") [NEXT]**
-  - Refactor `/users` into `/sellers` with updated view `views/sellers.ejs`.
-  - Display registered merchants, their home island badges, and active catalog counts.
-* **Milestone 3.4: Public Seller Profile**
-  - Create route `/seller/:sellerId` and view `views/seller_profile.ejs`.
-  - Show merchant store banner, lore, ratings, and all products listed by this seller.
+* **Milestone 3.3: Explorer → Seller Discovery [COMPLETE]**
+  - Built discovery/navigation layer from existing products (`Product.seller → User`) to merchant public credentials.
+  - Added clickable merchant card entry points on `/product/:productId` (avatar, store name, and `📜 DISCOVER MERCHANT` action button).
+  - Created reusable discovery route `GET /seller/:sellerId` and view `views/seller-discovery.ejs` powered by `controller/sellers.js::renderSellerDiscovery`.
+  - Queries MongoDB `User` with indexed `_id` and strict `role: 'seller'` enforcement (non-sellers and malformed IDs return clean 404s without CastError leaks).
+  - Displays public seller identity (`storeName`, `avatar`, `homeIsland`, `bio`, active trade listing count, and sample chartered wares preview up to 4 items) while strictly guarding against credential leakage (`password`, `authSecretHash`, `googleId`).
+  - Added prominent Phase 3.4 scope notice banner marking full storefront as deferred to Milestone 3.4.
+  - Phase 3.4 was NOT implemented.
+* **Milestone 3.4: Public Seller Profile & Full Storefront [NEXT]**
+  - Create full merchant storefront with store banner, comprehensive catalog filtering, ratings, and merchant feedback.
 * **Milestone 3.5: Customer Account Profile**
   - Create route `/profile` for buyers to view their account info, home port, and personal preferences.
 

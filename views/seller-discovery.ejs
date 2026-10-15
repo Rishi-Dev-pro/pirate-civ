@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Merchant Discovery | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Dedicated Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=seller_disc_v1">
+</head>
+
+<body class="island-store-body seller-discovery-body">
+
+    <!-- Fixed Atmospheric Backdrop -->
+    <div class="store-backdrop">
+        <img src="<%= (island && island.image) ? island.image : '/images/astrolabe-bg.jpg' %>"
+             alt="Archipelago Backdrop"
+             class="store-bg-img"
+             onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
+
+    <!-- Reusable Main Navigation Bar -->
+    <%- include("partials/header") %>
+
+    <!-- Master Seller Discovery Stage -->
+    <main class="seller-discovery-wrapper">
+
+        <!-- Top Navigation Bar: Breadcrumbs & Header Actions -->
+        <nav class="detail-nav-bar" aria-label="Breadcrumb Navigation">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-link">Merchant Guild</span>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current"><%= seller.storeName || seller.name %></span>
+            </div>
+
+            <div class="store-header-controls">
+                <div class="doubloons-pill">
+                    <span class="coin-icon">🪙</span>
+                    <span>1,240 Doubloons</span>
+                </div>
+
+                <button id="btnOpenCart" class="btn-store-cart" title="Open Cargo Hold">
+                    <span>🛒 CART</span>
+                    <span id="cartCountBadge">(0)</span>
+                </button>
+
+                <a href="/home" class="btn-store-close" title="Return to Sea Chart">
+                    &times;
+                </a>
+            </div>
+        </nav>
+
+        <!-- Master Merchant Identity Card -->
+        <article class="seller-card-container">
+
+            <!-- Hero Header: Avatar + Identity + Telemetry -->
+            <header class="seller-hero">
+                <div class="seller-avatar-frame">
+                    <img src="<%= seller.avatar || '/images/avatars/default-pirate.png' %>"
+                         alt="<%= seller.storeName || seller.name %>"
+                         class="seller-large-avatar"
+                         onerror="this.onerror=null; this.src='/images/avatars/default-pirate.png';">
+                </div>
+
+                <div class="seller-hero-info">
+                    <span class="seller-badge-charter">⚓ CHARTERED GUILD MERCHANT</span>
+                    <h1 class="seller-display-name"><%= seller.storeName || seller.name %></h1>
+                    <div class="seller-meta-pills">
+                        <span class="seller-stat-pill">
+                            🏝️ Home Harbor: <%= island ? island.name : (seller.homeIsland || 'Archipelago Waters') %>
+                        </span>
+                        <span class="seller-stat-pill">
+                            📦 <%= seller.totalListings %> Active Trade Listings
+                        </span>
+                        <span class="seller-stat-pill verified-pill">
+                            ✦ Admiralty Guild Verified
+                        </span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Merchant Lore & Bio Chronicle -->
+            <section class="seller-bio-box">
+                <h4>Merchant Log & Harbor Lore</h4>
+                <p class="seller-bio-text">
+                    <%= seller.bio || 'A seasoned merchant sailing the Archipelago trade winds, chartering authentic relics and provisions across the six islands under royal guild decree.' %>
+                </p>
+            </section>
+
+            <!-- Scope Notice: Phase 3.4 Full Storefront Milestone Notice -->
+            <aside class="seller-notice-banner" role="note">
+                <span class="notice-icon">📜</span>
+                <div class="notice-content">
+                    <strong>Full Merchant Storefront Docking in Phase 3.4</strong>
+                    <p>
+                        You are currently viewing merchant credentials in Discovery Mode. Full merchant storefront banners, comprehensive product filtering, and merchant feedback will dock in Milestone 3.4.
+                    </p>
+                </div>
+            </aside>
+
+            <!-- Preview of Sample Chartered Wares (Up to 4 Items) -->
+            <% if (sampleProducts && sampleProducts.length > 0) { %>
+                <section class="seller-wares-section">
+                    <div class="seller-wares-header">
+                        <h3 class="seller-wares-title">Chartered Relics Preview</h3>
+                        <span class="seller-wares-subtitle">Showing sample items chartered by this merchant</span>
+                    </div>
+
+                    <div class="seller-wares-grid">
+                        <% sampleProducts.forEach(function(p) { %>
+                            <div class="seller-sample-card">
+                                <a href="/product/<%= p.id %>" class="sample-card-link" title="Inspect <%= p.name %>">
+                                    <div class="sample-asset-box">
+                                        <img src="<%= p.image || '/images/items/default-relic.png' %>"
+                                             alt="<%= p.name %>"
+                                             class="sample-asset-img"
+                                             onerror="this.onerror=null; this.src='/images/items/default-relic.png';">
+                                    </div>
+                                    <h4 class="sample-card-title"><%= p.name %></h4>
+                                </a>
+                                <div class="sample-card-meta">
+                                    <span class="sample-card-price">🪙 <%= p.price %> Doubloons</span>
+                                    <span class="sample-card-rating"><%= p.rating || '★★★★★' %></span>
+                                </div>
+                                <a href="/product/<%= p.id %>" class="btn-sample-inspect">
+                                    <span>🔍 VIEW DETAILS</span>
+                                </a>
+                            </div>
+                        <% }); %>
+                    </div>
+                </section>
+            <% } %>
+
+            <!-- Primary Navigation Actions -->
+            <footer class="seller-footer-actions">
+                <a href="/home" class="btn-seller-back">
+                    <span>⚓ Return to Sea Chart</span>
+                </a>
+                <% if (seller.homeIsland) { %>
+                    <a href="/island/<%= seller.homeIsland %>" class="btn-seller-island">
+                        <span>🏝️ Visit <%= island ? island.name : seller.homeIsland %></span>
+                    </a>
+                <% } %>
+            </footer>
+
+        </article>
+
+    </main>
+
+    <!-- Cargo Hold Drawer -->
+    <aside id="storeCartDrawer" class="store-cart-drawer">
+        <div class="cart-drawer-header">
+            <h3 class="cart-drawer-title">⚓ Cargo Hold</h3>
+            <button id="btnCloseCart" class="btn-cart-close">&times;</button>
+        </div>
+        <div id="cartDrawerItems" class="cart-drawer-items"></div>
+        <div class="cart-drawer-footer">
+            <div class="cart-total-row">
+                <span>Total Cargo:</span>
+                <span id="cartDrawerTotal">🪙 0 Doubloons</span>
+            </div>
+            <button id="btnCheckoutCargo" class="btn-checkout-cargo">
+                Secure Cargo (Checkout)
+            </button>
+        </div>
+    </aside>
+
+    <!-- Unified Island Store JS Engine -->
+    <script src="/js/island-store.js?v=seller_disc_v1"></script>
+
+</body>
+
+</html>

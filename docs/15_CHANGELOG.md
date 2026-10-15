@@ -4,6 +4,27 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-15] — Phase 3 / Milestone 3.3: Explorer → Seller Discovery (PHASE 3.3 COMPLETE)
+
+### Added & Implemented
+* **Seller Discovery Controller (`controller/sellers.js`):** Created `renderSellerDiscovery` (and alias `renderPublicSeller`) controller actions exporting seller discovery logic. Validates seller identifier using `mongoose.isValidObjectId(sellerId)`. Queries MongoDB `User` with indexed `_id` and strict `role: 'seller'` enforcement. Malformed IDs, nonexistent IDs, or non-seller users return clean HTTP 404 responses without database exceptions or `CastError` leaks.
+* **Reusable Seller Discovery View (`views/seller-discovery.ejs`):** Developed a nautical discovery view displaying merchant identity, `⚓ CHARTERED GUILD MERCHANT` badge, home harbor affiliation badge with lore name, bio chronicle (`bio`), active trade listing telemetry count (`totalListings`), sample chartered wares preview grid (up to 4 items), breadcrumb navigation back to Sea Chart / origin island, and integrated slide-out Cargo Hold drawer.
+* **Phase 3.4 Scope Boundary Notice Banner (`views/seller-discovery.ejs`):** Prominently displays an atmospheric notice banner informing buyers that this page is in Discovery Mode and that full storefront banners, comprehensive product catalogs, and review systems will dock in Milestone 3.4. (Phase 3.4 was strictly NOT implemented).
+* **Product Detail Entry Points (`views/product-detail.ejs`, `public/css/island-store.css`):** Enriched the merchant card on the Product Detail page with clickable avatar links (`.seller-avatar-link`), clickable store name links (`.seller-name-link`), and a dedicated `📜 DISCOVER MERCHANT` action button (`.btn-discover-seller`) linking to `/seller/:sellerId`. Safely handles unpopulated or missing seller scenarios without crashing.
+* **Route Registration (`routes/web.js`):** Bound `GET /seller/:sellerId` with `authMiddleware` matching `docs/05_ROUTE_MAP.md`.
+* **Security & Credential Protection:** Public seller document strictly sanitizes credentials (`password`, `authSecretHash`, `googleId` omitted).
+* **Inventory & Stock Immutability:** Discovering a seller or viewing sample wares never mutates product stock or status.
+
+### Tested & Verified
+* 54 automated assertions in `scratch/test_milestone_3_3.js` covering seller relationship, real ObjectId resolution, multi-merchant isolation, credential exclusion, non-seller 404 handling, malformed ObjectId 404 handling, live SSR HTTP rendering, and product detail link integration (54/54 passed).
+* Live SSR verification script `scratch/verify_live_ssr_3_3.js` executed against dev server on port 3000 verifying multi-island discovery flows, credential safety, and 404 guards.
+* End-to-end browser verification via subagent recording navigation from Island ➔ Product Detail ➔ Click "📜 DISCOVER MERCHANT" ➔ Seller Discovery page across Astrolabe Atoll and Cutlass Cove with 0 console errors (`seller_discovery_3_3_1792044976709.webp`).
+* Full regression test suite passing across all milestones (1,161/1,161 assertions passed; 1,215 total passed across entire project).
+* Static syntax: 20/20 JavaScript files passed `node --check`.
+* Template analysis: 22/22 EJS templates compiled cleanly (`ejs.compile`).
+
+---
+
 ## [2026-10-15] — Phase 3 / Milestone 3.2: Reusable Product Detail Page (PHASE 3.2 COMPLETE)
 
 ### Added & Implemented

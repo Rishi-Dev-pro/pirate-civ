@@ -2247,3 +2247,424 @@ body.theme-velvet .btn-add-cart:hover {
     }
 }
 
+
+/* =========================================================
+   10. SELLER DISCOVERY STYLES (MILESTONE 3.3)
+========================================================= */
+
+/* Product Detail Seller Discovery Links */
+.seller-avatar-link {
+    display: block;
+    border-radius: 50%;
+    text-decoration: none;
+    transition: transform 0.25s ease;
+}
+
+.seller-avatar-link:hover {
+    transform: scale(1.08);
+}
+
+.seller-name-link {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.2s ease;
+}
+
+.seller-name-link:hover {
+    color: var(--gold-bright, #ffcc55);
+}
+
+.btn-discover-seller {
+    margin-left: auto;
+    background: rgba(212, 147, 57, 0.15);
+    border: 1px solid rgba(212, 147, 57, 0.5);
+    border-radius: 4px;
+    padding: 8px 14px;
+    font-family: "Cinzel", serif;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #ffd57e;
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.btn-discover-seller:hover {
+    background: rgba(212, 147, 57, 0.35);
+    border-color: var(--gold-bright, #ffcc55);
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(212, 147, 57, 0.35);
+    transform: translateY(-1px);
+}
+
+/* Seller Discovery Page Container */
+.seller-discovery-wrapper {
+    position: relative;
+    z-index: 10;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 24px 60px 24px;
+}
+
+.seller-card-container {
+    background: var(--card-bg, linear-gradient(180deg, rgba(10, 20, 30, 0.88) 0%, rgba(6, 12, 18, 0.95) 100%));
+    border: 1px solid var(--card-border, rgba(56, 189, 248, 0.28));
+    border-radius: 12px;
+    padding: 36px;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.75), inset 0 0 30px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+}
+
+/* Seller Hero Header */
+.seller-hero {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    margin-bottom: 28px;
+    border-bottom: 1px solid rgba(212, 147, 57, 0.25);
+    padding-bottom: 24px;
+    flex-wrap: wrap;
+}
+
+.seller-large-avatar {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--gold-primary);
+    box-shadow: 0 0 20px rgba(212, 147, 57, 0.35);
+}
+
+.seller-hero-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 280px;
+}
+
+.seller-badge-charter {
+    font-family: "Cinzel", serif;
+    font-size: 0.74rem;
+    font-weight: 700;
+    color: #d49339;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+}
+
+.seller-display-name {
+    font-family: "Cinzel", Georgia, serif;
+    font-size: 2.1rem;
+    font-weight: 800;
+    color: #fff3d4;
+    margin: 0 0 10px 0;
+    letter-spacing: 0.03em;
+}
+
+.seller-meta-pills {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.seller-stat-pill {
+    font-family: "Cinzel", serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 5px 14px;
+    border-radius: 4px;
+    background: rgba(212, 147, 57, 0.15);
+    border: 1px solid rgba(212, 147, 57, 0.4);
+    color: #ffd57e;
+    letter-spacing: 0.04em;
+}
+
+.seller-stat-pill.verified-pill {
+    background: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.4);
+    color: #86efac;
+}
+
+/* Seller Bio Chronicle */
+.seller-bio-box {
+    background: rgba(8, 14, 22, 0.65);
+    border: 1px solid rgba(212, 147, 57, 0.2);
+    border-radius: 6px;
+    padding: 22px 24px;
+    margin-bottom: 24px;
+}
+
+.seller-bio-box h4 {
+    font-family: "Cinzel", serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: #ffd57e;
+    margin: 0 0 8px 0;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+}
+
+.seller-bio-text {
+    color: #cbd5e1;
+    font-size: 0.96rem;
+    line-height: 1.65;
+    margin: 0;
+}
+
+/* Scope Notice Banner (Milestone 3.4 boundary clarity) */
+.seller-notice-banner {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    background: rgba(20, 36, 52, 0.7);
+    border: 1px dashed rgba(56, 189, 248, 0.45);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin-bottom: 28px;
+}
+
+.seller-notice-banner .notice-icon {
+    font-size: 1.8rem;
+}
+
+.seller-notice-banner strong {
+    display: block;
+    font-family: "Cinzel", serif;
+    font-size: 0.95rem;
+    color: #7dd3fc;
+    margin-bottom: 4px;
+}
+
+.seller-notice-banner p {
+    color: #94a3b8;
+    font-size: 0.88rem;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Sample Wares Preview */
+.seller-wares-section {
+    margin-top: 24px;
+    margin-bottom: 28px;
+}
+
+.seller-wares-header {
+    margin-bottom: 14px;
+}
+
+.seller-wares-title {
+    font-family: "Cinzel", serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffd57e;
+    margin: 0 0 4px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.seller-wares-subtitle {
+    font-size: 0.82rem;
+    color: #94a3b8;
+}
+
+.seller-wares-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.seller-sample-card {
+    background: rgba(14, 22, 32, 0.7);
+    border: 1px solid rgba(212, 147, 57, 0.25);
+    border-radius: 8px;
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.25s ease;
+}
+
+.seller-sample-card:hover {
+    border-color: var(--card-border-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6);
+}
+
+.sample-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.sample-asset-box {
+    width: 100%;
+    height: 115px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+}
+
+.sample-asset-img {
+    max-width: 90%;
+    max-height: 95px;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.6));
+    transition: transform 0.3s ease;
+}
+
+.seller-sample-card:hover .sample-asset-img {
+    transform: scale(1.06);
+}
+
+.sample-card-title {
+    font-family: "Cinzel", serif;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #fff3d4;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+    min-height: 34px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.sample-card-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    margin-bottom: 12px;
+}
+
+.sample-card-price {
+    font-family: "Cinzel", serif;
+    font-weight: 700;
+    color: var(--text-accent);
+}
+
+.sample-card-rating {
+    color: #eab308;
+    font-size: 0.78rem;
+}
+
+.btn-sample-inspect {
+    background: rgba(16, 26, 38, 0.85);
+    border: 1px solid rgba(212, 147, 57, 0.5);
+    border-radius: 4px;
+    padding: 8px;
+    font-family: "Cinzel", serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: #f5c35c;
+    text-decoration: none;
+    text-align: center;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+    margin-top: auto;
+}
+
+.btn-sample-inspect:hover {
+    background: rgba(28, 44, 64, 0.95);
+    border-color: var(--gold-bright);
+    color: #ffffff;
+}
+
+/* Footer Navigation Actions */
+.seller-footer-actions {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    margin-top: 14px;
+}
+
+.btn-seller-back {
+    background: rgba(16, 26, 38, 0.85);
+    border: 1px solid var(--gold-border);
+    border-radius: 4px;
+    padding: 12px 20px;
+    font-family: "Cinzel", serif;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #f5c35c;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
+}
+
+.btn-seller-back:hover {
+    background: rgba(28, 44, 64, 0.95);
+    border-color: var(--gold-bright);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.btn-seller-island {
+    background: rgba(212, 147, 57, 0.15);
+    border: 1px solid rgba(212, 147, 57, 0.5);
+    border-radius: 4px;
+    padding: 12px 20px;
+    font-family: "Cinzel", serif;
+    font-size: 0.84rem;
+    font-weight: 700;
+    color: #ffd57e;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition: all 0.25s ease;
+}
+
+.btn-seller-island:hover {
+    background: rgba(212, 147, 57, 0.35);
+    border-color: var(--gold-bright);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+@media (max-width: 900px) {
+    .seller-wares-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .seller-hero {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .seller-meta-pills {
+        justify-content: center;
+    }
+
+    .detail-seller-box {
+        flex-wrap: wrap;
+    }
+
+    .btn-discover-seller {
+        width: 100%;
+        justify-content: center;
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 600px) {
+    .seller-wares-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .seller-card-container {
+        padding: 20px;
+    }
+
+    .seller-display-name {
+        font-size: 1.6rem;
+    }
+}
+
+

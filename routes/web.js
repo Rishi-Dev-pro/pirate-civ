@@ -264,5 +264,14 @@ router.get("/product/:productId", authMiddleware, renderProductDetail);
 
 
 // =====================================================
+// SELLER DISCOVERY ROUTE (MILESTONE 3.3)
+// =====================================================
+
+import { renderSellerDiscovery } from "../controller/sellers.js";
+
+router.get("/seller/:sellerId", authMiddleware, renderSellerDiscovery);
+
+
+// =====================================================
 
 export default router;
