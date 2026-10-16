@@ -8,7 +8,7 @@ This document catalogues every HTTP route within Pirate-Civ, defining its method
 
 | Method | Route | Controller | Middleware | Purpose | Auth Req? | Role Req? |
 |---|---|---|---|---|:---:|:---:|
-| `GET` | `/` | `gateway.js::renderEntryMap` | None (or conditional) | Pirate-Civ Entry Map (Fork to Buyer vs Seller) | Optional | Any |
+| `GET` | `/` | Inline (`gateway.ejs`) | `optionalAuth` | Pirate-Civ Entry Map Gateway (Dual fork to `/home` vs `/seller/dashboard`) | Optional | Any |
 | `GET` | `/about` | Inline / `page.js::renderAbout` | None | Guild lore, cartography story, mission | No | Public |
 | `GET` | `/contact` | `contact.js::renderContact` | None | Inquiries, support, message dispatch form | No | Public |
 | `POST` | `/contact` | `contact.js::saveContactDetails`| None | Persists contact inquiry into MongoDB | No | Public |

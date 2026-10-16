@@ -119,3 +119,20 @@ Every page across the application must fulfill five UX states:
   - `views/partials/header.ejs` — Shared universal navigation with role-aware links.
   - `views/partials/footer.ejs` — Shared Admiralty footer.
   - Cart Drawer & Order Badges — Shared global styling.
+
+---
+
+## 6. Pirate-Civ Entry Map Gateway Experience (`views/gateway.ejs`)
+
+* **Aesthetic Direction:** Dark fantasy nautical cartography. Deep abyss ocean backdrop (`#05080c`), aged nautical brass filigree (`#c69f58`), radial map grid overlay, and celestial typography (`Cinzel` display headings + `Inter` body).
+* **Dual Portal Fork:**
+  - **🏴‍☠️ Customer / Explorer (`#cardExplorer`):** Direct CTA `#btnEnterSeaChart` navigating to `/home` (Sea Chart). Card highlights with gold maritime radiance and map route focus on hover.
+  - **⚓ Merchant / Armator (`#cardArmator`):** Direct CTA `#btnEnterCommandDeck` navigating to `/seller/dashboard` (Seller Command Deck). Card highlights with brass anchor radiance on hover.
+* **Minimal Branded Navigation:**
+  - Public visitors see Pirate-Civ branding, Guild Lore (`/about`), Sign In (`/login`), and Join the Crew (`/register`).
+  - Authenticated visitors see user role badge, quick link (`My Voyages` or `Command Deck`), and Logout (`/logout`).
+* **Responsive Layout:**
+  - Desktop: Dual portal cards arranged side-by-side (2 columns) with generous breathing room.
+  - Mobile (`≤ 880px`): Single column vertical stack, no horizontal scroll, touch-friendly tap targets (`min-height: 48px`), and accessible `:focus-visible` golden borders.
+* **Performance:** Lightweight CSS-only visual effects, zero external map dependencies, zero client frameworks, and zero database lookups on `GET /`.
+

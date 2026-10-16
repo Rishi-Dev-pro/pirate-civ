@@ -70,6 +70,17 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
   - Added dedicated terminal cancellation banner (`#cancelledBanner`) for cancelled charters.
   - Preserved historical snapshot integrity and added role-aware `⚓ My Voyages` navigation link in `views/partials/header.ejs`.
   - Validated with 92/92 automated dedicated tests (`scratch/test_milestone_5_4.js`), full 645-assertion regression pass, and real browser verification with 0 console errors. **MILESTONE 5.4 AND PHASE 5 ARE COMPLETE.**
+* **Pirate-Civ Entry Map Gateway (Milestone 6.1 COMPLETE):** Replaced the root entry experience at `GET /` with a visually distinctive Pirate-Civ cartographic gateway (`views/gateway.ejs`).
+  - Implemented dual fork choices:
+    1. 🏴‍☠️ **Customer / Explorer** ➔ Direct destination: `/home` (Sea Chart)
+    2. ⚓ **Merchant / Armator** ➔ Direct destination: `/seller/dashboard` (Command Deck)
+  - Root route uses `optionalAuth`, returning HTTP 200 without requiring login.
+  - Zero unnecessary MongoDB queries or mutations: zero product queries, zero order queries, zero cart queries, and zero user mutations on root gateway.
+  - Preserved existing route protection: `/home` strictly requires authentication (`authMiddleware`), `/seller/dashboard` strictly enforces seller authorization (`authMiddleware, requireSeller`).
+  - Added minimal branded navigation with role-aware user badge, logout, or login/join-the-crew links.
+  - Displayed the 6 canonical islands as world-building constellation chips.
+  - Fully responsive on desktop and mobile viewports with accessible keyboard focus states and subtle interactive hover effects.
+  - Validated with 45/45 automated tests (`scratch/test_milestone_6_1.js`), 636/636 regression assertions, and real browser verification with 0 console errors. **MILESTONE 6.1 COMPLETE.**
 
 ---
 

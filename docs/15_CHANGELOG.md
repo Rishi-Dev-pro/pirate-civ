@@ -4,6 +4,51 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-17] — Phase 6 / Milestone 6.1: Pirate-Civ Entry Map Gateway (MILESTONE 6.1 COMPLETE)
+
+### Added & Implemented
+* **Pirate-Civ Entry Map Gateway (`views/gateway.ejs`):**
+  - Designed and built a dark fantasy nautical entry gateway at root `GET /`.
+  - Rich cartographic aesthetic: deep abyss palette (`#05080c`), aged brass accents (`#c69f58`), radiant vignette, and radial map grid backdrop (`/images/nautical-grid.png`).
+  - Hero header with "PIRATE-CIV — The Sea Awaits." and canonical 6-island archipelago constellation chips (Astrolabe Bay, Isle of Chronos, Kraken's Vault, Cutlass Cove, Velvet Isle, Booty Cay).
+  - Dual fork portal choice:
+    - 🏴‍☠️ **Customer / Explorer (`#cardExplorer`):** Direct CTA `#btnEnterSeaChart` leading to `/home` (Sea Chart).
+    - ⚓ **Merchant / Armator (`#cardArmator`):** Direct CTA `#btnEnterCommandDeck` leading to `/seller/dashboard` (Seller Command Deck).
+  - Minimal branded navigation with role-aware user badge, logout, or login/join-the-crew links.
+  - Interactive micro-animations: subtle card elevation, glow accents, and button arrow shifts on hover without heavy dependencies.
+* **Route Architecture & Zero-DB Lightweight Root (`routes/web.js`):**
+  - Updated `GET /` to use `optionalAuth` and render `gateway.ejs`, returning HTTP 200 for all visitors.
+  - Kept `/home` strictly guarded by `authMiddleware` (unauthenticated visitors redirect to `/login`).
+  - Zero unnecessary database operations: zero product queries, zero order queries, zero cart queries, and zero user mutations on root gateway.
+  - Zero authorization bypass: Merchant portal strictly preserves existing seller protection (`authMiddleware, requireSeller`).
+
+### Tested & Verified
+* 45 automated assertions in dedicated test suite `scratch/test_milestone_6_1.js`:
+  - Group A: Root route 200, gateway branding, destinations (`/home`, `/seller/dashboard`), canonical islands.
+  - Group B: Navigation elements (Explorer CTA, Merchant CTA, login/register links, authenticated user badge/logout).
+  - Group C: Zero database queries and zero mutations on root route.
+  - Group D: Existing route regression (`/home` requires auth, `/login`, `/register`, `/cart`, `/checkout`, `/orders`).
+  - Group E: Authorization enforcement (`/seller/dashboard` 302 unauthenticated, 403 buyer, 200 seller, no bypass).
+* Full regression pass across all milestone suites (636/636 assertions passing):
+  - Phase 5.4: 92/92
+  - Phase 5.3: 70/70
+  - Phase 5.2: 64/64
+  - Phase 5.1: 80/80
+  - Phase 4.5: 76/76
+  - Phase 4.4: 75/75
+  - Phase 4.3: 61/61
+  - Phase 4.2: 67/67
+  - Phase 4.1: 64/64
+  - Phase 3.6: 96/96
+* Code syntax validation: 22/22 JS files valid; 34/34 EJS templates compile cleanly.
+* Real browser verification via CDP subagent:
+  - Flow 1 (Entry): Gateway loads with 0 errors, no broken assets, proper branding.
+  - Flow 2 (Explorer): Clicking "Enter the Sea Chart" navigates to `/home` (and triggers expected `/login` redirect when unauthenticated).
+  - Flow 3 (Merchant): Clicking "Enter the Command Deck" navigates to `/seller/dashboard` (and triggers expected `/login` redirect when unauthenticated).
+  - Flow 4 (Authentication): "Join the Crew" navigates to `/register`.
+  - Responsive Verification: Resized to 390x844 mobile viewport; cards stack cleanly with no horizontal scroll.
+  - Browser console: 0 unexpected errors/warnings.
+
 ## [2026-10-17] — Phase 5 / Milestone 5.4: Buyer Order History & Tracking (MILESTONE 5.4 COMPLETE — PHASE 5 COMPLETE)
 
 ### Added & Implemented

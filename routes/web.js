@@ -105,14 +105,14 @@ router.get(
 
 router.get(
     "/",
-    authMiddleware,
+    optionalAuth,
     (req, res) => {
 
-        res.render("home", {
+        res.render("gateway", {
 
-            page_title: "Home Page",
+            page_title: "PIRATE-CIV — The Sea Awaits",
 
-            user: req.user
+            user: req.user || null
 
         });
 

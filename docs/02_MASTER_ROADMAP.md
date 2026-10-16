@@ -232,11 +232,19 @@ gantt
 ### 📍 PHASE 6 — ENTRY MAP GATEWAY & FINAL UI POLISH
 **Goal:** Unify the two portals behind a grand entry map, optimize responsiveness, and elevate visual presentation.
 
-* **Milestone 6.1: Pirate-Civ Entry Map Gateway [NEXT]**
-  - Build landing route `/` with a dual-path fork:
-    - 🏴‍☠️ **Customer / Explorer Gateway:** Navigates to buyer portal / sea chart.
-    - ⚓ **Merchant / Armator Gateway:** Navigates to seller dashboard / onboarding.
-* **Milestone 6.2: Role-Aware Global Navigation**
+* **Milestone 6.1: Pirate-Civ Entry Map Gateway [COMPLETE]**
+  - Replaced the root entry experience at `GET /` with a visually distinctive Pirate-Civ cartographic gateway (`views/gateway.ejs`).
+  - Implemented dual-path fork choices:
+    - 🏴‍☠️ **Customer / Explorer Gateway:** Navigates directly to Sea Chart (`/home`).
+    - ⚓ **Merchant / Armator Gateway:** Navigates directly to Seller Command Deck (`/seller/dashboard`).
+  - Route `GET /` uses `optionalAuth`, returning HTTP 200 without requiring login.
+  - Zero unnecessary MongoDB work: zero product queries, zero order queries, zero cart queries, and zero user mutations on root gateway.
+  - Preserved authoritative route protection: `/home` strictly requires authentication (`authMiddleware`), `/seller/dashboard` strictly enforces seller authorization (`authMiddleware, requireSeller`).
+  - Minimal branded navigation with role-aware user badge, logout, or login/join-the-crew links.
+  - Canonical 6-island archipelago displayed as world-building constellation chips.
+  - Fully responsive layout on desktop and mobile viewports with accessible keyboard focus states and subtle interactive hover effects.
+  - Validated with 45/45 dedicated automated tests (`scratch/test_milestone_6_1.js`), 636/636 regression assertions (5.4, 5.3, 5.2, 5.1, 4.5, 4.4, 4.3, 4.2, 4.1, 3.6), 22 JS and 34 EJS syntax checks, and real browser verification with 0 console errors.
+* **Milestone 6.2: Role-Aware Global Navigation [NEXT]**
   - Update `views/partials/header.ejs` to dynamically render options based on `req.user.role`.
 * **Milestone 6.3: Comprehensive UI Polish & Micro-Interactions**
   - Polish empty states (empty cart, no orders, empty island listings).
