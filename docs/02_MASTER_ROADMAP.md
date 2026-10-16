@@ -194,11 +194,18 @@ gantt
   - Enforced single cart per user constraint at MongoDB level (`user: 1` unique index) and strict isolation (`req.user._id`).
   - Preserved catalog stock invariance and verified zero orders created.
   - Validated with 60/60 automated dedicated tests (`scratch/test_milestone_5_1.js`), 389 regression tests (Phase 4.5: 76/76, Phase 4.4: 75/75, Phase 3.6: 96/96, Phase 3.5: 82/82), and real browser verification with 0 console errors.
-* **Milestone 5.2: Checkout Flow [NEXT]**
-  - Create `/checkout` view with delivery coordinates input, order breakdown, and Doubloons calculation.
-* **Milestone 5.3: Order Generation & State Machine**
+* **Milestone 5.2: Checkout Flow [COMPLETE]**
+  - Built Voyage Checkout view (`views/checkout.ejs`) with atmospheric nautical layout, responsive grid, breadcrumbs, and live summary valuation.
+  - Implemented `controller/orders.js` exporting `renderCheckout` (`GET /checkout`) and `validateCheckout` (`POST /checkout`) guarded with `[authMiddleware, requireBuyer]`.
+  - Re-read authoritative Product records from MongoDB for live pricing, availability, and vault reserve checks on every checkout request.
+  - Calculated server-side Doubloons breakdown: item line totals (`price * quantity`), subtotal, trade port fee (exempt: 0 Doubloons), and grand total.
+  - Added delivery coordinates collection (`portName`, `islandCoordinates`, `recipientNotes`) matching `models/order.js` shippingAddress schema with strict validation and safe value retention.
+  - Enforced Phase 5.2 Order Boundary: Verified zero Order documents created, zero Product.stock decrements, and buyer Cart intact.
+  - Validated with 64/64 dedicated automated tests (`scratch/test_milestone_5_2.js`), 327 regression assertions (5.1, 4.5, 4.4, 3.6), clean syntax on 22 JS and 31 EJS files, and real browser verification.
+* **Milestone 5.3: Order Generation & State Machine [NEXT]**
   - Save orders into `models/order.js` with initial status `pending`.
   - Implement order state machine: `pending` → `confirmed` → `processing` → `shipped` → `delivered` (or `cancelled`).
+  - Atomic stock deduction upon order creation and clearing of user's persistent Cart.
 * **Milestone 5.4: Buyer Order History & Tracking**
   - Create `/orders` and `/orders/:id` for customer tracking with nautical timeline visualizer.
 * **Milestone 5.5: Seller Order Management**

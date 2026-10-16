@@ -89,6 +89,32 @@ stateDiagram-v2
                                               5. Emit Confirmation
 ```
 
+### 2.1 Milestone 5.2: Checkout Flow Implementation (COMPLETE)
+* **Endpoints & Access Control (`controller/orders.js`, `routes/web.js`):**
+  - `GET /checkout`: Serves the SSR Voyage Checkout & Cargo Clearance view (`views/checkout.ejs`) or JSON payload if queried with `Accept: application/json` or `?format=json`. Guarded with `[authMiddleware, requireBuyer]`. Unauthenticated requests redirect to `/login` (302), and non-buyer roles (sellers) receive HTTP 403 Forbidden.
+  - `POST /checkout`: Server-side delivery coordinates validation and real-time inventory verification. Returns 400 on validation failure with safe value retention, and 200 on verification clearance.
+* **Server-Authoritative Calculations:**
+  - Authoritative product pricing, title, image, and available reserve are populated directly from MongoDB `Product` records. Client price or total overrides are strictly ignored.
+  - Item Line Total: `Product.price * cartItem.quantity`
+  - Subtotal: Sum of item line totals.
+  - Trade Port Fee: 0 Doubloons (Exempt).
+  - Grand Total: `Subtotal + Trade Port Fee`.
+* **Delivery Coordinates Architecture:**
+  - Matches the embedded `shippingAddressSchema` in `models/order.js`:
+    - `portName`: Destination port / harbor quay (Required string, 2–120 characters, trimmed).
+    - `islandCoordinates`: Navigational coordinates (String, max 120 characters, defaults to `"18°42'N, 64°31'W"`).
+    - `recipientNotes`: Special harbor master delivery instructions (Optional string, max 500 characters, trimmed).
+* **Real-Time Stock Revalidation:**
+  - On both `GET /checkout` and `POST /checkout`, every stowed cargo item is checked against current MongoDB `Product` state:
+    - Verifies product existence in catalog.
+    - Verifies `product.isAvailable !== false`.
+    - Verifies requested quantity does not exceed current `Product.stock`.
+    - If any product became unavailable or exceeded stock, returns clear, human-readable feedback identifying the affected item without crashing.
+* **Milestone 5.2 Order Boundary:**
+  - In Milestone 5.2, checkout validates and clears delivery coordinates without prematurely creating `Order` documents or decrementing `Product.stock`.
+  - Transactional order placement, state initialization (`pending`), atomic inventory reduction, and cart clearance belong strictly to Milestone 5.3.
+
+### 2.2 Order Generation & Model Architecture (Milestone 2.4 Foundation)
 1. **Payment Abstraction:** Payments are processed in native Doubloons (🪙). No third-party payment gateways (Stripe, PayPal) are integrated. The model defines `paymentStatus: ["pending", "paid", "failed", "refunded"]` (default `"pending"`).
 2. **Snapshot Pricing & Historical Integrity:** When an order is placed, line items capture immutable snapshots (`name`, `price`, `quantity`, `lineTotal`, `seller`, `image`, `product`) directly inside `order.items`. If a merchant subsequently alters product title, price, or description in `Product`, historical orders remain completely unaffected.
 3. **Atomic Stock Reduction (Phase 5 Boundary):** In Milestone 2.4, the Order model database foundation is strictly decoupled from stock deduction; creating or updating orders does not mutate `Product.stock`. Atomic stock deduction and reservation will be implemented during Phase 5 checkout.

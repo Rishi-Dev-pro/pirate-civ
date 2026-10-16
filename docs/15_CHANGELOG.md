@@ -4,6 +4,56 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-16] — Phase 5 / Milestone 5.2: Checkout Flow (MILESTONE 5.2 COMPLETE)
+
+### Added & Implemented
+* **Dedicated Orders & Checkout Controller (`controller/orders.js`):**
+  - Implemented `evaluateCheckoutManifest`: Re-reads current Product records from MongoDB for all cart items, validates live availability and stock, and calculates server-authoritative totals.
+  - Implemented `renderCheckout` (`GET /checkout`):
+    - Strictly guarded with `[authMiddleware, requireBuyer]`.
+    - Unauthenticated requests redirect to `/login` (302).
+    - Non-buyer roles (sellers) receive HTTP 403 Forbidden.
+    - Loads authenticated user's persistent Cart (`Cart.findOne({ user: req.user._id })`).
+    - Handles empty carts safely with themed empty state.
+    - Supports both HTML rendering and JSON payload (`?format=json`, `Accept: application/json`).
+  - Implemented `validateCheckout` (`POST /checkout`):
+    - Validates delivery coordinates (`portName`, `islandCoordinates`, `recipientNotes`).
+    - Enforces required `portName` (2–120 characters), max lengths for coordinates and notes.
+    - Revalidates real-time inventory and availability against current MongoDB `Product` records.
+    - Preserves submitted safe form values upon validation failure with HTTP 400.
+    - Enforces Phase 5.2 Order Boundary: Returns clearance confirmation without prematurely creating Order documents or decrementing stock.
+* **Voyage Checkout & Cargo Clearance View (`views/checkout.ejs`):**
+  - Atmospheric nautical aesthetic matching the Pirate-Civ design language.
+  - Responsive two-column layout with breadcrumb navigation (`Sea Chart › Cargo Hold › Voyage Checkout`).
+  - Stowed Cargo Breakdown table with product art, titles, island tags, authoritative unit prices in Doubloons (🪙), quantities, line totals, and live vault reserve badges.
+  - Port Anchorage & Delivery Coordinates form with destination port input, nautical coordinates, and recipient instructions.
+  - Voyage Valuation sidebar with item count, cargo subtotal, trade port fee (exempt: 0 Doubloons), grand total, clearance action, and safe navigation links.
+* **Navigation & Cart Integration:**
+  - Updated `views/cart.ejs` and `public/js/island-store.js` so "Secure Cargo Hold" buttons navigate to `/checkout`.
+  - Registered `/checkout` routes in `routes/web.js`.
+
+### Tested & Verified
+* 64 automated assertions in dedicated test suite `scratch/test_milestone_5_2.js`:
+  - Access control & RBAC: unauthenticated redirected to `/login` (302), authenticated buyer admitted (200), seller rejected with 403.
+  - Cart breakdown & totals: products, quantities, prices, line totals, subtotal, 0 fee, and grand total.
+  - Delivery coordinates validation: valid coordinates accepted, missing port rejected (400), whitespace port rejected (400), oversized notes rejected (400), safe submitted values retained in form.
+  - Security & isolation: spoofed userId/cartId ignored, price/subtotal overrides ignored, sensitive credentials scrubbed.
+  - Real-time stock revalidation: insufficient stock rejected (400), unavailable product rejected (400), catalog stock strictly invariant.
+  - Empty cart handling: empty hold renders safe view with return links, POST with empty cart rejected (400).
+  - Order boundary: exactly 0 Order documents in MongoDB; buyer Cart remains intact.
+* Full regression pass (327 assertions passing):
+  - Milestone 5.1: 80/80
+  - Milestone 4.5: 76/76
+  - Milestone 4.4: 75/75
+  - Milestone 3.6: 96/96
+* Real browser verification via `browser_subagent` (`phase52_checkout_flow_1792159382288.webp`):
+  - Buyer login -> multi-island item stowing (Astrolabe and Chronos) -> Cargo Hold view -> Voyage Checkout.
+  - Form validation error on empty port name.
+  - Valid submission of delivery coordinates ("Tortuga Deep Water Quay") and recipient notes.
+  - Success clearance banner displayed (`⚓ Cargo manifest and delivery coordinates verified for voyage. Ready for Order Generation (Milestone 5.3)`).
+  - 0 console errors and 0 orders created in MongoDB.
+* Code health: 22/22 JS files pass `node --check`; 31/31 EJS templates compile cleanly.
+
 ## [2026-10-16] — Phase 5 / Milestone 5.1: Database-Backed Cart System & Real-Time Stock Reconciliation (MILESTONE 5.1 COMPLETE)
 
 ### Added & Implemented

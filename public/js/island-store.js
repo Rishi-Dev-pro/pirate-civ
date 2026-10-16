@@ -416,12 +416,13 @@
 
         const checkoutBtn = document.getElementById("btnManifestCheckout");
         if (checkoutBtn) {
-            checkoutBtn.addEventListener("click", () => {
+            checkoutBtn.addEventListener("click", (e) => {
                 if (storeState.cart.length === 0) {
+                    e.preventDefault();
                     showToast("Your cargo hold is empty!");
                     return;
                 }
-                showToast("⚓ Hold verified! Ready for voyage. (Checkout unlocks in Phase 3.6)");
+                // Allow direct navigation to /checkout
             });
         }
     }
@@ -561,7 +562,7 @@
                     showToast("Your cargo hold is empty!");
                     return;
                 }
-                showToast("⚓ Hold verified! Ready for voyage. (Checkout unlocks in Phase 3.6)");
+                window.location.href = "/checkout";
             });
         }
 

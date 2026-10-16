@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Voyage Checkout | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p35_v1">
+
+    <style>
+        .checkout-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .checkout-section-card {
+            background: rgba(18, 24, 32, 0.85);
+            border: 1px solid rgba(212, 147, 57, 0.35);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+        }
+
+        .checkout-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(212, 147, 57, 0.25);
+            padding-bottom: 14px;
+        }
+
+        .checkout-card-icon {
+            font-size: 1.6rem;
+        }
+
+        .checkout-card-title {
+            font-family: "Cinzel", serif;
+            font-size: 1.25rem;
+            color: #ffd57e;
+            margin: 0;
+            letter-spacing: 0.04em;
+        }
+
+        .checkout-form-group {
+            margin-bottom: 18px;
+        }
+
+        .checkout-form-label {
+            display: block;
+            font-family: "Cinzel", serif;
+            font-size: 0.85rem;
+            color: #d1b88a;
+            margin-bottom: 6px;
+            letter-spacing: 0.04em;
+        }
+
+        .checkout-form-input,
+        .checkout-form-textarea {
+            width: 100%;
+            background: rgba(8, 12, 16, 0.85);
+            border: 1px solid rgba(212, 147, 57, 0.4);
+            border-radius: 6px;
+            padding: 12px 14px;
+            color: #fff4db;
+            font-family: "Inter", sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .checkout-form-input:focus,
+        .checkout-form-textarea:focus {
+            outline: none;
+            border-color: #ffd57e;
+            box-shadow: 0 0 12px rgba(212, 147, 57, 0.35);
+            background: rgba(14, 20, 28, 0.95);
+        }
+
+        .checkout-form-hint {
+            font-size: 0.8rem;
+            color: #8b9bb4;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        .checkout-alert-error {
+            background: rgba(220, 53, 69, 0.15);
+            border: 1px solid rgba(220, 53, 69, 0.5);
+            color: #ff8585;
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.92rem;
+        }
+
+        .checkout-alert-success {
+            background: rgba(40, 167, 69, 0.15);
+            border: 1px solid rgba(40, 167, 69, 0.5);
+            color: #5cf59b;
+            padding: 14px 18px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.92rem;
+        }
+
+        .checkout-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .checkout-manifest-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .checkout-manifest-table th {
+            font-family: "Cinzel", serif;
+            font-size: 0.82rem;
+            color: #ffd57e;
+            padding: 12px;
+            border-bottom: 1px solid rgba(212, 147, 57, 0.3);
+            text-transform: uppercase;
+        }
+
+        .checkout-manifest-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid rgba(212, 147, 57, 0.12);
+            vertical-align: middle;
+        }
+
+        .checkout-btn-submit {
+            width: 100%;
+            background: linear-gradient(135deg, #d49339 0%, #a46c1b 100%);
+            border: 1px solid #ffd57e;
+            color: #0d1117;
+            padding: 14px 20px;
+            font-family: "Cinzel", serif;
+            font-size: 0.98rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            border-radius: 6px;
+            cursor: pointer;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkout-btn-submit:hover {
+            background: linear-gradient(135deg, #f0ac46 0%, #ba7b20 100%);
+            box-shadow: 0 6px 24px rgba(212, 147, 57, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .checkout-btn-back {
+            display: block;
+            text-align: center;
+            margin-top: 12px;
+            padding: 10px;
+            color: #ffd57e;
+            text-decoration: none;
+            font-family: "Cinzel", serif;
+            font-size: 0.85rem;
+            border: 1px solid rgba(212, 147, 57, 0.3);
+            border-radius: 6px;
+            background: rgba(14, 20, 28, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .checkout-btn-back:hover {
+            background: rgba(212, 147, 57, 0.15);
+            color: #ffffff;
+            border-color: #ffd57e;
+        }
+
+        @media (max-width: 900px) {
+            .checkout-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="island-store-body cart-manifest-body">
+
+    <!-- Fixed Atmospheric Backdrop -->
+    <div class="store-backdrop">
+        <img src="/images/kraken-bg.jpg" alt="Voyage Checkout Atmospheric Backdrop" class="store-bg-img" onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
+
+    <!-- Reusable Main Navigation Bar -->
+    <%- include("partials/header") %>
+
+    <!-- Master Container -->
+    <main class="cart-manifest-container">
+
+        <!-- Header / Breadcrumb Bar -->
+        <nav class="detail-nav-bar" aria-label="Checkout Breadcrumbs">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <a href="/cart" class="crumb-link">Cargo Hold</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Voyage Checkout</span>
+            </div>
+
+            <div class="store-header-controls">
+                <div class="doubloons-pill">
+                    <span class="coin-icon">🪙</span>
+                    <span id="pageTotalBadge"><%= (cart && cart.totalDoubloons) ? cart.totalDoubloons.toLocaleString() : 0 %> Doubloons</span>
+                </div>
+
+                <a href="/cart" class="btn-store-cart" title="View Cargo Hold">
+                    <span>🛒 HOLD</span>
+                    <span id="cartCountBadge">(<%= (cart && cart.itemCount) ? cart.itemCount : 0 %>)</span>
+                </a>
+
+                <a href="/cart" class="btn-store-close" title="Return to Cargo Hold">
+                    &times;
+                </a>
+            </div>
+        </nav>
+
+        <!-- Manifest Banner -->
+        <header class="cart-manifest-header">
+            <div class="cart-header-icon">🧭</div>
+            <div>
+                <h1 class="cart-manifest-title">Voyage Checkout & Cargo Clearance</h1>
+                <p class="cart-manifest-subtitle">
+                    Confirm your shipping anchorage and review stowed wares before dispatching trade vessels across the archipelago.
+                </p>
+            </div>
+        </header>
+
+        <!-- Error & Success Alerts -->
+        <% if (error) { %>
+            <div class="checkout-alert-error" role="alert">
+                <span>⚠️</span>
+                <div><%= error %></div>
+            </div>
+        <% } %>
+
+        <% if (successBanner) { %>
+            <div class="checkout-alert-success" role="status">
+                <span>⚓</span>
+                <div><%= successBanner %></div>
+            </div>
+        <% } %>
+
+        <!-- Dynamic Content: Items Table or Empty State -->
+        <div id="checkoutContent">
+            <% if (!cart || cart.isEmpty || !cart.items || cart.items.length === 0) { %>
+                <div class="cart-empty-state">
+                    <div class="cart-empty-icon">⚓</div>
+                    <h2 class="cart-empty-title">Your Cargo Hold is Empty, Captain</h2>
+                    <p class="cart-empty-desc">
+                        There are no crates or relics stowed for checkout.
+                        Chart a voyage across the trading islands to acquire treasures before sailing for delivery.
+                    </p>
+                    <div class="cart-empty-actions">
+                        <a href="/home#sea-chart-section" class="btn-manifest-cta">
+                            🗺️ Chart Course to Islands
+                        </a>
+                        <a href="/cart" class="btn-manifest-continue">
+                            🛒 Open Cargo Hold
+                        </a>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="checkout-layout">
+
+                    <!-- Left Column: Delivery Form & Cargo Review -->
+                    <div class="checkout-main-col">
+
+                        <!-- Delivery Coordinates Card -->
+                        <section class="checkout-section-card">
+                            <div class="checkout-card-header">
+                                <span class="checkout-card-icon">📍</span>
+                                <h2 class="checkout-card-title">Port Anchorage & Delivery Coordinates</h2>
+                            </div>
+
+                            <form id="checkoutForm" action="/checkout" method="POST">
+                                <div class="checkout-form-group">
+                                    <label for="inputPortName" class="checkout-form-label">
+                                        Destination Port / Anchorage *
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="inputPortName"
+                                        name="portName"
+                                        class="checkout-form-input"
+                                        placeholder="e.g. Tortuga Deep Water Quay or Port Royal Anchorage"
+                                        value="<%= (delivery && delivery.portName) ? delivery.portName : '' %>"
+                                        required
+                                        maxlength="120"
+                                    >
+                                    <p class="checkout-form-hint">
+                                        Name of the harbor, cove, or trading quay where merchant fleets should discharge cargo.
+                                    </p>
+                                </div>
+
+                                <div class="checkout-form-group">
+                                    <label for="inputCoordinates" class="checkout-form-label">
+                                        Island Nautical Coordinates
+                                    </label>
+                                    <input
+                                        type="text"
+                                        id="inputCoordinates"
+                                        name="islandCoordinates"
+                                        class="checkout-form-input"
+                                        placeholder="18°42'N, 64°31'W"
+                                        value="<%= (delivery && delivery.islandCoordinates) ? delivery.islandCoordinates : '18°42\'N, 64°31\'W' %>"
+                                        maxlength="120"
+                                    >
+                                    <p class="checkout-form-hint">
+                                        Sextant readings or astrolabe navigational coordinates for offshore drop-off.
+                                    </p>
+                                </div>
+
+                                <div class="checkout-form-group">
+                                    <label for="inputNotes" class="checkout-form-label">
+                                        Harbor Master Instructions / Recipient Notes
+                                    </label>
+                                    <textarea
+                                        id="inputNotes"
+                                        name="recipientNotes"
+                                        class="checkout-form-textarea"
+                                        rows="3"
+                                        placeholder="e.g. Discharge cargo after nightfall; watch for customs patrols at the western reef..."
+                                        maxlength="500"
+                                    ><%= (delivery && delivery.recipientNotes) ? delivery.recipientNotes : '' %></textarea>
+                                    <p class="checkout-form-hint">
+                                        Optional special instructions for shipwrights, dockhands, or warehouse keepers (max 500 characters).
+                                    </p>
+                                </div>
+
+                                <button type="submit" id="btnSubmitCheckout" class="checkout-btn-submit">
+                                    🗺️ Verify Delivery Coordinates & Prepare Voyage
+                                </button>
+                            </form>
+                        </section>
+
+                        <!-- Order Breakdown Table Card -->
+                        <section class="checkout-section-card">
+                            <div class="checkout-card-header">
+                                <span class="checkout-card-icon">📜</span>
+                                <h2 class="checkout-card-title">Stowed Cargo Breakdown</h2>
+                            </div>
+
+                            <div class="checkout-table-wrapper">
+                                <table class="checkout-manifest-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Cargo Item</th>
+                                            <th>Island</th>
+                                            <th>Unit Value</th>
+                                            <th>Qty</th>
+                                            <th>Line Total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% cart.items.forEach(function(item) { %>
+                                            <tr>
+                                                <td>
+                                                    <div class="manifest-item-info">
+                                                        <img
+                                                            src="<%= item.image || '/images/items/default-relic.png' %>"
+                                                            alt="<%= item.name %>"
+                                                            class="manifest-item-thumb"
+                                                            onerror="this.onerror=null; this.src='/images/items/default-relic.png';"
+                                                        >
+                                                        <div>
+                                                            <strong style="color:#fff4db; font-family:'Cinzel', serif;"><%= item.name %></strong>
+                                                            <% if (typeof item.stock === 'number') { %>
+                                                                <span style="display:block; font-size:0.75rem; color:#8b9bb4; margin-top:2px;">
+                                                                    Vault Reserve: <strong style="color:<%= item.stock <= 3 ? '#ff6b6b' : '#38ef7d' %>"><%= item.stock %> available</strong>
+                                                                </span>
+                                                            <% } %>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span style="color:#ffd57e; font-size:0.88rem;"><%= item.island || 'Archipelago' %></span>
+                                                </td>
+                                                <td>
+                                                    <span style="color:#ffd57e;">🪙 <%= (item.price || 0).toLocaleString() %></span>
+                                                </td>
+                                                <td>
+                                                    <span style="color:#ffffff; font-weight:600;"><%= item.quantity %></span>
+                                                </td>
+                                                <td>
+                                                    <span style="color:#ffd57e; font-weight:700;">🪙 <%= (item.lineTotal || 0).toLocaleString() %></span>
+                                                </td>
+                                            </tr>
+                                        <% }); %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+
+                    </div>
+
+                    <!-- Right Column: Hold Summary Card -->
+                    <aside class="checkout-summary-col">
+                        <div class="checkout-section-card">
+                            <div class="checkout-card-header">
+                                <span class="checkout-card-icon">⚖️</span>
+                                <h2 class="checkout-card-title">Voyage Valuation</h2>
+                            </div>
+
+                            <div class="summary-line">
+                                <span>Stowed Crates:</span>
+                                <span id="checkoutSummaryCount"><%= cart.itemCount || 0 %> items</span>
+                            </div>
+
+                            <div class="summary-line">
+                                <span>Cargo Subtotal:</span>
+                                <span id="checkoutSubtotal">🪙 <%= (cart.subtotal || 0).toLocaleString() %></span>
+                            </div>
+
+                            <div class="summary-line">
+                                <span>Trade Port Fee:</span>
+                                <span class="summary-free">0 Doubloons (Exempt)</span>
+                            </div>
+
+                            <div class="summary-line summary-total-line" style="margin-top:14px; padding-top:14px; border-top:1px solid rgba(212,147,57,0.3);">
+                                <span style="font-family:'Cinzel', serif; font-size:1.05rem; color:#ffd57e;">Voyage Total:</span>
+                                <span id="checkoutTotalVal" class="summary-total-gold" style="font-size:1.25rem;">
+                                    🪙 <%= (cart.totalDoubloons || 0).toLocaleString() %> Doubloons
+                                </span>
+                            </div>
+
+                            <div style="margin-top:20px;">
+                                <button type="button" onclick="document.getElementById('checkoutForm').requestSubmit();" class="checkout-btn-submit" style="font-size:0.88rem; padding:12px;">
+                                    ⚓ Seal Voyage Clearance
+                                </button>
+                                <a href="/cart" class="checkout-btn-back">
+                                    🛒 Return to Cargo Hold
+                                </a>
+                                <a href="/home#sea-chart-section" class="checkout-btn-back">
+                                    🗺️ Continue Island Plunder
+                                </a>
+                            </div>
+                        </div>
+                    </aside>
+
+                </div>
+            <% } %>
+        </div>
+
+    </main>
+
+    <!-- Unified Island Store JS Engine -->
+    <script src="/js/island-store.js?v=p35_v1"></script>
+
+</body>
+
+</html>

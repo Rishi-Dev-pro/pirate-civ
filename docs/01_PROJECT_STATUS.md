@@ -72,7 +72,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ---
 
 ### ⚪ NOT IMPLEMENTED
-* **Checkout Flow & Order Placement:** The checkout view (`/checkout`), delivery coordinates submission, and transactional order creation into MongoDB (Phase 5.2 & 5.3).
+* **Order Generation & State Machine:** Transactional order placement, atomic stock deduction, and order document creation into MongoDB (Phase 5.3).
 * **Buyer Order History & Tracking:** No `/orders` or `/orders/:id` page for buyers to view past purchases, fulfillment status, or tracking timeline (Phase 5.4).
 * **Entry Map Gateway:** No dual-portal landing gateway (`/`) allowing incoming visitors to branch into the Buyer or Seller experience before entering the market (Phase 6.1).
 * **Google OAuth Authentication:** No OAuth2 strategy or credential linkage configured.
@@ -115,7 +115,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 | **Order Model & Lifecycle Foundation** | N/A (Schema) | 🟢 State machine & Query helpers | 🟢 Validated schema & snapshot integrity | **100%** |
 | **Cargo Cart** | 🟢 Complete manifest view & drawer | 🟢 Full REST endpoints & controller | 🟢 Persistent in MongoDB | **100%** |
 | **Phase 3 Buyer Journey & Regression** | 🟢 Verified browser flow across 6 islands | 🟢 All endpoints guarded & isolated | 🟢 Persistent across sessions & models | **100%** |
-| **Checkout Flow** | 🟡 Simulated UI | ❌ Missing API | ❌ Missing | **10%** |
+| **Phase 5.2 Checkout Flow** | 🟢 Complete Voyage Checkout view (`views/checkout.ejs`) | 🟢 RBAC-guarded controller (`controller/orders.js`), coordinates validation, real-time stock checks | 🟢 Consumes persistent Cart, strictly invariant catalog stock | **100%** |
 | **Buyer Orders & Tracking** | ❌ Missing | ❌ Missing | 🟢 Schema ready (`models/order.js`) | **20%** |
 | **Buyer Profile** | ❌ Missing | ❌ Missing | ❌ Missing | **0%** |
 | **Seller Dashboard** | 🟢 Complete Command Deck view (`views/seller/dashboard.ejs`) | 🟢 RBAC-guarded controller (`controller/sellers.js`) | 🟢 Indexed count queries on Product model | **100%** |

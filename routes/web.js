@@ -342,5 +342,19 @@ router.post("/cart/clear", optionalAuth, clearCart);
 
 
 // =====================================================
+// VOYAGE CHECKOUT ROUTES (MILESTONE 5.2)
+// =====================================================
+
+import { requireBuyer } from "../middleware/roles.js";
+import {
+    renderCheckout,
+    validateCheckout
+} from "../controller/orders.js";
+
+router.get("/checkout", authMiddleware, requireBuyer, renderCheckout);
+router.post("/checkout", authMiddleware, requireBuyer, validateCheckout);
+
+
+// =====================================================
 
 export default router;

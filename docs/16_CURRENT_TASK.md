@@ -14,80 +14,69 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 5 — Cart, Checkout & Orders**
-* **Active Milestone:** **Milestone 5.1: Database-Backed Cart System**
+* **Active Milestone:** **Milestone 5.2: Checkout Flow**
 * **Status:** **COMPLETE**
 
 ---
 
 ## 🎯 2. Current Task
-* **Task Name:** Milestone 5.1 — Database-Backed Cart System & Real-Time Stock Reconciliation
+* **Task Name:** Milestone 5.2 — Checkout Flow
 * **Status:** Complete, Tested, Verified, Documented, and Validated.
-* **Readiness:** Audited the codebase and reconciled roadmap definitions with existing architecture. Confirmed that persistent database-backed cart operations already existed from Milestone 2.3 (`models/cart.js`) and Milestone 3.5 (`controller/cart.js`, `routes/web.js`, `views/cart.ejs`). Reused the single authoritative `Cart` model, avoiding duplicate cart collections, duplicate models (`SellerCart`, `BuyerCart`, `MerchantCart`, redundant `CartItem`), and redundant routes. Implemented the genuinely missing requirement: **real-time product stock verification against MongoDB `Product.stock`** on add, update, and pre-login session cart migration:
-  - `POST /cart/add`: Rejects adding out-of-stock products (`stock <= 0`) with HTTP 400; bounds additions to available vault reserve stock.
-  - `POST /cart/update`: Rejects quantity increments or explicit quantities exceeding available vault reserve stock with HTTP 400; rejects increases on unavailable products.
-  - `Cart.mergeSessionCart`: Clamps incoming session quantities to available stock and safely skips exhausted wares during login migration.
-  - Cart UI (`views/cart.ejs`, `public/js/island-store.js`): Renders live "Vault Reserve: X available" indicator for each stowed line item with color-coded badges.
-  - Preserved catalog stock invariance: Cart operations strictly DO NOT mutate catalog stock (inventory reduction belongs to checkout).
-  - Preserved boundary: Zero orders created during cart operations.
-  - Enforced single cart per user (`user: 1` unique index) and strict isolation (`req.user._id`).
-  - Tested: 60/60 automated dedicated tests, 389 regression tests across Phase 4.5, 4.4, 3.6, and 3.5 suites, and real browser CDP verification with 0 console errors.
+* **Readiness:** Built the dedicated checkout engine consuming the authenticated user's persistent Cart (`models/cart.js`) without creating redundant cart models or collections:
+  - `controller/orders.js`: Implemented `renderCheckout` (`GET /checkout`) and `validateCheckout` (`POST /checkout`) guarded with `[authMiddleware, requireBuyer]`.
+  - Re-read authoritative `Product` records from MongoDB on every request, verifying existence, availability, and stock.
+  - Server-calculated Doubloons breakdown: line totals (`price * quantity`), subtotal, trade port fee (exempt: 0 Doubloons), and grand total.
+  - Delivery coordinates collection matching `models/order.js` shippingAddress schema (`portName`, `islandCoordinates`, `recipientNotes`) with strict server-side validation and value retention.
+  - Enforced Phase 5.2 Order Boundary: Verified zero Order documents created, zero Product.stock decrements, and buyer Cart intact.
+  - Dedicated EJS view (`views/checkout.ejs`) with responsive layout, breadcrumb bar, delivery form, manifest table, and valuation card.
+  - Tested: 64/64 automated dedicated tests (`scratch/test_milestone_5_2.js`), 327 regression tests across Phase 5.1, 4.5, 4.4, and 3.6, clean JS/EJS syntax checks, and real browser verification.
 
 ---
 
 ## ✅ 3. Completed in This Task
-* **Roadmap Reconciliation & Single Architecture Preservation:**
-  - Audited `docs/02_MASTER_ROADMAP.md`, `models/cart.js`, `controller/cart.js`, and `scratch/test_milestone_3_5.js`.
-  - Confirmed persistent cart architecture existed; identified genuinely missing requirement as real-time stock bounds.
-  - Kept architecture minimal, robust, and clean under Ponytail principles.
-* **Real-Time Stock Validation on Cart Endpoints (`controller/cart.js`):**
-  - Enhanced `addToCart`:
-    - Checks `product.stock <= 0` or `product.isAvailable !== true` -> HTTP 400.
-    - Checks `currentInCart + qty > product.stock` -> HTTP 400 with remaining stock detail.
-    - Applies to authenticated MongoDB carts and guest session carts.
-  - Enhanced `updateCartItem`:
-    - Looks up `Product.stock` by ID.
-    - Checks `newQty > product.stock` -> HTTP 400.
-  - Enhanced `formatCartResponse`:
-    - Includes `stock`, `isOutOfStock`, and `exceedsStock` flags.
-* **Stock-Aware Session Cart Migration (`models/cart.js`):**
-  - Enhanced `Cart.mergeSessionCart`:
-    - Validates referenced products in MongoDB.
-    - Clamps `allowedToAdd = Math.min(qty, Math.max(0, currentStock - currentInCart))`.
-    - Automatically skips exhausted items without crashing or throwing errors.
-* **Cargo Hold UI Enhancements (`views/cart.ejs`, `public/js/island-store.js`):**
-  - Rendered live `Vault Reserve: X available` indicator for each line item on SSR manifest and dynamic AJAX manifest renders.
-* **Automated Milestone 5.1 Test Suite (`scratch/test_milestone_5_1.js`):**
-  - 60 automated assertions covering Cart model architecture, guest session cart, login merge, single cart per user constraint, credential exclusion, real-time stock rejection on add and update, session merge stock clamping, catalog stock invariance, zero orders created, and clean jettison all.
-* **Browser Verification via browser_subagent (`phase51_cart_journey_1792156233980.webp`):**
-  - Buyer login -> Astrolabe store -> stow Gilded Celestial Astrolabe -> view `/cart` with live reserve indicator (`Vault Reserve: 15 available`).
-  - Quantity increment (`+`) and decrement (`-`) with real-time recalculation.
-  - Multi-island product addition (Aeon Strider Sandals from Chronos Cay).
-  - Logout and re-login verifying MongoDB persistent cart retention.
-  - Jettison All Cargo (`btnClearHold`) verifying clean transition to empty state (`Your Cargo Hold is Empty, Captain`).
-  - 0 unexpected console errors.
-* **Full Regression Verification (389 assertions passing):**
-  - Milestone 5.1: 60/60
+* **Orders & Checkout Controller (`controller/orders.js`):**
+  - `evaluateCheckoutManifest`: Re-reads current Product records from MongoDB, validates availability and stock, and calculates server-authoritative totals.
+  - `renderCheckout`: Strictly guarded with `[authMiddleware, requireBuyer]`; redirects unauthenticated to `/login`; rejects sellers with 403; loads authenticated persistent cart; handles empty carts safely; supports HTML and JSON formats.
+  - `validateCheckout`: Validates delivery coordinates; revalidates real-time inventory; preserves submitted safe form values upon validation failure with HTTP 400; returns clearance confirmation without prematurely creating orders or mutating stock.
+* **Voyage Checkout & Cargo Clearance View (`views/checkout.ejs`):**
+  - Atmospheric pirate aesthetic matching Pirate-Civ design language.
+  - Responsive two-column layout with breadcrumb navigation.
+  - Stowed Cargo Breakdown table with product art, titles, island tags, unit prices, quantities, line totals, and live vault reserve badges.
+  - Port Anchorage & Delivery Coordinates form with destination port input, nautical coordinates, and recipient instructions.
+  - Voyage Valuation sidebar with item count, cargo subtotal, trade port fee (exempt: 0 Doubloons), grand total, clearance action, and safe navigation links.
+* **Navigation & Cart Integration:**
+  - Updated `views/cart.ejs` and `public/js/island-store.js` so "Secure Cargo Hold" buttons navigate to `/checkout`.
+  - Registered `/checkout` routes in `routes/web.js`.
+* **Automated Milestone 5.2 Test Suite (`scratch/test_milestone_5_2.js`):**
+  - 64 automated assertions covering access control, RBAC, breakdown totals, delivery validation, security/tamper proofing, real-time stock revalidation, empty cart handling, and order boundary enforcement.
+* **Browser Verification via browser_subagent (`phase52_checkout_flow_1792159382288.webp`):**
+  - Buyer login -> multi-island item stowing (Astrolabe and Chronos) -> Cargo Hold view -> Voyage Checkout.
+  - Form validation error on empty port name.
+  - Valid submission of delivery coordinates ("Tortuga Deep Water Quay") and recipient notes.
+  - Success clearance banner displayed (`⚓ Cargo manifest and delivery coordinates verified for voyage. Ready for Order Generation (Milestone 5.3)`).
+  - 0 console errors and 0 orders created in MongoDB.
+* **Full Regression Verification (327 assertions passing):**
+  - Milestone 5.1: 80/80
   - Milestone 4.5: 76/76
   - Milestone 4.4: 75/75
   - Milestone 3.6: 96/96
-  - Milestone 3.5: 82/82
 
 ---
 
 ## 🧭 4. Next Milestone
 * **Phase:** **Phase 5 — Cart, Checkout & Orders**
-* **Milestone:** **Milestone 5.2: Checkout Flow [NEXT]**
-* **Next Goal:** Create `/checkout` view with delivery coordinates input, order breakdown, and Doubloons calculation.
+* **Milestone:** **Milestone 5.3: Order Generation & State Machine [NEXT]**
+* **Next Goal:** Save orders into `models/order.js` with initial status `pending`. Implement order state machine: `pending` → `confirmed` → `processing` → `shipped` → `delivered` (or `cancelled`). Atomically deduct purchased stock from `Product.stock` and wipe buyer's `Cart`.
 
 ---
 
-## 📋 5. Exact Next Steps for Milestone 5.2
-1. Read `docs/11_CART_AND_ORDER_SYSTEM.md` Section 2 for checkout architecture.
-2. Inspect `models/order.js` and `views/cart.ejs` checkout button trigger.
-3. Implement `GET /checkout` controller and view (`views/checkout.ejs`) requiring authentication (`requireBuyer` or authenticated user).
-4. Render delivery coordinates form (port name, coordinates, notes), itemized summary from active Cart, and total Doubloons calculation.
-5. Create dedicated test suite `scratch/test_milestone_5_2.js`.
-6. Run full regression suite and real browser subagent verification.
+## 📋 5. Exact Next Steps for Milestone 5.3
+1. Read `docs/11_CART_AND_ORDER_SYSTEM.md` Section 3 for order state machine and fulfillment rules.
+2. Inspect `models/order.js` schema, embedded snapshots (`name`, `price`, `quantity`, `seller`, `image`, `product`), and lifecycle helpers.
+3. Build order generation logic to atomically decrement inventory from MongoDB `Product.stock`, create `Order` document with status `pending`, and clear buyer's `Cart`.
+4. Implement order state transition mechanics.
+5. Create dedicated test suite `scratch/test_milestone_5_3.js`.
+6. Run full regression suite and browser subagent verification.
 7. Update documentation, commit, and push.
 
 ---
