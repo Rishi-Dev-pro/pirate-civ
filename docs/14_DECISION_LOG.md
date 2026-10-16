@@ -114,4 +114,23 @@ This log preserves key architectural choices, trade-offs, and design decisions m
 * **Alternatives Considered:** Ad-hoc try/catch in individual controllers without a global safety net. Rejected as prone to accidental omissions and unhandled promise rejections.
 * **Consequences:** All controllers can safely pass unrecoverable errors to `next(err)` knowing that the centralized handler will render safe, styled client responses.
 
+---
+
+### Decision 010: Demo-Compatible Non-Transactional Order Generation Flow (Phase 5.3)
+* **Date:** 2026-10-16
+* **Status:** Accepted (Demo Architecture)
+* **Context:** Milestone 5.3 requires creating Order documents, decrementing Product stock, and clearing the buyer's persistent Cart upon checkout confirmation. The local development environment operates on a standalone MongoDB deployment without replica set configuration, which does not support multi-document ACID transactions.
+* **Decision:** Implement a strictly ordered, defensive, non-transactional order generation workflow:
+  1. **STEP A (Final Validation):** Verify live cart, re-read live product stock, calculate authoritative pricing, and validate delivery coordinates. If any check fails, perform zero writes and return HTTP 400.
+  2. **STEP B (Create Order):** Insert Order with `status: 'pending'`, `buyer: req.user._id`, and embedded historical snapshots.
+  3. **STEP C (Conditional Stock Decrements):** Update each product's stock using conditional query `{ _id, stock: { $gte: quantity }, isAvailable: true }` to guarantee stock never drops below zero.
+  4. **STEP D (Clear Cart):** Reset buyer's cart items array only after steps B and C succeed.
+  5. Do NOT fake transactions, do NOT call `startTransaction()`, and do NOT claim ACID atomicity.
+* **Reason:** Reconfiguring Windows MongoDB into a replica set creates fragile local environment dependencies for a demo project. The ordered write sequence provides strong practical consistency without introducing pseudo-transaction abstractions.
+* **Alternatives Considered:**
+  1. Reconfiguring Windows MongoDB into a replica set. Rejected as unnecessary complexity for a college demonstration.
+  2. Pseudo-transaction wrapper that pretends to provide rollbacks. Rejected as deceptive architecture.
+* **Consequences:** A theoretical failure window exists between steps if an unhandled crash occurs. Production deployment must use a MongoDB replica set or sharded cluster with native ACID transactions for true atomic order generation.
+
+
 

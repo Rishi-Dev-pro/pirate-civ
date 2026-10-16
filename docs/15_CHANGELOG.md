@@ -4,6 +4,52 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-16] — Phase 5 / Milestone 5.3: Order Generation & State Machine (MILESTONE 5.3 COMPLETE — DEMO-COMPATIBLE IMPLEMENTATION)
+
+### Added & Implemented
+* **Buyer Order Generation Endpoint (`controller/orders.js::processCheckout`):**
+  - Mounted at `POST /checkout/confirm` (and handles `POST /checkout` with `action: confirm`) guarded with `[authMiddleware, requireBuyer]`.
+  - Enforces Step A (Final Validation): Re-reads live Cart and every Product document from MongoDB. Revalidates availability, positive stock, and requested quantity <= current vault reserve. Calculates server-authoritative line totals, subtotal, and total Doubloons (with 0 fee exemption). Validates delivery coordinates (`portName`, `islandCoordinates`, `recipientNotes`). If any validation fails, performs zero database writes and returns HTTP 400 while preserving the cart.
+  - Enforces Step B (Create Order): Creates new Order document with initial `status: 'pending'`, `paymentStatus: 'pending'`, authoritative `buyer: req.user._id`, embedded historical snapshots (`product`, `seller`, `name`, `price`, `quantity`, `lineTotal`, `image`), and shipping delivery coordinates.
+  - Enforces Step C (Conditional Stock Decrements): Decrements each Product's stock using conditional update filter `{ _id, stock: { $gte: quantity }, isAvailable: true }`, guaranteeing stock never dips into negative values.
+  - Enforces Step D (Clear Cart): Empties buyer's persistent Cart (`cart.items = []`) and saves to MongoDB.
+  - Enforces Step E (Response): Redirects browser to `/orders/:orderId?placed=1` (or returns HTTP 201 Created with JSON payload for API requests).
+* **Buyer Order Manifest Confirmation View (`views/order-confirmation.ejs` & `controller/orders.js::renderBuyerOrderDetail`):**
+  - Accessible at `GET /orders/:orderId` guarded with `[authMiddleware, requireBuyer]`.
+  - Scoped strictly to authenticated buyer (`buyer: req.user._id`), preventing cross-user data leakage.
+  - Themed pirate aesthetic with atmospheric background, "Voyage Manifest Dispatched!" success banner, Order ID, status pill badge (`● PENDING`), destination port, nautical coordinates, recipient notes, itemized cleared cargo table with merchant attribution, and Voyage Ledger showing grand total in Doubloons.
+* **Double-Submission Protection & UI Enhancements (`views/checkout.ejs`):**
+  - Added primary "⚔️ Sign Manifest & Dispatch Fleet (Confirm Order)" button (`#btnConfirmCheckout`) submitting to `/checkout/confirm`.
+  - Added secondary "🗺️ Verify Delivery Coordinates Only" button (`#btnSubmitCheckout`) for Phase 5.2 validation.
+  - Added sidebar action button (`#btnSidebarSeal`) for instant dispatch.
+  - Implemented client-side submit event handler that disables all submission buttons upon submit to prevent double-clicks.
+  - Server-side defense: Cleared cart ensures any duplicate request returns HTTP 400 ("Cannot place order: cargo hold is empty") without creating duplicate orders.
+* **Important Architecture Limitation (Demo-Compatible Non-Transactional Notice):**
+  - The local demo environment runs a standalone MongoDB deployment without replica sets. Order generation uses a carefully validated write ordering sequence and is intentionally non-transactional. It does not claim ACID guarantees and does not call `startTransaction()`. Production deployments should use a MongoDB replica set or sharded cluster for true atomic multi-document transactions.
+
+### Tested & Verified
+* 70 automated assertions in dedicated test suite `scratch/test_milestone_5_3.js`:
+  - Access control & RBAC: unauthenticated redirected to `/login` (302), seller rejected with 403, buyer admitted (201).
+  - Order generation: authoritative server-side pricing, live snapshots, `status: 'pending'`, `paymentStatus: 'pending'`.
+  - Stock safety: decrements by purchased quantity, rejects insufficient stock, never negative, zero stock rejected.
+  - Persistent cart: completely cleared after successful order, preserved intact on validation failure.
+  - Double-submission: immediate duplicate attempt rejected with HTTP 400 (empty cart), no duplicate order created.
+  - Historical snapshot immutability: subsequent catalog price hikes, renaming, or product deletions do NOT alter existing order snapshots.
+  - Anti-tampering: client-spoofed buyer ID, prices, subtotals, and sellers strictly ignored.
+  - State machine lifecycle: canonical transitions (`pending` ➔ `confirmed` ➔ `processing` ➔ `shipped` ➔ `delivered`, valid cancellations from `pending`/`confirmed`, terminal delivered rejects cancellation).
+  - Seller console integration: `Order.findBySeller` accurately finds multi-seller orders and exposes merchant line items.
+* Full regression pass across all previous milestones (487 assertions passing):
+  - Milestone 5.2: 64/64
+  - Milestone 5.1: 80/80
+  - Milestone 4.5: 76/76
+  - Milestone 4.4: 75/75
+  - Milestone 4.3: 61/61
+  - Milestone 4.2: 67/67
+  - Milestone 4.1: 64/64
+  - Milestone 3.6: 96/96
+* Code health: 22/22 JS files pass syntax checks; 32/32 EJS templates compile cleanly.
+* End-to-end real browser verification: Buyer login ➔ add product ➔ Cargo Hold ➔ checkout ➔ coordinate verification ➔ order confirmation (`Order #6ad23a1f09afdfc0a4f8645c`) ➔ cart verified empty ➔ seller console verified order in `pending` ➔ seller advanced status to `confirmed`. 0 console errors.
+
 ## [2026-10-16] — Phase 5 / Milestone 5.2: Checkout Flow (MILESTONE 5.2 COMPLETE)
 
 ### Added & Implemented

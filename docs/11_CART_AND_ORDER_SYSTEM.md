@@ -188,3 +188,69 @@ Because Pirate-Civ is an archipelago marketplace, a single customer order may co
    - Invalid or terminal transitions are rejected safely with clear human-readable feedback.
    - Status is managed at the Order level in `models/order.js`; transitions advance the unified voyage manifest.
 
+---
+
+## 5. Order Generation Flow & State Machine (Milestone 5.3 COMPLETE)
+
+Milestone 5.3 completes the bridge between the buyer's persistent Cart and authoritative Order documents in MongoDB.
+
+### 5.1 Architecture & Write Ordering Sequence
+
+Because the local development environment runs a standalone MongoDB instance (without replica sets), multi-document ACID transactions are not available. To guarantee high reliability and avoid corrupted state without pseudo-transaction abstractions, the system enforces a strictly ordered write flow:
+
+```
+[Buyer Clicks "Sign Manifest & Dispatch Fleet"]
+                     │
+                     ▼
+  [STEP A: FINAL SERVER-SIDE VALIDATION]
+   • Re-read persistent Cart from MongoDB (fail if empty)
+   • Re-read every Product record live from MongoDB
+   • Re-verify product availability (isAvailable === true)
+   • Re-verify stock sufficiency (stock > 0 and stock >= quantity)
+   • Calculate authoritative pricing: subtotal + trade port fee (0) = totalDoubloons
+   • Validate delivery coordinates (portName 2-120 chars, coordinates, notes)
+   • ZERO DATABASE WRITES OCCUR IF ANY VALIDATION FAILS
+                     │
+                     ▼ (Validation Passes)
+  [STEP B: CREATE ORDER DOCUMENT]
+   • Insert new Order with buyer = req.user._id, status = 'pending', paymentStatus = 'pending'
+   • Embed historical immutable snapshots (product, seller, name, price, quantity, lineTotal, image)
+   • Persist shippingAddress
+                     │
+                     ▼ (Order Created Successfully)
+  [STEP C: CONDITIONAL STOCK DEDUCTIONS]
+   • Deduct purchased quantities per document using conditional atomic query:
+     { _id: prodId, stock: { $gte: qty }, isAvailable: true } ➔ { $inc: { stock: -qty } }
+   • Ensures stock never dips into negative numbers
+                     │
+                     ▼ (Stock Decremented Successfully)
+  [STEP D: CLEAR PERSISTENT BUYER CART]
+   • Reset buyer's cart: cart.items = []
+   • Save cleared cart to MongoDB
+                     │
+                     ▼
+  [STEP E: DISPATCH RESPONSE]
+   • Browser: Redirect to /orders/:orderId?placed=1 (renders views/order-confirmation.ejs)
+   • API / JSON: Return HTTP 201 Created with order payload
+```
+
+### 5.2 Standalone Demo Architecture Limitation (Non-Transactional Flow)
+
+> **Important Architecture Notice:** Phase 5.3 currently uses a validated non-transactional order-generation flow because the local demo MongoDB deployment is standalone. Production deployment should use a MongoDB replica set or sharded cluster with ACID transactions for fully atomic order creation, stock deduction, and cart clearing.
+
+This implementation intentionally does NOT claim ACID atomicity and does NOT call `session.startTransaction()`. The careful write ordering guarantees that:
+1. Failed validations trigger ZERO writes and preserve the buyer's cart intact.
+2. An already-cleared cart prevents duplicate order generation.
+3. Live product prices are always authoritative over client-submitted values.
+
+### 5.3 Double-Submission Protection
+- **Client-Side:** The checkout submit buttons (`#btnConfirmCheckout` and `#btnSidebarSeal`) automatically disable upon form submission, preventing rapid double-clicks.
+- **Server-Side:** Because the cart is cleared in Step D, any immediate duplicate HTTP request receives an empty cart error (HTTP 400: `Cannot place order: cargo hold is empty`) and generates no second order.
+
+### 5.4 Historical Snapshot Immutability
+Order items snapshot product name, unit price, quantity, line total, and merchant attribution at checkout time. Subsequent price changes, catalog renaming, or product deletions never mutate completed orders.
+
+### 5.5 Buyer Order Manifest View (`GET /orders/:orderId`)
+Authenticated buyers can view their generated voyage manifests at `/orders/:orderId`. Access is strictly scoped to the authenticated buyer (`buyer: req.user._id`), preventing cross-user data leakage.
+
+

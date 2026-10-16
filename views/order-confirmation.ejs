@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Voyage Clearance Confirmed | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p35_v1">
+
+    <style>
+        .order-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 28px;
+            align-items: start;
+        }
+
+        .order-card {
+            background: rgba(18, 24, 32, 0.88);
+            border: 1px solid rgba(212, 147, 57, 0.35);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+        }
+
+        .order-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(212, 147, 57, 0.25);
+            padding-bottom: 14px;
+        }
+
+        .order-card-title-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .order-card-title {
+            font-family: "Cinzel", serif;
+            font-size: 1.25rem;
+            color: #ffd57e;
+            margin: 0;
+            letter-spacing: 0.04em;
+        }
+
+        .order-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-family: "Cinzel", serif;
+            font-size: 0.82rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+
+        .order-status-pending {
+            background: rgba(212, 147, 57, 0.15);
+            border: 1px solid #d49339;
+            color: #ffd57e;
+        }
+
+        .order-status-confirmed {
+            background: rgba(56, 239, 125, 0.15);
+            border: 1px solid #38ef7d;
+            color: #5cf59b;
+        }
+
+        .order-status-processing {
+            background: rgba(17, 153, 142, 0.15);
+            border: 1px solid #11998e;
+            color: #38ef7d;
+        }
+
+        .order-status-shipped {
+            background: rgba(79, 172, 254, 0.15);
+            border: 1px solid #4facfe;
+            color: #68c0ff;
+        }
+
+        .order-status-delivered {
+            background: rgba(40, 167, 69, 0.15);
+            border: 1px solid #28a745;
+            color: #69f0ae;
+        }
+
+        .order-status-cancelled {
+            background: rgba(220, 53, 69, 0.15);
+            border: 1px solid #dc3545;
+            color: #ff8585;
+        }
+
+        .order-success-banner {
+            background: linear-gradient(135deg, rgba(56, 239, 125, 0.15) 0%, rgba(17, 153, 142, 0.15) 100%);
+            border: 1px solid rgba(56, 239, 125, 0.5);
+            color: #5cf59b;
+            padding: 18px 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        .order-success-icon {
+            font-size: 2.2rem;
+        }
+
+        .order-success-title {
+            font-family: "Cinzel", serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin: 0 0 4px 0;
+        }
+
+        .order-success-subtitle {
+            font-size: 0.92rem;
+            color: #bbf7d0;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .order-info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 18px;
+        }
+
+        .order-info-item {
+            background: rgba(10, 15, 20, 0.6);
+            border: 1px solid rgba(212, 147, 57, 0.2);
+            border-radius: 6px;
+            padding: 12px 14px;
+        }
+
+        .order-info-label {
+            font-family: "Cinzel", serif;
+            font-size: 0.78rem;
+            color: #8b9bb4;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 4px;
+        }
+
+        .order-info-val {
+            font-family: "Inter", sans-serif;
+            font-size: 0.95rem;
+            color: #fff4db;
+            font-weight: 600;
+        }
+
+        .order-table-wrapper {
+            overflow-x: auto;
+        }
+
+        .order-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+        }
+
+        .order-table th {
+            font-family: "Cinzel", serif;
+            font-size: 0.82rem;
+            color: #ffd57e;
+            padding: 12px;
+            border-bottom: 1px solid rgba(212, 147, 57, 0.3);
+            text-transform: uppercase;
+        }
+
+        .order-table td {
+            padding: 14px 12px;
+            border-bottom: 1px solid rgba(212, 147, 57, 0.12);
+            vertical-align: middle;
+        }
+
+        .order-btn-cta {
+            display: block;
+            text-align: center;
+            background: linear-gradient(135deg, #d49339 0%, #a46c1b 100%);
+            border: 1px solid #ffd57e;
+            color: #0d1117;
+            padding: 14px 20px;
+            font-family: "Cinzel", serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            border-radius: 6px;
+            text-decoration: none;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+            margin-top: 14px;
+        }
+
+        .order-btn-cta:hover {
+            background: linear-gradient(135deg, #f0ac46 0%, #ba7b20 100%);
+            box-shadow: 0 6px 24px rgba(212, 147, 57, 0.5);
+            transform: translateY(-2px);
+            color: #0d1117;
+        }
+
+        .order-btn-secondary {
+            display: block;
+            text-align: center;
+            margin-top: 10px;
+            padding: 10px;
+            color: #ffd57e;
+            text-decoration: none;
+            font-family: "Cinzel", serif;
+            font-size: 0.85rem;
+            border: 1px solid rgba(212, 147, 57, 0.3);
+            border-radius: 6px;
+            background: rgba(14, 20, 28, 0.5);
+            transition: all 0.2s ease;
+        }
+
+        .order-btn-secondary:hover {
+            background: rgba(212, 147, 57, 0.15);
+            color: #ffffff;
+            border-color: #ffd57e;
+        }
+
+        @media (max-width: 900px) {
+            .order-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="island-store-body cart-manifest-body">
+
+    <!-- Fixed Atmospheric Backdrop -->
+    <div class="store-backdrop">
+        <img src="/images/kraken-bg.jpg" alt="Voyage Clearance Backdrop" class="store-bg-img" onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
+
+    <!-- Reusable Main Navigation Bar -->
+    <%- include("partials/header") %>
+
+    <!-- Master Container -->
+    <main class="cart-manifest-container">
+
+        <!-- Header / Breadcrumb Bar -->
+        <nav class="detail-nav-bar" aria-label="Order Confirmation Breadcrumbs">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <a href="/cart" class="crumb-link">Cargo Hold</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Voyage Clearance</span>
+            </div>
+
+            <div class="store-header-controls">
+                <a href="/cart" class="btn-store-cart" title="View Cargo Hold">
+                    <span>🛒 HOLD</span>
+                </a>
+                <a href="/home" class="btn-store-close" title="Return to Sea Chart">
+                    &times;
+                </a>
+            </div>
+        </nav>
+
+        <!-- Success Banner -->
+        <div class="order-success-banner" role="status">
+            <div class="order-success-icon">⚓</div>
+            <div>
+                <h1 class="order-success-title">Voyage Manifest Dispatched!</h1>
+                <p class="order-success-subtitle">
+                    Your cargo bill of lading has been sealed with the Archipelago Trade Guild.
+                    Merchant vessels are preparing dispatch for delivery.
+                </p>
+            </div>
+        </div>
+
+        <div class="order-layout">
+
+            <!-- Left Column: Manifest & Delivery Overview -->
+            <div class="order-main-col">
+
+                <!-- Order Details Card -->
+                <section class="order-card">
+                    <div class="order-card-header">
+                        <div class="order-card-title-group">
+                            <span style="font-size:1.6rem;">📜</span>
+                            <div>
+                                <h2 class="order-card-title">Order Manifest #<%= order._id %></h2>
+                                <span style="font-size:0.8rem; color:#8b9bb4;">
+                                    Cleared on <%= new Date(order.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }) %>
+                                </span>
+                            </div>
+                        </div>
+
+                        <span class="order-status-badge order-status-<%= order.status %>">
+                            ● <%= order.status %>
+                        </span>
+                    </div>
+
+                    <!-- Telemetry Cards -->
+                    <div class="order-info-grid">
+                        <div class="order-info-item">
+                            <div class="order-info-label">Destination Port</div>
+                            <div class="order-info-val"><%= order.shippingAddress?.portName || 'Port Royal' %></div>
+                        </div>
+                        <div class="order-info-item">
+                            <div class="order-info-label">Nautical Coordinates</div>
+                            <div class="order-info-val"><%= order.shippingAddress?.islandCoordinates || '18°42\'N, 64°31\'W' %></div>
+                        </div>
+                        <div class="order-info-item">
+                            <div class="order-info-label">Payment Status</div>
+                            <div class="order-info-val" style="color:#ffd57e; text-transform:capitalize;">
+                                🪙 <%= order.paymentStatus || 'pending' %>
+                            </div>
+                        </div>
+                    </div>
+
+                    <% if (order.shippingAddress?.recipientNotes) { %>
+                        <div style="background:rgba(10,15,20,0.6); border:1px solid rgba(212,147,57,0.2); border-radius:6px; padding:12px 14px; margin-bottom:18px;">
+                            <div class="order-info-label">Harbor Master Notes</div>
+                            <p style="margin:0; font-size:0.9rem; color:#fff4db; line-height:1.4;">
+                                "<%= order.shippingAddress.recipientNotes %>"
+                            </p>
+                        </div>
+                    <% } %>
+
+                    <!-- Stowed Wares Table -->
+                    <h3 style="font-family:'Cinzel', serif; font-size:1.05rem; color:#ffd57e; margin:20px 0 12px 0;">
+                        Cleared Cargo Manifest
+                    </h3>
+
+                    <div class="order-table-wrapper">
+                        <table class="order-table">
+                            <thead>
+                                <tr>
+                                    <th>Ware</th>
+                                    <th>Unit Price</th>
+                                    <th>Quantity</th>
+                                    <th>Line Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% (order.items || []).forEach(function(item) { %>
+                                    <tr>
+                                        <td>
+                                            <div class="manifest-item-info">
+                                                <img
+                                                    src="<%= item.image || '/images/items/default-relic.png' %>"
+                                                    alt="<%= item.name %>"
+                                                    class="manifest-item-thumb"
+                                                    onerror="this.onerror=null; this.src='/images/items/default-relic.png';"
+                                                >
+                                                <div>
+                                                    <strong style="color:#fff4db; font-family:'Cinzel', serif;"><%= item.name %></strong>
+                                                    <% if (item.seller && item.seller.storeName) { %>
+                                                        <span style="display:block; font-size:0.75rem; color:#d49339;">
+                                                            Merchant: <%= item.seller.storeName %>
+                                                        </span>
+                                                    <% } %>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span style="color:#ffd57e;">🪙 <%= (item.price || 0).toLocaleString() %></span>
+                                        </td>
+                                        <td>
+                                            <span style="color:#ffffff; font-weight:600;"><%= item.quantity %></span>
+                                        </td>
+                                        <td>
+                                            <span style="color:#ffd57e; font-weight:700;">🪙 <%= (item.lineTotal || 0).toLocaleString() %></span>
+                                        </td>
+                                    </tr>
+                                <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- Right Column: Summary Card -->
+            <aside class="order-summary-col">
+                <div class="order-card">
+                    <div class="order-card-header" style="margin-bottom:14px; padding-bottom:10px;">
+                        <h2 class="order-card-title">Voyage Ledger</h2>
+                    </div>
+
+                    <div class="summary-line">
+                        <span>Cleared Crates:</span>
+                        <span><%= (order.items || []).reduce((sum, i) => sum + (i.quantity || 0), 0) %> items</span>
+                    </div>
+
+                    <div class="summary-line">
+                        <span>Cargo Valuation:</span>
+                        <span>🪙 <%= (order.subtotal || 0).toLocaleString() %></span>
+                    </div>
+
+                    <div class="summary-line">
+                        <span>Trade Port Fee:</span>
+                        <span class="summary-free">0 Doubloons (Exempt)</span>
+                    </div>
+
+                    <div class="summary-line summary-total-line" style="margin-top:14px; padding-top:14px; border-top:1px solid rgba(212,147,57,0.3);">
+                        <span style="font-family:'Cinzel', serif; font-size:1.05rem; color:#ffd57e;">Grand Total:</span>
+                        <span class="summary-total-gold" style="font-size:1.25rem;">
+                            🪙 <%= (order.totalDoubloons || 0).toLocaleString() %> Doubloons
+                        </span>
+                    </div>
+
+                    <div style="margin-top:24px;">
+                        <a href="/home#sea-chart-section" class="order-btn-cta">
+                            🗺️ Chart Next Voyage
+                        </a>
+                        <a href="/cart" class="order-btn-secondary">
+                            🛒 Cargo Hold (Cleared)
+                        </a>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

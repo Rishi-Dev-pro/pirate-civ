@@ -303,7 +303,7 @@
                                 <h2 class="checkout-card-title">Port Anchorage & Delivery Coordinates</h2>
                             </div>
 
-                            <form id="checkoutForm" action="/checkout" method="POST">
+                            <form id="checkoutForm" action="/checkout/confirm" method="POST">
                                 <div class="checkout-form-group">
                                     <label for="inputPortName" class="checkout-form-label">
                                         Destination Port / Anchorage *
@@ -358,8 +358,11 @@
                                     </p>
                                 </div>
 
-                                <button type="submit" id="btnSubmitCheckout" class="checkout-btn-submit">
-                                    🗺️ Verify Delivery Coordinates & Prepare Voyage
+                                <button type="submit" id="btnConfirmCheckout" class="checkout-btn-submit" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-color: #34d399; color: #ffffff;">
+                                    ⚔️ Sign Manifest & Dispatch Fleet (Confirm Order)
+                                </button>
+                                <button type="submit" formaction="/checkout" id="btnSubmitCheckout" class="checkout-btn-back" style="margin-top: 10px; cursor: pointer; width: 100%; border: 1px dashed rgba(212, 147, 57, 0.4);">
+                                    🗺️ Verify Delivery Coordinates Only
                                 </button>
                             </form>
                         </section>
@@ -455,8 +458,8 @@
                             </div>
 
                             <div style="margin-top:20px;">
-                                <button type="button" onclick="document.getElementById('checkoutForm').requestSubmit();" class="checkout-btn-submit" style="font-size:0.88rem; padding:12px;">
-                                    ⚓ Seal Voyage Clearance
+                                <button type="button" id="btnSidebarSeal" onclick="document.getElementById('checkoutForm').requestSubmit();" class="checkout-btn-submit" style="font-size:0.88rem; padding:12px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-color: #34d399; color: #ffffff;">
+                                    ⚓ Seal Voyage & Dispatch Fleet
                                 </button>
                                 <a href="/cart" class="checkout-btn-back">
                                     🛒 Return to Cargo Hold
@@ -476,6 +479,31 @@
 
     <!-- Unified Island Store JS Engine -->
     <script src="/js/island-store.js?v=p35_v1"></script>
+
+    <!-- Double-submission protection script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const checkoutForm = document.getElementById("checkoutForm");
+            if (checkoutForm) {
+                checkoutForm.addEventListener("submit", function() {
+                    const btns = checkoutForm.querySelectorAll('button[type="submit"]');
+                    const sidebarBtn = document.getElementById("btnSidebarSeal");
+                    setTimeout(function() {
+                        btns.forEach(function(b) {
+                            b.disabled = true;
+                            b.style.opacity = "0.6";
+                            b.style.cursor = "not-allowed";
+                        });
+                        if (sidebarBtn) {
+                            sidebarBtn.disabled = true;
+                            sidebarBtn.style.opacity = "0.6";
+                            sidebarBtn.style.cursor = "not-allowed";
+                        }
+                    }, 50);
+                });
+            }
+        });
+    </script>
 
 </body>
 

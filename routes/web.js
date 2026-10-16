@@ -348,11 +348,17 @@ router.post("/cart/clear", optionalAuth, clearCart);
 import { requireBuyer } from "../middleware/roles.js";
 import {
     renderCheckout,
-    validateCheckout
+    validateCheckout,
+    processCheckout,
+    renderBuyerOrderDetail
 } from "../controller/orders.js";
 
 router.get("/checkout", authMiddleware, requireBuyer, renderCheckout);
 router.post("/checkout", authMiddleware, requireBuyer, validateCheckout);
+router.post("/checkout/confirm", authMiddleware, requireBuyer, processCheckout);
+
+// Buyer Order Detail / Manifest Confirmation (Milestone 5.3)
+router.get("/orders/:orderId", authMiddleware, requireBuyer, renderBuyerOrderDetail);
 
 
 // =====================================================

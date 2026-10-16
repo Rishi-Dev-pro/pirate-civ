@@ -52,6 +52,16 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
   - Preserved boundary: Zero orders created during cart operations.
   - Enforced single cart per user (`user: 1` unique index) and strict isolation (`req.user._id`).
   - Validated with 60/60 automated tests (`scratch/test_milestone_5_1.js`), 389 regression tests (Phase 4.5, 4.4, 3.6, 3.5), and real browser subagent verification with 0 console errors. **MILESTONE 5.1 COMPLETE.**
+* **Voyage Checkout Flow (Milestone 5.2 COMPLETE):** Dedicated checkout controller (`controller/orders.js`) and atmospheric view (`views/checkout.ejs`) at `GET /checkout` and `POST /checkout` guarded by `[authMiddleware, requireBuyer]`. Evaluates authoritative catalog pricing directly from live MongoDB `Product` records, enforces shipping delivery coordinate validation (`portName` 2-120 chars, `islandCoordinates`, `recipientNotes`), retains form state on errors, handles empty hold state, and enforces the Phase 5.2 boundary with zero premature order generation or inventory deduction. Validated with 64/64 automated tests, full regression pass (327 assertions), and real browser verification with 0 console errors. **MILESTONE 5.2 COMPLETE.**
+* **Order Generation & State Machine (Milestone 5.3 COMPLETE — Demo-Compatible Non-Transactional Flow):** Implemented authoritative buyer order generation at `POST /checkout/confirm` and order manifest view at `GET /orders/:orderId` guarded by `[authMiddleware, requireBuyer]`.
+  - Reuses canonical `models/order.js` without creating redundant schemas.
+  - Initial status starts strictly as `pending`, paymentStatus as `pending`.
+  - Captures historical immutable item snapshots (`product`, `seller`, `name`, `price`, `quantity`, `lineTotal`, `image`) directly from live MongoDB Product records.
+  - Implements double-submission defense via client-side button locking and server-side empty cart rejection.
+  - Clears buyer's persistent Cart (`Cart.items = []`) upon order completion.
+  - Integrates seamlessly with Seller Order Console (`/seller/orders` and `/seller/orders/:orderId`) and supports canonical status lifecycle transitions (`pending` ➔ `confirmed` ➔ `processing` ➔ `shipped` ➔ `delivered` with permitted cancellations).
+  - **IMPORTANT ARCHITECTURE LIMITATION (DEMO-COMPATIBLE IMPLEMENTATION):** The local demo environment runs a standalone MongoDB deployment which does not support multi-document ACID transactions. Order generation uses a carefully validated write ordering sequence (Step A: Re-validate cart and live inventory ➔ Step B: Create Order document ➔ Step C: Conditional per-document stock decrements ➔ Step D: Clear persistent cart). It is NOT atomic and does NOT provide ACID guarantees. Production upgrades must configure a replica set or sharded cluster to use native MongoDB multi-document transactions.
+  - Validated with 70/70 dedicated automated tests (`scratch/test_milestone_5_3.js`), full regression suite (487/487 assertions passing across Milestones 5.2, 5.1, 4.5, 4.4, 4.3, 4.2, 4.1, 3.6), clean JS and EJS syntax checks, and real browser verification with 0 console errors. **MILESTONE 5.3 COMPLETE.**
 
 ---
 
@@ -62,7 +72,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ---
 
 ### 🟠 FRONTEND ONLY (Simulated / Non-Persistent)
-* **Checkout Flow:** The checkout button triggers an informative toast ("Hold verified! Ready for voyage. Checkout unlocks in Phase 3.6") without generating an order record or checking user balances.
+*(None currently — checkout and cart flows are fully persistent and database-backed).*
 
 ---
 
@@ -72,8 +82,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ---
 
 ### ⚪ NOT IMPLEMENTED
-* **Order Generation & State Machine:** Transactional order placement, atomic stock deduction, and order document creation into MongoDB (Phase 5.3).
-* **Buyer Order History & Tracking:** No `/orders` or `/orders/:id` page for buyers to view past purchases, fulfillment status, or tracking timeline (Phase 5.4).
+* **Buyer Order History & Tracking:** Full customer order history index page (`/orders`) with nautical tracking timeline visualizer (Phase 5.4).
 * **Entry Map Gateway:** No dual-portal landing gateway (`/`) allowing incoming visitors to branch into the Buyer or Seller experience before entering the market (Phase 6.1).
 * **Google OAuth Authentication:** No OAuth2 strategy or credential linkage configured.
 

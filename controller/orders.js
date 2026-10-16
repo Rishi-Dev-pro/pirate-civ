@@ -1,6 +1,6 @@
 // =====================================================
-// ORDERS & CHECKOUT CONTROLLER (Milestone 5.2)
-// Checkout Flow, Delivery Coordinates, and Stock Revalidation
+// ORDERS & CHECKOUT CONTROLLER (Milestone 5.2 & 5.3)
+// Checkout Flow, Order Generation, and State Machine
 // =====================================================
 
 import mongoose from "mongoose";
@@ -192,13 +192,18 @@ export const renderCheckout = async (req, res) => {
 
 /**
  * POST /checkout
- * Validates delivery coordinates and re-verifies inventory bounds without prematurely creating Orders.
- * Phase 5.2 Order Boundary: Stock mutation and Order document generation belong strictly to Milestone 5.3.
+ * Validates delivery coordinates and re-verifies inventory bounds.
+ * If req.body.action === 'confirm' or req.query.action === 'confirm', delegates to order creation.
  */
 export const validateCheckout = async (req, res) => {
     try {
         if (!req.user || !req.user._id) {
             return res.redirect("/login");
+        }
+
+        // If confirmation requested, delegate directly to order creation
+        if (req.body.action === "confirm" || req.query.action === "confirm") {
+            return processCheckout(req, res);
         }
 
         const { portName, islandCoordinates, recipientNotes } = req.body;
@@ -269,11 +274,7 @@ export const validateCheckout = async (req, res) => {
             return renderError(manifest.stockErrorMessage);
         }
 
-        // 5. Phase 5.2 Order Boundary Enforcement:
-        // Do NOT create an Order document in MongoDB.
-        // Do NOT decrement Product.stock.
-        // Do NOT clear Cart.
-        // Verification success prepares the buyer for Milestone 5.3 Order Generation.
+        // 5. Validation clearance (Milestone 5.2 mode)
         const successMessage = "Cargo manifest and delivery coordinates verified for voyage. Ready for Order Generation (Milestone 5.3).";
 
         if (req.xhr || req.headers.accept?.includes("application/json")) {
@@ -320,8 +321,282 @@ export const validateCheckout = async (req, res) => {
     }
 };
 
+/**
+ * POST /checkout/confirm (or POST /checkout with action: confirm)
+ * Milestone 5.3 — Demo-Compatible Order Generation
+ *
+ * Ordered execution flow:
+ * STEP A: Final Validation (cart, products, availability, stock, coordinates) -> 0 writes if invalid
+ * STEP B: Create Order with status 'pending' and historical item snapshots
+ * STEP C: Reduce stock with conditional atomic updates
+ * STEP D: Clear buyer's persistent Cart
+ *
+ * NOTE: The local demo deployment is a standalone MongoDB instance without multi-document
+ * ACID transactions. This is a deliberate demo design. Production upgrades should configure
+ * a replica set for true transactional atomicity.
+ */
+export const processCheckout = async (req, res) => {
+    try {
+        if (!req.user || !req.user._id) {
+            return res.redirect("/login");
+        }
+
+        const { portName, islandCoordinates, recipientNotes } = req.body;
+
+        // Safe submitted values for retention if error occurs
+        const submittedDelivery = {
+            portName: typeof portName === "string" ? portName.trim() : "",
+            islandCoordinates: typeof islandCoordinates === "string" && islandCoordinates.trim() ? islandCoordinates.trim() : "18°42'N, 64°31'W",
+            recipientNotes: typeof recipientNotes === "string" ? recipientNotes.trim() : ""
+        };
+
+        const renderFailure = (errorMessage, statusCode = 400, manifest = null) => {
+            if (req.xhr || req.headers.accept?.includes("application/json") || req.query.format === "json") {
+                return res.status(statusCode).json({
+                    success: false,
+                    error: errorMessage,
+                    delivery: submittedDelivery
+                });
+            }
+            return res.status(statusCode).render("checkout", {
+                page_title: "Voyage Checkout | Pirate-Civ",
+                cart: manifest ? { isEmpty: false, ...manifest } : { isEmpty: true, items: [], itemCount: 0, subtotal: 0, portFee: 0, totalDoubloons: 0 },
+                delivery: submittedDelivery,
+                error: errorMessage,
+                successBanner: null,
+                user: req.user
+            });
+        };
+
+        // -------------------------------------------------------------
+        // STEP A: FINAL SERVER-SIDE VALIDATION (ZERO WRITES BEFORE THIS PASSES)
+        // -------------------------------------------------------------
+
+        // 1. Validate shipping address fields
+        if (!submittedDelivery.portName || submittedDelivery.portName.length < 2 || submittedDelivery.portName.length > 120) {
+            return renderFailure("Delivery port anchorage name is required (2 to 120 characters).");
+        }
+
+        if (submittedDelivery.islandCoordinates.length > 120) {
+            return renderFailure("Island coordinates cannot exceed 120 characters.");
+        }
+
+        if (submittedDelivery.recipientNotes.length > 500) {
+            return renderFailure("Harbor delivery notes cannot exceed 500 characters.");
+        }
+
+        // 2. Load authenticated buyer's persistent Cart from MongoDB
+        const cart = await Cart.findOne({ user: req.user._id });
+        if (!cart || !cart.items || cart.items.length === 0) {
+            return renderFailure("Cannot place order: cargo hold is empty.");
+        }
+
+        // 3. Re-read every product in cart and validate live stock & availability
+        const orderItems = [];
+        let subtotal = 0;
+
+        for (const item of cart.items) {
+            if (!item || !item.product) continue;
+
+            const prodId = item.product._id || item.product;
+            if (!prodId || !mongoose.isValidObjectId(prodId)) {
+                return renderFailure("Invalid product reference found in cargo hold.");
+            }
+
+            const product = await Product.findById(prodId);
+            if (!product) {
+                return renderFailure("A cargo item in your hold no longer exists in the archipelago catalog.");
+            }
+
+            if (product.isAvailable === false) {
+                return renderFailure(`Cannot checkout: "${product.name}" is currently unavailable for trade.`);
+            }
+
+            const qty = Number(item.quantity);
+            if (!Number.isInteger(qty) || qty < 1) {
+                return renderFailure(`Invalid quantity specified for "${product.name}".`);
+            }
+
+            const currentStock = typeof product.stock === "number" ? product.stock : 0;
+            if (currentStock <= 0) {
+                return renderFailure(`Cannot checkout: "${product.name}" vault reserve is exhausted (out of stock).`);
+            }
+
+            if (qty > currentStock) {
+                return renderFailure(`Cannot checkout: "${product.name}" requested quantity (${qty}) exceeds available vault reserve (${currentStock}).`);
+            }
+
+            const unitPrice = typeof product.price === "number" ? product.price : 0;
+            const lineTotal = unitPrice * qty;
+            subtotal += lineTotal;
+
+            // Build immutable historical item snapshot
+            orderItems.push({
+                product: product._id,
+                seller: product.seller,
+                name: product.name,
+                price: unitPrice,
+                quantity: qty,
+                lineTotal: lineTotal,
+                image: product.image || "/images/items/default-relic.png"
+            });
+        }
+
+        if (orderItems.length === 0) {
+            return renderFailure("Cannot place order: no valid wares in cargo hold.");
+        }
+
+        // -------------------------------------------------------------
+        // STEP B: CREATE ORDER DOCUMENT (INITIAL STATUS: 'pending')
+        // -------------------------------------------------------------
+        const portFee = 0; // Trade Port Fee: 0 Doubloons (Exempt)
+        const totalDoubloons = subtotal + portFee;
+
+        const newOrder = new Order({
+            buyer: req.user._id, // Authoritative authenticated buyer ID
+            items: orderItems,
+            subtotal: subtotal,
+            totalDoubloons: totalDoubloons,
+            status: "pending",
+            paymentStatus: "pending",
+            shippingAddress: {
+                portName: submittedDelivery.portName,
+                islandCoordinates: submittedDelivery.islandCoordinates,
+                recipientNotes: submittedDelivery.recipientNotes
+            }
+        });
+
+        await newOrder.save();
+
+        // -------------------------------------------------------------
+        // STEP C: REDUCE PRODUCT STOCK (CONDITIONAL ATOMIC PER-DOCUMENT UPDATES)
+        // -------------------------------------------------------------
+        for (const item of orderItems) {
+            const updateResult = await Product.updateOne(
+                {
+                    _id: item.product,
+                    stock: { $gte: item.quantity },
+                    isAvailable: true
+                },
+                {
+                    $inc: { stock: -item.quantity }
+                }
+            );
+
+            if (updateResult.modifiedCount !== 1) {
+                console.warn(`[DEMO WARNING] Product stock conditional update missed for ${item.product}. Note: Standalone MongoDB demo lacks multi-document ACID transactions.`);
+            }
+        }
+
+        // -------------------------------------------------------------
+        // STEP D: CLEAR BUYER'S PERSISTENT CART
+        // -------------------------------------------------------------
+        cart.items = [];
+        await cart.save();
+
+        // -------------------------------------------------------------
+        // STEP E: SUCCESS RESPONSE / REDIRECT
+        // -------------------------------------------------------------
+        if (req.xhr || req.headers.accept?.includes("application/json") || req.query.format === "json") {
+            return res.status(201).json({
+                success: true,
+                orderId: newOrder._id.toString(),
+                order: {
+                    id: newOrder._id.toString(),
+                    status: newOrder.status,
+                    paymentStatus: newOrder.paymentStatus,
+                    totalDoubloons: newOrder.totalDoubloons,
+                    subtotal: newOrder.subtotal,
+                    itemsCount: newOrder.items.length,
+                    items: newOrder.items,
+                    shippingAddress: newOrder.shippingAddress,
+                    createdAt: newOrder.createdAt
+                },
+                message: "Voyage manifest signed! Order placed successfully."
+            });
+        }
+
+        return res.redirect(`/orders/${newOrder._id}?placed=1`);
+
+    } catch (error) {
+        console.error("Error in processCheckout:", error);
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.status(500).json({ success: false, error: "Internal server error generating order" });
+        }
+        return res.status(500).render("home", {
+            page_title: "Archipelago Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
+/**
+ * GET /orders/:orderId
+ * Renders or returns the confirmed Voyage Manifest for the authenticated buyer.
+ */
+export const renderBuyerOrderDetail = async (req, res) => {
+    try {
+        if (!req.user || !req.user._id) {
+            return res.redirect("/login");
+        }
+
+        const { orderId } = req.params;
+
+        if (!orderId || !mongoose.isValidObjectId(orderId)) {
+            if (req.xhr || req.headers.accept?.includes("application/json")) {
+                return res.status(404).json({ success: false, error: "Invalid order identifier provided." });
+            }
+            return res.status(404).render("home", {
+                page_title: "Order Not Found | Pirate-Civ",
+                user: req.user
+            });
+        }
+
+        // Scoped strictly to the authenticated buyer (User Isolation)
+        const order = await Order.findOne({
+            _id: orderId,
+            buyer: req.user._id
+        }).populate("items.seller", "name storeName homeIsland");
+
+        if (!order) {
+            if (req.xhr || req.headers.accept?.includes("application/json")) {
+                return res.status(404).json({ success: false, error: "Order not found or access denied." });
+            }
+            return res.status(404).render("home", {
+                page_title: "Order Not Found | Pirate-Civ",
+                user: req.user
+            });
+        }
+
+        if (req.xhr || req.headers.accept?.includes("application/json") || req.query.format === "json") {
+            return res.json({
+                success: true,
+                order
+            });
+        }
+
+        return res.render("order-confirmation", {
+            page_title: `Voyage Manifest #${order._id} | Pirate-Civ`,
+            order,
+            user: req.user
+        });
+
+    } catch (error) {
+        console.error("Error in renderBuyerOrderDetail:", error);
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.status(500).json({ success: false, error: "Internal server error fetching order manifest" });
+        }
+        return res.status(500).render("home", {
+            page_title: "Archipelago Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
 export default {
     renderCheckout,
     validateCheckout,
+    processCheckout,
+    renderBuyerOrderDetail,
     evaluateCheckoutManifest
 };

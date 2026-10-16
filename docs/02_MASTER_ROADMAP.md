@@ -202,14 +202,22 @@ gantt
   - Added delivery coordinates collection (`portName`, `islandCoordinates`, `recipientNotes`) matching `models/order.js` shippingAddress schema with strict validation and safe value retention.
   - Enforced Phase 5.2 Order Boundary: Verified zero Order documents created, zero Product.stock decrements, and buyer Cart intact.
   - Validated with 64/64 dedicated automated tests (`scratch/test_milestone_5_2.js`), 327 regression assertions (5.1, 4.5, 4.4, 3.6), clean syntax on 22 JS and 31 EJS files, and real browser verification.
-* **Milestone 5.3: Order Generation & State Machine [NEXT]**
-  - Save orders into `models/order.js` with initial status `pending`.
-  - Implement order state machine: `pending` → `confirmed` → `processing` → `shipped` → `delivered` (or `cancelled`).
-  - Atomic stock deduction upon order creation and clearing of user's persistent Cart.
-* **Milestone 5.4: Buyer Order History & Tracking**
-  - Create `/orders` and `/orders/:id` for customer tracking with nautical timeline visualizer.
-* **Milestone 5.5: Seller Order Management**
-  - Create `/seller/orders` and `/seller/orders/:id` allowing merchants to view items and advance statuses.
+* **Milestone 5.3: Order Generation & State Machine [COMPLETE]**
+  - Implemented authoritative buyer order generation endpoint (`POST /checkout/confirm`) and confirmation view (`GET /orders/:orderId`) guarded with `[authMiddleware, requireBuyer]`.
+  - Reused existing single `models/order.js` schema; orders created with initial status `pending` and paymentStatus `pending`.
+  - Generated historical immutable snapshots (`product`, `seller`, `name`, `price`, `quantity`, `lineTotal`, `image`) directly from live MongoDB `Product` records.
+  - Calculated server-side authoritative pricing: line totals, subtotal, 0 trade port fee (exempt), and grand total.
+  - Implemented double-submission protection via client-side submit button locking and server-side empty cart validation.
+  - Implemented inventory deduction using conditional update filters (`{ _id, stock: { $gte: quantity }, isAvailable: true }`) ensuring stock never drops below zero.
+  - Cleared buyer's persistent Cart (`cart.items = []`) upon successful order creation.
+  - Integrated with existing Order state machine (`canTransitionTo`, `transitionTo`) and verified full lifecycle (`pending` ➔ `confirmed` ➔ `processing` ➔ `shipped` ➔ `delivered`, with permitted cancellations).
+  - Integrated with Seller Order Console (`Order.findBySeller`), allowing merchants to view stowed cargo and advance fulfillment.
+  - **Important Architecture Limitation (Demo-Compatible Implementation):** The local development environment operates on a standalone MongoDB deployment without replica sets. Order creation uses a strictly validated write sequence (Validation ➔ Order Creation ➔ Stock Updates ➔ Cart Clearance) and is non-transactional. Production deployments must configure a replica set or sharded cluster to use native MongoDB multi-document transactions for true ACID atomicity.
+  - Validated with 70/70 dedicated automated tests (`scratch/test_milestone_5_3.js`), 487 regression assertions, 22 JS and 32 EJS syntax checks, and real browser verification.
+* **Milestone 5.4: Buyer Order History & Tracking [NEXT]**
+  - Create `/orders` customer order history index and enhance `/orders/:id` with a nautical timeline visualizer.
+* **Milestone 5.5: Seller Order Management [COMPLETE in Milestone 4.4]**
+  - Seller order console at `/seller/orders` and `/seller/orders/:id` allowing merchants to view items and advance statuses was implemented in Phase 4.4 and verified integrated with Phase 5.3 orders.
 
 ---
 
