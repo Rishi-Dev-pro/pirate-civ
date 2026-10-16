@@ -253,4 +253,39 @@ Order items snapshot product name, unit price, quantity, line total, and merchan
 ### 5.5 Buyer Order Manifest View (`GET /orders/:orderId`)
 Authenticated buyers can view their generated voyage manifests at `/orders/:orderId`. Access is strictly scoped to the authenticated buyer (`buyer: req.user._id`), preventing cross-user data leakage.
 
+---
+
+## 6. Buyer Order History & Nautical Tracking Timeline (Milestone 5.4 COMPLETE)
+
+Milestone 5.4 completes the customer-facing post-purchase experience with an authenticated order ledger and tracking timeline.
+
+### 6.1 Buyer Order History (`GET /orders`)
+- **Access Control:** Guarded strictly by `[authMiddleware, requireBuyer]`. Unauthenticated requests redirect to `/login` (HTTP 302); unauthorized roles receive HTTP 403.
+- **Identity Source:** Scoped exclusively to `req.user._id` from the authenticated session. Request overrides via query params, body fields, or headers are strictly rejected.
+- **Query Optimization:** Utilizes `Order.findByBuyer(req.user._id)` leveraging compound index `{ buyer: 1, createdAt: -1 }` to return orders sorted newest first with zero N+1 database queries.
+- **Captain's Voyage Ledger View (`views/orders.ejs`):**
+  - Atmospheric dark fantasy nautical design with summary metrics (Total Voyages, Underway, Total Doubloons Chartered).
+  - Responsive voyage cards displaying Voyage ID, date, status badge, crate count, destination port, Doubloon grand total, payment status, and chartered wares preview.
+  - Themed empty state when buyer has 0 orders with "Explore the Islands" action pointing to `/home#sea-chart-section`.
+
+### 6.2 Voyage Manifest & Nautical Tracking Timeline (`GET /orders/:orderId`)
+- **Strict Ownership Isolation:** Scoped to `{ _id: orderId, buyer: req.user._id }`. Access attempts by another buyer or visitor return HTTP 404 with zero order data leaked.
+- **Canonical 5-Stage Lifecycle Timeline:**
+  ```text
+  [ ⚓ Manifest Registered ] ──> [ ✓ Cargo Confirmed ] ──> [ ⚒ Cargo Processing ] ──> [ 🚢 Fleet Underway ] ──> [ 🏝️ Delivered to Harbor ]
+  ```
+  - **Completed:** Checked green/gold accent, solid connectors.
+  - **Current:** Radiant pulsing gold highlight (`pulse-gold`), enlarged icon, `aria-current="step"`.
+  - **Upcoming:** Muted dashed line and inactive indicator.
+- **Dedicated Terminal Cancellation State:**
+  - If `order.status === 'cancelled'`, normal progress timeline is suppressed.
+  - Renders prominent terminal cancellation banner: `☠ Voyage Cancelled — Charter Revoked`.
+  - Enforces state machine immutability: cancelled orders cannot transition to any active stage.
+- **Historical Snapshot Safety:**
+  - Item details (`name`, `price`, `quantity`, `lineTotal`, `seller`) are rendered strictly from embedded `Order.items` snapshots.
+  - Catalog updates, price changes, or product deletions never mutate completed orders.
+- **Role-Aware Navigation:**
+  - Added conditional `⚓ My Voyages` navigation link (`#navBuyerOrders`) in `views/partials/header.ejs` displayed strictly for authenticated buyers.
+
+
 

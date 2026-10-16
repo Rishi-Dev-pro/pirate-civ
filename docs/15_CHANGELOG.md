@@ -4,6 +4,54 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-17] — Phase 5 / Milestone 5.4: Buyer Order History & Tracking (MILESTONE 5.4 COMPLETE — PHASE 5 COMPLETE)
+
+### Added & Implemented
+* **Buyer Order History Endpoint (`controller/orders.js::renderBuyerOrders`):**
+  - Mounted at `GET /orders` guarded strictly with `[authMiddleware, requireBuyer]`.
+  - Pinned identity strictly to authenticated session `req.user._id`, ignoring client-spoofed parameters or headers.
+  - Queries customer orders via `Order.findByBuyer(req.user._id)` leveraging compound index `{ buyer: 1, createdAt: -1 }` (sorting newest orders first).
+  - Populates seller metadata (`name`, `storeName`, `homeIsland`) for display without leaking sensitive credentials (`password`, `authSecretHash`, `googleId`).
+  - Supports both HTML rendering (`views/orders.ejs`) and programmatic JSON (`?format=json` / Accept header).
+* **Captain's Voyage Ledger View (`views/orders.ejs`):**
+  - Atmospheric dark fantasy nautical design with header summary metrics (Total Voyages, Underway, Total Doubloons Chartered).
+  - Responsive order cards displaying Voyage ID, cleared date, status pill, nautical stage callout, destination port, crate count, valuation, payment status, and wares preview.
+  - Themed empty state when buyer has 0 orders ("No voyages recorded yet, Captain.") with exploration action button (`#btnExploreIslands`).
+* **Nautical Tracking Timeline (`views/order-confirmation.ejs` & `controller/orders.js::renderBuyerOrderDetail`):**
+  - Built an accessible, semantic tracking timeline visualizer for the 5 canonical stages (`Pending` ➔ `Confirmed` ➔ `Processing` ➔ `Shipped` ➔ `Delivered`).
+  - Distinguishes Completed (green/gold check), Current (radiant pulsing gold glow, `pulse-gold`, `aria-current="step"`), and Upcoming (muted dashed) stages.
+  - Added dedicated terminal cancellation banner (`#cancelledBanner`) for cancelled voyages, suppressing the active pipeline when `order.status === 'cancelled'`.
+  - Updated breadcrumbs linking to `My Voyages` (`/orders`) and added ledger quick link (`#btnAllVoyagesLedger`).
+* **Role-Aware Header Navigation (`views/partials/header.ejs`):**
+  - Added conditional `⚓ My Voyages` navigation link (`#navBuyerOrders`) rendered strictly for authenticated buyers (`user.role === 'buyer'`).
+* **Ownership Security & Anti-Tampering:**
+  - Order details scoped strictly to `{ _id: orderId, buyer: req.user._id }`. Unowned order access returns HTTP 404 with zero order information leaked.
+  - Historical snapshots remain immutable: subsequent catalog product updates, renames, or deletions do not alter past orders.
+
+### Tested & Verified
+* 92 automated assertions in dedicated test suite `scratch/test_milestone_5_4.js`:
+  - Group A: Access control & RBAC (unauthenticated 302, seller 403, buyer 200).
+  - Group B: Order history display, newest-first ordering, counts, totals, and empty state.
+  - Group C: Strict buyer ownership isolation, 404 security responses, anti-tampering defenses.
+  - Group D: 5-stage tracking timeline progression (`pending` ➔ `confirmed` ➔ `processing` ➔ `shipped` ➔ `delivered`).
+  - Group E: Terminal cancellation state and state machine immutability.
+  - Group F: Historical snapshot immutability across product price changes and deletions.
+  - Group G: Regression for Phase 5.3 order creation and persistent cart clearance.
+* Full regression pass across all milestones (645 total assertions passing):
+  - Milestone 5.4: 92/92
+  - Milestone 5.3: 70/70
+  - Milestone 5.2: 64/64
+  - Milestone 5.1: 80/80
+  - Milestone 4.5: 76/76
+  - Milestone 4.4: 75/75
+  - Milestone 4.3: 61/61
+  - Milestone 4.2: 67/67
+  - Milestone 4.1: 64/64
+  - Milestone 3.6: 96/96
+* Code health: 22/22 JS files pass syntax validation; 33/33 EJS templates compile cleanly.
+* Real browser execution via browser subagent (`buyer_order_404_1792189802821.png`, `buyer_order_processing_1792190799195.png`):
+  - Verified buyer login ➔ My Voyages ➔ empty state ➔ product stow ➔ checkout ➔ Voyage Ledger ➔ 404 security test ➔ seller status advancement (`pending` ➔ `confirmed` ➔ `processing`) ➔ buyer tracking timeline update to `Cargo Processing` with 0 console errors.
+
 ## [2026-10-16] — Phase 5 / Milestone 5.3: Order Generation & State Machine (MILESTONE 5.3 COMPLETE — DEMO-COMPATIBLE IMPLEMENTATION)
 
 ### Added & Implemented

@@ -132,5 +132,21 @@ This log preserves key architectural choices, trade-offs, and design decisions m
   2. Pseudo-transaction wrapper that pretends to provide rollbacks. Rejected as deceptive architecture.
 * **Consequences:** A theoretical failure window exists between steps if an unhandled crash occurs. Production deployment must use a MongoDB replica set or sharded cluster with native ACID transactions for true atomic order generation.
 
+---
 
-
+### Decision 011: Buyer Order History Architecture & Nautical Tracking Timeline Visualizer (Phase 5.4)
+* **Date:** 2026-10-17
+* **Status:** Accepted
+* **Context:** Milestone 5.4 requires a buyer-facing order history index (`/orders`) and a visual nautical tracking timeline on individual order manifests (`/orders/:orderId`). Access must remain strictly isolated to the authenticated buyer, and the visual state machine must handle both normal progression and terminal cancellation states.
+* **Decision:**
+  1. Implement `renderBuyerOrders` at `GET /orders` guarded strictly with `[authMiddleware, requireBuyer]`. Derive customer identity solely from `req.user._id` (client-spoofed buyer IDs in query/body/headers are strictly ignored).
+  2. Reuse the existing single query `Order.findByBuyer(req.user._id)` leveraging the compound index `{ buyer: 1, createdAt: -1 }` to return orders sorted newest first with zero N+1 database queries.
+  3. Enforce strict 404 security handling: if another user attempts to open `/orders/:orderId`, return HTTP 404 with zero order metadata leaked (never reveal order existence or ownership).
+  4. Define canonical tracking stages (`pending` ➔ `confirmed` ➔ `processing` ➔ `shipped` ➔ `delivered`) in controller configuration, mapping each to completed, current (with radiant pulsing glow), and upcoming states.
+  5. Dedicated cancellation terminal visualizer: when `order.status === 'cancelled'`, suppress active pipeline progression and render a clear terminal cancellation banner (`#cancelledBanner`).
+  6. Display item details strictly from embedded snapshots (`order.items`) to guarantee historical order immutability.
+* **Reason:** Maintains strict security boundaries, prevents cross-user order snooping, ensures smooth responsive UX across desktop and mobile without unnecessary client-side JavaScript or external tracking APIs, and respects established state machine rules.
+* **Alternatives Considered:**
+  1. Storing tracking events as separate documents in a new `Tracking` collection. Rejected as over-engineered for the current milestone (Ponytail principle / YAGNI).
+  2. Introducing client-side WebSockets for live status updates. Rejected as premature scope expansion (expressly on the NO-GO list).
+* **Consequences:** Order tracking state is driven directly by authoritative Order document status, ensuring complete consistency across the Seller Order Console and Buyer Voyage Ledger.

@@ -62,6 +62,14 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
   - Integrates seamlessly with Seller Order Console (`/seller/orders` and `/seller/orders/:orderId`) and supports canonical status lifecycle transitions (`pending` ➔ `confirmed` ➔ `processing` ➔ `shipped` ➔ `delivered` with permitted cancellations).
   - **IMPORTANT ARCHITECTURE LIMITATION (DEMO-COMPATIBLE IMPLEMENTATION):** The local demo environment runs a standalone MongoDB deployment which does not support multi-document ACID transactions. Order generation uses a carefully validated write ordering sequence (Step A: Re-validate cart and live inventory ➔ Step B: Create Order document ➔ Step C: Conditional per-document stock decrements ➔ Step D: Clear persistent cart). It is NOT atomic and does NOT provide ACID guarantees. Production upgrades must configure a replica set or sharded cluster to use native MongoDB multi-document transactions.
   - Validated with 70/70 dedicated automated tests (`scratch/test_milestone_5_3.js`), full regression suite (487/487 assertions passing across Milestones 5.2, 5.1, 4.5, 4.4, 4.3, 4.2, 4.1, 3.6), clean JS and EJS syntax checks, and real browser verification with 0 console errors. **MILESTONE 5.3 COMPLETE.**
+* **Buyer Order History & Tracking (Milestone 5.4 COMPLETE):** Authenticated buyer order history index at `/orders` and voyage manifest tracking view at `/orders/:orderId` guarded strictly by `[authMiddleware, requireBuyer]`.
+  - Reused `Order.findByBuyer(req.user._id)` leveraging compound index `{ buyer: 1, createdAt: -1 }` (sorting newest orders first).
+  - Pinned access strictly to authenticated `req.user._id`; customer cross-user order intrusions return HTTP 404 with zero order data leakage.
+  - Built Captain's Voyage Ledger (`views/orders.ejs`) displaying voyage order cards with Order ID, cleared date, status badge, crate count, destination port, Doubloon valuation, payment status, and cargo preview, plus a polished empty state.
+  - Enhanced Voyage Manifest view (`views/order-confirmation.ejs`) with an accessible, responsive Nautical Tracking Timeline (`Pending` ➔ `Confirmed` ➔ `Processing` ➔ `Shipped` ➔ `Delivered`) distinguishing completed, current (with radiant pulsing glow), and upcoming stages.
+  - Added dedicated terminal cancellation banner (`#cancelledBanner`) for cancelled charters.
+  - Preserved historical snapshot integrity and added role-aware `⚓ My Voyages` navigation link in `views/partials/header.ejs`.
+  - Validated with 92/92 automated dedicated tests (`scratch/test_milestone_5_4.js`), full 645-assertion regression pass, and real browser verification with 0 console errors. **MILESTONE 5.4 AND PHASE 5 ARE COMPLETE.**
 
 ---
 
@@ -82,7 +90,6 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ---
 
 ### ⚪ NOT IMPLEMENTED
-* **Buyer Order History & Tracking:** Full customer order history index page (`/orders`) with nautical tracking timeline visualizer (Phase 5.4).
 * **Entry Map Gateway:** No dual-portal landing gateway (`/`) allowing incoming visitors to branch into the Buyer or Seller experience before entering the market (Phase 6.1).
 * **Google OAuth Authentication:** No OAuth2 strategy or credential linkage configured.
 

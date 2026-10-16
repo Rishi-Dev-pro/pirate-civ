@@ -350,6 +350,7 @@ import {
     renderCheckout,
     validateCheckout,
     processCheckout,
+    renderBuyerOrders,
     renderBuyerOrderDetail
 } from "../controller/orders.js";
 
@@ -357,8 +358,10 @@ router.get("/checkout", authMiddleware, requireBuyer, renderCheckout);
 router.post("/checkout", authMiddleware, requireBuyer, validateCheckout);
 router.post("/checkout/confirm", authMiddleware, requireBuyer, processCheckout);
 
-// Buyer Order Detail / Manifest Confirmation (Milestone 5.3)
+// Buyer Order History & Tracking (Milestone 5.4)
+router.get("/orders", authMiddleware, requireBuyer, renderBuyerOrders);
 router.get("/orders/:orderId", authMiddleware, requireBuyer, renderBuyerOrderDetail);
+
 
 
 // =====================================================

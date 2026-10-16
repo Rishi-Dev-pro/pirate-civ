@@ -18,6 +18,12 @@
     ⚓ Explorers
 </a>
 
+        <% if (typeof user !== 'undefined' && user && user.role === 'buyer') { %>
+            <a href="/orders" class="nav-buyer-orders" id="navBuyerOrders">
+                ⚓ My Voyages
+            </a>
+        <% } %>
+
         <% if (typeof user !== 'undefined' && user && user.role === 'seller') { %>
             <a href="/seller/dashboard" class="nav-seller-deck" id="navSellerDeck">
                 ⚓ Command Deck

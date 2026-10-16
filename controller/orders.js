@@ -531,8 +531,64 @@ export const processCheckout = async (req, res) => {
 };
 
 /**
+ * Canonical Nautical Tracking Stages configuration
+ */
+export const TRACKING_STAGES = [
+    { key: "pending", label: "Manifest Registered", icon: "⚓", description: "Cargo order logged and awaiting harbor clearance" },
+    { key: "confirmed", label: "Cargo Confirmed", icon: "✓", description: "Merchant verified vault availability" },
+    { key: "processing", label: "Cargo Processing", icon: "⚒", description: "Wares stowed and fleet rigging prepared" },
+    { key: "shipped", label: "Fleet Underway", icon: "🚢", description: "Caravel sails hoisted across archipelago" },
+    { key: "delivered", label: "Delivered to Harbor", icon: "🏝️", description: "Cargo discharged at destination anchorage" }
+];
+
+/**
+ * GET /orders
+ * Milestone 5.4 — Captain's Voyage Ledger (Buyer Order History)
+ * Displays all past orders placed by the authenticated buyer, sorted newest first.
+ */
+export const renderBuyerOrders = async (req, res) => {
+    try {
+        if (!req.user || !req.user._id) {
+            return res.redirect("/login");
+        }
+
+        // Query orders strictly scoped to authenticated buyer using compound index { buyer: 1, createdAt: -1 }
+        const orders = await Order.findByBuyer(req.user._id)
+            .populate("items.seller", "name storeName homeIsland")
+            .lean();
+
+        // Support JSON format for automated testing and client hydration
+        if (req.xhr || req.headers.accept?.includes("application/json") || req.query.format === "json") {
+            return res.json({
+                success: true,
+                orders,
+                count: orders.length
+            });
+        }
+
+        return res.render("orders", {
+            page_title: "Captain's Voyage Ledger | Pirate-Civ",
+            orders,
+            trackingStages: TRACKING_STAGES,
+            user: req.user
+        });
+
+    } catch (error) {
+        console.error("Error in renderBuyerOrders:", error);
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.status(500).json({ success: false, error: "Internal server error fetching voyage ledger" });
+        }
+        return res.status(500).render("home", {
+            page_title: "Archipelago Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
+/**
  * GET /orders/:orderId
- * Renders or returns the confirmed Voyage Manifest for the authenticated buyer.
+ * Renders or returns the confirmed Voyage Manifest for the authenticated buyer,
+ * complete with nautical tracking timeline visualization.
  */
 export const renderBuyerOrderDetail = async (req, res) => {
     try {
@@ -568,16 +624,34 @@ export const renderBuyerOrderDetail = async (req, res) => {
             });
         }
 
+        const currentStageIndex = TRACKING_STAGES.findIndex(s => s.key === order.status);
+        const isCancelled = order.status === "cancelled";
+
         if (req.xhr || req.headers.accept?.includes("application/json") || req.query.format === "json") {
             return res.json({
                 success: true,
-                order
+                order,
+                tracking: {
+                    status: order.status,
+                    isCancelled,
+                    currentStageIndex,
+                    stages: TRACKING_STAGES.map((stage, idx) => ({
+                        ...stage,
+                        isCompleted: !isCancelled && currentStageIndex > idx,
+                        isCurrent: !isCancelled && currentStageIndex === idx,
+                        isUpcoming: !isCancelled && (currentStageIndex < idx || currentStageIndex === -1)
+                    }))
+                }
             });
         }
 
         return res.render("order-confirmation", {
             page_title: `Voyage Manifest #${order._id} | Pirate-Civ`,
             order,
+            trackingStages: TRACKING_STAGES,
+            currentStageIndex,
+            isCancelled,
+            justPlaced: req.query.placed === "1",
             user: req.user
         });
 
@@ -597,6 +671,8 @@ export default {
     renderCheckout,
     validateCheckout,
     processCheckout,
+    renderBuyerOrders,
     renderBuyerOrderDetail,
-    evaluateCheckoutManifest
+    evaluateCheckoutManifest,
+    TRACKING_STAGES
 };

@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Captain's Voyage Ledger | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p35_v1">
+
+    <style>
+        .ledger-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 24px 80px 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .ledger-header {
+            background: rgba(18, 24, 32, 0.88);
+            border: 1px solid rgba(212, 147, 57, 0.35);
+            border-radius: 10px;
+            padding: 24px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .ledger-title-group {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .ledger-icon {
+            font-size: 2.2rem;
+        }
+
+        .ledger-title {
+            font-family: "Cinzel", serif;
+            font-size: 1.6rem;
+            color: #ffd57e;
+            margin: 0 0 6px 0;
+            letter-spacing: 0.04em;
+        }
+
+        .ledger-subtitle {
+            font-size: 0.92rem;
+            color: #8b9bb4;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .ledger-metrics-bar {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .ledger-metric-pill {
+            background: rgba(10, 15, 20, 0.65);
+            border: 1px solid rgba(212, 147, 57, 0.25);
+            border-radius: 8px;
+            padding: 8px 16px;
+            text-align: center;
+        }
+
+        .ledger-metric-val {
+            font-family: "Cinzel", serif;
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #ffd57e;
+        }
+
+        .ledger-metric-label {
+            font-family: "Inter", sans-serif;
+            font-size: 0.72rem;
+            color: #8b9bb4;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* Order Cards Grid */
+        .orders-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 22px;
+        }
+
+        .voyage-card {
+            background: rgba(18, 24, 32, 0.88);
+            border: 1px solid rgba(212, 147, 57, 0.3);
+            border-radius: 10px;
+            padding: 22px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .voyage-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(212, 147, 57, 0.6);
+            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.65);
+        }
+
+        .voyage-card-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(212, 147, 57, 0.2);
+            padding-bottom: 14px;
+            margin-bottom: 14px;
+            gap: 12px;
+        }
+
+        .voyage-id {
+            font-family: "Cinzel", serif;
+            font-size: 1.05rem;
+            color: #ffd57e;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            margin: 0 0 4px 0;
+        }
+
+        .voyage-date {
+            font-size: 0.78rem;
+            color: #8b9bb4;
+        }
+
+        .order-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 16px;
+            font-family: "Cinzel", serif;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .order-status-pending {
+            background: rgba(212, 147, 57, 0.15);
+            border: 1px solid #d49339;
+            color: #ffd57e;
+        }
+
+        .order-status-confirmed {
+            background: rgba(56, 239, 125, 0.15);
+            border: 1px solid #38ef7d;
+            color: #5cf59b;
+        }
+
+        .order-status-processing {
+            background: rgba(17, 153, 142, 0.15);
+            border: 1px solid #11998e;
+            color: #38ef7d;
+        }
+
+        .order-status-shipped {
+            background: rgba(79, 172, 254, 0.15);
+            border: 1px solid #4facfe;
+            color: #68c0ff;
+        }
+
+        .order-status-delivered {
+            background: rgba(40, 167, 69, 0.15);
+            border: 1px solid #28a745;
+            color: #69f0ae;
+        }
+
+        .order-status-cancelled {
+            background: rgba(220, 53, 69, 0.15);
+            border: 1px solid #dc3545;
+            color: #ff8585;
+        }
+
+        .voyage-stage-callout {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(10, 15, 20, 0.6);
+            border-left: 3px solid #d49339;
+            border-radius: 0 4px 4px 0;
+            padding: 8px 12px;
+            margin-bottom: 14px;
+            font-size: 0.85rem;
+            color: #fff4db;
+        }
+
+        .voyage-stage-callout.stage-cancelled {
+            border-left-color: #dc3545;
+            color: #ff8585;
+            background: rgba(40, 10, 15, 0.6);
+        }
+
+        .voyage-info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .voyage-info-item {
+            background: rgba(10, 15, 20, 0.4);
+            border: 1px solid rgba(212, 147, 57, 0.12);
+            border-radius: 6px;
+            padding: 8px 10px;
+        }
+
+        .voyage-info-label {
+            font-family: "Cinzel", serif;
+            font-size: 0.7rem;
+            color: #8b9bb4;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 2px;
+        }
+
+        .voyage-info-val {
+            font-family: "Inter", sans-serif;
+            font-size: 0.88rem;
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        /* Cargo Items Preview */
+        .voyage-cargo-preview {
+            border-top: 1px solid rgba(212, 147, 57, 0.15);
+            padding-top: 12px;
+            margin-bottom: 16px;
+        }
+
+        .voyage-cargo-heading {
+            font-family: "Cinzel", serif;
+            font-size: 0.75rem;
+            color: #ffd57e;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .voyage-cargo-list {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .voyage-cargo-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: #cbd5e1;
+        }
+
+        .voyage-cargo-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 4px;
+            object-fit: cover;
+            border: 1px solid rgba(212, 147, 57, 0.3);
+        }
+
+        .voyage-card-actions {
+            margin-top: auto;
+            padding-top: 10px;
+        }
+
+        .btn-view-manifest {
+            display: block;
+            text-align: center;
+            background: linear-gradient(135deg, rgba(212, 147, 57, 0.25) 0%, rgba(164, 108, 27, 0.35) 100%);
+            border: 1px solid #ffd57e;
+            color: #ffd57e;
+            padding: 10px 16px;
+            font-family: "Cinzel", serif;
+            font-size: 0.88rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-view-manifest:hover {
+            background: linear-gradient(135deg, #d49339 0%, #a46c1b 100%);
+            color: #0d1117;
+            box-shadow: 0 4px 18px rgba(212, 147, 57, 0.45);
+        }
+
+        /* Empty State */
+        .ledger-empty-state {
+            background: rgba(18, 24, 32, 0.88);
+            border: 1px solid rgba(212, 147, 57, 0.3);
+            border-radius: 10px;
+            padding: 50px 24px;
+            text-align: center;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+        }
+
+        .empty-icon {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+            filter: drop-shadow(0 0 16px rgba(212, 147, 57, 0.4));
+        }
+
+        .empty-title {
+            font-family: "Cinzel", serif;
+            font-size: 1.4rem;
+            color: #ffd57e;
+            margin: 0 0 8px 0;
+            letter-spacing: 0.04em;
+        }
+
+        .empty-desc {
+            font-size: 0.95rem;
+            color: #8b9bb4;
+            max-width: 520px;
+            margin: 0 auto 24px auto;
+            line-height: 1.5;
+        }
+
+        .btn-explore-islands {
+            display: inline-block;
+            background: linear-gradient(135deg, #d49339 0%, #a46c1b 100%);
+            border: 1px solid #ffd57e;
+            color: #0d1117;
+            padding: 12px 28px;
+            font-family: "Cinzel", serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            border-radius: 6px;
+            text-decoration: none;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.6);
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+        }
+
+        .btn-explore-islands:hover {
+            background: linear-gradient(135deg, #f0ac46 0%, #ba7b20 100%);
+            box-shadow: 0 6px 24px rgba(212, 147, 57, 0.5);
+            transform: translateY(-2px);
+            color: #0d1117;
+        }
+
+        @media (max-width: 768px) {
+            .ledger-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .orders-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="island-store-body cart-manifest-body">
+
+    <!-- Fixed Atmospheric Backdrop -->
+    <div class="store-backdrop">
+        <img src="/images/kraken-bg.jpg" alt="Voyage Clearance Backdrop" class="store-bg-img" onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
+
+    <!-- Reusable Main Navigation Bar -->
+    <%- include("partials/header") %>
+
+    <!-- Master Container -->
+    <main class="ledger-container">
+
+        <!-- Header / Breadcrumb Bar -->
+        <nav class="detail-nav-bar" aria-label="Captain's Voyage Ledger Breadcrumbs">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Captain's Voyage Ledger</span>
+            </div>
+
+            <div class="store-header-controls">
+                <a href="/cart" class="btn-store-cart" title="View Cargo Hold">
+                    <span>🛒 HOLD</span>
+                </a>
+                <a href="/home" class="btn-store-close" title="Return to Sea Chart">
+                    &times;
+                </a>
+            </div>
+        </nav>
+
+        <%
+            const orderList = Array.isArray(orders) ? orders : [];
+            const totalDoubloonsSpent = orderList.reduce((sum, o) => sum + (o.totalDoubloons || 0), 0);
+            const activeVoyagesCount = orderList.filter(o => o.status !== 'delivered' && o.status !== 'cancelled').length;
+
+            const stageLabels = {
+                pending: "⚓ Manifest Registered",
+                confirmed: "✓ Cargo Confirmed",
+                processing: "⚒ Cargo Processing",
+                shipped: "🚢 Fleet Underway",
+                delivered: "🏝️ Delivered to Harbor",
+                cancelled: "☠ Voyage Cancelled"
+            };
+        %>
+
+        <!-- Ledger Header Card -->
+        <header class="ledger-header">
+            <div class="ledger-title-group">
+                <div class="ledger-icon">⚓</div>
+                <div>
+                    <h1 class="ledger-title">Captain's Voyage Ledger</h1>
+                    <p class="ledger-subtitle">
+                        Chronicle of all chartered fleet voyages, stowed cargo manifests, and harbor dispatch deliveries across the Archipelago.
+                    </p>
+                </div>
+            </div>
+
+            <div class="ledger-metrics-bar">
+                <div class="ledger-metric-pill">
+                    <div class="ledger-metric-val"><%= orderList.length %></div>
+                    <div class="ledger-metric-label">Total Voyages</div>
+                </div>
+                <div class="ledger-metric-pill">
+                    <div class="ledger-metric-val" style="color:#38ef7d;"><%= activeVoyagesCount %></div>
+                    <div class="ledger-metric-label">Underway</div>
+                </div>
+                <div class="ledger-metric-pill">
+                    <div class="ledger-metric-val" style="color:#ffd57e;">🪙 <%= totalDoubloonsSpent.toLocaleString() %></div>
+                    <div class="ledger-metric-label">Total Chartered</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Orders Grid or Empty State -->
+        <% if (orderList.length === 0) { %>
+            <section class="ledger-empty-state" id="ledgerEmptyState" aria-label="Empty Voyage Ledger">
+                <div class="empty-icon">🧭</div>
+                <h2 class="empty-title">No voyages recorded yet, Captain.</h2>
+                <p class="empty-desc">
+                    Your sea ledger holds no chartered manifests or dispatched cargo.
+                    Chart a course across the six trading islands to stow your first wares!
+                </p>
+                <div>
+                    <a href="/home#sea-chart-section" class="btn-explore-islands" id="btnExploreIslands">
+                        🗺️ Explore the Islands
+                    </a>
+                </div>
+            </section>
+        <% } else { %>
+            <section class="orders-grid" id="voyageLedgerGrid" aria-label="Chartered Voyages List">
+                <% orderList.forEach(function(order) {
+                    const itemCount = (order.items || []).reduce((sum, item) => sum + (item.quantity || 1), 0);
+                    const isCancelled = order.status === 'cancelled';
+                    const stageText = stageLabels[order.status] || order.status;
+                %>
+                    <article class="voyage-card" data-order-id="<%= order._id %>">
+                        <div>
+                            <!-- Card Header -->
+                            <div class="voyage-card-header">
+                                <div>
+                                    <h2 class="voyage-id">⚓ Voyage #<%= order._id %></h2>
+                                    <span class="voyage-date">
+                                        Cleared on <%= new Date(order.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", hour: "2-digit", minute: "2-digit" }) %>
+                                    </span>
+                                </div>
+                                <span class="order-status-badge order-status-<%= order.status %>">
+                                    ● <%= order.status %>
+                                </span>
+                            </div>
+
+                            <!-- Nautical Stage Callout -->
+                            <div class="voyage-stage-callout <%= isCancelled ? 'stage-cancelled' : '' %>">
+                                <span><%= isCancelled ? '☠' : '🧭' %></span>
+                                <strong><%= stageText %></strong>
+                            </div>
+
+                            <!-- Metrics Grid -->
+                            <div class="voyage-info-grid">
+                                <div class="voyage-info-item">
+                                    <div class="voyage-info-label">Destination Port</div>
+                                    <div class="voyage-info-val"><%= order.shippingAddress?.portName || 'Port Royal' %></div>
+                                </div>
+                                <div class="voyage-info-item">
+                                    <div class="voyage-info-label">Cargo Crates</div>
+                                    <div class="voyage-info-val"><%= itemCount %> Items</div>
+                                </div>
+                                <div class="voyage-info-item">
+                                    <div class="voyage-info-label">Grand Total</div>
+                                    <div class="voyage-info-val" style="color:#ffd57e;">🪙 <%= (order.totalDoubloons || 0).toLocaleString() %></div>
+                                </div>
+                                <div class="voyage-info-item">
+                                    <div class="voyage-info-label">Payment Status</div>
+                                    <div class="voyage-info-val" style="color:#bbf7d0; text-transform:capitalize;">🪙 <%= order.paymentStatus || 'pending' %></div>
+                                </div>
+                            </div>
+
+                            <!-- Cargo Items Preview (up to 3 items) -->
+                            <% if (order.items && order.items.length > 0) { %>
+                                <div class="voyage-cargo-preview">
+                                    <div class="voyage-cargo-heading">Chartered Wares</div>
+                                    <div class="voyage-cargo-list">
+                                        <% order.items.slice(0, 3).forEach(function(item) { %>
+                                            <div class="voyage-cargo-row">
+                                                <img
+                                                    src="<%= item.image || '/images/items/default-relic.png' %>"
+                                                    alt="<%= item.name %>"
+                                                    class="voyage-cargo-thumb"
+                                                    onerror="this.onerror=null; this.src='/images/items/default-relic.png';"
+                                                >
+                                                <span><%= item.name %> &times; <strong><%= item.quantity %></strong></span>
+                                            </div>
+                                        <% }); %>
+                                        <% if (order.items.length > 3) { %>
+                                            <span style="font-size:0.75rem; color:#8b9bb4; font-style:italic;">
+                                                + <%= order.items.length - 3 %> additional cargo ware(s)...
+                                            </span>
+                                        <% } %>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+
+                        <!-- Card Action -->
+                        <div class="voyage-card-actions">
+                            <a href="/orders/<%= order._id %>" class="btn-view-manifest">
+                                📜 View Voyage Manifest & Tracking
+                            </a>
+                        </div>
+                    </article>
+                <% }); %>
+            </section>
+        <% } %>
+
+    </main>
+
+</body>
+
+</html>

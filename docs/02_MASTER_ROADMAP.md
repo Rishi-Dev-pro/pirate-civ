@@ -214,8 +214,16 @@ gantt
   - Integrated with Seller Order Console (`Order.findBySeller`), allowing merchants to view stowed cargo and advance fulfillment.
   - **Important Architecture Limitation (Demo-Compatible Implementation):** The local development environment operates on a standalone MongoDB deployment without replica sets. Order creation uses a strictly validated write sequence (Validation ➔ Order Creation ➔ Stock Updates ➔ Cart Clearance) and is non-transactional. Production deployments must configure a replica set or sharded cluster to use native MongoDB multi-document transactions for true ACID atomicity.
   - Validated with 70/70 dedicated automated tests (`scratch/test_milestone_5_3.js`), 487 regression assertions, 22 JS and 32 EJS syntax checks, and real browser verification.
-* **Milestone 5.4: Buyer Order History & Tracking [NEXT]**
-  - Create `/orders` customer order history index and enhance `/orders/:id` with a nautical timeline visualizer.
+* **Milestone 5.4: Buyer Order History & Tracking [COMPLETE]**
+  - Built authenticated customer order history index (`/orders`) and enhanced voyage manifest tracking (`/orders/:orderId`) guarded by `[authMiddleware, requireBuyer]`.
+  - Pinned order access strictly to authenticated `req.user._id`, sorting newest orders first via `{ buyer: 1, createdAt: -1 }` compound index.
+  - Implemented strict ownership isolation: attempts to view another buyer's order return HTTP 404 with zero order data leakage.
+  - Created Captain's Voyage Ledger view (`views/orders.ejs`) with order summary metrics, order cards, destination port, Doubloon grand total, payment status, cargo item preview, and a themed empty state ("No voyages recorded yet, Captain.") with island exploration CTA.
+  - Enhanced Voyage Manifest view (`views/order-confirmation.ejs`) with an accessible, responsive Nautical Tracking Timeline (`Pending` ➔ `Confirmed` ➔ `Processing` ➔ `Shipped` ➔ `Delivered`) visually distinguishing completed, current, and upcoming stages.
+  - Added dedicated terminal cancellation banner (`#cancelledBanner`) for revoked charters.
+  - Preserved historical snapshot integrity and added role-aware `⚓ My Voyages` navigation link in `views/partials/header.ejs`.
+  - Validated with 92/92 dedicated automated tests (`scratch/test_milestone_5_4.js`), full regression suite (645 assertions passing), clean JS/EJS syntax checks, and real browser verification.
+  - **PHASE 5 IS FULLY VERIFIED AND COMPLETE.**
 * **Milestone 5.5: Seller Order Management [COMPLETE in Milestone 4.4]**
   - Seller order console at `/seller/orders` and `/seller/orders/:id` allowing merchants to view items and advance statuses was implemented in Phase 4.4 and verified integrated with Phase 5.3 orders.
 
@@ -224,7 +232,7 @@ gantt
 ### 📍 PHASE 6 — ENTRY MAP GATEWAY & FINAL UI POLISH
 **Goal:** Unify the two portals behind a grand entry map, optimize responsiveness, and elevate visual presentation.
 
-* **Milestone 6.1: Pirate-Civ Entry Map Gateway**
+* **Milestone 6.1: Pirate-Civ Entry Map Gateway [NEXT]**
   - Build landing route `/` with a dual-path fork:
     - 🏴‍☠️ **Customer / Explorer Gateway:** Navigates to buyer portal / sea chart.
     - ⚓ **Merchant / Armator Gateway:** Navigates to seller dashboard / onboarding.

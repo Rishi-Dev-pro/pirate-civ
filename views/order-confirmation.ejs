@@ -239,9 +239,238 @@
             border-color: #ffd57e;
         }
 
+        .tracking-card {
+            background: rgba(18, 24, 32, 0.88);
+            border: 1px solid rgba(212, 147, 57, 0.35);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+        }
+
+        .tracking-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            border-bottom: 1px solid rgba(212, 147, 57, 0.25);
+            padding-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .tracking-title {
+            font-family: "Cinzel", serif;
+            font-size: 1.25rem;
+            color: #ffd57e;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tracking-timeline {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            position: relative;
+            margin: 20px 0 10px 0;
+            padding: 0 10px;
+        }
+
+        .tracking-timeline::before {
+            content: "";
+            position: absolute;
+            top: 24px;
+            left: 40px;
+            right: 40px;
+            height: 3px;
+            background: rgba(212, 147, 57, 0.2);
+            z-index: 1;
+        }
+
+        .timeline-step {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            flex: 1;
+            padding: 0 6px;
+        }
+
+        .timeline-step-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            background: #0f151e;
+        }
+
+        /* Completed Step */
+        .timeline-step-completed .timeline-step-icon {
+            background: linear-gradient(135deg, #1e3d2f 0%, #11998e 100%);
+            border: 2px solid #38ef7d;
+            color: #5cf59b;
+            box-shadow: 0 0 14px rgba(56, 239, 125, 0.45);
+        }
+
+        .timeline-step-completed .timeline-step-label {
+            color: #bbf7d0;
+            font-weight: 600;
+        }
+
+        /* Current Step */
+        .timeline-step-current .timeline-step-icon {
+            background: linear-gradient(135deg, #a46c1b 0%, #d49339 100%);
+            border: 2px solid #ffd57e;
+            color: #0d1117;
+            transform: scale(1.15);
+            box-shadow: 0 0 20px rgba(212, 147, 57, 0.7);
+            animation: pulse-gold 2s infinite ease-in-out;
+        }
+
+        @keyframes pulse-gold {
+            0%, 100% { box-shadow: 0 0 16px rgba(212, 147, 57, 0.6); }
+            50% { box-shadow: 0 0 26px rgba(255, 213, 126, 0.95); }
+        }
+
+        .timeline-step-current .timeline-step-label {
+            color: #ffd57e;
+            font-weight: 700;
+        }
+
+        /* Upcoming Step */
+        .timeline-step-upcoming .timeline-step-icon {
+            background: rgba(18, 24, 32, 0.95);
+            border: 2px dashed rgba(212, 147, 57, 0.3);
+            color: #64748b;
+        }
+
+        .timeline-step-upcoming .timeline-step-label {
+            color: #64748b;
+            font-weight: 400;
+        }
+
+        .timeline-step-label {
+            font-family: "Cinzel", serif;
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+            letter-spacing: 0.03em;
+        }
+
+        .timeline-step-desc {
+            font-family: "Inter", sans-serif;
+            font-size: 0.72rem;
+            color: #8b9bb4;
+            max-width: 140px;
+            line-height: 1.3;
+        }
+
+        .timeline-step-badge {
+            display: inline-block;
+            font-size: 0.68rem;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-top: 6px;
+            font-family: "Inter", sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .badge-completed {
+            background: rgba(56, 239, 125, 0.15);
+            color: #5cf59b;
+            border: 1px solid rgba(56, 239, 125, 0.3);
+        }
+
+        .badge-current {
+            background: rgba(212, 147, 57, 0.25);
+            color: #ffd57e;
+            border: 1px solid #d49339;
+            font-weight: 700;
+        }
+
+        .badge-upcoming {
+            background: rgba(100, 116, 139, 0.15);
+            color: #8b9bb4;
+            border: 1px solid rgba(100, 116, 139, 0.2);
+        }
+
+        /* Dedicated Cancellation Banner */
+        .order-cancelled-banner {
+            background: linear-gradient(135deg, rgba(220, 53, 69, 0.2) 0%, rgba(139, 0, 0, 0.3) 100%);
+            border: 1px solid #dc3545;
+            color: #ff8585;
+            padding: 20px 24px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.55);
+        }
+
+        .order-cancelled-icon {
+            font-size: 2.4rem;
+        }
+
+        .order-cancelled-title {
+            font-family: "Cinzel", serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #ff8585;
+            margin: 0 0 6px 0;
+        }
+
+        .order-cancelled-subtitle {
+            font-size: 0.92rem;
+            color: #fca5a5;
+            margin: 0;
+            line-height: 1.4;
+        }
+
         @media (max-width: 900px) {
             .order-layout {
                 grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .tracking-timeline {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 20px;
+                padding-left: 20px;
+            }
+
+            .tracking-timeline::before {
+                top: 24px;
+                bottom: 24px;
+                left: 44px;
+                width: 3px;
+                height: auto;
+                right: auto;
+            }
+
+            .timeline-step {
+                flex-direction: row;
+                text-align: left;
+                gap: 16px;
+                align-items: flex-start;
+                width: 100%;
+            }
+
+            .timeline-step-desc {
+                max-width: 100%;
             }
         }
     </style>
@@ -266,12 +495,15 @@
             <div class="detail-breadcrumbs">
                 <a href="/home" class="crumb-link">Sea Chart</a>
                 <span class="crumb-separator">›</span>
-                <a href="/cart" class="crumb-link">Cargo Hold</a>
+                <a href="/orders" class="crumb-link">My Voyages</a>
                 <span class="crumb-separator">›</span>
-                <span class="crumb-current">Voyage Clearance</span>
+                <span class="crumb-current">Voyage Manifest #<%= order._id %></span>
             </div>
 
             <div class="store-header-controls">
+                <a href="/orders" class="btn-store-cart" title="View Captain's Voyage Ledger">
+                    <span>📜 VOYAGES</span>
+                </a>
                 <a href="/cart" class="btn-store-cart" title="View Cargo Hold">
                     <span>🛒 HOLD</span>
                 </a>
@@ -281,22 +513,94 @@
             </div>
         </nav>
 
-        <!-- Success Banner -->
-        <div class="order-success-banner" role="status">
-            <div class="order-success-icon">⚓</div>
-            <div>
-                <h1 class="order-success-title">Voyage Manifest Dispatched!</h1>
-                <p class="order-success-subtitle">
-                    Your cargo bill of lading has been sealed with the Archipelago Trade Guild.
-                    Merchant vessels are preparing dispatch for delivery.
-                </p>
+        <%
+            const isCancelledState = order.status === 'cancelled';
+            const stages = (typeof trackingStages !== 'undefined' && trackingStages) ? trackingStages : [
+                { key: "pending", label: "Manifest Registered", icon: "⚓", description: "Cargo order logged and awaiting harbor clearance" },
+                { key: "confirmed", label: "Cargo Confirmed", icon: "✓", description: "Merchant verified vault availability" },
+                { key: "processing", label: "Cargo Processing", icon: "⚒", description: "Wares stowed and fleet rigging prepared" },
+                { key: "shipped", label: "Fleet Underway", icon: "🚢", description: "Caravel sails hoisted across archipelago" },
+                { key: "delivered", label: "Delivered to Harbor", icon: "🏝️", description: "Cargo discharged at destination anchorage" }
+            ];
+            const currentIdx = stages.findIndex(s => s.key === order.status);
+            const isJustPlaced = typeof justPlaced !== 'undefined' ? justPlaced : false;
+        %>
+
+        <% if (isCancelledState) { %>
+            <!-- Dedicated Cancellation Terminal Banner -->
+            <div class="order-cancelled-banner" role="alert" id="cancelledBanner">
+                <div class="order-cancelled-icon">☠</div>
+                <div>
+                    <h1 class="order-cancelled-title">Voyage Cancelled — Charter Revoked</h1>
+                    <p class="order-cancelled-subtitle">
+                        This voyage manifest was formally cancelled and all caravel fleet operations have ceased.
+                        This charter has reached a terminal state; no further dispatch or transit will occur.
+                    </p>
+                </div>
             </div>
-        </div>
+        <% } else if (isJustPlaced) { %>
+            <!-- Freshly Placed Success Banner -->
+            <div class="order-success-banner" role="status" id="placedSuccessBanner">
+                <div class="order-success-icon">⚓</div>
+                <div>
+                    <h1 class="order-success-title">Voyage Manifest Dispatched!</h1>
+                    <p class="order-success-subtitle">
+                        Your cargo bill of lading has been sealed with the Archipelago Trade Guild.
+                        Merchant vessels are preparing dispatch for delivery.
+                    </p>
+                </div>
+            </div>
+        <% } %>
 
         <div class="order-layout">
 
-            <!-- Left Column: Manifest & Delivery Overview -->
+            <!-- Left Column: Tracking Timeline & Manifest Overview -->
             <div class="order-main-col">
+
+                <!-- Nautical Tracking Timeline (Rendered when not cancelled) -->
+                <% if (!isCancelledState) { %>
+                    <section class="tracking-card" aria-label="Nautical Voyage Tracking Timeline" id="nauticalTrackingSection">
+                        <div class="tracking-header">
+                            <h2 class="tracking-title">
+                                <span>🧭</span> Nautical Voyage Tracking
+                            </h2>
+                            <span class="order-status-badge order-status-<%= order.status %>">
+                                ● <%= order.status %>
+                            </span>
+                        </div>
+
+                        <div class="tracking-timeline" role="list">
+                            <% stages.forEach(function(stage, idx) {
+                                const isCompleted = currentIdx > idx;
+                                const isCurrent = currentIdx === idx;
+                                const isUpcoming = currentIdx < idx || currentIdx === -1;
+                                let stateClass = "timeline-step-upcoming";
+                                let stateBadge = "Upcoming";
+                                let badgeClass = "badge-upcoming";
+                                if (isCompleted) {
+                                    stateClass = "timeline-step-completed";
+                                    stateBadge = "Completed";
+                                    badgeClass = "badge-completed";
+                                } else if (isCurrent) {
+                                    stateClass = "timeline-step-current";
+                                    stateBadge = "Current Stage";
+                                    badgeClass = "badge-current";
+                                }
+                            %>
+                                <div class="timeline-step <%= stateClass %>" role="listitem" data-stage="<%= stage.key %>" <% if (isCurrent) { %>aria-current="step"<% } %>>
+                                    <div class="timeline-step-icon">
+                                        <% if (isCompleted) { %>✓<% } else { %><%= stage.icon %><% } %>
+                                    </div>
+                                    <div class="timeline-step-content">
+                                        <div class="timeline-step-label"><%= stage.label %></div>
+                                        <div class="timeline-step-desc"><%= stage.description %></div>
+                                        <span class="timeline-step-badge <%= badgeClass %>"><%= stateBadge %></span>
+                                    </div>
+                                </div>
+                            <% }); %>
+                        </div>
+                    </section>
+                <% } %>
 
                 <!-- Order Details Card -->
                 <section class="order-card">
@@ -427,6 +731,9 @@
                     </div>
 
                     <div style="margin-top:24px;">
+                        <a href="/orders" class="order-btn-secondary" id="btnAllVoyagesLedger">
+                            📜 All Voyages Ledger
+                        </a>
                         <a href="/home#sea-chart-section" class="order-btn-cta">
                             🗺️ Chart Next Voyage
                         </a>
