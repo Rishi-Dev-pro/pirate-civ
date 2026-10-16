@@ -4042,6 +4042,95 @@ body.theme-velvet .btn-add-cart:hover {
     color: #ffd57e;
 }
 
+/* =========================================================
+   SELLER ORDER MANAGEMENT & FULFILLMENT (MILESTONE 4.4)
+========================================================= */
+
+.filter-tab-pill {
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(212, 147, 57, 0.35);
+    color: #ffd57e;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-family: "Cinzel", serif;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+}
+
+.filter-tab-pill:hover {
+    background: rgba(212, 147, 57, 0.2);
+    border-color: #ffcc55;
+    color: #ffffff;
+}
+
+.filter-tab-pill.active {
+    background: linear-gradient(180deg, rgba(212, 147, 57, 0.35) 0%, rgba(166, 106, 26, 0.45) 100%);
+    border-color: #ffcc55;
+    color: #ffffff;
+    box-shadow: 0 0 12px rgba(255, 204, 85, 0.25);
+}
+
+/* Order Status Badges */
+.badge-status-pending {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.badge-status-confirmed {
+    background: rgba(56, 189, 248, 0.15);
+    color: #7dd3fc;
+    border: 1px solid rgba(56, 189, 248, 0.4);
+}
+
+.badge-status-processing {
+    background: rgba(168, 85, 247, 0.15);
+    color: #d8b4fe;
+    border: 1px solid rgba(168, 85, 247, 0.4);
+}
+
+.badge-status-shipped {
+    background: rgba(14, 165, 233, 0.15);
+    color: #38bdf8;
+    border: 1px solid rgba(14, 165, 233, 0.4);
+}
+
+.badge-status-delivered {
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.badge-status-cancelled {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+/* Payment Status Badges */
+.badge-pay-paid {
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.4);
+}
+
+.badge-pay-pending {
+    background: rgba(245, 158, 11, 0.15);
+    color: #fcd34d;
+    border: 1px solid rgba(245, 158, 11, 0.4);
+}
+
+.badge-pay-failed,
+.badge-pay-refunded {
+    background: rgba(239, 68, 68, 0.15);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.4);
+}
+
+
 
 
 

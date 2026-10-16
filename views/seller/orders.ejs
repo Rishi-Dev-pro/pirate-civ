@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Dispatch Manifests | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Dedicated Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p4_orders_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p4_orders_v1">
+</head>
+
+<body class="island-store-body seller-orders-body">
+
+    <!-- Fixed Atmospheric Backdrop -->
+    <div class="store-backdrop">
+        <img src="<%= (island && island.image) ? island.image : '/images/astrolabe-bg.jpg' %>"
+             alt="Archipelago Backdrop"
+             class="store-bg-img"
+             onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
+
+    <!-- Reusable Main Navigation Bar -->
+    <%- include("../partials/header") %>
+
+    <!-- Master Stage -->
+    <main class="seller-dashboard-wrapper">
+
+        <!-- Top Navigation Bar: Breadcrumbs & Header Controls -->
+        <nav class="detail-nav-bar" aria-label="Breadcrumb Navigation">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <a href="/seller/dashboard" class="crumb-link">Command Deck</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Dispatch Manifests</span>
+            </div>
+
+            <div class="store-header-controls">
+                <div class="doubloons-pill">
+                    <span class="coin-icon">🪙</span>
+                    <span>Merchant Deck</span>
+                </div>
+
+                <a href="/seller/dashboard" id="headerDeckLink" class="btn-store-cart" style="text-decoration: none;" title="Return to Command Deck">
+                    <span>⚓ DECK</span>
+                </a>
+
+                <a href="/seller/products" id="headerProductsLink" class="btn-store-cart" style="text-decoration: none;" title="Manage Products">
+                    <span>⚖️ PRODUCTS</span>
+                </a>
+
+                <a href="/seller/products/new" id="headerForgeLink" class="btn-store-cart" style="text-decoration: none;" title="Forge New Cargo">
+                    <span>➕ FORGE</span>
+                </a>
+
+                <a href="<%= storefrontUrl %>" id="headerStorefrontLink" class="btn-store-cart" style="text-decoration: none;" title="Open Public Storefront">
+                    <span>📜 STOREFRONT</span>
+                </a>
+
+                <a href="/home" class="btn-store-close" title="Return to Sea Chart">
+                    &times;
+                </a>
+            </div>
+        </nav>
+
+        <!-- Master Manifests Card -->
+        <article class="seller-dashboard-card">
+
+            <!-- Header with Title & Description -->
+            <header class="seller-products-header">
+                <div>
+                    <span class="seller-dash-badge">📦 FULFILLMENT QUEUE</span>
+                    <h1 style="margin-top: 6px;">Voyage Dispatch Manifests</h1>
+                    <p>Review customer cargo manifests, inspect destination ports, and advance fulfillment voyages through harbor departure to final dock receipt.</p>
+                </div>
+            </header>
+
+            <!-- Telemetry Metrics Grid -->
+            <section class="seller-telemetry-grid" aria-label="Order Telemetry" style="grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); margin-bottom: 26px;">
+                <div class="seller-metric-card" id="cardTelemetryTotal">
+                    <div class="metric-header">
+                        <span>📜</span>
+                        <span>Total Manifests</span>
+                    </div>
+                    <div class="metric-value highlight-gold" id="statTelemetryTotal">
+                        <%= telemetry.total %>
+                    </div>
+                    <div class="metric-subtext">Archipelago orders with your cargo</div>
+                </div>
+
+                <div class="seller-metric-card" id="cardTelemetryPending">
+                    <div class="metric-header">
+                        <span>⏳</span>
+                        <span>Pending</span>
+                    </div>
+                    <div class="metric-value" style="color: #ffd57e;" id="statTelemetryPending">
+                        <%= telemetry.pending %>
+                    </div>
+                    <div class="metric-subtext">Awaiting merchant confirmation</div>
+                </div>
+
+                <div class="seller-metric-card" id="cardTelemetryProcessing">
+                    <div class="metric-header">
+                        <span>🔨</span>
+                        <span>Processing</span>
+                    </div>
+                    <div class="metric-value" style="color: #a78bfa;" id="statTelemetryProcessing">
+                        <%= telemetry.processing %>
+                    </div>
+                    <div class="metric-subtext">Packing at home harbor wharf</div>
+                </div>
+
+                <div class="seller-metric-card" id="cardTelemetryShipped">
+                    <div class="metric-header">
+                        <span>⛵</span>
+                        <span>Shipped</span>
+                    </div>
+                    <div class="metric-value" style="color: #38bdf8;" id="statTelemetryShipped">
+                        <%= telemetry.shipped %>
+                    </div>
+                    <div class="metric-subtext">In transit on open seas</div>
+                </div>
+
+                <div class="seller-metric-card" id="cardTelemetryDelivered">
+                    <div class="metric-header">
+                        <span>⚓</span>
+                        <span>Delivered</span>
+                    </div>
+                    <div class="metric-value" style="color: #86efac;" id="statTelemetryDelivered">
+                        <%= telemetry.delivered %>
+                    </div>
+                    <div class="metric-subtext">Discharged at buyer port</div>
+                </div>
+
+                <div class="seller-metric-card" id="cardTelemetryCancelled">
+                    <div class="metric-header">
+                        <span>✖️</span>
+                        <span>Cancelled</span>
+                    </div>
+                    <div class="metric-value" style="color: #fca5a5;" id="statTelemetryCancelled">
+                        <%= telemetry.cancelled %>
+                    </div>
+                    <div class="metric-subtext">Revoked or lost voyages</div>
+                </div>
+            </section>
+
+            <!-- Filter Tabs -->
+            <div class="order-filter-bar" role="tablist" aria-label="Status Filters" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid rgba(212, 147, 57, 0.2);">
+                <a href="/seller/orders" class="filter-tab-pill <%= activeFilter === 'all' ? 'active' : '' %>" id="filterAll">
+                    All (<%= telemetry.total %>)
+                </a>
+                <a href="/seller/orders?status=pending" class="filter-tab-pill <%= activeFilter === 'pending' ? 'active' : '' %>" id="filterPending">
+                    Pending (<%= telemetry.pending %>)
+                </a>
+                <a href="/seller/orders?status=confirmed" class="filter-tab-pill <%= activeFilter === 'confirmed' ? 'active' : '' %>" id="filterConfirmed">
+                    Confirmed (<%= telemetry.confirmed %>)
+                </a>
+                <a href="/seller/orders?status=processing" class="filter-tab-pill <%= activeFilter === 'processing' ? 'active' : '' %>" id="filterProcessing">
+                    Processing (<%= telemetry.processing %>)
+                </a>
+                <a href="/seller/orders?status=shipped" class="filter-tab-pill <%= activeFilter === 'shipped' ? 'active' : '' %>" id="filterShipped">
+                    Shipped (<%= telemetry.shipped %>)
+                </a>
+                <a href="/seller/orders?status=delivered" class="filter-tab-pill <%= activeFilter === 'delivered' ? 'active' : '' %>" id="filterDelivered">
+                    Delivered (<%= telemetry.delivered %>)
+                </a>
+                <a href="/seller/orders?status=cancelled" class="filter-tab-pill <%= activeFilter === 'cancelled' ? 'active' : '' %>" id="filterCancelled">
+                    Cancelled (<%= telemetry.cancelled %>)
+                </a>
+            </div>
+
+            <!-- Notifications -->
+            <% if (query && query.updated) { %>
+                <div class="seller-alert-banner" id="bannerSuccessUpdated" role="alert">
+                    <span>✨</span>
+                    <span>Voyage manifest fulfillment status updated successfully.</span>
+                </div>
+            <% } %>
+
+            <% if (query && query.error) { %>
+                <div class="seller-alert-banner alert-error" id="bannerErrorAlert" role="alert">
+                    <span>⚠️</span>
+                    <span><%= query.error %></span>
+                </div>
+            <% } %>
+
+            <!-- Orders Table or Empty State -->
+            <% if (orders.length === 0) { %>
+                <div class="empty-vault-banner" id="emptyOrdersNotice">
+                    <div class="empty-vault-icon">📜</div>
+                    <h4 class="empty-vault-title">No Dispatch Manifests Found</h4>
+                    <p class="empty-vault-text">
+                        <% if (activeFilter !== 'all') { %>
+                            No voyage manifests matching the <strong><%= activeFilter.toUpperCase() %></strong> status were found in your harbor queue.
+                        <% } else { %>
+                            There are currently no customer voyage manifests referencing your chartered cargo wares.
+                        <% } %>
+                    </p>
+                    <div style="margin-top: 18px; display: flex; gap: 12px; justify-content: center; align-items: center;">
+                        <% if (activeFilter !== 'all') { %>
+                            <a href="/seller/orders" class="btn-action-edit" style="display: inline-block;">
+                                View All Manifests
+                            </a>
+                        <% } %>
+                        <a href="/seller/dashboard" class="btn-action-edit" style="display: inline-block;">
+                            ← Return to Command Deck
+                        </a>
+                    </div>
+                </div>
+            <% } else { %>
+                <div class="seller-table-container">
+                    <table class="seller-products-table" aria-label="Seller Orders Manifest Table" id="sellerOrdersTable">
+                        <thead>
+                            <tr>
+                                <th>Manifest</th>
+                                <th>Date Placed</th>
+                                <th>Destination Port</th>
+                                <th>Your Chartered Cargo</th>
+                                <th>Your Subtotal</th>
+                                <th>Status</th>
+                                <th>Payment</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% orders.forEach(function(o) { %>
+                                <tr id="rowOrder_<%= o.id %>">
+                                    <!-- Manifest ID -->
+                                    <td>
+                                        <a href="/seller/orders/<%= o.id %>" class="product-name-link" style="font-family: monospace; font-size: 0.88rem;" title="Inspect Manifest <%= o.id %>">
+                                            #<%= o.id.slice(-8).toUpperCase() %>
+                                        </a>
+                                        <div style="font-size: 0.75rem; color: #64748b; font-family: monospace;">
+                                            <%= o.id %>
+                                        </div>
+                                    </td>
+
+                                    <!-- Date -->
+                                    <td style="white-space: nowrap; font-size: 0.85rem; color: #94a3b8;">
+                                        <%= o.formattedDate %>
+                                    </td>
+
+                                    <!-- Destination Port -->
+                                    <td>
+                                        <div style="color: #fff3d4; font-weight: 600;">
+                                            🏝️ <%= (o.shippingAddress && o.shippingAddress.portName) ? o.shippingAddress.portName : "Open Waters" %>
+                                        </div>
+                                        <div style="font-size: 0.78rem; color: #64748b;">
+                                            Captain: <%= o.buyerName %>
+                                        </div>
+                                    </td>
+
+                                    <!-- Chartered Items -->
+                                    <td>
+                                        <div style="display: flex; flex-direction: column; gap: 4px; max-width: 280px;">
+                                            <% o.items.forEach(function(item) { %>
+                                                <div style="display: flex; justify-content: space-between; gap: 8px; font-size: 0.84rem;">
+                                                    <span style="color: #cbd5e1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                                                        • <%= item.name %>
+                                                    </span>
+                                                    <span style="color: #ffd57e; font-weight: 600; white-space: nowrap;">
+                                                        x<%= item.quantity %>
+                                                    </span>
+                                                </div>
+                                            <% }); %>
+                                        </div>
+                                    </td>
+
+                                    <!-- Seller Subtotal -->
+                                    <td class="product-price-cell">
+                                        🪙 <%= o.sellerSubtotal %>
+                                    </td>
+
+                                    <!-- Order Status -->
+                                    <td>
+                                        <span class="badge-status badge-status-<%= o.status %>" id="statusBadge_<%= o.id %>">
+                                            <%= o.status.toUpperCase() %>
+                                        </span>
+                                    </td>
+
+                                    <!-- Payment Status -->
+                                    <td>
+                                        <span class="badge-status badge-pay-<%= o.paymentStatus %>" id="payBadge_<%= o.id %>">
+                                            <%= (o.paymentStatus || "pending").toUpperCase() %>
+                                        </span>
+                                    </td>
+
+                                    <!-- Actions -->
+                                    <td>
+                                        <div class="seller-row-actions">
+                                            <a href="/seller/orders/<%= o.id %>" class="btn-action-edit" id="btnInspect_<%= o.id %>" title="Inspect Manifest">
+                                                <span>Inspect</span>
+                                                <span>→</span>
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } %>
+
+            <!-- Multi-Merchant Isolation Lore Notice -->
+            <footer style="margin-top: 32px; padding-top: 20px; border-top: 1px dashed rgba(212, 147, 57, 0.25); color: #64748b; font-size: 0.82rem; line-height: 1.6;">
+                <p style="margin: 0;">
+                    ⚓ <strong>Admiralty Guild Maritime Protocol:</strong> In compliance with archipelago commerce covenants, merchant views expose strictly the wares chartered under your sovereign merchant house. Line items, valuations, and private operations of co-chartered merchants in multi-merchant voyages remain hermetically isolated.
+                </p>
+            </footer>
+
+        </article>
+
+    </main>
+
+</body>
+
+</html>

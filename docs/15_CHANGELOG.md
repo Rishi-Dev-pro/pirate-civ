@@ -4,6 +4,73 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-16] — Phase 4 / Milestone 4.4: Merchant Order Management & Fulfillment (MILESTONE 4.4 COMPLETE)
+
+### Added & Implemented
+* **Seller Order Management Console (`controller/sellers.js`::`renderSellerOrders`, `views/seller/orders.ejs`):**
+  - Secured route `GET /seller/orders` using `[authMiddleware, requireSeller]`.
+  - Scoped order queries server-side to the authenticated seller via `Order.findBySeller(req.user._id)` using the compound index `{ "items.seller": 1, status: 1 }`.
+  - Exposes strictly the authenticated seller's line items and seller-specific subtotal, while completely filtering out other merchants' items in multi-merchant orders.
+  - Real-time seller telemetry counters: Total Manifests, Pending, Confirmed, Processing, Shipped, Delivered, and Cancelled manifests.
+  - Interactive status filter bar (`?status=...`).
+  - Atmospheric dark-fantasy styling with themed empty state for barren queues.
+* **Seller Order Detail View (`controller/sellers.js`::`renderSellerOrderDetail`, `views/seller/order-detail.ejs`):**
+  - Secured route `GET /seller/orders/:orderId` using `[authMiddleware, requireSeller]`.
+  - Validates ObjectId and ensures seller owns at least one item in the order (cross-seller unauthorized attempts rejected with HTTP 403).
+  - Displays manifest header with status and payment status badges.
+  - Displays destination port anchorage, sea chart coordinates, recipient explorer name, and recipient navigation notes.
+  - Renders historical product snapshots (`item.name`, `item.price`, `item.quantity`, `item.lineTotal`, `item.image`) from `Order.items`.
+  - Calculates and renders seller's portion of the order total in Doubloons (`🪙`).
+  - Fulfillment Command Operations Deck: dynamic action buttons for valid lifecycle transitions based on `order.canTransitionTo()`.
+  - Terminal status notice for delivered or cancelled manifests.
+* **Order Status Transition Engine (`controller/sellers.js`::`updateOrderStatus`, `routes/web.js`):**
+  - Secured route `POST /seller/orders/:orderId/status` (and alias `POST /seller/orders/:orderId/transition`).
+  - Strictly verifies seller has items in the order before executing any status mutation.
+  - Authoritatively enforces `models/order.js` lifecycle state machine (`order.canTransitionTo` and `order.transitionTo`):
+    - `pending` ➔ `confirmed` | `cancelled`
+    - `confirmed` ➔ `processing` | `cancelled`
+    - `processing` ➔ `shipped` | `cancelled`
+    - `shipped` ➔ `delivered`
+  - Rejects invalid or terminal transitions safely without mutating database records.
+  - Supports both standard HTML form POSTs (with user feedback redirects) and JSON/AJAX API requests.
+* **Command Deck & Navigation Integration (`views/seller/dashboard.ejs`, `views/seller/products.ejs`):**
+  - Activated "Dispatch Manifests" action tile (`#tileOrders`) on the Command Deck linking to `/seller/orders`.
+  - Added header quick links (`#headerOrdersLink`) across seller portal views.
+
+### Tested & Verified
+* 75 automated assertions in `scratch/test_milestone_4_4.js`:
+  - Access control: unauthenticated redirect (302), buyer access denied (403), admin access denied (403), seller access granted (200).
+  - Multi-seller order isolation: Seller Drake sees only his items; Seller Vane sees only his items; cross-seller access returns 403.
+  - Malformed and nonexistent Order ID handling (404).
+  - Historical snapshot immutability: modifying Product in DB never alters Order item name or price.
+  - Seller-specific subtotal calculations verified against multi-merchant line totals.
+  - Valid status transitions verified (`pending` ➔ `confirmed` ➔ `processing` ➔ `shipped` ➔ `delivered`).
+  - Invalid transitions safely rejected (e.g. `processing` ➔ `delivered` rejected, status unchanged).
+  - Terminal state transitions rejected (delivered/cancelled orders immutable).
+  - Cross-seller status modification rejected with HTTP 403.
+  - Buyer order data and buyer Cart remain completely intact.
+  - Product ownership is immutable.
+  - No sensitive credentials leak in rendered HTML (`password`, `authSecretHash`, `googleId`).
+* Regression testing:
+  - Phase 4.3 regression: 78/78 passed (`scratch/test_milestone_4_3.js`).
+  - Phase 4.2 regression: 67/67 passed (`scratch/test_milestone_4_2.js`).
+  - Phase 4.1 regression: 64/64 passed (`scratch/test_milestone_4_1.js`).
+  - Phase 3.6 regression: 96/96 passed (`scratch/test_milestone_3_6.js`).
+  - Total automated assertions: 380/380 passed (100%).
+* Real browser verification via `browser_subagent` recording (`seller_order_flow_1792140807014.webp`):
+  - Seller login as `admiralty@pirate-civ.internal`.
+  - Command Deck inspection verifying active `#tileOrders` Dispatch Manifests.
+  - Navigation to `/seller/orders`, inspection of manifest table and telemetry cards.
+  - Opened manifest detail, inspected recipient coordinates, notes, snapshot items, and subtotal.
+  - Advanced status: Confirm Manifest (`pending` ➔ `confirmed`), verified success banner and persisted status.
+  - Advanced status: Begin Processing Cargo (`confirmed` ➔ `processing`), verified status change.
+  - Logged out, logged in as buyer (`buyer@pirate-civ.internal`), attempted `/seller/orders`, verified HTTP 403 Forbidden.
+  - Verified 0 unexpected console errors/warnings.
+* Static syntax checks passed (21/21 JS files).
+* Template compilation passed (29/29 EJS views).
+
+---
+
 ## [2026-10-16] — Phase 4 / Milestone 4.3: Seller Product Creation (MILESTONE 4.3 COMPLETE)
 
 ### Added & Implemented

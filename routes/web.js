@@ -277,7 +277,10 @@ import {
     updateProduct,
     toggleProductAvailability,
     deleteProduct,
-    renderSellerStorefront
+    renderSellerStorefront,
+    renderSellerOrders,
+    renderSellerOrderDetail,
+    updateOrderStatus
 } from "../controller/sellers.js";
 
 router.get("/seller/dashboard", authMiddleware, requireSeller, renderSellerDashboard);
@@ -297,6 +300,12 @@ router.post("/seller/products/:productId/toggle-availability", authMiddleware, r
 router.post("/seller/products/:productId/toggle", authMiddleware, requireSeller, toggleProductAvailability);
 router.post("/seller/products/:productId/delete", authMiddleware, requireSeller, deleteProduct);
 router.delete("/seller/products/:productId", authMiddleware, requireSeller, deleteProduct);
+
+// Seller Order Management & Fulfillment (Milestone 4.4)
+router.get("/seller/orders", authMiddleware, requireSeller, renderSellerOrders);
+router.get("/seller/orders/:orderId", authMiddleware, requireSeller, renderSellerOrderDetail);
+router.post("/seller/orders/:orderId/status", authMiddleware, requireSeller, updateOrderStatus);
+router.post("/seller/orders/:orderId/transition", authMiddleware, requireSeller, updateOrderStatus);
 
 
 // =====================================================

@@ -6,6 +6,7 @@
 import mongoose from "mongoose";
 import User from "../models/user.js";
 import Product, { CANONICAL_ISLANDS, TRADING_BRANCHES } from "../models/product.js";
+import Order, { ORDER_STATUSES, PERMITTED_STATUS_TRANSITIONS } from "../models/order.js";
 import { ISLANDS_DATA } from "./islands.js";
 
 /**
@@ -793,6 +794,296 @@ export const renderSellerDiscovery = renderSellerStorefront;
 export const renderPublicSeller = renderSellerStorefront;
 export const renderSellerProfile = renderSellerStorefront;
 
+/**
+ * Controller action: Render Seller Order Management Console (Milestone 4.4)
+ * Route: GET /seller/orders
+ * Protected by: authMiddleware, requireSeller
+ */
+export const renderSellerOrders = async (req, res) => {
+    try {
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        const sellerIdStr = sellerUser._id.toString();
+
+        // 1. Query all orders containing items for this seller
+        // Leverages compound index { "items.seller": 1, status: 1 }
+        const allSellerOrders = await Order.findBySeller(sellerUser._id)
+            .populate("buyer", "name")
+            .lean();
+
+        // 2. Compute seller order telemetry (strictly scoped to this seller's orders)
+        const telemetry = {
+            total: allSellerOrders.length,
+            pending: allSellerOrders.filter(o => o.status === "pending").length,
+            confirmed: allSellerOrders.filter(o => o.status === "confirmed").length,
+            processing: allSellerOrders.filter(o => o.status === "processing").length,
+            shipped: allSellerOrders.filter(o => o.status === "shipped").length,
+            delivered: allSellerOrders.filter(o => o.status === "delivered").length,
+            cancelled: allSellerOrders.filter(o => o.status === "cancelled").length
+        };
+
+        // 3. Optional status filtering via query parameter
+        const activeFilter = typeof req.query.status === "string" ? req.query.status.trim().toLowerCase() : "all";
+        let filteredOrders = allSellerOrders;
+        if (activeFilter && activeFilter !== "all" && ORDER_STATUSES.includes(activeFilter)) {
+            filteredOrders = allSellerOrders.filter(o => o.status === activeFilter);
+        }
+
+        // 4. Transform orders: expose ONLY seller-relevant items and calculate seller-specific totals
+        // Multi-seller rule: An order may contain items from multiple merchants.
+        // We must NEVER leak other sellers' items, private prices, or operations!
+        const viewOrders = filteredOrders.map(order => {
+            const sellerItems = (order.items || []).filter(item => {
+                const itemSellerId = item.seller?._id || item.seller;
+                return itemSellerId && itemSellerId.toString() === sellerIdStr;
+            });
+
+            const sellerSubtotal = sellerItems.reduce((sum, item) => {
+                const lt = typeof item.lineTotal === "number"
+                    ? item.lineTotal
+                    : ((item.price || 0) * (item.quantity || 1));
+                return sum + lt;
+            }, 0);
+
+            const sellerItemCount = sellerItems.reduce((sum, item) => sum + (item.quantity || 0), 0);
+
+            return {
+                ...order,
+                id: order._id.toString(),
+                items: sellerItems,
+                sellerSubtotal,
+                sellerItemCount,
+                buyerName: order.buyer ? order.buyer.name : "Archipelago Explorer",
+                formattedDate: order.createdAt ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                    year: "numeric",
+                    month: "short",
+                    day: "numeric"
+                }) : "Unknown Date"
+            };
+        });
+
+        const islandMeta = sellerUser.homeIsland && ISLANDS_DATA[sellerUser.homeIsland]
+            ? ISLANDS_DATA[sellerUser.homeIsland]
+            : null;
+
+        const seller = {
+            id: sellerUser._id.toString(),
+            _id: sellerUser._id,
+            name: sellerUser.name || "Unknown Captain",
+            storeName: sellerUser.storeName || "",
+            homeIsland: sellerUser.homeIsland || "",
+            avatar: sellerUser.avatar || "/images/avatars/default-pirate.png",
+            role: sellerUser.role
+        };
+
+        res.render("seller/orders", {
+            page_title: `${seller.storeName || seller.name} — Dispatch Manifests | Pirate-Civ`,
+            seller,
+            island: islandMeta,
+            orders: viewOrders,
+            telemetry,
+            activeFilter,
+            canonicalStatuses: ORDER_STATUSES,
+            storefrontUrl: `/seller/${seller.id}`,
+            user: req.user,
+            query: req.query || {}
+        });
+
+    } catch (error) {
+        console.error("Error in renderSellerOrders:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
+/**
+ * Controller action: Render Seller Order Detail Page (Milestone 4.4)
+ * Route: GET /seller/orders/:orderId
+ * Protected by: authMiddleware, requireSeller
+ */
+export const renderSellerOrderDetail = async (req, res) => {
+    try {
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        const { orderId } = req.params;
+        if (!orderId || !mongoose.isValidObjectId(orderId)) {
+            return res.status(404).render("home", {
+                page_title: "Voyage Manifest Not Found | Pirate-Civ",
+                user: req.user || null
+            });
+        }
+
+        const order = await Order.findById(orderId)
+            .populate("buyer", "name")
+            .lean();
+
+        if (!order) {
+            return res.status(404).render("home", {
+                page_title: "Voyage Manifest Not Found | Pirate-Civ",
+                user: req.user || null
+            });
+        }
+
+        const sellerIdStr = sellerUser._id.toString();
+
+        // Multi-Seller Order Verification: Seller must own at least one item in the order
+        const sellerItems = (order.items || []).filter(item => {
+            const itemSellerId = item.seller?._id || item.seller;
+            return itemSellerId && itemSellerId.toString() === sellerIdStr;
+        });
+
+        if (sellerItems.length === 0) {
+            return res.status(403).send("Access denied: you do not have permission to view this order.");
+        }
+
+        // Expose ONLY the seller-relevant portion of the order
+        const sellerSubtotal = sellerItems.reduce((sum, item) => {
+            const lt = typeof item.lineTotal === "number"
+                ? item.lineTotal
+                : ((item.price || 0) * (item.quantity || 1));
+            return sum + lt;
+        }, 0);
+
+        const permittedTransitions = PERMITTED_STATUS_TRANSITIONS[order.status] || [];
+
+        const islandMeta = sellerUser.homeIsland && ISLANDS_DATA[sellerUser.homeIsland]
+            ? ISLANDS_DATA[sellerUser.homeIsland]
+            : null;
+
+        const seller = {
+            id: sellerUser._id.toString(),
+            _id: sellerUser._id,
+            name: sellerUser.name || "Unknown Captain",
+            storeName: sellerUser.storeName || "",
+            homeIsland: sellerUser.homeIsland || "",
+            avatar: sellerUser.avatar || "/images/avatars/default-pirate.png",
+            role: sellerUser.role
+        };
+
+        const viewOrder = {
+            ...order,
+            id: order._id.toString(),
+            items: sellerItems,
+            sellerSubtotal,
+            buyerName: order.buyer ? order.buyer.name : "Archipelago Explorer",
+            formattedDate: order.createdAt ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                year: "numeric",
+                month: "short",
+                day: "numeric",
+                hour: "2-digit",
+                minute: "2-digit"
+            }) : "Unknown Date"
+        };
+
+        res.render("seller/order-detail", {
+            page_title: `Manifest #${order._id} — Fulfillment | Pirate-Civ`,
+            seller,
+            island: islandMeta,
+            order: viewOrder,
+            permittedTransitions,
+            storefrontUrl: `/seller/${seller.id}`,
+            user: req.user,
+            query: req.query || {},
+            error: req.query.error || null
+        });
+
+    } catch (error) {
+        console.error("Error in renderSellerOrderDetail:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
+/**
+ * Controller action: Perform Order Status Transition (Milestone 4.4)
+ * Route: POST /seller/orders/:orderId/status
+ * Protected by: authMiddleware, requireSeller
+ */
+export const updateOrderStatus = async (req, res) => {
+    try {
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        const { orderId } = req.params;
+        if (!orderId || !mongoose.isValidObjectId(orderId)) {
+            return res.status(404).render("home", {
+                page_title: "Voyage Manifest Not Found | Pirate-Civ",
+                user: req.user || null
+            });
+        }
+
+        // Fetch order as Mongoose Document to utilize lifecycle methods
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).render("home", {
+                page_title: "Voyage Manifest Not Found | Pirate-Civ",
+                user: req.user || null
+            });
+        }
+
+        const sellerIdStr = sellerUser._id.toString();
+
+        // Ownership verification: must contain at least one item belonging to this seller
+        const hasSellerItem = (order.items || []).some(item => {
+            const itemSellerId = item.seller?._id || item.seller;
+            return itemSellerId && itemSellerId.toString() === sellerIdStr;
+        });
+
+        if (!hasSellerItem) {
+            return res.status(403).send("Access denied: you do not have permission to modify this order.");
+        }
+
+        const rawStatus = req.body.status || req.body.targetStatus;
+        const targetStatus = typeof rawStatus === "string" ? rawStatus.trim().toLowerCase() : "";
+
+        // Authoritative lifecycle validation using existing Order model methods
+        if (!order.canTransitionTo(targetStatus)) {
+            const errorMsg = `Invalid status transition from '${order.status}' to '${targetStatus}'.`;
+            if (req.xhr || req.headers.accept?.includes("application/json")) {
+                return res.status(400).json({
+                    success: false,
+                    error: errorMsg,
+                    currentStatus: order.status
+                });
+            }
+            return res.redirect(`/seller/orders/${order._id}?error=${encodeURIComponent(errorMsg)}`);
+        }
+
+        // Apply transition
+        order.transitionTo(targetStatus);
+        await order.save();
+
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.json({
+                success: true,
+                orderId: order._id,
+                status: order.status
+            });
+        }
+
+        return res.redirect(`/seller/orders/${order._id}?updated=1`);
+
+    } catch (error) {
+        console.error("Error in updateOrderStatus:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
 export default {
     renderSellerStorefront,
     renderSellerDiscovery,
@@ -805,5 +1096,8 @@ export default {
     toggleProductAvailability,
     deleteProduct,
     renderCreateProduct,
-    createProduct
+    createProduct,
+    renderSellerOrders,
+    renderSellerOrderDetail,
+    updateOrderStatus
 };

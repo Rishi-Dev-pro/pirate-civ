@@ -137,21 +137,45 @@ Sellers have complete lifecycle control over their catalog products via `/seller
 
 ---
 
-## 5. Merchant Order Management & Fulfillment (`/seller/orders`)
+## 5. Merchant Order Management & Fulfillment (`/seller/orders`) [MILESTONE 4.4 COMPLETE]
 
-When a buyer completes checkout, orders referencing the seller's products appear in the seller's fulfillment queue (backed by `models/order.js`, foundation implemented in Milestone 2.4):
+Merchants have access to a private, authenticated order management console and fulfillment deck (`controller/sellers.js`, `routes/web.js`, backed by `models/order.js`):
 
-1. **Incoming Order Queue:**
-   - Displays Order ID, destination port coordinates, buyer name, item line items, and current status.
-   - Queried efficiently via static helper `Order.findBySeller(sellerId)`, supported by compound index `{ "items.seller": 1, status: 1 }`.
-2. **Status Transition Engine:**
-   - Orders follow a strictly controlled lifecycle state machine:
-     $$\text{pending} \longrightarrow \text{confirmed} \longrightarrow \text{processing} \longrightarrow \text{shipped} \longrightarrow \text{delivered}$$
-   - Cancellation transitions are permitted from `pending`, `confirmed`, and `processing`.
-   - Transitions are validated and applied via model helpers `order.canTransitionTo(status)` and `order.transitionTo(status)`.
-3. **Multi-Seller Isolation:**
-   - In orders containing items from multiple sellers, line items maintain individual `seller: ObjectId (ref: 'User')` links.
-   - Merchant queries isolate matching orders, and population strictly omits merchant and customer authentication secrets (`password`, `authSecretHash`).
+### 5.1 Route Guards & Scoping
+* **Endpoints:**
+  - `GET /seller/orders`: Dispatch Manifests console listing all orders with items chartered under the authenticated seller.
+  - `GET /seller/orders/:orderId`: Dedicated manifest detail and fulfillment action deck.
+  - `POST /seller/orders/:orderId/status`: Status transition processor (aliased by `POST /seller/orders/:orderId/transition`).
+* **Guards:** Strict `[authMiddleware, requireSeller]`. Unauthenticated access redirects to `/login` (302), buyers receive HTTP 403, and admins receive HTTP 403 unless assigned seller role.
+* **Seller Identity:** Pinned strictly to `req.user._id`. Client-provided seller IDs in forms or queries are ignored.
+* **Server-Side Filtering:** Scoped via `Order.findBySeller(req.user._id)` leveraging compound index `{ "items.seller": 1, status: 1 }`. Never loads all orders into memory.
+
+### 5.2 Multi-Seller Order Rule & Privacy Isolation
+* **Multi-Merchant Architecture:** A customer Order in Pirate-Civ may contain wares purchased from multiple independent sellers.
+* **Hermetic Item Filtering:** In `/seller/orders` and `/seller/orders/:orderId`, line items are filtered server-side to expose *only* items belonging to `req.user._id`.
+* **Zero Leakage:** Other merchants' products, prices, quantities, line totals, and operational notes are completely excluded from the seller's view.
+* **Seller-Specific Totals:** Manifest subtotal displays strictly the sum of the authenticated seller's line items.
+* **Access Rejection:** An authenticated merchant attempting to view an order that contains no products from their store is rejected with HTTP 403.
+
+### 5.3 Historical Snapshot Integrity
+* Line items render historical snapshots (`item.name`, `item.price`, `item.quantity`, `item.lineTotal`, `item.image`) directly from `order.items`.
+* Subsequent changes to a `Product` document's name, price, stock, or deletion in the catalog never rewrite or alter existing Order records.
+
+### 5.4 Lifecycle State Machine & Fulfillment Actions
+* **Canonical Taxonomies:** Statuses strictly follow `models/order.js`: `pending`, `confirmed`, `processing`, `shipped`, `delivered`, `cancelled`.
+* **State Machine Transitions:**
+  - `pending` ➔ `confirmed` | `cancelled`
+  - `confirmed` ➔ `processing` | `cancelled`
+  - `processing` ➔ `shipped` | `cancelled`
+  - `shipped` ➔ `delivered`
+  - `delivered` / `cancelled`: Terminal states (no transitions permitted).
+* **Authoritative Helpers:** State changes are validated via `order.canTransitionTo(status)` and applied via `order.transitionTo(status)`. Invalid transitions are safely rejected with descriptive human-readable errors without altering the database.
+* **Order-Level Status Architecture:** In the current architecture, status operates at the Order level rather than per-item. Seller fulfillment actions advance the whole voyage manifest, preserving existing model behavior without introducing premature Phase 5 abstractions.
+
+### 5.5 Manifest Telemetry & Dashboard Integration
+* **Telemetry Cards:** Displays live counts of Total Manifests, Pending, Confirmed, Processing, Shipped, Delivered, and Cancelled orders scoped to the seller.
+* **Filter Tabs:** Allows quick filtering by status (`?status=...`).
+* **Command Deck Tile:** Activated `#tileOrders` ("Dispatch Manifests") and header quick link (`#headerOrdersLink`) on `/seller/dashboard`.
 
 
 ---

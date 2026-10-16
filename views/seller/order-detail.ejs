@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Manifest Detail | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Dedicated Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p4_orders_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p4_orders_v1">
+</head>
+
+<body class="island-store-body seller-orders-body">
+
+    <!-- Fixed Atmospheric Backdrop -->
+    <div class="store-backdrop">
+        <img src="<%= (island && island.image) ? island.image : '/images/astrolabe-bg.jpg' %>"
+             alt="Archipelago Backdrop"
+             class="store-bg-img"
+             onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
+
+    <!-- Reusable Main Navigation Bar -->
+    <%- include("../partials/header") %>
+
+    <!-- Master Stage -->
+    <main class="seller-dashboard-wrapper">
+
+        <!-- Top Navigation Bar: Breadcrumbs & Header Controls -->
+        <nav class="detail-nav-bar" aria-label="Breadcrumb Navigation">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <a href="/seller/dashboard" class="crumb-link">Command Deck</a>
+                <span class="crumb-separator">›</span>
+                <a href="/seller/orders" class="crumb-link">Dispatch Manifests</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Manifest #<%= order.id.slice(-8).toUpperCase() %></span>
+            </div>
+
+            <div class="store-header-controls">
+                <div class="doubloons-pill">
+                    <span class="coin-icon">🪙</span>
+                    <span>Merchant Deck</span>
+                </div>
+
+                <a href="/seller/orders" id="headerBackOrdersLink" class="btn-store-cart" style="text-decoration: none;" title="Return to Manifests">
+                    <span>📜 MANIFESTS</span>
+                </a>
+
+                <a href="/seller/dashboard" class="btn-store-cart" style="text-decoration: none;" title="Return to Command Deck">
+                    <span>⚓ DECK</span>
+                </a>
+
+                <a href="<%= storefrontUrl %>" class="btn-store-cart" style="text-decoration: none;" title="Open Public Storefront">
+                    <span>📜 STOREFRONT</span>
+                </a>
+
+                <a href="/seller/orders" class="btn-store-close" title="Return to Manifests">
+                    &times;
+                </a>
+            </div>
+        </nav>
+
+        <!-- Master Manifest Detail Card -->
+        <article class="seller-dashboard-card">
+
+            <!-- Manifest Hero Header -->
+            <header class="seller-products-header" style="border-bottom: none; padding-bottom: 0;">
+                <div>
+                    <span class="seller-dash-badge">📜 VOYAGE MANIFEST SPECIFICATION</span>
+                    <h1 style="margin-top: 6px; font-family: monospace;" id="manifestHeading">
+                        Manifest #<%= order.id %>
+                    </h1>
+                    <p>Ordered on <%= order.formattedDate %> • Registered in archipelago registry</p>
+                </div>
+
+                <div class="seller-stat-badges" style="align-items: center;">
+                    <span class="badge-status badge-status-<%= order.status %>" id="manifestStatusBadge" style="font-size: 0.95rem; padding: 6px 16px;">
+                        ⚓ STATUS: <%= order.status.toUpperCase() %>
+                    </span>
+                    <span class="badge-status badge-pay-<%= order.paymentStatus %>" id="manifestPaymentBadge" style="font-size: 0.95rem; padding: 6px 16px;">
+                        🪙 PAYMENT: <%= (order.paymentStatus || 'pending').toUpperCase() %>
+                    </span>
+                </div>
+            </header>
+
+            <!-- Notifications -->
+            <% if (query && query.updated) { %>
+                <div class="seller-alert-banner" id="bannerSuccessUpdated" role="alert" style="margin-top: 20px;">
+                    <span>✨</span>
+                    <span>Voyage manifest fulfillment status transitioned successfully to <strong><%= order.status.toUpperCase() %></strong>.</span>
+                </div>
+            <% } %>
+
+            <% if (error || (query && query.error)) { %>
+                <div class="seller-alert-banner alert-error" id="bannerErrorAlert" role="alert" style="margin-top: 20px;">
+                    <span>⚠️</span>
+                    <span><%= error || query.error %></span>
+                </div>
+            <% } %>
+
+            <!-- Shipping & Recipient Port Coordinates Card -->
+            <section class="seller-dash-bio-section" style="margin-top: 28px; margin-bottom: 28px;" aria-label="Delivery Coordinates">
+                <h3>⚓ Voyage Port & Destination Coordinates</h3>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 18px; margin-top: 14px;">
+                    <div>
+                        <div style="font-size: 0.78rem; color: #b8a892; font-family: 'Cinzel', serif; text-transform: uppercase;">
+                            Destination Anchorage / Port
+                        </div>
+                        <div style="font-size: 1.1rem; color: #fff3d4; font-weight: 700; margin-top: 4px;" id="valPortName">
+                            🏝️ <%= (order.shippingAddress && order.shippingAddress.portName) ? order.shippingAddress.portName : "Open Waters Harbor" %>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="font-size: 0.78rem; color: #b8a892; font-family: 'Cinzel', serif; text-transform: uppercase;">
+                            Sea Chart Coordinates
+                        </div>
+                        <div style="font-size: 1.05rem; color: #38bdf8; font-family: monospace; font-weight: 600; margin-top: 4px;" id="valCoordinates">
+                            🧭 <%= (order.shippingAddress && order.shippingAddress.islandCoordinates) ? order.shippingAddress.islandCoordinates : "18°42'N, 64°31'W" %>
+                        </div>
+                    </div>
+
+                    <div>
+                        <div style="font-size: 0.78rem; color: #b8a892; font-family: 'Cinzel', serif; text-transform: uppercase;">
+                            Recipient Captain / Explorer
+                        </div>
+                        <div style="font-size: 1.05rem; color: #ffd57e; font-weight: 600; margin-top: 4px;" id="valRecipientName">
+                            👤 <%= order.buyerName %>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recipient Notes -->
+                <div style="margin-top: 16px; padding-top: 14px; border-top: 1px dashed rgba(212, 147, 57, 0.25);">
+                    <div style="font-size: 0.78rem; color: #b8a892; font-family: 'Cinzel', serif; text-transform: uppercase; margin-bottom: 4px;">
+                        Harbor Dispatcher Instructions & Recipient Notes
+                    </div>
+                    <% if (order.shippingAddress && order.shippingAddress.recipientNotes && order.shippingAddress.recipientNotes.trim().length > 0) { %>
+                        <p style="margin: 0; color: #cbd5e1; font-style: italic;" id="valRecipientNotes">
+                            "<%= order.shippingAddress.recipientNotes %>"
+                        </p>
+                    <% } else { %>
+                        <p style="margin: 0; color: #64748b; font-style: italic;" id="valRecipientNotes">
+                            No special harbor navigation instructions provided. Standard cargo discharge rules apply.
+                        </p>
+                    <% } %>
+                </div>
+            </section>
+
+            <!-- Seller Chartered Cargo Table -->
+            <section aria-label="Chartered Cargo Items" style="margin-bottom: 32px;">
+                <h3 class="seller-section-title">
+                    <span>📦</span>
+                    <span>Your Chartered Cargo Wares</span>
+                </h3>
+
+                <div class="seller-table-container">
+                    <table class="seller-products-table" aria-label="Manifest Items Table" id="manifestItemsTable">
+                        <thead>
+                            <tr>
+                                <th>Cargo Artifact</th>
+                                <th>Historical Unit Valuation</th>
+                                <th>Quantity</th>
+                                <th>Historical Line Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% order.items.forEach(function(item, idx) { %>
+                                <tr id="rowItem_<%= idx %>">
+                                    <td>
+                                        <div class="product-cell-main">
+                                            <img src="<%= item.image || '/images/items/default-relic.png' %>"
+                                                 alt="<%= item.name %>"
+                                                 class="product-thumb"
+                                                 onerror="this.onerror=null; this.src='/images/items/default-relic.png';">
+                                            <div class="product-info-col">
+                                                <span class="product-name-link" id="itemName_<%= idx %>"><%= item.name %></span>
+                                                <span class="product-slug-text">Chartered snapshot preserved</span>
+                                            </div>
+                                        </div>
+                                    </td>
+
+                                    <td class="product-price-cell" id="itemPrice_<%= idx %>">
+                                        🪙 <%= item.price %>
+                                    </td>
+
+                                    <td style="color: #fff3d4; font-weight: 700; font-size: 0.95rem;" id="itemQty_<%= idx %>">
+                                        <%= item.quantity %>
+                                    </td>
+
+                                    <td class="product-price-cell" id="itemLineTotal_<%= idx %>">
+                                        🪙 <%= item.lineTotal %>
+                                    </td>
+                                </tr>
+                            <% }); %>
+                        </tbody>
+                        <tfoot>
+                            <tr style="background: rgba(15, 26, 42, 0.95); font-weight: 700;">
+                                <td colspan="3" style="text-align: right; color: #ffd57e; font-family: 'Cinzel', serif; letter-spacing: 0.05em; text-transform: uppercase;">
+                                    Your Merchant Cargo Total:
+                                </td>
+                                <td class="product-price-cell" style="font-size: 1.15rem;" id="valSellerSubtotal">
+                                    🪙 <%= order.sellerSubtotal %>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Fulfillment Command Operations Deck -->
+            <section class="seller-operations-section" aria-label="Fulfillment Actions" style="margin-top: 32px;">
+                <h3 class="seller-section-title">
+                    <span>⚓</span>
+                    <span>Fulfillment Command Operations</span>
+                </h3>
+
+                <div style="background: rgba(12, 22, 34, 0.7); border: 1px solid rgba(212, 147, 57, 0.3); border-radius: 10px; padding: 24px; margin-top: 16px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
+                        <div>
+                            <div style="font-size: 0.82rem; color: #b8a892; font-family: 'Cinzel', serif; text-transform: uppercase;">
+                                Current Lifecycle Stage
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px;">
+                                <span class="badge-status badge-status-<%= order.status %>" style="font-size: 0.95rem; padding: 6px 14px;">
+                                    <%= order.status.toUpperCase() %>
+                                </span>
+                                <span style="color: #cbd5e1; font-size: 0.9rem;">
+                                    <% if (order.status === 'pending') { %>
+                                        Awaiting merchant confirmation to reserve wharf dock space.
+                                    <% } else if (order.status === 'confirmed') { %>
+                                        Manifest confirmed. Cargo ready for packing and wharf crating.
+                                    <% } else if (order.status === 'processing') { %>
+                                        Cargo being packed at harbor docks. Ready for vessel boarding.
+                                    <% } else if (order.status === 'shipped') { %>
+                                        Fleet has weighed anchor and is sailing toward recipient harbor.
+                                    <% } else if (order.status === 'delivered') { %>
+                                        Cargo safely discharged at destination dock. Voyage complete.
+                                    <% } else if (order.status === 'cancelled') { %>
+                                        Voyage revoked. No further nautical operations permitted.
+                                    <% } %>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Available Action Transitions -->
+                    <% if (permittedTransitions && permittedTransitions.length > 0) { %>
+                        <div style="border-top: 1px solid rgba(212, 147, 57, 0.2); padding-top: 20px;">
+                            <div style="font-size: 0.82rem; color: #ffd57e; font-family: 'Cinzel', serif; text-transform: uppercase; margin-bottom: 14px;">
+                                Authoritative Permitted Actions
+                            </div>
+
+                            <div style="display: flex; gap: 12px; flex-wrap: wrap;" id="fulfillmentActionsDeck">
+                                <% if (permittedTransitions.includes("confirmed")) { %>
+                                    <form action="/seller/orders/<%= order.id %>/status" method="POST" style="margin: 0;">
+                                        <input type="hidden" name="status" value="confirmed">
+                                        <button type="submit" class="btn-form-submit" id="btnTransitionConfirmed" style="padding: 10px 20px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 6px;">
+                                            <span>📜</span>
+                                            <span>Confirm Manifest</span>
+                                        </button>
+                                    </form>
+                                <% } %>
+
+                                <% if (permittedTransitions.includes("processing")) { %>
+                                    <form action="/seller/orders/<%= order.id %>/status" method="POST" style="margin: 0;">
+                                        <input type="hidden" name="status" value="processing">
+                                        <button type="submit" class="btn-form-submit" id="btnTransitionProcessing" style="padding: 10px 20px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 6px;">
+                                            <span>🔨</span>
+                                            <span>Begin Processing Cargo</span>
+                                        </button>
+                                    </form>
+                                <% } %>
+
+                                <% if (permittedTransitions.includes("shipped")) { %>
+                                    <form action="/seller/orders/<%= order.id %>/status" method="POST" style="margin: 0;">
+                                        <input type="hidden" name="status" value="shipped">
+                                        <button type="submit" class="btn-form-submit" id="btnTransitionShipped" style="padding: 10px 20px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 6px;">
+                                            <span>⛵</span>
+                                            <span>Dispatch Vessel (Mark Shipped)</span>
+                                        </button>
+                                    </form>
+                                <% } %>
+
+                                <% if (permittedTransitions.includes("delivered")) { %>
+                                    <form action="/seller/orders/<%= order.id %>/status" method="POST" style="margin: 0;">
+                                        <input type="hidden" name="status" value="delivered">
+                                        <button type="submit" class="btn-form-submit" id="btnTransitionDelivered" style="padding: 10px 20px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 6px; background: linear-gradient(180deg, #10b981 0%, #047857 100%); border-color: #34d399; color: #ffffff;">
+                                            <span>⚓</span>
+                                            <span>Discharge Cargo (Mark Delivered)</span>
+                                        </button>
+                                    </form>
+                                <% } %>
+
+                                <% if (permittedTransitions.includes("cancelled")) { %>
+                                    <form action="/seller/orders/<%= order.id %>/status" method="POST" style="margin: 0;" onsubmit="return confirm('Are you certain you wish to cancel this voyage manifest? This action cannot be undone.');">
+                                        <input type="hidden" name="status" value="cancelled">
+                                        <button type="submit" class="btn-action-delete" id="btnTransitionCancelled" style="padding: 10px 20px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 6px;">
+                                            <span>✖️</span>
+                                            <span>Cancel Manifest</span>
+                                        </button>
+                                    </form>
+                                <% } %>
+                            </div>
+                        </div>
+                    <% } else { %>
+                        <div style="border-top: 1px solid rgba(212, 147, 57, 0.2); padding-top: 16px;">
+                            <div class="empty-vault-banner" style="margin: 0; padding: 16px;" id="terminalStatusBanner">
+                                <span style="font-size: 1.5rem;">⚓</span>
+                                <div style="font-family: 'Cinzel', serif; font-size: 0.95rem; color: #ffd57e; margin-top: 4px;">
+                                    Terminal Voyage State Reached
+                                </div>
+                                <div style="font-size: 0.84rem; color: #94a3b8; margin-top: 2px;">
+                                    This manifest has achieved terminal status (<strong><%= order.status.toUpperCase() %></strong>). Under Admiralty Guild laws, no further status transitions may be applied.
+                                </div>
+                            </div>
+                        </div>
+                    <% } %>
+                </div>
+            </section>
+
+            <!-- Multi-Merchant Isolation & Limitation Notice -->
+            <footer style="margin-top: 32px; padding-top: 20px; border-top: 1px dashed rgba(212, 147, 57, 0.25); color: #64748b; font-size: 0.82rem; line-height: 1.6;">
+                <p style="margin: 0;">
+                    ⚓ <strong>Admiralty Guild Order Protocol:</strong> In multi-seller voyages, each merchant views strictly the items and line valuations chartered under their sovereign merchant house. Status updates apply to the complete voyage manifest under the unified Order lifecycle.
+                </p>
+            </footer>
+
+        </article>
+
+    </main>
+
+</body>
+
+</html>

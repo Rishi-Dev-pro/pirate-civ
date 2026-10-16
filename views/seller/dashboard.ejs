@@ -49,6 +49,10 @@
                     <span>Merchant Deck</span>
                 </div>
 
+                <a href="/seller/orders" id="headerOrdersLink" class="btn-store-cart" style="text-decoration: none;" title="Dispatch Manifests">
+                    <span>📦 MANIFESTS</span>
+                </a>
+
                 <a href="/seller/products/new" id="headerForgeLink" class="btn-store-cart" style="text-decoration: none;" title="Forge New Cargo">
                     <span>➕ FORGE</span>
                 </a>
@@ -233,18 +237,19 @@
                         </span>
                     </a>
 
-                    <!-- 4. Fulfillment Queue (Placeholder / Phase 4.4) -->
-                    <div class="deck-tile locked-tile" id="tileOrders" title="Fulfillment Queue (Unlocks Phase 4.4)">
+                    <!-- 4. Dispatch Manifests (Milestone 4.4 Active) -->
+                    <a href="/seller/orders" class="deck-tile active-tile" id="tileOrders" title="Dispatch Manifests">
                         <div class="tile-top">
                             <span class="tile-icon">📦</span>
-                            <span class="tile-badge badge-locked">PHASE 4.4</span>
+                            <span class="tile-badge badge-available">ACTIVE</span>
                         </div>
                         <h4 class="tile-title">Dispatch Manifests</h4>
-                        <p class="tile-desc">Review incoming voyage manifests, pack supplies, and dispatch cargo couriers.</p>
-                        <span class="tile-btn btn-locked-action">
-                            <span>Unlocks Phase 4.4</span>
+                        <p class="tile-desc">Review incoming voyage manifests, inspect chartered cargo requests, and dispatch shipments.</p>
+                        <span class="tile-btn btn-primary-action">
+                            <span>Review Manifests</span>
+                            <span>→</span>
                         </span>
-                    </div>
+                    </a>
 
                 </div>
             </section>

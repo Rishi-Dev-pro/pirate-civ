@@ -157,8 +157,17 @@ gantt
   - Activated "Forge New Cargo" action card (`#tileAddProduct`) and header quick link on the Command Deck.
   - Full catalog synchronization: newly created active products immediately appear in the seller catalog, public storefront, island listing, and product detail sheet, while unavailable products remain private to the seller.
   - Tested: 78/78 dedicated automated tests, full regressions (305 passed total), live server tests on port 3000, and end-to-end real browser CDP execution with 0 console errors.
-* **Milestone 4.4: Stock & Inventory Management [NEXT]**
-  - Quick-update stock toggle and availability flags from the seller dashboard and inventory table.
+* **Milestone 4.4: Merchant Order Management & Fulfillment [COMPLETE]**
+  - Built authenticated seller order console at `GET /seller/orders`, order detail view at `GET /seller/orders/:orderId`, and status transition endpoint at `POST /seller/orders/:orderId/status` guarded by `[authMiddleware, requireSeller]`.
+  - Scoped order queries server-side to the authenticated seller (`Order.findBySeller(req.user._id)`) utilizing the compound index `{ "items.seller": 1, status: 1 }`.
+  - Multi-seller order isolation: exposes strictly authenticated seller's line items and seller-specific subtotal, while completely hiding other merchants' wares and financials in multi-merchant orders.
+  - Snapshot preservation: renders historical item snapshots (`name`, `price`, `quantity`, `lineTotal`, `image`) directly from `Order.items`, ensuring product catalog updates never mutate historical orders.
+  - Lifecycle state machine: reuses authoritative `models/order.js` methods (`canTransitionTo`, `transitionTo`) to enforce canonical status progression (`pending` ➔ `confirmed` ➔ `processing` ➔ `shipped` ➔ `delivered`, with safe cancellations) and rejects invalid/terminal transitions.
+  - Activated "Dispatch Manifests" action card (`#tileOrders`) and header quick link on the Command Deck.
+  - Telemetry counters: displays real-time counts of total, pending, confirmed, processing, shipped, delivered, and cancelled manifests with interactive filter tabs.
+  - Fully tested: 75/75 automated dedicated tests, full regression suite (380/380 assertions passing), and real browser verification with 0 console errors.
+* **Milestone 4.5: Seller Profile Management [NEXT]**
+  - Merchant store customizer for banner, bio chronicle, and home harbor settings.
 
 ---
 

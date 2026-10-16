@@ -116,18 +116,29 @@ stateDiagram-v2
 
 ---
 
-## 4. Multi-Seller Order Coordination
+## 4. Multi-Seller Order Coordination & Merchant Console (Milestone 4.4 COMPLETE)
 
-Because Pirate-Civ is a marketplace, a single customer order may contain artifacts purchased from multiple independent merchants:
+Because Pirate-Civ is an archipelago marketplace, a single customer order may contain artifacts purchased from multiple independent merchants:
 
 ```
 [Order #7842 - Total: 180 Doubloons]
-  ├── Item 1: Seville Astrolabe (85 🪙)  ──> Seller: Captain Thorne (Astrolabe Atoll)
+  ├── Item 1: Seville Astrolabe (85 🪙)     ──> Seller: Captain Thorne (Astrolabe Atoll)
   └── Item 2: Toledo Boarding Sabre (95 🪙) ──> Seller: Master Morales (Cutlass Cove)
 ```
 
-1. **Merchant Visibility Isolation:**
-   - In the `/seller/orders` queue, Captain Thorne only sees Item 1.
-   - Master Morales only sees Item 2.
-2. **Overall Order Status:**
-   - The master order status reflects the composite progress of all contained line items (or tracks per-item status).
+1. **Merchant Visibility Isolation (`GET /seller/orders`, `GET /seller/orders/:orderId`):**
+   - In `/seller/orders`, Captain Thorne only sees Item 1 and a merchant subtotal of 85 Doubloons.
+   - Master Morales only sees Item 2 and a merchant subtotal of 95 Doubloons.
+   - Other merchants' line items, unit prices, quantities, and line totals are completely stripped server-side.
+2. **Access Control & RBAC Enforcement:**
+   - Routes are strictly guarded with `[authMiddleware, requireSeller]`.
+   - Seller identity is derived immutably from `req.user._id`.
+   - Cross-seller access attempts to orders containing zero items for the requesting seller are rejected with HTTP 403.
+3. **Historical Snapshot Integrity:**
+   - Historical item records (`name`, `price`, `quantity`, `lineTotal`, `image`) come directly from `order.items` embedded snapshots.
+   - Modifying a `Product` in the catalog never overwrites past order records.
+4. **Lifecycle State Progression (`POST /seller/orders/:orderId/status`):**
+   - Valid transitions (`pending` ➔ `confirmed` ➔ `processing` ➔ `shipped` ➔ `delivered`, with safe cancellations) are enforced via `order.canTransitionTo()` and `order.transitionTo()`.
+   - Invalid or terminal transitions are rejected safely with clear human-readable feedback.
+   - Status is managed at the Order level in `models/order.js`; transitions advance the unified voyage manifest.
+
