@@ -792,7 +792,230 @@ export const createProduct = async (req, res) => {
 // Aliases for route & backwards compatibility
 export const renderSellerDiscovery = renderSellerStorefront;
 export const renderPublicSeller = renderSellerStorefront;
-export const renderSellerProfile = renderSellerStorefront;
+
+/**
+ * Controller action: Render Seller Profile Management Page (Milestone 4.5)
+ * Route: GET /seller/profile
+ * Protected by: authMiddleware, requireSeller
+ */
+export const renderSellerProfile = async (req, res) => {
+    try {
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        const islandMeta = sellerUser.homeIsland && ISLANDS_DATA[sellerUser.homeIsland]
+            ? ISLANDS_DATA[sellerUser.homeIsland]
+            : null;
+
+        const seller = {
+            id: sellerUser._id.toString(),
+            _id: sellerUser._id,
+            name: sellerUser.name || "Unknown Captain",
+            storeName: sellerUser.storeName || "",
+            homeIsland: sellerUser.homeIsland || "",
+            bio: sellerUser.bio || "",
+            avatar: sellerUser.avatar || "/images/avatars/default-pirate.png",
+            role: sellerUser.role
+        };
+
+        const successMessage = req.query.updated === "1"
+            ? "Captain's profile and charter lore successfully updated."
+            : null;
+
+        res.render("seller/profile", {
+            page_title: `${seller.storeName || seller.name} — Captain's Profile | Pirate-Civ`,
+            seller,
+            island: islandMeta,
+            canonicalIslands: CANONICAL_ISLANDS,
+            storefrontUrl: `/seller/${seller.id}`,
+            error: null,
+            success: successMessage,
+            user: req.user
+        });
+
+    } catch (error) {
+        console.error("Error in renderSellerProfile:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
+
+/**
+ * Controller action: Update Seller Profile (Milestone 4.5)
+ * Route: POST /seller/profile (and POST /seller/profile/edit)
+ * Protected by: authMiddleware, requireSeller
+ */
+export const updateSellerProfile = async (req, res) => {
+    try {
+        const sellerUser = req.user;
+        if (!sellerUser || sellerUser.role !== "seller") {
+            return res.status(403).send("Access denied: insufficient permissions.");
+        }
+
+        // Strictly whitelist permitted profile fields ONLY
+        // NEVER accept or allow modification of email, password, authSecretHash, googleId, or role!
+        const {
+            name,
+            storeName,
+            homeIsland,
+            bio,
+            avatar
+        } = req.body;
+
+        const renderFormError = (errorMessage, safeFormData = {}) => {
+            const mergedSeller = {
+                id: sellerUser._id.toString(),
+                _id: sellerUser._id,
+                name: typeof safeFormData.name === "string" ? safeFormData.name : (sellerUser.name || ""),
+                storeName: typeof safeFormData.storeName === "string" ? safeFormData.storeName : (sellerUser.storeName || ""),
+                homeIsland: typeof safeFormData.homeIsland === "string" ? safeFormData.homeIsland : (sellerUser.homeIsland || ""),
+                bio: typeof safeFormData.bio === "string" ? safeFormData.bio : (sellerUser.bio || ""),
+                avatar: typeof safeFormData.avatar === "string" ? safeFormData.avatar : (sellerUser.avatar || "/images/avatars/default-pirate.png"),
+                role: sellerUser.role
+            };
+
+            const islandMeta = mergedSeller.homeIsland && ISLANDS_DATA[mergedSeller.homeIsland]
+                ? ISLANDS_DATA[mergedSeller.homeIsland]
+                : null;
+
+            if (req.xhr || req.headers.accept?.includes("application/json")) {
+                return res.status(400).json({
+                    success: false,
+                    error: errorMessage
+                });
+            }
+
+            return res.status(400).render("seller/profile", {
+                page_title: `${mergedSeller.storeName || mergedSeller.name} — Captain's Profile | Pirate-Civ`,
+                seller: mergedSeller,
+                island: islandMeta,
+                canonicalIslands: CANONICAL_ISLANDS,
+                storefrontUrl: `/seller/${sellerUser._id}`,
+                error: errorMessage,
+                success: null,
+                user: req.user
+            });
+        };
+
+        // 1. Validation: Captain Name (Required, Trimmed, Max 120 chars)
+        if (typeof name !== "string") {
+            return renderFormError("Captain / Merchant name is required.", req.body);
+        }
+        const trimmedName = name.trim();
+        if (!trimmedName || trimmedName.length > 120) {
+            return renderFormError("Captain / Merchant name is required and cannot exceed 120 characters.", req.body);
+        }
+
+        // 2. Validation: Storefront Title (Optional, Trimmed, Max 120 chars)
+        let trimmedStoreName = "";
+        if (storeName !== undefined && storeName !== null) {
+            if (typeof storeName !== "string") {
+                return renderFormError("Store title must be a valid text string.", req.body);
+            }
+            trimmedStoreName = storeName.trim();
+            if (trimmedStoreName.length > 120) {
+                return renderFormError("Store title cannot exceed 120 characters.", req.body);
+            }
+        }
+
+        // 3. Validation: Home Island (Must be member of canonical 6 islands or empty)
+        let trimmedIsland = "";
+        if (homeIsland !== undefined && homeIsland !== null) {
+            if (typeof homeIsland !== "string") {
+                return renderFormError("Home island must be a valid text string.", req.body);
+            }
+            trimmedIsland = homeIsland.trim();
+            if (trimmedIsland && !CANONICAL_ISLANDS.includes(trimmedIsland)) {
+                return renderFormError("Selected island must be one of the 6 canonical trading islands.", req.body);
+            }
+        }
+
+        // 4. Validation: Bio (Optional, Trimmed, Max 2000 chars)
+        let trimmedBio = "";
+        if (bio !== undefined && bio !== null) {
+            if (typeof bio !== "string") {
+                return renderFormError("Merchant bio must be a valid text string.", req.body);
+            }
+            trimmedBio = bio.trim();
+            if (trimmedBio.length > 2000) {
+                return renderFormError("Merchant bio lore cannot exceed 2000 characters.", req.body);
+            }
+        }
+
+        // 5. Validation: Avatar (Optional, Path or URL, safe scheme, Max 500 chars)
+        let validatedAvatar = "/images/avatars/default-pirate.png";
+        if (avatar !== undefined && avatar !== null) {
+            if (typeof avatar !== "string") {
+                return renderFormError("Avatar path must be a valid string.", req.body);
+            }
+            const trimmedAvatar = avatar.trim();
+            if (trimmedAvatar.length > 500) {
+                return renderFormError("Avatar path/URL cannot exceed 500 characters.", req.body);
+            }
+            if (trimmedAvatar.length > 0) {
+                // Defensive security: reject javascript:, data: URIs, or script tags
+                const lowerAvatar = trimmedAvatar.toLowerCase();
+                if (lowerAvatar.startsWith("javascript:") || lowerAvatar.startsWith("vbscript:") || lowerAvatar.includes("<script>")) {
+                    return renderFormError("Avatar contains an invalid or malicious protocol.", req.body);
+                }
+                // Allow relative paths starting with / or absolute http/https URLs
+                if (!trimmedAvatar.startsWith("/") && !trimmedAvatar.startsWith("http://") && !trimmedAvatar.startsWith("https://")) {
+                    return renderFormError("Avatar must be a valid relative path (starting with /) or web URL (http:// or https://).", req.body);
+                }
+                validatedAvatar = trimmedAvatar;
+            }
+        }
+
+        // 6. Update exclusively the authenticated user's document in MongoDB
+        const user = await User.findById(sellerUser._id);
+        if (!user) {
+            return res.status(404).send("Merchant record not found.");
+        }
+
+        // Apply only permitted fields
+        user.name = trimmedName;
+        user.storeName = trimmedStoreName || null;
+        user.homeIsland = trimmedIsland || null;
+        user.bio = trimmedBio;
+        user.avatar = validatedAvatar;
+
+        await user.save();
+
+        // Refresh in-memory req.user
+        req.user.name = user.name;
+        req.user.storeName = user.storeName;
+        req.user.homeIsland = user.homeIsland;
+        req.user.bio = user.bio;
+        req.user.avatar = user.avatar;
+
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.json({
+                success: true,
+                user: {
+                    id: user._id.toString(),
+                    name: user.name,
+                    storeName: user.storeName,
+                    homeIsland: user.homeIsland,
+                    bio: user.bio,
+                    avatar: user.avatar
+                }
+            });
+        }
+
+        return res.redirect("/seller/profile?updated=1");
+
+    } catch (error) {
+        console.error("Error in updateSellerProfile:", error);
+        res.status(500).render("home", {
+            page_title: "Command Deck Tempest | Error",
+            user: req.user || null
+        });
+    }
+};
 
 /**
  * Controller action: Render Seller Order Management Console (Milestone 4.4)
@@ -1099,5 +1322,6 @@ export default {
     createProduct,
     renderSellerOrders,
     renderSellerOrderDetail,
-    updateOrderStatus
+    updateOrderStatus,
+    updateSellerProfile
 };

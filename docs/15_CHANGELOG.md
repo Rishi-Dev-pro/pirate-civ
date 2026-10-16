@@ -4,6 +4,59 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-16] — Phase 4 / Milestone 4.5: Seller Profile Management (MILESTONE 4.5 COMPLETE)
+
+### Added & Implemented
+* **Seller Profile Management Form & Controller (`controller/sellers.js`::`renderSellerProfile`, `controller/sellers.js`::`updateSellerProfile`, `views/seller/profile.ejs`):**
+  - Secured route `GET /seller/profile` using `[authMiddleware, requireSeller]`.
+  - Secured update endpoints `POST /seller/profile` and `POST /seller/profile/edit` using `[authMiddleware, requireSeller]`.
+  - Reused existing unified `User` model fields: `name`, `storeName`, `homeIsland`, `bio`, `avatar`. No redundant Seller/Merchant models created.
+  - Pinned profile updates strictly to authenticated `req.user._id`, ignoring client-submitted body or query IDs.
+  - Implemented strict server-side validation:
+    - `name`: Required, non-empty, trimmed, max 120 characters.
+    - `storeName`: Optional, trimmed, max 120 characters, preserving null convention.
+    - `homeIsland`: Must be one of the 6 canonical trading islands (`astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`).
+    - `bio`: Optional, trimmed, max 2000 characters, safe EJS escaping.
+    - `avatar`: Path or URL, max 500 characters, default `/images/avatars/default-pirate.png`, rejecting malicious protocols (`javascript:`, etc.).
+  - Preserved safe submitted values on validation failure with descriptive error banners.
+  - Guaranteed account security field immutability: `email`, `password`, `authSecretHash`, `googleId`, and `role` are strictly excluded from updating, preventing privilege escalation.
+* **Seller Dashboard Integration (`views/seller/dashboard.ejs`):**
+  - Activated "Captain's Profile" action card (`#tileProfile`) linking to `/seller/profile`.
+  - Added header quick link (`#headerProfileLink`) across seller portal headers.
+  - Storefront title, captain alias, home harbor, avatar, and bio lore synchronize immediately with database changes.
+* **Public Storefront Synchronization (`views/seller-discovery.ejs`):**
+  - Public storefront (`/seller/:sellerId`) dynamically reflects updated store name, captain alias, home harbor, avatar, and bio lore while maintaining strict credential scrub.
+* **Default Avatar Asset (`public/images/avatars/default-pirate.png`):**
+  - Added local pirate avatar asset preventing image 404s.
+
+### Tested & Verified
+* 76 automated assertions in dedicated test suite `scratch/test_milestone_4_5.js`:
+  - RBAC: Unauthenticated redirect to /login (302), buyer access forbidden (403), admin access forbidden (403), seller access granted (200).
+  - Profile loading: Current name, storeName, bio, and canonical island load into form.
+  - Updates: Name, store name, home island, bio, and avatar update and persist to MongoDB.
+  - Validation: Empty name rejected (400), invalid island rejected (400), oversized bio rejected (400), malicious avatar rejected (400), safe values retained.
+  - Synchronization: Dashboard and public storefront reflect updated identity.
+  - Cross-seller protection: Seller B cannot alter Seller A; caller identity derived strictly from session.
+  - Immutability: Role cannot be elevated to admin, email unchanged, password hash untouched, authSecretHash untouched, googleId untouched.
+  - Invariants: Product catalog ownership, stock, prices, customer carts, and historical order records/snapshots unaffected.
+  - Data leakage audit: Passwords, authSecretHash, and emails never leak into profile or storefront HTML.
+* Full regression pass (456 assertions total):
+  - Milestone 4.5: 76/76
+  - Milestone 4.4: 75/75
+  - Milestone 4.3: 78/78
+  - Milestone 4.2: 67/67
+  - Milestone 4.1: 64/64
+  - Milestone 3.6: 96/96
+* Real browser verification via `browser_subagent` (`seller_profile_journey_1792153399419.webp`):
+  - Login as seller -> Command Deck -> Captain's Profile (`/seller/profile`).
+  - Validation error testing with blank name.
+  - Successful update with store title, bio, and island.
+  - Public storefront synchronization verified.
+  - 0 unexpected console errors.
+* Static syntax: 21/21 JS files pass `node --check`.
+* Templates: 30/30 EJS files compile without errors.
+* **Phase 4 is fully verified and COMPLETE.**
+
 ## [2026-10-16] — Phase 4 / Milestone 4.4: Merchant Order Management & Fulfillment (MILESTONE 4.4 COMPLETE)
 
 ### Added & Implemented

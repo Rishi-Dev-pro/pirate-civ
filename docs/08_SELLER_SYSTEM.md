@@ -177,10 +177,46 @@ Merchants have access to a private, authenticated order management console and f
 * **Filter Tabs:** Allows quick filtering by status (`?status=...`).
 * **Command Deck Tile:** Activated `#tileOrders` ("Dispatch Manifests") and header quick link (`#headerOrdersLink`) on `/seller/dashboard`.
 
+---
+
+## 6. Seller Profile Management (`/seller/profile`) [MILESTONE 4.5 COMPLETE]
+
+Authenticated merchants can customize their sovereign store profile, harbor registry, and charter lore (`controller/sellers.js::renderSellerProfile`, `controller/sellers.js::updateSellerProfile`, `views/seller/profile.ejs`):
+
+### 6.1 Route Guards & Scoping
+* **Endpoints:**
+  - `GET /seller/profile`: Renders the Captain's Profile & Storefront Customizer form.
+  - `POST /seller/profile`: Processes updates to permitted merchant profile fields (aliased by `POST /seller/profile/edit`).
+* **Guards:** Strict `[authMiddleware, requireSeller]`. Unauthenticated requests redirect to `/login` (302), and non-sellers (buyers and admins) receive HTTP 403 Forbidden.
+* **Seller Ownership:** Derived strictly and exclusively from `req.user._id`. Query parameters, route parameters, and client-submitted body IDs are completely discarded.
+* **Model Reuse:** Reuses the unified `User` model (`name`, `storeName`, `homeIsland`, `bio`, `avatar`). No duplicate `Seller`, `Merchant`, `Vendor`, or `SellerProfile` models exist.
+
+### 6.2 Editable Fields & Validation Rules
+* **Captain / Merchant Name (`name`):**
+  - Required, trimmed, non-empty, max 120 characters.
+  - Rejects empty strings, whitespace-only, or oversized names with descriptive human-readable errors.
+* **Storefront Title (`storeName`):**
+  - Optional, trimmed string, max 120 characters. Blank values preserve `null` convention.
+* **Home Island Anchorage (`homeIsland`):**
+  - Must select one of the **6 canonical islands**: `astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`. Non-canonical island inputs are strictly rejected.
+* **Merchant Bio & Charter Chronicle (`bio`):**
+  - Optional, trimmed text, max 2000 characters. Safely escaped in EJS templates to prevent arbitrary HTML or script injection.
+* **Avatar (`avatar`):**
+  - Local image path (starting with `/`) or absolute URL (`http://` or `https://`), max 500 characters. Default fallback: `/images/avatars/default-pirate.png`. Rejects malicious protocols (`javascript:`, etc.) without introducing unnecessary upload dependencies.
+
+### 6.3 Security Boundary & Field Immutability
+* **Excluded Security Fields:** Profile editing NEVER allows modification of `email`, `password`, `authSecretHash`, `googleId`, or `role`.
+* **Privilege Escalation Prevention:** Even if a request payload contains `role: 'admin'`, the server strictly updates only explicitly permitted profile fields. Role remains immutable.
+* **Cross-Seller Isolation:** A seller can only update their own profile; requests attempting to specify another seller's ID affect strictly the authenticated caller.
+
+### 6.4 Synchronization & Invariants
+* **Seller Dashboard Integration:** Activated `#headerProfileLink` in header navigation and `#tileProfile` ("Captain's Profile") action tile on the Command Deck (`views/seller/dashboard.ejs`). Changes to store title, captain alias, bio, and home island reflect immediately on the dashboard.
+* **Public Storefront Synchronization:** Updates immediately synchronize to the public storefront (`/seller/:sellerId`) without requiring re-login.
+* **Catalog & Order Immutability:** Profile changes affect seller identity and presentation only. Product catalog prices, stock, names, availability, order snapshots, and customer carts remain strictly unchanged.
 
 ---
 
-## 6. Public Seller Profile & Reusable Storefront (`/seller/:sellerId`) [MILESTONE 3.4 COMPLETE]
+## 7. Public Seller Profile & Reusable Storefront (`/seller/:sellerId`) [MILESTONE 3.4 COMPLETE]
 
 The buyer-facing, public merchant storefront allows buyers to explore a seller's full identity, lore, and chartered product catalog:
 
@@ -204,11 +240,10 @@ The buyer-facing, public merchant storefront allows buyers to explore a seller's
 5. **Security & Boundary:**
    - Strictly omits `password`, `authSecretHash`, `googleId`.
    - Requires `role: "seller"`; buyers, nonexistent IDs, or malformed ObjectIds return clean 404 responses.
-   - *Note:* Seller management, product CRUD, and seller order fulfillment remain strictly deferred to Phase 4.
 
 ---
 
-## 7. Strict Merchant Security Rules
+## 8. Strict Merchant Security Rules
 
 ```
 ┌────────────────────────────────────────────────────────────────────────┐
@@ -220,5 +255,8 @@ The buyer-facing, public merchant storefront allows buyers to explore a seller's
 │    executing any UPDATE or DELETE operation.                           │
 │ 3. Isolated Order Views: A merchant may NEVER view line items or       │
 │    financial data belonging to another merchant.                       │
+│ 4. Whitelisted Profile Updates: Only permitted profile identity        │
+│    fields (name, storeName, homeIsland, bio, avatar) may be updated.   │
+│    Role, email, password, and auth secrets are strictly IMMUTABLE.     │
 └────────────────────────────────────────────────────────────────────────┘
 ```

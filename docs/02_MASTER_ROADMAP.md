@@ -166,15 +166,25 @@ gantt
   - Activated "Dispatch Manifests" action card (`#tileOrders`) and header quick link on the Command Deck.
   - Telemetry counters: displays real-time counts of total, pending, confirmed, processing, shipped, delivered, and cancelled manifests with interactive filter tabs.
   - Fully tested: 75/75 automated dedicated tests, full regression suite (380/380 assertions passing), and real browser verification with 0 console errors.
-* **Milestone 4.5: Seller Profile Management [NEXT]**
-  - Merchant store customizer for banner, bio chronicle, and home harbor settings.
+* **Milestone 4.5: Seller Profile Management [COMPLETE]**
+  - Created authenticated seller profile customizer at `GET /seller/profile`, `POST /seller/profile`, and `POST /seller/profile/edit` guarded strictly by `[authMiddleware, requireSeller]`.
+  - Reused existing unified `User` model fields (`name`, `storeName`, `homeIsland`, `bio`, `avatar`) without creating redundant Seller/Merchant models.
+  - Derived seller identity strictly from authenticated `req.user._id`, ignoring client-spoofed IDs in body or parameters.
+  - Enforced server-side validation on captain name (required, max 120), storefront title (optional, max 120), canonical 6 islands (`astrolabe`, `chronos`, `kraken_vault`, `cutlass_cove`, `velvet_isle`, `booty_cay`), bio lore (optional, max 2000), and avatar path/URL with malicious protocol rejection (`javascript:`, etc.).
+  - Preserved safe submitted values on validation failure with descriptive error feedback without crashing or corrupting data.
+  - Explicitly excluded account security fields (`email`, `password`, `authSecretHash`, `googleId`, `role`) from updating, strictly preventing privilege escalation or role mutation.
+  - Activated "Captain's Profile" action card (`#tileProfile`) and header quick link (`#headerProfileLink`) across seller portal screens.
+  - Ensured immediate synchronization of profile changes to the Seller Command Deck (`/seller/dashboard`) and Public Merchant Storefront (`/seller/:sellerId`).
+  - Catalog and order immutability preserved: existing products, carts, and order records/snapshots unaffected.
+  - Fully tested: 76/76 automated dedicated tests, full regression suite (456/456 assertions passing), and real browser verification with 0 console errors.
+  - **Phase 4 is fully verified and COMPLETE.**
 
 ---
 
 ### 📍 PHASE 5 — CART, CHECKOUT & ORDERS
 **Goal:** Build a functional, server-persisted transaction engine with multi-party order fulfillment.
 
-* **Milestone 5.1: Database-Backed Cart System**
+* **Milestone 5.1: Database-Backed Cart System [NEXT]**
   - Create API routes `/cart/add`, `/cart/update`, `/cart/remove`, and `/cart`.
   - Sync guest/localStorage cart into MongoDB upon login.
   - Validate requested quantities against current product stock in real time.

@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Captain's Profile | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Dedicated Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p45_prof_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p45_prof_v1">
+</head>
+
+<body class="island-store-body seller-edit-body seller-profile-body">
+
+    <!-- Fixed Atmospheric Backdrop -->
+    <div class="store-backdrop">
+        <img src="<%= (island && island.image) ? island.image : '/images/astrolabe-bg.jpg' %>"
+             alt="Archipelago Backdrop"
+             class="store-bg-img"
+             onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
+
+    <!-- Reusable Main Navigation Bar -->
+    <%- include("../partials/header") %>
+
+    <!-- Master Stage -->
+    <main class="seller-dashboard-wrapper">
+
+        <!-- Top Navigation Bar: Breadcrumbs & Header Controls -->
+        <nav class="detail-nav-bar" aria-label="Breadcrumb Navigation">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <a href="/seller/dashboard" class="crumb-link">Command Deck</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Captain's Profile</span>
+            </div>
+
+            <div class="store-header-controls">
+                <div class="doubloons-pill">
+                    <span class="coin-icon">🪙</span>
+                    <span>Merchant Registry</span>
+                </div>
+
+                <a href="/seller/dashboard" id="headerDeckLink" class="btn-store-cart" style="text-decoration: none;" title="Return to Command Deck">
+                    <span>⚓ COMMAND DECK</span>
+                </a>
+
+                <a href="<%= storefrontUrl %>" id="headerStorefrontLink" class="btn-store-cart" style="text-decoration: none;" title="Open Public Storefront">
+                    <span>📜 STOREFRONT</span>
+                </a>
+
+                <a href="/home" class="btn-store-close" title="Return to Sea Chart">
+                    &times;
+                </a>
+            </div>
+        </nav>
+
+        <!-- Profile Form Card -->
+        <article class="seller-edit-form-card" style="max-width: 820px; margin: 0 auto;">
+
+            <!-- Header Section with Live Avatar Preview -->
+            <div style="display: flex; align-items: center; gap: 20px; margin-bottom: 24px; border-bottom: 1px solid rgba(212, 147, 57, 0.25); padding-bottom: 20px;">
+                <div class="seller-dash-avatar-frame" style="width: 80px; height: 80px; min-width: 80px; border-radius: 50%; overflow: hidden; border: 2px solid #d49339; box-shadow: 0 4px 16px rgba(0,0,0,0.5);">
+                    <img id="avatarPreviewImg"
+                         src="<%= seller.avatar || '/images/avatars/default-pirate.png' %>"
+                         alt="Captain Avatar Preview"
+                         style="width: 100%; height: 100%; object-fit: cover;"
+                         onerror="this.onerror=null; this.src='/images/avatars/default-pirate.png';">
+                </div>
+                <div>
+                    <span class="seller-dash-badge" style="display: inline-block; margin-bottom: 4px;">⚓ CHARTERED GUILD IDENTITY</span>
+                    <h1 style="font-family: 'Cinzel', serif; font-size: 1.7rem; color: #fff3d4; margin: 0 0 4px 0;">
+                        Captain's Profile & Storefront Customizer
+                    </h1>
+                    <span style="font-size: 0.85rem; color: #94a3b8;">
+                        Manage your sovereign merchant house, home anchorage, and public charter chronicle
+                    </span>
+                </div>
+            </div>
+
+            <!-- Error Banner -->
+            <% if (error) { %>
+                <div class="seller-alert-banner alert-error" role="alert" id="profileErrorBanner">
+                    <span>☠</span>
+                    <span><%= error %></span>
+                </div>
+            <% } %>
+
+            <!-- Success Banner -->
+            <% if (success) { %>
+                <div class="seller-alert-banner" role="alert" id="profileSuccessBanner">
+                    <span>⚓</span>
+                    <span><%= success %></span>
+                </div>
+            <% } %>
+
+            <!-- Edit Profile Form -->
+            <form method="POST" action="/seller/profile" id="formSellerProfile">
+
+                <!-- Row 1: Captain Name & Storefront Title -->
+                <div class="seller-form-row">
+                    <div class="seller-form-group">
+                        <label for="inputName">Captain / Merchant Name *</label>
+                        <input type="text"
+                               id="inputName"
+                               name="name"
+                               class="seller-form-input"
+                               maxlength="120"
+                               placeholder="e.g. Captain Edward Teach"
+                               value="<%= seller && seller.name ? seller.name : '' %>"
+                               required>
+                        <span style="font-size: 0.75rem; color: #94a3b8; margin-top: 4px; display: block;">
+                            Authoritative captain alias registered with the Admiralty Guild
+                        </span>
+                    </div>
+
+                    <div class="seller-form-group">
+                        <label for="inputStoreName">Storefront Title</label>
+                        <input type="text"
+                               id="inputStoreName"
+                               name="storeName"
+                               class="seller-form-input"
+                               maxlength="120"
+                               placeholder="e.g. Queen Anne's Royal Armory"
+                               value="<%= seller && seller.storeName ? seller.storeName : '' %>">
+                        <span style="font-size: 0.75rem; color: #94a3b8; margin-top: 4px; display: block;">
+                            Trading house name displayed on your public storefront and listings
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Row 2: Home Island & Avatar URL -->
+                <div class="seller-form-row">
+                    <div class="seller-form-group">
+                        <label for="selectHomeIsland">Home Island Anchorage *</label>
+                        <select id="selectHomeIsland" name="homeIsland" class="seller-form-select" required>
+                            <option value="astrolabe" <%= (seller && seller.homeIsland === 'astrolabe') ? 'selected' : '' %>>
+                                🧭 Astrolabe Sanctuary (Ancient Relics & Navigation)
+                            </option>
+                            <option value="chronos" <%= (seller && seller.homeIsland === 'chronos') ? 'selected' : '' %>>
+                                ⏳ Chronos Bastion (Expedition Gear & Boots)
+                            </option>
+                            <option value="kraken_vault" <%= (seller && seller.homeIsland === 'kraken_vault') ? 'selected' : '' %>>
+                                🐙 Kraken Vault (Abyssal Artifacts & Jewelry)
+                            </option>
+                            <option value="cutlass_cove" <%= (seller && seller.homeIsland === 'cutlass_cove') ? 'selected' : '' %>>
+                                ⚔️ Cutlass Cove (Corsair Tools & Technology)
+                            </option>
+                            <option value="velvet_isle" <%= (seller && seller.homeIsland === 'velvet_isle') ? 'selected' : '' %>>
+                                🍷 Velvet Isle (Sovereign Luxuries & Decor)
+                            </option>
+                            <option value="booty_cay" <%= (seller && seller.homeIsland === 'booty_cay') ? 'selected' : '' %>>
+                                🌴 Booty Cay (Grand Bazaar Provisions & Cosmetics)
+                            </option>
+                        </select>
+                        <span style="font-size: 0.75rem; color: #94a3b8; margin-top: 4px; display: block;">
+                            Your primary port of registry among the 6 canonical islands
+                        </span>
+                    </div>
+
+                    <div class="seller-form-group">
+                        <label for="inputAvatar">Avatar Path / URL</label>
+                        <input type="text"
+                               id="inputAvatar"
+                               name="avatar"
+                               class="seller-form-input"
+                               maxlength="500"
+                               placeholder="/images/avatars/default-pirate.png"
+                               value="<%= seller && seller.avatar ? seller.avatar : '/images/avatars/default-pirate.png' %>">
+                        <span style="font-size: 0.75rem; color: #94a3b8; margin-top: 4px; display: block;">
+                            Local image path or web URL for your captain's seal
+                        </span>
+                    </div>
+                </div>
+
+                <!-- Row 3: Bio Chronicle Lore -->
+                <div class="seller-form-group">
+                    <label for="inputBio">Merchant Bio & Charter Chronicle</label>
+                    <textarea id="inputBio"
+                              name="bio"
+                              class="seller-form-input"
+                              rows="5"
+                              maxlength="2000"
+                              placeholder="Pen your merchant house lore, sailing trade routes, and sovereign specialty wares..."><%= seller && seller.bio ? seller.bio : '' %></textarea>
+                    <span style="font-size: 0.75rem; color: #94a3b8; margin-top: 4px; display: block;">
+                        Chronicle displayed on your public merchant discovery page (max 2000 characters)
+                    </span>
+                </div>
+
+                <!-- Security / Account Immutability Notice -->
+                <aside class="seller-notice-banner storefront-charter-banner" style="margin-bottom: 24px; padding: 14px 18px;" role="note">
+                    <span class="notice-icon">🛡️</span>
+                    <div class="notice-content">
+                        <strong>Grand Admiralty Security Charter</strong>
+                        <p style="margin: 4px 0 0 0; font-size: 0.8rem; color: #cbd5e1;">
+                            Account credentials, email address, and role permissions (<span style="color: #ffd57e;"><%= (seller.role || 'seller').toUpperCase() %></span>) are sealed by royal admiralty decree and protected from tampering.
+                        </p>
+                    </div>
+                </aside>
+
+                <!-- Action Buttons -->
+                <div style="display: flex; gap: 14px; justify-content: flex-end; align-items: center; padding-top: 10px;">
+                    <a href="/seller/dashboard" id="btnCancelProfile" class="btn-store-cart" style="text-decoration: none; padding: 12px 24px; font-size: 0.85rem;">
+                        <span>CANCEL</span>
+                    </a>
+
+                    <button type="submit" id="btnSaveProfile" class="tile-btn btn-primary-action" style="padding: 12px 28px; font-size: 0.9rem; font-family: 'Cinzel', serif; cursor: pointer; border: none;">
+                        <span>⚓ SAVE CAPTAIN'S CHARTER</span>
+                    </button>
+                </div>
+
+            </form>
+
+        </article>
+
+    </main>
+
+    <!-- Client-side avatar preview script -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var avatarInput = document.getElementById("inputAvatar");
+            var previewImg = document.getElementById("avatarPreviewImg");
+            if (avatarInput && previewImg) {
+                avatarInput.addEventListener("input", function() {
+                    var val = avatarInput.value.trim();
+                    if (val) {
+                        previewImg.src = val;
+                    } else {
+                        previewImg.src = "/images/avatars/default-pirate.png";
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+
+</html>

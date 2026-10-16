@@ -280,12 +280,19 @@ import {
     renderSellerStorefront,
     renderSellerOrders,
     renderSellerOrderDetail,
-    updateOrderStatus
+    updateOrderStatus,
+    renderSellerProfile,
+    updateSellerProfile
 } from "../controller/sellers.js";
 
 router.get("/seller/dashboard", authMiddleware, requireSeller, renderSellerDashboard);
 router.get("/seller/portal", authMiddleware, requireSeller, (req, res) => res.redirect("/seller/dashboard"));
 router.get("/seller", authMiddleware, requireSeller, (req, res) => res.redirect("/seller/dashboard"));
+
+// Seller Profile Management (Milestone 4.5)
+router.get("/seller/profile", authMiddleware, requireSeller, renderSellerProfile);
+router.post("/seller/profile", authMiddleware, requireSeller, updateSellerProfile);
+router.post("/seller/profile/edit", authMiddleware, requireSeller, updateSellerProfile);
 
 // Seller Product Management (Milestone 4.2 & 4.3)
 router.get("/seller/products", authMiddleware, requireSeller, renderSellerProducts);
