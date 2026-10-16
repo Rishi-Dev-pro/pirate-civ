@@ -163,12 +163,25 @@ cartSchema.statics.mergeSessionCart = async function(userId, sessionCart) {
         }
 
         try {
-            const productExists = await Product.exists({ _id: rawProductId });
-            if (!productExists) {
-                continue; // Skip nonexistent product safely
+            const product = await Product.findById(rawProductId);
+            if (!product || product.isAvailable === false) {
+                continue; // Skip nonexistent or unavailable product safely
             }
 
-            cart.addItem(rawProductId, qty);
+            const currentStock = typeof product.stock === "number" ? product.stock : 0;
+            if (currentStock <= 0) {
+                continue; // Skip out-of-stock product safely
+            }
+
+            // Real-time stock validation: clamp to available vault reserve
+            const existingItem = cart.items.find(item =>
+                item.product && (item.product.equals ? item.product.equals(rawProductId) : item.product.toString() === rawProductId.toString())
+            );
+            const currentInCart = existingItem ? existingItem.quantity : 0;
+            const allowedToAdd = Math.min(qty, Math.max(0, currentStock - currentInCart));
+            if (allowedToAdd > 0) {
+                cart.addItem(rawProductId, allowedToAdd);
+            }
         } catch (e) {
             continue; // Skip safely on query error
         }

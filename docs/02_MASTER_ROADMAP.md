@@ -184,11 +184,16 @@ gantt
 ### 📍 PHASE 5 — CART, CHECKOUT & ORDERS
 **Goal:** Build a functional, server-persisted transaction engine with multi-party order fulfillment.
 
-* **Milestone 5.1: Database-Backed Cart System [NEXT]**
-  - Create API routes `/cart/add`, `/cart/update`, `/cart/remove`, and `/cart`.
-  - Sync guest/localStorage cart into MongoDB upon login.
-  - Validate requested quantities against current product stock in real time.
-* **Milestone 5.2: Checkout Flow**
+* **Milestone 5.1: Database-Backed Cart System [COMPLETE]**
+  - Reconciled roadmap with existing persistent Cart architecture from Milestone 2.3 and 3.5 without duplicating models, collections, or routes.
+  - Implemented real-time stock validation on `/cart/add` (rejecting exhausted inventory with 400 and bounding additions to remaining stock).
+  - Implemented real-time stock validation on `/cart/update` (rejecting increments beyond available reserve stock with 400).
+  - Enhanced `Cart.mergeSessionCart` to clamp excess quantities to available product stock and safely filter exhausted products.
+  - Added live "Vault Reserve: X available" indicator to Cargo Hold Manifest table (`views/cart.ejs`) and client store script (`public/js/island-store.js`).
+  - Enforced single cart per user constraint at MongoDB level (`user: 1` unique index) and strict isolation (`req.user._id`).
+  - Preserved catalog stock invariance and verified zero orders created.
+  - Validated with 60/60 automated dedicated tests (`scratch/test_milestone_5_1.js`), 389 regression tests (Phase 4.5: 76/76, Phase 4.4: 75/75, Phase 3.6: 96/96, Phase 3.5: 82/82), and real browser verification with 0 console errors.
+* **Milestone 5.2: Checkout Flow [NEXT]**
   - Create `/checkout` view with delivery coordinates input, order breakdown, and Doubloons calculation.
 * **Milestone 5.3: Order Generation & State Machine**
   - Save orders into `models/order.js` with initial status `pending`.

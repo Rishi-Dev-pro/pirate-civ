@@ -4,6 +4,57 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-16] — Phase 5 / Milestone 5.1: Database-Backed Cart System & Real-Time Stock Reconciliation (MILESTONE 5.1 COMPLETE)
+
+### Added & Implemented
+* **Roadmap Reconciliation & Single Architecture Preservation:**
+  - Audited existing codebase and discovered persistent database-backed cart architecture already created in Phase 2.3 (`models/cart.js`) and integrated in Phase 3.5 (`controller/cart.js`, `routes/web.js`, `views/cart.ejs`).
+  - Completely avoided duplicate models (`SellerCart`, `BuyerCart`, `MerchantCart`, redundant `CartItem` model) or secondary collections/routes.
+* **Real-Time Stock Validation on Cart Endpoints (`controller/cart.js`):**
+  - Enhanced `addToCart`:
+    - Rejects adding products with `stock <= 0` with HTTP 400 (`Cannot stow "${product.name}": vault reserve is exhausted (out of stock)`).
+    - Checks `currentInCart + qty > product.stock`; if exceeded, rejects with HTTP 400 detailing available remaining quantity.
+    - Applies equally to authenticated MongoDB carts and guest session carts.
+  - Enhanced `updateCartItem`:
+    - Fetches authoritative `Product.stock` from MongoDB.
+    - Rejects quantity increments (`action: "increase"`, `delta: 1`) or explicit quantities exceeding `product.stock` with HTTP 400 (`Cannot increase quantity beyond available vault reserve stock (${maxStock} units available)`).
+  - Enhanced `formatCartResponse`:
+    - Injects live `stock`, `isOutOfStock`, and `exceedsStock` flags into formatted cart items.
+* **Stock-Aware Session Cart Migration (`models/cart.js`):**
+  - Updated `Cart.mergeSessionCart`:
+    - Checks live product existence and availability in MongoDB.
+    - Verifies available inventory and clamps incoming quantities to `Math.min(incomingQty, max(0, product.stock - currentInCart))`.
+    - Automatically skips exhausted items without crashing or throwing errors.
+* **Cargo Hold UI Enhancements (`views/cart.ejs`, `public/js/island-store.js`):**
+  - Display live `Vault Reserve: X available` indicator for each line item on SSR manifest and dynamic AJAX manifest renders.
+  - Color-coded indicator: bright emerald for healthy reserve, amber/red warning when stock is <= 3.
+
+### Tested & Verified
+* 60 automated assertions in dedicated test suite `scratch/test_milestone_5_1.js`:
+  - Cart model architecture: instantiation, items embedding, addItem, removeItem, positive integer validation.
+  - Guest session cart: unauthenticated stow, session cookie generation, login merge to MongoDB, session cleanup.
+  - Ownership & security: client-provided user IDs ignored, user isolation between distinct buyers, zero credential leakage (`password`, `authSecretHash`, `googleId`).
+  - Real-time stock validation: out-of-stock product rejected (400), excess quantity on add rejected (400), exact stock stowed (200), over-limit add rejected (400), increment beyond stock rejected (400), explicit quantity beyond stock rejected (400), decrease succeeds (200).
+  - Database constraint: single cart per user enforced via MongoDB unique index (`user: 1`, E11000 duplicate key error).
+  - Stock clamping on merge: session items exceeding stock safely clamped to max stock; exhausted items skipped.
+  - Stock invariance: catalog product stock remains strictly unchanged (5 and 2) after all cart operations.
+  - Boundary: exactly 0 orders created during cart operations.
+  - HTML manifest and empty state rendering; Jettison All Cargo clears database array.
+* Full regression pass (389 assertions passing):
+  - Milestone 5.1: 60/60
+  - Milestone 4.5: 76/76
+  - Milestone 4.4: 75/75
+  - Milestone 3.6: 96/96
+  - Milestone 3.5: 82/82
+* Real browser verification via `browser_subagent` (`phase51_cart_journey_1792156233980.webp`):
+  - Buyer login -> Astrolabe store -> stow Gilded Celestial Astrolabe -> view `/cart` with live reserve indicator (`Vault Reserve: 15 available`).
+  - Quantity increment (`+`) and decrement (`-`) with real-time recalculation.
+  - Multi-island product addition (Aeon Strider Sandals from Chronos Cay).
+  - Logout and re-login verifying MongoDB persistent cart retention.
+  - Jettison All Cargo (`btnClearHold`) verifying clean transition to empty state (`Your Cargo Hold is Empty, Captain`).
+  - 0 unexpected console errors.
+* Code health: 21/21 JS files pass `node --check`; 30/30 EJS templates compile cleanly.
+
 ## [2026-10-16] — Phase 4 / Milestone 4.5: Seller Profile Management (MILESTONE 4.5 COMPLETE)
 
 ### Added & Implemented

@@ -309,6 +309,7 @@
                             <div>
                                 <a href="/product/${prodId}" class="manifest-item-name">${item.name}</a>
                                 <span class="manifest-item-island">Island: ${item.island || 'Archipelago'}</span>
+                                ${typeof item.stock === 'number' ? `<span class="manifest-item-stock" style="display:block; font-size:0.78rem; color:#8b9bb4; margin-top:2px;">Vault Reserve: <strong style="color:${item.stock <= 3 ? '#ff6b6b' : '#38ef7d'}">${item.stock} available</strong></span>` : ''}
                             </div>
                         </div>
                     </td>

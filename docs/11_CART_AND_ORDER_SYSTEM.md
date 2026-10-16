@@ -51,7 +51,27 @@ stateDiagram-v2
   - Sensitive user fields (`password`, `authSecretHash`, `googleId`) are strictly excluded from cart responses.
   - Zero stock deductions and zero orders created (Phase 5 boundary strictly maintained).
   - Milestone 3.6 Buyer Regression & UX Verification fully verified in real browser (multi-island stow, drawer, manifest, increment/decrement, remove, logout/login persistence, jettison all, empty state, 0 console errors).
-  - Phase 4 / Phase 5 functionality is NOT implemented.
+
+### 1.3 Real-Time Stock Validation & Reconciliation (Milestone 5.1 COMPLETE)
+* **Roadmap Reconciliation:**
+  - Audit revealed that persistent database-backed cart operations, endpoints (`/cart/add`, `/cart/update`, `/cart/remove`, `/cart`, `/cart/clear`), and session merge (`Cart.mergeSessionCart`) were already established in Phase 2.3 and Phase 3.5.
+  - The genuinely missing requirement discovered was **real-time product stock verification against MongoDB `Product.stock`** on add, update, and session migration.
+* **Server-Side Validation Rules:**
+  - **Exhausted Inventory:** When `product.stock <= 0` or `product.isAvailable !== true`, `POST /cart/add` immediately returns HTTP 400 (`Cannot stow "${product.name}": vault reserve is exhausted (out of stock)`).
+  - **Stock Cap on Add:** When `(currentInCart + requestedQty) > product.stock`, returns HTTP 400 specifying remaining available units.
+  - **Stock Cap on Update:** `POST /cart/update` (via `action: "increase"`, `delta: 1`, or explicit `quantity`) checks new target quantity against current `Product.stock`. If exceeded, returns HTTP 400 (`Cannot increase quantity beyond available vault reserve stock (${maxStock} units available)`).
+  - **Session Merge Clamping:** In `Cart.mergeSessionCart`, incoming guest session quantities are clamped to `Math.min(requestedQty, currentStock - currentInCart)`. Zero or exhausted stock items are omitted safely without throwing errors.
+* **UI Presentation:**
+  - `views/cart.ejs` and `public/js/island-store.js` render live `Vault Reserve: X available` indicator for each line item in the Cargo Hold Manifest table.
+  - Visual color highlights: Green for ample stock, amber/red warning for low stock (<= 3 units).
+* **Strict Invariants:**
+  - **Stock Invariance:** Cart additions and updates DO NOT decrement catalog stock (stock decrement is strictly reserved for Phase 5.2/5.3 checkout).
+  - **Zero Orders:** Zero Order documents created during any cart operations.
+  - **Single Cart Per User:** Enforced by MongoDB unique index `{ user: 1 }`.
+* **Testing:**
+  - 60/60 automated assertions in `scratch/test_milestone_5_1.js`.
+  - 389 regression tests passed across Phase 4.5, 4.4, 3.6, and 3.5 suites.
+  - Real browser verification verified stowing, quantity increment/decrement, multi-island addition, logout/login persistence, and clean jettison all with 0 console errors.
 
 ---
 

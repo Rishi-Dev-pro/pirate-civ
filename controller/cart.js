@@ -48,6 +48,10 @@ export const formatCartResponse = (cartDoc) => {
         totalDoubloons += lineTotal;
         itemCount += qty;
 
+        const currentStock = typeof product.stock === "number" ? product.stock : 10;
+        const isOutOfStock = currentStock <= 0;
+        const exceedsStock = qty > currentStock;
+
         items.push({
             id: product._id ? product._id.toString() : product.toString(),
             product: product._id ? product._id.toString() : product.toString(),
@@ -59,7 +63,9 @@ export const formatCartResponse = (cartDoc) => {
             rating: product.rating || "★★★★★",
             island: product.island,
             category: product.category,
-            stock: typeof product.stock === "number" ? product.stock : 10,
+            stock: currentStock,
+            isOutOfStock,
+            exceedsStock,
             quantity: qty,
             qty: qty,
             lineTotal: lineTotal
@@ -164,7 +170,7 @@ export const getCart = async (req, res) => {
 
 /**
  * POST /cart/add
- * Add or increment item in Cargo Hold
+ * Add or increment item in Cargo Hold with real-time stock validation
  */
 export const addToCart = async (req, res) => {
     try {
@@ -208,11 +214,38 @@ export const addToCart = async (req, res) => {
             });
         }
 
+        // Real-time stock validation: check if stock is exhausted
+        const maxStock = typeof product.stock === "number" ? product.stock : 10;
+        if (maxStock <= 0) {
+            return res.status(400).json({
+                success: false,
+                error: `Cannot stow "${product.name}": vault reserve is exhausted (out of stock)`,
+                availableStock: 0
+            });
+        }
+
         // 4. Persist to MongoDB Cart for authenticated users (User Isolation guaranteed)
         if (req.user && req.user._id) {
             let userCart = await Cart.findOne({ user: req.user._id });
             if (!userCart) {
                 userCart = new Cart({ user: req.user._id, items: [] });
+            }
+
+            const existingItem = userCart.items.find(
+                item => item.product && item.product.toString() === product._id.toString()
+            );
+            const currentInCart = existingItem ? existingItem.quantity : 0;
+
+            if (currentInCart + qty > maxStock) {
+                const remaining = Math.max(0, maxStock - currentInCart);
+                return res.status(400).json({
+                    success: false,
+                    error: remaining > 0
+                        ? `Cannot stow requested quantity: only ${remaining} additional unit(s) available in vault reserve (already stowed: ${currentInCart}, max: ${maxStock})`
+                        : `Cannot stow additional units: maximum vault reserve limit (${maxStock}) already stowed in cargo hold`,
+                    availableStock: maxStock,
+                    currentInCart
+                });
             }
 
             userCart.addItem(product._id, qty);
@@ -231,14 +264,30 @@ export const addToCart = async (req, res) => {
             });
         }
 
-        // 5. Guest session fallback
+        // 5. Guest session fallback with real-time stock verification
         req.session.cart = req.session.cart || [];
         const existingSessionItem = req.session.cart.find(
             item => (item.product || item.productId || item.id) === product._id.toString()
         );
 
+        const currentSessionQty = existingSessionItem
+            ? (existingSessionItem.quantity || existingSessionItem.qty || 1)
+            : 0;
+
+        if (currentSessionQty + qty > maxStock) {
+            const remaining = Math.max(0, maxStock - currentSessionQty);
+            return res.status(400).json({
+                success: false,
+                error: remaining > 0
+                    ? `Cannot stow requested quantity: only ${remaining} additional unit(s) available in vault reserve (already stowed: ${currentSessionQty}, max: ${maxStock})`
+                    : `Cannot stow additional units: maximum vault reserve limit (${maxStock}) already stowed in temporary cargo`,
+                availableStock: maxStock,
+                currentInCart: currentSessionQty
+            });
+        }
+
         if (existingSessionItem) {
-            existingSessionItem.quantity = (existingSessionItem.quantity || existingSessionItem.qty || 1) + qty;
+            existingSessionItem.quantity = currentSessionQty + qty;
         } else {
             req.session.cart.push({
                 product: product._id.toString(),
@@ -267,7 +316,7 @@ export const addToCart = async (req, res) => {
 
 /**
  * POST /cart/update
- * Update item quantity in Cargo Hold
+ * Update item quantity in Cargo Hold with real-time stock validation
  */
 export const updateCartItem = async (req, res) => {
     try {
@@ -282,6 +331,17 @@ export const updateCartItem = async (req, res) => {
                 error: "Invalid product identifier provided"
             });
         }
+
+        // Verify product in database to validate stock and availability
+        const product = await Product.findById(rawProductId);
+        if (!product) {
+            return res.status(404).json({
+                success: false,
+                error: "Product not found in archipelago catalog"
+            });
+        }
+
+        const maxStock = typeof product.stock === "number" ? product.stock : 10;
 
         // Authenticated user
         if (req.user && req.user._id) {
@@ -311,6 +371,15 @@ export const updateCartItem = async (req, res) => {
                 newQty -= 1;
             } else if (explicitQty !== null) {
                 newQty = explicitQty;
+            }
+
+            if (newQty > maxStock) {
+                return res.status(400).json({
+                    success: false,
+                    error: `Cannot increase quantity beyond available vault reserve stock (${maxStock} units available)`,
+                    availableStock: maxStock,
+                    currentQuantity: userCart.items[itemIndex].quantity
+                });
             }
 
             if (newQty <= 0) {
@@ -352,6 +421,15 @@ export const updateCartItem = async (req, res) => {
             sessionQty -= 1;
         } else if (explicitQty !== null) {
             sessionQty = explicitQty;
+        }
+
+        if (sessionQty > maxStock) {
+            return res.status(400).json({
+                success: false,
+                error: `Cannot increase quantity beyond available vault reserve stock (${maxStock} units available)`,
+                availableStock: maxStock,
+                currentQuantity: req.session.cart[sessionIndex].quantity
+            });
         }
 
         if (sessionQty <= 0) {
