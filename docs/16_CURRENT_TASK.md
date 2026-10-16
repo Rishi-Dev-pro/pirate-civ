@@ -24,7 +24,7 @@
 * **Status:** Complete, Tested, Verified, Documented, and Validated.
 * **Readiness:** Audited the codebase and reconciled roadmap definitions with existing architecture. Confirmed that persistent database-backed cart operations already existed from Milestone 2.3 (`models/cart.js`) and Milestone 3.5 (`controller/cart.js`, `routes/web.js`, `views/cart.ejs`). Reused the single authoritative `Cart` model, avoiding duplicate cart collections, duplicate models (`SellerCart`, `BuyerCart`, `MerchantCart`, redundant `CartItem`), and redundant routes. Implemented the genuinely missing requirement: **real-time product stock verification against MongoDB `Product.stock`** on add, update, and pre-login session cart migration:
   - `POST /cart/add`: Rejects adding out-of-stock products (`stock <= 0`) with HTTP 400; bounds additions to available vault reserve stock.
-  - `POST /cart/update`: Rejects quantity increments or explicit quantities exceeding available vault reserve stock with HTTP 400.
+  - `POST /cart/update`: Rejects quantity increments or explicit quantities exceeding available vault reserve stock with HTTP 400; rejects increases on unavailable products.
   - `Cart.mergeSessionCart`: Clamps incoming session quantities to available stock and safely skips exhausted wares during login migration.
   - Cart UI (`views/cart.ejs`, `public/js/island-store.js`): Renders live "Vault Reserve: X available" indicator for each stowed line item with color-coded badges.
   - Preserved catalog stock invariance: Cart operations strictly DO NOT mutate catalog stock (inventory reduction belongs to checkout).

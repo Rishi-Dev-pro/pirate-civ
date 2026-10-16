@@ -186,8 +186,9 @@ gantt
 
 * **Milestone 5.1: Database-Backed Cart System [COMPLETE]**
   - Reconciled roadmap with existing persistent Cart architecture from Milestone 2.3 and 3.5 without duplicating models, collections, or routes.
+  - Verified pre-login guest session cart capture and automatic migration into MongoDB upon authentication (`Cart.mergeSessionCart`).
   - Implemented real-time stock validation on `/cart/add` (rejecting exhausted inventory with 400 and bounding additions to remaining stock).
-  - Implemented real-time stock validation on `/cart/update` (rejecting increments beyond available reserve stock with 400).
+  - Implemented real-time stock validation on `/cart/update` (rejecting increments beyond available reserve stock with 400; rejecting increases on unavailable products).
   - Enhanced `Cart.mergeSessionCart` to clamp excess quantities to available product stock and safely filter exhausted products.
   - Added live "Vault Reserve: X available" indicator to Cargo Hold Manifest table (`views/cart.ejs`) and client store script (`public/js/island-store.js`).
   - Enforced single cart per user constraint at MongoDB level (`user: 1` unique index) and strict isolation (`req.user._id`).

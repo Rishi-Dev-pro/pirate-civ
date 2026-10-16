@@ -142,6 +142,9 @@
                     <div class="seller-form-group">
                         <label for="selectHomeIsland">Home Island Anchorage *</label>
                         <select id="selectHomeIsland" name="homeIsland" class="seller-form-select" required>
+                            <option value="" disabled <%= (!seller || !seller.homeIsland) ? 'selected' : '' %>>
+                                -- Select Port Anchorage --
+                            </option>
                             <option value="astrolabe" <%= (seller && seller.homeIsland === 'astrolabe') ? 'selected' : '' %>>
                                 🧭 Astrolabe Sanctuary (Ancient Relics & Navigation)
                             </option>

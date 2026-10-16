@@ -72,12 +72,9 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ---
 
 ### ⚪ NOT IMPLEMENTED
-* **Product CRUD APIs:** No routes or controllers for creating, updating, or deleting products.
-* **Seller Management Platform:** The entire seller portal (registration, dashboard, inventory management, incoming order tracking) is 0% implemented.
-* **Public Seller Discovery & Profiles:** No `/sellers` directory or `/seller/:sellerId` profile view.
-* **Dynamic Product Details Page:** No dedicated `/product/:productId` route or template; users cannot view an isolated product sheet.
-* **Buyer Order History & Profile:** No `/orders` or `/profile` page for buyers to view past purchases or account details.
-* **Entry Map Gateway:** No gateway screen allowing incoming visitors to branch into the Buyer or Seller experience before entering the market.
+* **Checkout Flow & Order Placement:** The checkout view (`/checkout`), delivery coordinates submission, and transactional order creation into MongoDB (Phase 5.2 & 5.3).
+* **Buyer Order History & Tracking:** No `/orders` or `/orders/:id` page for buyers to view past purchases, fulfillment status, or tracking timeline (Phase 5.4).
+* **Entry Map Gateway:** No dual-portal landing gateway (`/`) allowing incoming visitors to branch into the Buyer or Seller experience before entering the market (Phase 6.1).
 * **Google OAuth Authentication:** No OAuth2 strategy or credential linkage configured.
 
 ---
@@ -124,3 +121,5 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 | **Seller Dashboard** | 🟢 Complete Command Deck view (`views/seller/dashboard.ejs`) | 🟢 RBAC-guarded controller (`controller/sellers.js`) | 🟢 Indexed count queries on Product model | **100%** |
 | **Seller Product CRUD** | 🟢 Complete management & creation | 🟢 RESTful CRUD endpoints | 🟢 Validated schema, ownership & indexes | **100%** |
 | **Seller Order Fulfillment** | 🟢 Complete manifests & detail views | 🟢 Server-side scoped queries & transitions | 🟢 models/order.js lifecycle & snapshots | **100%** |
+| **Seller Profile Management** | 🟢 Complete profile customizer view (`views/seller/profile.ejs`) | 🟢 RBAC-guarded controller (`controller/sellers.js`) | 🟢 Synchronized User fields with storefront & Command Deck | **100%** |
+| **Phase 5.1 Cart & Stock Reconciliation** | 🟢 Manifest view with live reserve badges | 🟢 Real-time inventory bounds on add, update, and session merge | 🟢 Single cart per user with MongoDB persistence | **100%** |

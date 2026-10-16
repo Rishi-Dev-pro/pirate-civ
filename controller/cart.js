@@ -270,8 +270,11 @@ export const addToCart = async (req, res) => {
             item => (item.product || item.productId || item.id) === product._id.toString()
         );
 
-        const currentSessionQty = existingSessionItem
-            ? (existingSessionItem.quantity || existingSessionItem.qty || 1)
+        const rawSessionQty = existingSessionItem
+            ? (existingSessionItem.quantity !== undefined ? existingSessionItem.quantity : existingSessionItem.qty)
+            : 0;
+        const currentSessionQty = Number.isInteger(Number(rawSessionQty)) && Number(rawSessionQty) > 0
+            ? Number(rawSessionQty)
             : 0;
 
         if (currentSessionQty + qty > maxStock) {
@@ -365,12 +368,22 @@ export const updateCartItem = async (req, res) => {
             }
 
             let newQty = userCart.items[itemIndex].quantity;
+            let isIncrease = false;
             if (action === "increase" || delta === 1) {
                 newQty += 1;
+                isIncrease = true;
             } else if (action === "decrease" || delta === -1) {
                 newQty -= 1;
             } else if (explicitQty !== null) {
+                if (explicitQty > newQty) isIncrease = true;
                 newQty = explicitQty;
+            }
+
+            if (isIncrease && product.isAvailable !== true) {
+                return res.status(400).json({
+                    success: false,
+                    error: "Product is currently unavailable for trade"
+                });
             }
 
             if (newQty > maxStock) {
@@ -414,13 +427,29 @@ export const updateCartItem = async (req, res) => {
             });
         }
 
-        let sessionQty = req.session.cart[sessionIndex].quantity || req.session.cart[sessionIndex].qty || 1;
+        const rawExistingSessionQty = req.session.cart[sessionIndex].quantity !== undefined
+            ? req.session.cart[sessionIndex].quantity
+            : req.session.cart[sessionIndex].qty;
+        let sessionQty = Number.isInteger(Number(rawExistingSessionQty)) && Number(rawExistingSessionQty) > 0
+            ? Number(rawExistingSessionQty)
+            : 1;
+
+        let isIncrease = false;
         if (action === "increase" || delta === 1) {
             sessionQty += 1;
+            isIncrease = true;
         } else if (action === "decrease" || delta === -1) {
             sessionQty -= 1;
         } else if (explicitQty !== null) {
+            if (explicitQty > sessionQty) isIncrease = true;
             sessionQty = explicitQty;
+        }
+
+        if (isIncrease && product.isAvailable !== true) {
+            return res.status(400).json({
+                success: false,
+                error: "Product is currently unavailable for trade"
+            });
         }
 
         if (sessionQty > maxStock) {

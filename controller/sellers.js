@@ -901,87 +901,107 @@ export const updateSellerProfile = async (req, res) => {
             });
         };
 
-        // 1. Validation: Captain Name (Required, Trimmed, Max 120 chars)
-        if (typeof name !== "string") {
-            return renderFormError("Captain / Merchant name is required.", req.body);
-        }
-        const trimmedName = name.trim();
-        if (!trimmedName || trimmedName.length > 120) {
-            return renderFormError("Captain / Merchant name is required and cannot exceed 120 characters.", req.body);
-        }
-
-        // 2. Validation: Storefront Title (Optional, Trimmed, Max 120 chars)
-        let trimmedStoreName = "";
-        if (storeName !== undefined && storeName !== null) {
-            if (typeof storeName !== "string") {
-                return renderFormError("Store title must be a valid text string.", req.body);
-            }
-            trimmedStoreName = storeName.trim();
-            if (trimmedStoreName.length > 120) {
-                return renderFormError("Store title cannot exceed 120 characters.", req.body);
-            }
-        }
-
-        // 3. Validation: Home Island (Must be member of canonical 6 islands or empty)
-        let trimmedIsland = "";
-        if (homeIsland !== undefined && homeIsland !== null) {
-            if (typeof homeIsland !== "string") {
-                return renderFormError("Home island must be a valid text string.", req.body);
-            }
-            trimmedIsland = homeIsland.trim();
-            if (trimmedIsland && !CANONICAL_ISLANDS.includes(trimmedIsland)) {
-                return renderFormError("Selected island must be one of the 6 canonical trading islands.", req.body);
-            }
-        }
-
-        // 4. Validation: Bio (Optional, Trimmed, Max 2000 chars)
-        let trimmedBio = "";
-        if (bio !== undefined && bio !== null) {
-            if (typeof bio !== "string") {
-                return renderFormError("Merchant bio must be a valid text string.", req.body);
-            }
-            trimmedBio = bio.trim();
-            if (trimmedBio.length > 2000) {
-                return renderFormError("Merchant bio lore cannot exceed 2000 characters.", req.body);
-            }
-        }
-
-        // 5. Validation: Avatar (Optional, Path or URL, safe scheme, Max 500 chars)
-        let validatedAvatar = "/images/avatars/default-pirate.png";
-        if (avatar !== undefined && avatar !== null) {
-            if (typeof avatar !== "string") {
-                return renderFormError("Avatar path must be a valid string.", req.body);
-            }
-            const trimmedAvatar = avatar.trim();
-            if (trimmedAvatar.length > 500) {
-                return renderFormError("Avatar path/URL cannot exceed 500 characters.", req.body);
-            }
-            if (trimmedAvatar.length > 0) {
-                // Defensive security: reject javascript:, data: URIs, or script tags
-                const lowerAvatar = trimmedAvatar.toLowerCase();
-                if (lowerAvatar.startsWith("javascript:") || lowerAvatar.startsWith("vbscript:") || lowerAvatar.includes("<script>")) {
-                    return renderFormError("Avatar contains an invalid or malicious protocol.", req.body);
-                }
-                // Allow relative paths starting with / or absolute http/https URLs
-                if (!trimmedAvatar.startsWith("/") && !trimmedAvatar.startsWith("http://") && !trimmedAvatar.startsWith("https://")) {
-                    return renderFormError("Avatar must be a valid relative path (starting with /) or web URL (http:// or https://).", req.body);
-                }
-                validatedAvatar = trimmedAvatar;
-            }
-        }
-
-        // 6. Update exclusively the authenticated user's document in MongoDB
+        // 1. Fetch exclusively the authenticated user's document from MongoDB upfront
         const user = await User.findById(sellerUser._id);
         if (!user) {
             return res.status(404).send("Merchant record not found.");
         }
 
-        // Apply only permitted fields
-        user.name = trimmedName;
-        user.storeName = trimmedStoreName || null;
-        user.homeIsland = trimmedIsland || null;
-        user.bio = trimmedBio;
-        user.avatar = validatedAvatar;
+        // 2. Validation: Captain Name (Required if provided, or must already exist; Max 120 chars)
+        if (name !== undefined) {
+            if (typeof name !== "string") {
+                return renderFormError("Captain / Merchant name is required.", req.body);
+            }
+            const trimmedName = name.trim();
+            if (!trimmedName || trimmedName.length > 120) {
+                return renderFormError("Captain / Merchant name is required and cannot exceed 120 characters.", req.body);
+            }
+            user.name = trimmedName;
+        } else if (!user.name) {
+            return renderFormError("Captain / Merchant name is required.", req.body);
+        }
+
+        // 3. Validation: Storefront Title (Optional, Trimmed, Max 120 chars; retain saved value if omitted)
+        if (storeName !== undefined) {
+            if (storeName === null || storeName === "") {
+                user.storeName = null;
+            } else {
+                if (typeof storeName !== "string") {
+                    return renderFormError("Store title must be a valid text string.", req.body);
+                }
+                const trimmedStoreName = storeName.trim();
+                if (trimmedStoreName.length > 120) {
+                    return renderFormError("Store title cannot exceed 120 characters.", req.body);
+                }
+                user.storeName = trimmedStoreName || null;
+            }
+        }
+
+        // 4. Validation: Home Island (Must be member of canonical 6 islands or null; retain saved value if omitted)
+        if (homeIsland !== undefined) {
+            if (homeIsland === null || homeIsland === "") {
+                user.homeIsland = null;
+            } else {
+                if (typeof homeIsland !== "string") {
+                    return renderFormError("Home island must be a valid text string.", req.body);
+                }
+                const trimmedIsland = homeIsland.trim();
+                if (trimmedIsland && !CANONICAL_ISLANDS.includes(trimmedIsland)) {
+                    return renderFormError("Selected island must be one of the 6 canonical trading islands.", req.body);
+                }
+                user.homeIsland = trimmedIsland || null;
+            }
+        }
+
+        // 5. Validation: Bio (Optional, Trimmed, Max 2000 chars; retain saved value if omitted)
+        if (bio !== undefined) {
+            if (bio === null || bio === "") {
+                user.bio = "";
+            } else {
+                if (typeof bio !== "string") {
+                    return renderFormError("Merchant bio must be a valid text string.", req.body);
+                }
+                const trimmedBio = bio.trim();
+                if (trimmedBio.length > 2000) {
+                    return renderFormError("Merchant bio lore cannot exceed 2000 characters.", req.body);
+                }
+                user.bio = trimmedBio;
+            }
+        }
+
+        // 6. Validation: Avatar (Optional, Path or URL, safe scheme, Max 500 chars; retain saved value if omitted)
+        if (avatar !== undefined) {
+            if (avatar === null || avatar === "") {
+                user.avatar = "/images/avatars/default-pirate.png";
+            } else {
+                if (typeof avatar !== "string") {
+                    return renderFormError("Avatar path must be a valid string.", req.body);
+                }
+                const trimmedAvatar = avatar.trim();
+                if (trimmedAvatar.length > 500) {
+                    return renderFormError("Avatar path/URL cannot exceed 500 characters.", req.body);
+                }
+                const lowerAvatar = trimmedAvatar.toLowerCase();
+                if (lowerAvatar.startsWith("javascript:") || lowerAvatar.startsWith("vbscript:") || lowerAvatar.startsWith("data:") || lowerAvatar.includes("<script>")) {
+                    return renderFormError("Avatar contains an invalid or malicious protocol.", req.body);
+                }
+                if (trimmedAvatar.startsWith("//")) {
+                    return renderFormError("Protocol-relative URLs are not allowed for avatar.", req.body);
+                } else if (trimmedAvatar.startsWith("/")) {
+                    user.avatar = trimmedAvatar;
+                } else {
+                    try {
+                        const parsedUrl = new URL(trimmedAvatar);
+                        if (parsedUrl.protocol !== "http:" && parsedUrl.protocol !== "https:") {
+                            return renderFormError("Avatar contains an invalid or malicious protocol. URL must use http: or https: protocol.", req.body);
+                        }
+                        user.avatar = trimmedAvatar;
+                    } catch (e) {
+                        return renderFormError("Avatar must be a valid relative path (starting with /) or web URL (http:// or https://).", req.body);
+                    }
+                }
+            }
+        }
 
         await user.save();
 
