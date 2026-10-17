@@ -232,18 +232,23 @@ gantt
 ### 📍 PHASE 6 — ENTRY MAP GATEWAY & FINAL UI POLISH
 **Goal:** Unify the two portals behind a grand entry map, optimize responsiveness, and elevate visual presentation.
 
-* **Milestone 6.1: Pirate-Civ Entry Map Gateway [COMPLETE]**
-  - Replaced the root entry experience at `GET /` with a visually distinctive Pirate-Civ cartographic gateway (`views/gateway.ejs`).
-  - Implemented dual-path fork choices:
-    - 🏴‍☠️ **Customer / Explorer Gateway:** Navigates directly to Sea Chart (`/home`).
-    - ⚓ **Merchant / Armator Gateway:** Navigates directly to Seller Command Deck (`/seller/dashboard`).
+* **Milestone 6.1: Pirate-Civ Entry Map Gateway [COMPLETE — CINEMATIC INTERACTIVE MAP TRANSFORMATION]**
+  - Transformed the root entry experience at `GET /` into a cinematic multi-layered interactive pirate-map gateway (`views/gateway.ejs`).
+  - Layer 1: Full-screen pirate harbor and ocean sunset foundation (`/images/gateway/gateway-background.jpg`).
+  - Layer 2 & 3: Transparent torn-map parchment portals (`/images/gateway/torn-map-left.png` and `torn-map-right.png`) revealing the background sunset and sailing ships through the transparent center.
+  - Centered transparent Pirate-Civ skull, cutlasses, and ship wheel logo (`/images/gateway/pirate-civ-logo.png`).
+  - Dual-path interactive regions:
+    - 🏴‍☠️ **Merchant / Armator (`#cardArmator`):** Navigates to `/seller/dashboard` (Seller Command Deck).
+    - ⚓ **Customer / Buyer (`#cardExplorer`):** Navigates to `/home` (Sea Chart).
+  - Robust Pointer Events (`public/js/gateway.js`) tracking pointer movement, hovering, active drag detection across map regions, touch taps, and keyboard accessibility (`Tab`/`Enter`/`Space`).
+  - Warm golden/brass edge illumination via CSS drop-shadow filters on alpha edges (`public/css/gateway.css`).
   - Route `GET /` uses `optionalAuth`, returning HTTP 200 without requiring login.
   - Zero unnecessary MongoDB work: zero product queries, zero order queries, zero cart queries, and zero user mutations on root gateway.
   - Preserved authoritative route protection: `/home` strictly requires authentication (`authMiddleware`), `/seller/dashboard` strictly enforces seller authorization (`authMiddleware, requireSeller`).
   - Minimal branded navigation with role-aware user badge, logout, or login/join-the-crew links.
   - Canonical 6-island archipelago displayed as world-building constellation chips.
   - Fully responsive layout on desktop and mobile viewports with accessible keyboard focus states and subtle interactive hover effects.
-  - Validated with 45/45 dedicated automated tests (`scratch/test_milestone_6_1.js`), 636/636 regression assertions (5.4, 5.3, 5.2, 5.1, 4.5, 4.4, 4.3, 4.2, 4.1, 3.6), 22 JS and 34 EJS syntax checks, and real browser verification with 0 console errors.
+  - Validated with 45/45 dedicated automated tests (`scratch/test_milestone_6_1.js`), full regression suites, 23 JS and 34 EJS syntax checks, and real browser verification with 0 console errors.
 * **Milestone 6.2: Role-Aware Global Navigation [COMPLETE]**
   - Replaced legacy navigation in `views/partials/header.ejs` with a unified role-aware navigation matrix for Guest, Buyer, Seller, and Admin states.
   - Guest: Logo points to `/`, public links (Sea Chart `/`, Guild Lore `/about`, Dispatch `/contact`, Sign In `/login`, Join Crew `/register`), authenticated links strictly hidden.

@@ -124,17 +124,21 @@ Every page across the application must fulfill five UX states:
 
 ## 6. Pirate-Civ Entry Map Gateway Experience (`views/gateway.ejs`)
 
-* **Aesthetic Direction:** Dark fantasy nautical cartography. Deep abyss ocean backdrop (`#05080c`), aged nautical brass filigree (`#c69f58`), radial map grid overlay, and celestial typography (`Cinzel` display headings + `Inter` body).
-* **Dual Portal Fork:**
-  - **🏴‍☠️ Customer / Explorer (`#cardExplorer`):** Direct CTA `#btnEnterSeaChart` navigating to `/home` (Sea Chart). Card highlights with gold maritime radiance and map route focus on hover.
-  - **⚓ Merchant / Armator (`#cardArmator`):** Direct CTA `#btnEnterCommandDeck` navigating to `/seller/dashboard` (Seller Command Deck). Card highlights with brass anchor radiance on hover.
-* **Minimal Branded Navigation:**
-  - Public visitors see Pirate-Civ branding, Guild Lore (`/about`), Sign In (`/login`), and Join the Crew (`/register`).
-  - Authenticated visitors see user role badge, quick link (`My Voyages` or `Command Deck`), and Logout (`/logout`).
-* **Responsive Layout:**
-  - Desktop: Dual portal cards arranged side-by-side (2 columns) with generous breathing room.
-  - Mobile (`≤ 880px`): Single column vertical stack, no horizontal scroll, touch-friendly tap targets (`min-height: 48px`), and accessible `:focus-visible` golden borders.
-* **Performance:** Lightweight CSS-only visual effects, zero external map dependencies, zero client frameworks, and zero database lookups on `GET /`.
+* **Aesthetic Direction:** Cinematic pirate title-screen composition combining 17th-century cartographic romance with immersive high-seas atmosphere.
+* **Layered Asset Architecture:**
+  - **Foundation Background:** Full-screen pirate harbor and ocean scene (`/images/gateway/gateway-background.jpg`) with radial vignette and cinematic cropping (`object-fit: cover`).
+  - **Torn Map Portals:** Authentic transparent torn-parchment assets (`/images/gateway/torn-map-left.png` and `torn-map-right.png`) framing the left and right interactive regions.
+  - **Center Sunset Window:** The transparent center space between the torn maps reveals the sunset harbor, sailing galleons, and sea horizon.
+  - **Hero Branding:** Centered transparent Pirate-Civ skull, cutlasses, and ship wheel logo (`/images/gateway/pirate-civ-logo.png`) anchored above the sunset horizon.
+* **Dual Interactive Regions:**
+  - **🏴‍☠️ Merchant / Armator (`#cardArmator` / `.portal-merchant`):** Left map side leading to `/seller/dashboard` with gold chest badge, "MERCHANT" header, "SAIL TO SELL" subtext, and `#btnEnterCommandDeck` destination hint.
+  - **⚓ Buyer / Customer (`#cardExplorer` / `.portal-buyer`):** Right map side leading to `/home` with gold cargo cart badge, "BUYER" header, "EXPLORE TO BUY" subtext, and `#btnEnterSeaChart` destination hint.
+* **Glow & Interaction System (`public/css/gateway.css`, `public/js/gateway.js`):**
+  - **Warm Brass/Fire Glow:** Layered CSS `drop-shadow` filters hugging the transparent ragged edges of the torn parchment.
+  - **Pointer Events & Drag:** Pointer movement across the stage dynamically highlights the portal directly beneath coordinates using `document.elementFromPoint()`. Moving into the central sunset window automatically clears the highlight.
+  - **Tactile Feedback:** Subtle `scale(1.025)` lift on hover/drag and `scale(0.985)` press response on activation before routing.
+  - **Touch & Mobile Safety:** Single touch tap activation avoiding double-clicks, with graceful responsive stacking for smaller screens.
+  - **Accessible Keyboard Control:** Full `Tab` navigation order (Merchant ➔ Buyer) with visible gold `:focus-visible` rings and `Enter`/`Space` activation.
 
 ---
 

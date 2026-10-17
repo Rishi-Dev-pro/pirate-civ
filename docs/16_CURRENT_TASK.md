@@ -13,15 +13,25 @@
 ---
 
 ## 📍 1. Current Phase
-* **Active Phase:** **Pre-Phase 6.3 Audit Remediation**
-* **Active Milestone:** **AUD-001 Remediation: Multi-Seller Order Fulfillment Architecture**
+* **Active Phase:** **Phase 6 — Entry Map Gateway & Final UI Polish**
+* **Active Milestone:** **Interactive Starting Gateway: Cinematic Pirate-Map Entry Screen**
 * **Status:** **COMPLETE**
 
 ---
 
 ## 🎯 2. Current Task
-* **Task Name:** AUD-001 Remediation — Multi-Seller Order Fulfillment Architecture
+* **Task Name:** Pirate-Civ — Interactive Starting Gateway Transformation
 * **Status:** Complete, Tested, Verified, Documented, and Validated.
+* **Architecture:**
+  - Replaced the card-based gateway page (`views/gateway.ejs`) with the cinematic interactive pirate-map entry screen.
+  - Layer 1: Full-screen background harbor/ocean scene (`/images/gateway/gateway-background.jpg`).
+  - Layer 2 & 3: Transparent torn-map parchment portals (`/images/gateway/torn-map-left.png` and `torn-map-right.png`) revealing the sunset ocean and ships through the transparent center.
+  - Centered transparent Pirate-Civ logo (`/images/gateway/pirate-civ-logo.png`).
+  - Left Torn Map: Merchant / Armator (`/seller/dashboard`, id: `cardArmator`, hint: `btnEnterCommandDeck`, label: "MERCHANT", subtext: "SAIL TO SELL").
+  - Right Torn Map: Buyer / Customer (`/home`, id: `cardExplorer`, hint: `btnEnterSeaChart`, label: "BUYER", subtext: "EXPLORE TO BUY").
+  - Pointer Interactions (`public/js/gateway.js`): Pointer movement, hovering, active drag detection across regions, touch taps on mobile, and full keyboard navigation (Tab/Enter/Space).
+  - Styling (`public/css/gateway.css`): Warm golden/brass edge illumination via CSS drop-shadow filters on alpha edges, smooth transforms, responsive desktop/tablet/mobile layouts, and 0 console errors.
+  - Tested: 45/45 tests passing in `scratch/test_milestone_6_1.js`, 80/80 tests passing in `scratch/test_milestone_6_2.js`, 92/92 in `scratch/test_milestone_5_4.js`, 23/23 JS syntax checks, 34/34 EJS template checks, and live browser testing with video recording.
 * **Architecture:**
   - Implemented embedded seller-specific fulfillments inside `Order` document (`fulfillments: [{ seller, status, updatedAt }]`) without unnecessary separate collections or duplicated item snapshots.
   - Implemented deterministic aggregate status calculation via `Order.recalculateAggregateStatus()` (`all uniform -> uniform status`, `mixed states -> partially_fulfilled`, never reports `delivered` until all sellers deliver).

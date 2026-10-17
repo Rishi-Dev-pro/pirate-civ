@@ -2,7 +2,34 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
+## [2026-10-17] — Phase 6 / Milestone 6.1: Cinematic Interactive Starting Gateway Transformation (COMPLETE)
+
+### Added & Implemented
+* **Cinematic Interactive Pirate-Map Entry Screen (`views/gateway.ejs`):**
+  - Transformed the starting gateway into a multi-layered interactive pirate-map entry screen.
+  - Built independent visual asset layers:
+    1. Background Layer: Full-screen pirate harbor sunset foundations (`/images/gateway/gateway-background.jpg`) with radial vignette.
+    2. Torn Map Layer: Left and right transparent parchment portals (`/images/gateway/torn-map-left.png` and `torn-map-right.png`) revealing the background sunset and ships through the transparent center.
+    3. Center Branding Layer: Prominently placed transparent Pirate-Civ logo (`/images/gateway/pirate-civ-logo.png`) and "THE SEA AWAITS" motif.
+  - Left Torn Map: Merchant / Armator flow (`/seller/dashboard`, id: `cardArmator`, hint: `#btnEnterCommandDeck`, label: "MERCHANT", subtext: "SAIL TO SELL").
+  - Right Torn Map: Buyer / Customer flow (`/home`, id: `cardExplorer`, hint: `#btnEnterSeaChart`, label: "BUYER", subtext: "EXPLORE TO BUY").
+  - Retained all existing authentication and authorization protections: unauthenticated users accessing `/seller/dashboard` or `/home` are gracefully handled by `authMiddleware` / `requireSeller`.
+* **Gateway Styling System (`public/css/gateway.css`):**
+  - Warm golden/brass edge illumination hugging torn alpha borders via layered CSS `drop-shadow` filters.
+  - Subtle interactive scale/depth transform (`scale(1.025)`) on hover and active pointer events.
+  - Smooth pressed state (`scale(0.985)`) providing tactile tactile feedback upon click/tap.
+  - Responsive design adapting gracefully from 1920x1080 desktop to tablet and mobile viewports.
+* **Gateway Client Logic (`public/js/gateway.js`):**
+  - Implemented robust Pointer Events (`pointermove`, `pointerdown`, `pointerup`, `pointerleave`) tracking both hover and active pointer drag across map regions.
+  - Active drag detection using `document.elementFromPoint(x, y)` to dynamically update side highlights under the pointer.
+  - Touch-safe single navigation preventing accidental double-triggers on mobile devices.
+  - Full keyboard accessibility: `Tab` cycles between Merchant and Buyer portals; `Enter` and `Space` activate navigation.
+* **Testing & Regression Validation:**
+  - 45/45 assertions passing in `scratch/test_milestone_6_1.js`.
+  - 80/80 assertions passing in `scratch/test_milestone_6_2.js`.
+  - 92/92 assertions passing in `scratch/test_milestone_5_4.js`.
+  - 23/23 JavaScript files pass syntax check; 34/34 EJS templates compile cleanly.
+  - Live browser CDP validation: visual layout verified, hover/drag states confirmed, focus rings verified, console has 0 errors and 0 warnings.
 
 ## [2026-10-17] — Audit Remediation: AUD-001 Multi-Seller Order Fulfillment Architecture (REMEDIATED)
 
