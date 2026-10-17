@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Captain's Quarters — Buyer Profile | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p35_v1">
+
+    <style>
+        .profile-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 24px 80px 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .profile-header-card {
+            background: rgba(18, 24, 32, 0.92);
+            border: 1px solid rgba(212, 147, 57, 0.35);
+            border-radius: 12px;
+            padding: 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .profile-hero {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .profile-avatar-wrap {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            border: 3px solid #ffd57e;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            background: #0d1117;
+            flex-shrink: 0;
+        }
+
+        .profile-avatar-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .profile-hero-info h1 {
+            font-family: "Cinzel", serif;
+            font-size: 1.6rem;
+            color: #ffd57e;
+            margin: 0 0 6px 0;
+            letter-spacing: 0.04em;
+        }
+
+        .profile-hero-info p {
+            font-size: 0.88rem;
+            color: #8b9bb4;
+            margin: 0;
+        }
+
+        .profile-metrics {
+            display: flex;
+            gap: 16px;
+        }
+
+        .metric-card {
+            background: rgba(10, 15, 20, 0.6);
+            border: 1px solid rgba(212, 147, 57, 0.2);
+            border-radius: 8px;
+            padding: 12px 18px;
+            text-align: center;
+            min-width: 90px;
+        }
+
+        .metric-val {
+            font-family: "Cinzel", serif;
+            font-size: 1.3rem;
+            color: #ffd57e;
+            font-weight: 700;
+        }
+
+        .metric-label {
+            font-size: 0.72rem;
+            color: #8b9bb4;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 860px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-card {
+            background: rgba(18, 24, 32, 0.92);
+            border: 1px solid rgba(212, 147, 57, 0.3);
+            border-radius: 10px;
+            padding: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .section-card h2 {
+            font-family: "Cinzel", serif;
+            font-size: 1.2rem;
+            color: #ffd57e;
+            margin: 0 0 16px 0;
+            border-bottom: 1px solid rgba(212, 147, 57, 0.2);
+            padding-bottom: 10px;
+            letter-spacing: 0.04em;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-family: "Cinzel", serif;
+            font-size: 0.8rem;
+            color: #8b9bb4;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(10, 15, 20, 0.8);
+            border: 1px solid rgba(212, 147, 57, 0.35);
+            border-radius: 6px;
+            padding: 10px 14px;
+            color: #fff4db;
+            font-family: "Inter", sans-serif;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: #ffd57e;
+            box-shadow: 0 0 12px rgba(212, 147, 57, 0.3);
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #ffd57e 0%, #d49339 50%, #a46c1b 100%);
+            border: 1px solid #ffd57e;
+            color: #0d1117;
+            padding: 12px 24px;
+            font-family: "Cinzel", serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .btn-gold:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 147, 57, 0.4);
+        }
+
+        .quick-nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .quick-nav-item {
+            margin-bottom: 10px;
+        }
+
+        .quick-nav-link {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(10, 15, 20, 0.5);
+            border: 1px solid rgba(212, 147, 57, 0.2);
+            border-radius: 6px;
+            padding: 12px 16px;
+            color: #fff4db;
+            text-decoration: none;
+            font-family: "Cinzel", serif;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .quick-nav-link:hover {
+            border-color: #ffd57e;
+            background: rgba(20, 30, 42, 0.6);
+            color: #ffd57e;
+            transform: translateX(4px);
+        }
+
+        .alert-success {
+            background: rgba(40, 167, 69, 0.15);
+            border: 1px solid #28a745;
+            color: #86efac;
+            padding: 12px 18px;
+            border-radius: 6px;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+
+<body class="theme-corsair">
+
+    <%- include("partials/header") %>
+
+    <main class="profile-container">
+
+        <!-- Breadcrumbs -->
+        <nav class="detail-nav-bar" aria-label="Profile Breadcrumbs" style="margin-bottom: 20px;">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Captain's Quarters (Profile)</span>
+            </div>
+        </nav>
+
+        <% if (success) { %>
+            <div class="alert-success" role="status">
+                ✓ <%= success %>
+            </div>
+        <% } %>
+
+        <!-- Header Card -->
+        <section class="profile-header-card">
+            <div class="profile-hero">
+                <div class="profile-avatar-wrap">
+                    <img
+                        src="<%= user.avatar || '/images/avatars/default.png' %>"
+                        alt="<%= user.name %> Avatar"
+                        class="profile-avatar-img"
+                        onerror="this.onerror=null; this.src='/images/avatars/default.png';"
+                    >
+                </div>
+                <div class="profile-hero-info">
+                    <h1><%= user.name || "Captain" %></h1>
+                    <p>
+                        Role: <strong style="color:#ffd57e; text-transform:capitalize;"><%= user.role %></strong> &bull;
+                        Home Port: <strong style="color:#fff4db; text-transform:capitalize;"><%= (user.homeIsland || 'Unassigned Port').replace(/_/g, ' ') %></strong>
+                    </p>
+                    <p style="margin-top:4px; font-size:0.8rem; color:#8b9bb4;">
+                        Cleared with Archipelago Registry on <%= user.createdAt ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Ancient Times" %>
+                    </p>
+                </div>
+            </div>
+
+            <div class="profile-metrics">
+                <div class="metric-card">
+                    <div class="metric-val"><%= orderCount %></div>
+                    <div class="metric-label">Voyages</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-val"><%= favoritesCount %></div>
+                    <div class="metric-label">Favorites</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Grid Layout -->
+        <div class="profile-grid">
+
+            <!-- Left: Edit Personal Details -->
+            <div>
+                <section class="section-card">
+                    <h2>Captain's Registry Details</h2>
+                    <form action="/profile" method="POST" enctype="multipart/form-data">
+
+                        <div class="form-group">
+                            <label class="form-label" for="inputName">Captain Name</label>
+                            <input
+                                type="text"
+                                id="inputName"
+                                name="name"
+                                class="form-control"
+                                value="<%= user.name || '' %>"
+                                required
+                                maxlength="120"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="inputEmail">Chartered Email (Read-Only)</label>
+                            <input
+                                type="email"
+                                id="inputEmail"
+                                class="form-control"
+                                value="<%= user.email || '' %>"
+                                disabled
+                                style="opacity: 0.65; cursor: not-allowed;"
+                            >
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="selectIsland">Home Anchorage Island</label>
+                            <select id="selectIsland" name="homeIsland" class="form-control">
+                                <option value="">-- Choose Home Island --</option>
+                                <% canonicalIslands.forEach(function(isl) { %>
+                                    <option value="<%= isl %>" <%= user.homeIsland === isl ? 'selected' : '' %>>
+                                        <%= isl.replace(/_/g, ' ').toUpperCase() %>
+                                    </option>
+                                <% }); %>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="inputBio">Captain's Log Lore / Bio</label>
+                            <textarea
+                                id="inputBio"
+                                name="bio"
+                                class="form-control"
+                                rows="3"
+                                maxlength="500"
+                                placeholder="Tell the archipelago about your voyages..."
+                            ><%= user.bio || '' %></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="inputAvatar">Upload New Ship Avatar (WebP / JPG / PNG)</label>
+                            <input
+                                type="file"
+                                id="inputAvatar"
+                                name="avatar"
+                                class="form-control"
+                                accept="image/*"
+                            >
+                            <span style="font-size: 0.75rem; color: #8b9bb4; display: block; margin-top: 4px;">
+                                Automatically converted to optimized WebP format. Max size 5MB.
+                            </span>
+                        </div>
+
+                        <div class="form-group" style="margin-top: 12px;">
+                            <label style="display:flex; align-items:center; gap:8px; font-size:0.85rem; color:#8b9bb4; cursor:pointer;">
+                                <input type="checkbox" name="removeAvatar" value="true">
+                                Restore Default Avatar
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn-gold" id="btnSaveProfile">
+                            ⚓ Save Captain Registry
+                        </button>
+                    </form>
+                </section>
+            </div>
+
+            <!-- Right: Fast Account Actions -->
+            <aside>
+                <section class="section-card">
+                    <h2>Captain's Navigation</h2>
+                    <ul class="quick-nav-list">
+                        <li class="quick-nav-item">
+                            <a href="/orders" class="quick-nav-link" id="linkVoyages">
+                                <span>📜 My Voyages</span>
+                                <span>›</span>
+                            </a>
+                        </li>
+                        <li class="quick-nav-item">
+                            <a href="/favorites" class="quick-nav-link" id="linkFavorites">
+                                <span>❤️ Marked Treasures</span>
+                                <span>›</span>
+                            </a>
+                        </li>
+                        <li class="quick-nav-item">
+                            <a href="/cart" class="quick-nav-link" id="linkHold">
+                                <span>🛒 Cargo Hold</span>
+                                <span>›</span>
+                            </a>
+                        </li>
+                        <li class="quick-nav-item">
+                            <a href="/explorers" class="quick-nav-link" id="linkExplorers">
+                                <span>🧭 Chartered Merchants</span>
+                                <span>›</span>
+                            </a>
+                        </li>
+                        <li class="quick-nav-item">
+                            <a href="/about" class="quick-nav-link" id="linkGuildLore">
+                                <span>📜 Guild Lore</span>
+                                <span>›</span>
+                            </a>
+                        </li>
+                        <li class="quick-nav-item" style="margin-top: 14px; border-top: 1px solid rgba(212, 147, 57, 0.2); padding-top: 14px;">
+                            <a href="/logout" class="quick-nav-link" style="color: #ff8585; border-color: rgba(220, 53, 69, 0.3);" id="linkLogout">
+                                <span>☠ Abandon Ship (Logout)</span>
+                                <span>›</span>
+                            </a>
+                        </li>
+                    </ul>
+                </section>
+            </aside>
+
+        </div>
+
+    </main>
+
+</body>
+
+</html>

@@ -11,7 +11,9 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ## 1. System Status by Category
 
 ### 🟢 COMPLETE
+* **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion:** Unified single navbar with deterministic active state, eliminated gateway login loops with role intent preservation, server-side registration role assignment, honest Google OAuth code-exchange architecture, dynamic multi-seller discovery, persistent buyer favorites, island backdrop continuity on product detail, role-separated product actions, demo payment settlement gateway with seller fulfillment payment guard, sharp-optimized WebP image uploads for avatars and products, 1-5 star ratings, and static guild lore composition.
 * **Express 5 Framework:** Server initialization, middleware pipeline, static serving, and environment configuration in `index.js`.
+
 * **Database Connection:** Resilient MongoDB connection handler via Mongoose in `config/db.js`.
 * **Cryptographic Token Auth Backend:** Password hashing via `bcrypt` (salt rounds: 12), random 32-byte secret generation, SHA-256 token hashing, signed cookie handling (`auth_token`), and session comparison in `controller/auth.js` and `middleware/auth.js`.
 * **Logout Flow:** Route `/logout` clears the session and invalidates the signed `auth_token` cookie.

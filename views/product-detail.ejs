@@ -114,8 +114,13 @@
                     <p class="detail-desc-text"><%= product.description %></p>
                 </div>
 
+                <% 
+                    const sellerId = product.seller 
+                        ? (product.seller._id ? product.seller._id.toString() : (product.seller.id ? product.seller.id.toString() : null)) 
+                        : null; 
+                %>
+
                 <% if (product.seller) { %>
-                    <% const sellerId = product.seller._id ? product.seller._id.toString() : (product.seller.id ? product.seller.id.toString() : null); %>
                     <div class="detail-seller-box">
                         <% if (sellerId) { %>
                             <a href="/seller/<%= sellerId %>" class="seller-avatar-link" title="Discover Merchant <%= product.seller.storeName || product.seller.name %>">
@@ -125,6 +130,7 @@
                                      onerror="this.onerror=null; this.src='/images/avatars/default-pirate.png';">
                             </a>
                         <% } else { %>
+
                             <img src="<%= product.seller.avatar || '/images/avatars/default-pirate.png' %>"
                                  alt="<%= product.seller.storeName || product.seller.name %>"
                                  class="seller-avatar"
@@ -151,24 +157,59 @@
                     </div>
                 <% } %>
 
+                <% 
+                    const isSeller = user && user.role === 'seller';
+                    const isProductOwner = isSeller && product.seller && (
+                        (product.seller._id && product.seller._id.toString() === user._id.toString()) ||
+                        (product.seller.id && product.seller.id.toString() === user._id.toString())
+                    );
+                %>
+
                 <div class="detail-actions-bar">
-                    <button class="btn-add-cart btn-detail-add-cart"
-                            data-id="<%= product.id %>"
-                            data-name="<%= product.name %>"
-                            data-price="<%= product.price %>">
-                        <span>🛒 STOW IN CARGO HOLD</span>
-                    </button>
+                    <% if (isSeller) { %>
+                        <% if (isProductOwner) { %>
+                            <a href="/seller/products/<%= product.id %>/edit" class="btn-detail-add-cart" style="text-decoration: none; text-align: center;">
+                                <span>⚙️ REFORGE CARGO</span>
+                            </a>
+                            <a href="/seller/products" class="btn-detail-back" style="text-decoration: none; text-align: center;" title="Manage Vault Cargo">
+                                <span>📦 MANAGE IN VAULT</span>
+                            </a>
+                        <% } else { %>
+                            <% if (sellerId) { %>
+                                <a href="/seller/<%= sellerId %>" class="btn-detail-add-cart" style="text-decoration: none; text-align: center;">
+                                    <span>📜 VIEW MERCHANT STOREFRONT</span>
+                                </a>
+                            <% } %>
+                            <a href="/island/<%= product.island %>" class="btn-detail-back" title="Return to <%= island.name %>">
+                                <span>⚓ Back to Island</span>
+                            </a>
+                        <% } %>
+                    <% } else { %>
+                        <button class="btn-add-cart btn-detail-add-cart btnAddToCart"
+                                id="btnAddToCart"
+                                data-id="<%= product.id %>"
+                                data-name="<%= product.name %>"
+                                data-price="<%= product.price %>">
+                            <span>🛒 Stow in Hold</span>
+                        </button>
 
-                    <button class="btn-wishlist btn-detail-wishlist"
-                            data-id="<%= product.id %>"
-                            data-name="<%= product.name %>"
-                            title="Add to Wishlist">
-                        ♡
-                    </button>
+                        <form action="/favorites/<%= product.id %>/toggle" method="POST" style="display: inline-block;">
+                            <button type="submit"
+                                    id="btnToggleFavorite"
+                                    class="btn-wishlist btn-detail-wishlist btnToggleFavorite <%= (typeof isFavorited !== 'undefined' && isFavorited) ? 'favorited' : '' %>"
+                                    data-id="<%= product.id %>"
+                                    data-name="<%= product.name %>"
+                                    title="<%= (typeof isFavorited !== 'undefined' && isFavorited) ? 'Remove from Favorites' : 'Add to Favorites' %>"
+                                    style="<%= (typeof isFavorited !== 'undefined' && isFavorited) ? 'color: #ff4757; border-color: #ff4757;' : '' %>">
+                                <%= (typeof isFavorited !== 'undefined' && isFavorited) ? '❤️' : '♡' %>
+                            </button>
+                        </form>
 
-                    <a href="/island/<%= product.island %>" class="btn-detail-back" title="Return to <%= island.name %>">
-                        <span>⚓ Back to Island</span>
-                    </a>
+
+                        <a href="/island/<%= product.island %>" class="btn-detail-back" title="Return to <%= island.name %>">
+                            <span>⚓ Back to Island</span>
+                        </a>
+                    <% } %>
                 </div>
             </div>
 

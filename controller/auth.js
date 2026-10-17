@@ -144,6 +144,19 @@ const registerUser = async (req, res) => {
 
 
         /* ==========================
+           Determine Role & Merchant Profile
+        ========================== */
+
+        const requestedRole = (req.body.role || req.body.intent || req.query.intent || req.session?.authIntent || "buyer").toLowerCase().trim();
+        const assignedRole = (requestedRole === "seller" || requestedRole === "merchant") ? "seller" : "buyer";
+        const assignedStoreName = assignedRole === "seller"
+            ? (typeof req.body.storeName === "string" && req.body.storeName.trim() ? req.body.storeName.trim() : `${name.trim()}'s Port`)
+            : null;
+        const assignedHomeIsland = typeof req.body.homeIsland === "string" && req.body.homeIsland.trim()
+            ? req.body.homeIsland.trim()
+            : "astrolabe";
+
+        /* ==========================
            Create User
         ========================== */
 
@@ -155,7 +168,13 @@ const registerUser = async (req, res) => {
 
             password: hashedPassword,
 
-            authSecretHash: authSecretHash
+            authSecretHash: authSecretHash,
+
+            role: assignedRole,
+
+            storeName: assignedStoreName,
+
+            homeIsland: assignedHomeIsland
 
         });
 
@@ -163,15 +182,15 @@ const registerUser = async (req, res) => {
         await user.save();
 
         console.log(
-            "User registered successfully"
+            `User registered successfully as ${assignedRole}`
         );
 
 
         /* ==========================
-           Redirect to Login
+           Redirect to Login with Intent
         ========================== */
 
-        return res.redirect("/login");
+        return res.redirect(`/login?intent=${assignedRole}&registered=1`);
 
 
     } catch (error) {
@@ -409,10 +428,32 @@ const loginUser = async (req, res) => {
 
 
             /* ==========================
-               Redirect Home
+               Redirect to Role Destination
             ========================== */
 
-            res.redirect("/");
+            let redirectUrl = "/home";
+            const requestedIntent = (req.body.intent || req.query.intent || req.session?.authIntent || "").toLowerCase().trim();
+
+            if (user.role === "seller") {
+                redirectUrl = "/seller/dashboard";
+            } else if (user.role === "buyer") {
+                redirectUrl = "/home";
+            } else if (user.role === "admin") {
+                redirectUrl = "/home";
+            }
+
+            if (req.session.returnTo && !req.session.returnTo.startsWith("/login") && !req.session.returnTo.startsWith("/logout") && req.session.returnTo !== "/") {
+                if (user.role === "seller" && req.session.returnTo.startsWith("/seller")) {
+                    redirectUrl = req.session.returnTo;
+                } else if (user.role === "buyer" && !req.session.returnTo.startsWith("/seller")) {
+                    redirectUrl = req.session.returnTo;
+                }
+            }
+
+            delete req.session.authIntent;
+            delete req.session.returnTo;
+
+            res.redirect(redirectUrl);
 
         });
 

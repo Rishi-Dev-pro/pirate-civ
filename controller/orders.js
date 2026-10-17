@@ -676,6 +676,8 @@ export const renderBuyerOrderDetail = async (req, res) => {
             currentStageIndex,
             isCancelled,
             justPlaced: req.query.placed === "1",
+            paymentSuccess: req.query.payment_success === "1",
+            query: req.query,
             user: req.user
         });
 
@@ -691,12 +693,123 @@ export const renderBuyerOrderDetail = async (req, res) => {
     }
 };
 
+/**
+ * GET /orders/:orderId/payment
+ * Renders the Demo Payment settlement portal
+ */
+export const renderPaymentPage = async (req, res) => {
+    try {
+        if (!req.user || !req.user._id) {
+            return res.redirect("/login");
+        }
+
+        const { orderId } = req.params;
+        if (!orderId || !mongoose.isValidObjectId(orderId)) {
+            return res.status(404).render("home", { page_title: "Voyage Not Found | Pirate-Civ", user: req.user });
+        }
+
+        const order = await Order.findOne({
+            _id: orderId,
+            buyer: req.user._id
+        });
+
+        if (!order) {
+            return res.status(404).render("home", { page_title: "Voyage Not Found | Pirate-Civ", user: req.user });
+        }
+
+        if (order.paymentStatus === "paid") {
+            return res.redirect(`/orders/${order._id}?already_paid=1`);
+        }
+
+        return res.render("payment", {
+            page_title: `Demo Payment — Voyage #${order._id} | Pirate-Civ`,
+            order,
+            user: req.user
+        });
+    } catch (error) {
+        console.error("Error in renderPaymentPage:", error);
+        return res.status(500).render("home", { page_title: "Payment Tempest | Error", user: req.user });
+    }
+};
+
+/**
+ * POST /orders/:orderId/pay
+ * Executes simulated demo payment:
+ * Transitions paymentStatus: 'pending' -> 'paid', order status -> 'confirmed',
+ * and advances initial fulfillments to 'confirmed' ready for merchant fulfillment.
+ */
+export const processPayment = async (req, res) => {
+    try {
+        if (!req.user || !req.user._id) {
+            return res.redirect("/login");
+        }
+
+        const { orderId } = req.params;
+        if (!orderId || !mongoose.isValidObjectId(orderId)) {
+            if (req.xhr || req.headers.accept?.includes("application/json")) {
+                return res.status(404).json({ success: false, error: "Invalid order identifier." });
+            }
+            return res.status(404).render("home", { page_title: "Voyage Not Found | Pirate-Civ", user: req.user });
+        }
+
+        const order = await Order.findOne({
+            _id: orderId,
+            buyer: req.user._id
+        });
+
+        if (!order) {
+            if (req.xhr || req.headers.accept?.includes("application/json")) {
+                return res.status(404).json({ success: false, error: "Order not found." });
+            }
+            return res.status(404).render("home", { page_title: "Voyage Not Found | Pirate-Civ", user: req.user });
+        }
+
+        // Apply authoritative demo payment settlement
+        order.paymentStatus = "paid";
+        if (order.status === "pending") {
+            order.status = "confirmed";
+        }
+
+        // Also advance fulfillments that were awaiting payment
+        if (Array.isArray(order.fulfillments)) {
+            order.fulfillments.forEach(f => {
+                if (f.status === "pending") {
+                    f.status = "confirmed";
+                }
+            });
+        }
+
+        await order.save();
+
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.json({
+                success: true,
+                message: "Demo payment authorized successfully. Voyage confirmed.",
+                orderId: order._id.toString(),
+                status: order.status,
+                paymentStatus: order.paymentStatus
+            });
+        }
+
+        return res.redirect(`/orders/${order._id}?payment_success=1`);
+    } catch (error) {
+        console.error("Error in processPayment:", error);
+        if (req.xhr || req.headers.accept?.includes("application/json")) {
+            return res.status(500).json({ success: false, error: "Internal server error during demo payment." });
+        }
+        return res.status(500).render("home", { page_title: "Payment Tempest | Error", user: req.user });
+    }
+};
+
 export default {
     renderCheckout,
     validateCheckout,
     processCheckout,
+    renderPaymentPage,
+    processPayment,
     renderBuyerOrders,
     renderBuyerOrderDetail,
     evaluateCheckoutManifest,
     TRACKING_STAGES
 };
+

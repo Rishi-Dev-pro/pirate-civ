@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "The Trade Port — Demo Payment | Pirate-Civ" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Master & Island Store Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p35_v1">
+
+    <style>
+        .payment-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px 80px 20px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .payment-card {
+            background: rgba(18, 24, 32, 0.92);
+            border: 1px solid rgba(212, 147, 57, 0.35);
+            border-radius: 12px;
+            padding: 30px 36px;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(10px);
+            margin-bottom: 24px;
+        }
+
+        .demo-notice-banner {
+            background: rgba(212, 147, 57, 0.12);
+            border: 1px solid #ffd57e;
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .demo-notice-banner .icon {
+            font-size: 1.8rem;
+        }
+
+        .demo-notice-banner h3 {
+            font-family: "Cinzel", serif;
+            font-size: 1rem;
+            color: #ffd57e;
+            margin: 0 0 4px 0;
+            letter-spacing: 0.04em;
+        }
+
+        .demo-notice-banner p {
+            font-size: 0.88rem;
+            color: #fff4db;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .payment-method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin: 20px 0 28px 0;
+        }
+
+        .payment-option-card {
+            background: rgba(10, 15, 20, 0.6);
+            border: 2px solid rgba(212, 147, 57, 0.25);
+            border-radius: 8px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .payment-option-card:hover {
+            border-color: #ffd57e;
+            background: rgba(20, 30, 42, 0.7);
+            transform: translateY(-2px);
+        }
+
+        .payment-option-card.selected {
+            border-color: #d49339;
+            background: rgba(212, 147, 57, 0.15);
+            box-shadow: 0 0 20px rgba(212, 147, 57, 0.25);
+        }
+
+        .payment-option-title {
+            font-family: "Cinzel", serif;
+            font-size: 0.98rem;
+            color: #ffd57e;
+            font-weight: 700;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .payment-option-desc {
+            font-size: 0.82rem;
+            color: #8b9bb4;
+            line-height: 1.4;
+        }
+
+        .manifest-summary-box {
+            background: rgba(10, 15, 20, 0.5);
+            border: 1px solid rgba(212, 147, 57, 0.2);
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-bottom: 24px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.92rem;
+            color: #fff4db;
+        }
+
+        .summary-row.total-row {
+            border-top: 1px solid rgba(212, 147, 57, 0.3);
+            padding-top: 12px;
+            margin-top: 12px;
+            font-family: "Cinzel", serif;
+            font-size: 1.2rem;
+            color: #ffd57e;
+            font-weight: 700;
+        }
+
+        .btn-pay-action {
+            display: block;
+            width: 100%;
+            background: linear-gradient(135deg, #ffd57e 0%, #d49339 50%, #a46c1b 100%);
+            border: 1px solid #ffd57e;
+            color: #0d1117;
+            padding: 16px 28px;
+            font-family: "Cinzel", serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 6px 24px rgba(212, 147, 57, 0.45);
+            transition: all 0.25s ease;
+        }
+
+        .btn-pay-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 32px rgba(212, 147, 57, 0.65);
+            filter: brightness(1.1);
+        }
+
+        .btn-back-link {
+            display: inline-block;
+            margin-top: 16px;
+            color: #8b9bb4;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .btn-back-link:hover {
+            color: #ffd57e;
+        }
+    </style>
+</head>
+
+<body class="theme-corsair">
+
+    <%- include("partials/header") %>
+
+    <main class="payment-container">
+
+        <!-- Navigation Breadcrumbs -->
+        <nav class="detail-nav-bar" aria-label="Demo Payment Breadcrumbs" style="margin-bottom: 20px;">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <a href="/cart" class="crumb-link">Cargo Hold</a>
+                <span class="crumb-separator">›</span>
+                <a href="/orders/<%= order._id %>" class="crumb-link">Voyage #<%= order._id %></a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Demo Settlement</span>
+            </div>
+        </nav>
+
+        <section class="payment-card">
+
+            <div style="text-align: center; margin-bottom: 24px;">
+                <h1 style="font-family:'Cinzel', serif; font-size:1.8rem; color:#ffd57e; margin:0 0 8px 0; letter-spacing:0.04em;">
+                    ⚓ The Trade Port — Demo Payment
+                </h1>
+                <p style="color:#8b9bb4; font-size:0.95rem; margin:0;">
+                    Complete demo clearance to fund Voyage Manifest #<%= order._id %>
+                </p>
+            </div>
+
+            <!-- Clear College Demo Notice -->
+            <div class="demo-notice-banner" role="status">
+                <span class="icon">📜</span>
+                <div>
+                    <h3>DEMONSTRATION SIMULATED PAYMENT</h3>
+                    <p>
+                        This is an academic college demonstration payment system. <strong>No real money, credit cards, or actual doubloons are charged.</strong> Never input sensitive credentials.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Order Valuation Summary -->
+            <div class="manifest-summary-box">
+                <div class="summary-row">
+                    <span style="color:#8b9bb4;">Voyage Destination:</span>
+                    <strong><%= order.shippingAddress?.portName || 'Harbor Anchorage' %></strong>
+                </div>
+                <div class="summary-row">
+                    <span style="color:#8b9bb4;">Total Cargo Items:</span>
+                    <span><%= (order.items || []).reduce((sum, i) => sum + (i.quantity || 1), 0) %> Crates</span>
+                </div>
+                <div class="summary-row">
+                    <span style="color:#8b9bb4;">Archipelago Tariff:</span>
+                    <span style="color:#86efac;">0 Doubloons (Exempt)</span>
+                </div>
+                <div class="summary-row total-row">
+                    <span>Grand Total Settlement:</span>
+                    <span>🪙 <%= (order.totalDoubloons || 0).toLocaleString() %> Doubloons</span>
+                </div>
+            </div>
+
+            <form action="/orders/<%= order._id %>/pay" method="POST" id="demoPaymentForm">
+
+                <h2 style="font-family:'Cinzel', serif; font-size:1.15rem; color:#ffd57e; margin:0 0 12px 0;">
+                    Select Demonstration Payment Method
+                </h2>
+
+                <div class="payment-method-grid" role="radiogroup">
+                    <label class="payment-option-card selected" id="optCard">
+                        <input type="radio" name="paymentMethod" value="demo_card" checked style="position:absolute; opacity:0;">
+                        <div class="payment-option-title">
+                            <span>💳</span> Demo Merchant Card
+                        </div>
+                        <div class="payment-option-desc">
+                            Simulated Caravel Bank Card ending in •••• 4242.
+                        </div>
+                    </label>
+
+                    <label class="payment-option-card" id="optGold">
+                        <input type="radio" name="paymentMethod" value="pirate_gold" style="position:absolute; opacity:0;">
+                        <div class="payment-option-title">
+                            <span>💰</span> Pirate Gold Doubloons
+                        </div>
+                        <div class="payment-option-desc">
+                            Direct debit from your private ship's treasure chest.
+                        </div>
+                    </label>
+
+                    <label class="payment-option-card" id="optDraft">
+                        <input type="radio" name="paymentMethod" value="admiralty_draft" style="position:absolute; opacity:0;">
+                        <div class="payment-option-title">
+                            <span>🏴‍☠️</span> Admiralty Escrow
+                        </div>
+                        <div class="payment-option-desc">
+                            One-click student test payment clearing order immediately.
+                        </div>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-pay-action" id="btnConfirmPayment">
+                    ⚓ Authorize Demo Payment (🪙 <%= (order.totalDoubloons || 0).toLocaleString() %> Doubloons)
+                </button>
+
+                <div style="text-align: center;">
+                    <a href="/orders/<%= order._id %>" class="btn-back-link">
+                        ← Return to Voyage Manifest without Paying
+                    </a>
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <script>
+        document.querySelectorAll(".payment-option-card").forEach(card => {
+            card.addEventListener("click", () => {
+                document.querySelectorAll(".payment-option-card").forEach(c => c.classList.remove("selected"));
+                card.classList.add("selected");
+                const radio = card.querySelector("input[type=radio]");
+                if (radio) radio.checked = true;
+            });
+        });
+    </script>
+
+</body>
+
+</html>

@@ -29,4 +29,15 @@ export const requireSeller = requireRole("seller");
 export const requireBuyer = requireRole("buyer");
 export const requireAdmin = requireRole("admin");
 
+export const forbidSeller = (req, res, next) => {
+    if (req.user && req.user.role === "seller") {
+        if (req.xhr || (req.headers.accept && req.headers.accept.includes("application/json"))) {
+            return res.status(403).json({ success: false, error: "Access denied: merchants cannot maintain a buyer cargo hold." });
+        }
+        return res.status(403).send("Access denied: merchants cannot maintain a buyer cargo hold.");
+    }
+    next();
+};
+
 export default requireRole;
+

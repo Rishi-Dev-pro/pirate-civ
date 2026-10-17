@@ -1,18 +1,33 @@
 <%
     const activeRoute = (typeof currentPath !== 'undefined' && currentPath) ? currentPath : '';
-    const activeTitle = (typeof page_title !== 'undefined' && page_title) ? page_title.toLowerCase() : '';
     const currentUser = (typeof user !== 'undefined' && user) ? user : null;
     const userRole = currentUser ? currentUser.role : 'guest';
 
-    function isNavActive(targetPath, keywords = []) {
-        if (activeRoute && (activeRoute === targetPath || (targetPath !== '/' && targetPath !== '/home' && activeRoute.startsWith(targetPath)))) {
-            return true;
+    function getActiveNavKey(route) {
+        if (!route) return '';
+        if (route === '/' || route === '') return 'gateway';
+        if (route === '/home' || route.startsWith('/island') || route.startsWith('/product') ||
+            route === '/astrolabe' || route === '/chronos' || route === '/kraken-vault' ||
+            route === '/cutlass-cove' || route === '/velvet-isle' || route === '/booty-cay') {
+            return 'seachart';
         }
-        if (keywords && keywords.some(k => activeTitle.includes(k.toLowerCase()))) {
-            return true;
-        }
-        return false;
+        if (route.startsWith('/cart') || route.startsWith('/checkout')) return 'cart';
+        if (route.startsWith('/orders')) return 'orders';
+        if (route.startsWith('/favorites')) return 'favorites';
+        if (route.startsWith('/users') || route.startsWith('/explorers')) return 'explorers';
+        if (route === '/profile') return 'profile';
+        if (route === '/seller/dashboard' || route === '/seller/portal' || route === '/seller') return 'seller_deck';
+        if (route.startsWith('/seller/products')) return 'seller_products';
+        if (route.startsWith('/seller/orders')) return 'seller_orders';
+        if (route.startsWith('/seller/profile')) return 'seller_profile';
+        if (route.startsWith('/about')) return 'about';
+        if (route.startsWith('/contact')) return 'contact';
+        if (route.startsWith('/login')) return 'login';
+        if (route.startsWith('/register')) return 'register';
+        return '';
     }
+
+    const currentNavKey = getActiveNavKey(activeRoute);
 %>
 
 <nav class="navbar" role="navigation" aria-label="Main Navigation">
@@ -33,51 +48,59 @@
 
         <% if (!currentUser) { %>
             <!-- ================= GUEST NAVIGATION ================= -->
-            <a href="/" class="nav-link <%= isNavActive('/', ['gateway', 'sea awaits']) ? 'active' : '' %>" id="navGateway" <%= isNavActive('/', ['gateway', 'sea awaits']) ? 'aria-current="page"' : '' %>>
+            <a href="/" class="nav-link <%= currentNavKey === 'gateway' ? 'active' : '' %>" id="navGateway" <%= currentNavKey === 'gateway' ? 'aria-current="page"' : '' %>>
                 The Sea Awaits
             </a>
 
-            <a href="/about" class="nav-link <%= isNavActive('/about', ['about', 'lore']) ? 'active' : '' %>" id="navAbout" <%= isNavActive('/about', ['about', 'lore']) ? 'aria-current="page"' : '' %>>
+            <a href="/about" class="nav-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%= currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
                 Guild Lore
             </a>
 
-            <a href="/contact" class="nav-link <%= isNavActive('/contact', ['contact']) ? 'active' : '' %>" id="navContact" <%= isNavActive('/contact', ['contact']) ? 'aria-current="page"' : '' %>>
+            <a href="/contact" class="nav-link <%= currentNavKey === 'contact' ? 'active' : '' %>" id="navContact" <%= currentNavKey === 'contact' ? 'aria-current="page"' : '' %>>
                 Dispatch
             </a>
 
-            <a href="/login" class="nav-link nav-btn-signin <%= isNavActive('/login', ['login']) ? 'active' : '' %>" id="navLogin" <%= isNavActive('/login', ['login']) ? 'aria-current="page"' : '' %>>
+            <a href="/login" class="nav-link nav-btn-signin <%= currentNavKey === 'login' ? 'active' : '' %>" id="navLogin" <%= currentNavKey === 'login' ? 'aria-current="page"' : '' %>>
                 Sign In
             </a>
 
-            <a href="/register" class="nav-link nav-btn-register <%= isNavActive('/register', ['register']) ? 'active' : '' %>" id="navRegister" <%= isNavActive('/register', ['register']) ? 'aria-current="page"' : '' %>>
+            <a href="/register" class="nav-link nav-btn-register <%= currentNavKey === 'register' ? 'active' : '' %>" id="navRegister" <%= currentNavKey === 'register' ? 'aria-current="page"' : '' %>>
                 Join Crew
             </a>
 
         <% } else if (userRole === 'buyer') { %>
             <!-- ================= BUYER NAVIGATION ================= -->
-            <a href="/home" class="nav-link <%= isNavActive('/home', ['home', 'sea chart']) ? 'active' : '' %>" id="navSeaChart" <%= isNavActive('/home', ['home', 'sea chart']) ? 'aria-current="page"' : '' %>>
+            <a href="/home" class="nav-link <%= currentNavKey === 'seachart' ? 'active' : '' %>" id="navSeaChart" <%= currentNavKey === 'seachart' ? 'aria-current="page"' : '' %>>
                 🗺️ Sea Chart
             </a>
 
-            <a href="/cart" class="nav-link nav-cart <%= isNavActive('/cart', ['cargo hold', 'cart']) ? 'active' : '' %>" id="navCargoHold" <%= isNavActive('/cart', ['cargo hold', 'cart']) ? 'aria-current="page"' : '' %>>
+            <a href="/cart" class="nav-link nav-cart <%= currentNavKey === 'cart' ? 'active' : '' %>" id="navCargoHold" <%= currentNavKey === 'cart' ? 'aria-current="page"' : '' %>>
                 📦 Cargo Hold
             </a>
 
-            <a href="/orders" class="nav-link nav-buyer-orders <%= isNavActive('/orders', ['voyage', 'manifest', 'orders']) ? 'active' : '' %>" id="navBuyerOrders" <%= isNavActive('/orders', ['voyage', 'manifest', 'orders']) ? 'aria-current="page"' : '' %>>
+            <a href="/orders" class="nav-link nav-buyer-orders <%= currentNavKey === 'orders' ? 'active' : '' %>" id="navBuyerOrders" <%= currentNavKey === 'orders' ? 'aria-current="page"' : '' %>>
                 ⚓ My Voyages
             </a>
 
-            <a href="/users" class="nav-link nav-users <%= isNavActive('/users', ['explorers', 'users']) ? 'active' : '' %>" id="navUsers" <%= isNavActive('/users', ['explorers', 'users']) ? 'aria-current="page"' : '' %>>
+            <a href="/favorites" class="nav-link nav-favorites <%= currentNavKey === 'favorites' ? 'active' : '' %>" id="navFavorites" <%= currentNavKey === 'favorites' ? 'aria-current="page"' : '' %>>
+                ❤️ Favorites
+            </a>
+
+            <a href="/explorers" class="nav-link nav-users <%= currentNavKey === 'explorers' ? 'active' : '' %>" id="navUsers" <%= currentNavKey === 'explorers' ? 'aria-current="page"' : '' %>>
                 👥 Explorers
             </a>
 
-            <a href="/about" class="nav-link <%= isNavActive('/about', ['about', 'lore']) ? 'active' : '' %>" id="navAbout" <%= isNavActive('/about', ['about', 'lore']) ? 'aria-current="page"' : '' %>>
+            <a href="/about" class="nav-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%= currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
                 Guild Lore
             </a>
 
-            <span class="nav-user-badge" id="navUserBadge" title="Chartered Captain">
+            <a href="/profile" class="nav-link nav-profile <%= currentNavKey === 'profile' ? 'active' : '' %>" id="navProfile" <%= currentNavKey === 'profile' ? 'aria-current="page"' : '' %>>
+                👤 Profile
+            </a>
+
+            <a href="/profile" class="nav-user-badge" id="navUserBadge" title="Chartered Captain Profile" style="text-decoration: none;">
                 <span class="badge-icon">⚓</span> Captain <%= currentUser.name %>
-            </span>
+            </a>
 
             <a href="/logout" class="nav-link logout-btn" id="navLogout">
                 Logout
@@ -85,29 +108,33 @@
 
         <% } else if (userRole === 'seller') { %>
             <!-- ================= SELLER NAVIGATION ================= -->
-            <a href="/seller/dashboard" class="nav-link nav-seller-deck <%= isNavActive('/seller/dashboard', ['command deck']) ? 'active' : '' %>" id="navSellerDeck" <%= isNavActive('/seller/dashboard', ['command deck']) ? 'aria-current="page"' : '' %>>
+            <a href="/seller/dashboard" class="nav-link nav-seller-deck <%= currentNavKey === 'seller_deck' ? 'active' : '' %>" id="navSellerDeck" <%= currentNavKey === 'seller_deck' ? 'aria-current="page"' : '' %>>
                 ⚓ Command Deck
             </a>
 
-            <a href="/seller/products" class="nav-link nav-seller-products <%= isNavActive('/seller/products', ['cargo vault', 'forge new cargo', 'reforge cargo']) ? 'active' : '' %>" id="navSellerProducts" <%= isNavActive('/seller/products', ['cargo vault', 'forge new cargo', 'reforge cargo']) ? 'aria-current="page"' : '' %>>
+            <a href="/seller/products" class="nav-link nav-seller-products <%= currentNavKey === 'seller_products' ? 'active' : '' %>" id="navSellerProducts" <%= currentNavKey === 'seller_products' ? 'aria-current="page"' : '' %>>
                 📦 Manage Cargo
             </a>
 
-            <a href="/seller/orders" class="nav-link nav-seller-orders <%= isNavActive('/seller/orders', ['dispatch manifests']) ? 'active' : '' %>" id="navSellerOrders" <%= isNavActive('/seller/orders', ['dispatch manifests']) ? 'aria-current="page"' : '' %>>
+            <a href="/seller/orders" class="nav-link nav-seller-orders <%= currentNavKey === 'seller_orders' ? 'active' : '' %>" id="navSellerOrders" <%= currentNavKey === 'seller_orders' ? 'aria-current="page"' : '' %>>
                 📜 Merchant Orders
             </a>
 
-            <a href="/seller/profile" class="nav-link nav-seller-profile <%= isNavActive('/seller/profile', ['merchant profile']) ? 'active' : '' %>" id="navSellerProfile" <%= isNavActive('/seller/profile', ['merchant profile']) ? 'aria-current="page"' : '' %>>
+            <a href="/seller/profile" class="nav-link nav-seller-profile <%= currentNavKey === 'seller_profile' ? 'active' : '' %>" id="navSellerProfile" <%= currentNavKey === 'seller_profile' ? 'aria-current="page"' : '' %>>
                 ⚙️ Merchant Profile
             </a>
 
-            <a href="/home" class="nav-link <%= isNavActive('/home', ['home', 'sea chart']) ? 'active' : '' %>" id="navSeaChart" <%= isNavActive('/home', ['home', 'sea chart']) ? 'aria-current="page"' : '' %>>
+            <a href="/home" class="nav-link <%= currentNavKey === 'seachart' ? 'active' : '' %>" id="navSeaChart" <%= currentNavKey === 'seachart' ? 'aria-current="page"' : '' %>>
                 🗺️ Sea Chart
             </a>
 
-            <span class="nav-user-badge" id="navUserBadge" title="Chartered Merchant">
+            <a href="/about" class="nav-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%= currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
+                Guild Lore
+            </a>
+
+            <a href="/seller/profile" class="nav-user-badge" id="navUserBadge" title="Chartered Merchant Profile" style="text-decoration: none;">
                 <span class="badge-icon">⚓</span> <%= currentUser.storeName || currentUser.name %>
-            </span>
+            </a>
 
             <a href="/logout" class="nav-link logout-btn" id="navLogout">
                 Logout
@@ -115,19 +142,19 @@
 
         <% } else if (userRole === 'admin') { %>
             <!-- ================= ADMIN NAVIGATION ================= -->
-            <a href="/home" class="nav-link <%= isNavActive('/home', ['home', 'sea chart']) ? 'active' : '' %>" id="navSeaChart" <%= isNavActive('/home', ['home', 'sea chart']) ? 'aria-current="page"' : '' %>>
+            <a href="/home" class="nav-link <%= currentNavKey === 'seachart' ? 'active' : '' %>" id="navSeaChart" <%= currentNavKey === 'seachart' ? 'aria-current="page"' : '' %>>
                 🗺️ Sea Chart
             </a>
 
-            <a href="/users" class="nav-link nav-users <%= isNavActive('/users', ['explorers', 'users']) ? 'active' : '' %>" id="navUsers" <%= isNavActive('/users', ['explorers', 'users']) ? 'aria-current="page"' : '' %>>
+            <a href="/explorers" class="nav-link nav-users <%= currentNavKey === 'explorers' ? 'active' : '' %>" id="navUsers" <%= currentNavKey === 'explorers' ? 'aria-current="page"' : '' %>>
                 👥 Explorers
             </a>
 
-            <a href="/about" class="nav-link <%= isNavActive('/about', ['about', 'lore']) ? 'active' : '' %>" id="navAbout" <%= isNavActive('/about', ['about', 'lore']) ? 'aria-current="page"' : '' %>>
+            <a href="/about" class="nav-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%= currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
                 Guild Lore
             </a>
 
-            <a href="/contact" class="nav-link <%= isNavActive('/contact', ['contact']) ? 'active' : '' %>" id="navContact" <%= isNavActive('/contact', ['contact']) ? 'aria-current="page"' : '' %>>
+            <a href="/contact" class="nav-link <%= currentNavKey === 'contact' ? 'active' : '' %>" id="navContact" <%= currentNavKey === 'contact' ? 'aria-current="page"' : '' %>>
                 Dispatch
             </a>
 
@@ -174,6 +201,12 @@
     font-weight: 600;
     letter-spacing: 0.6px;
     white-space: nowrap;
+    transition: all 0.2s ease;
+}
+.nav-user-badge:hover {
+    background: rgba(198, 159, 88, 0.25);
+    border-color: rgba(255, 215, 0, 0.6);
+    color: #ffd700;
 }
 .nav-links a.active {
     color: #ffd700 !important;

@@ -87,7 +87,7 @@
             <% } %>
 
             <!-- Form -->
-            <form method="POST" action="/seller/products/new" id="formCreateProduct">
+            <form method="POST" action="/seller/products/new" id="formCreateProduct" enctype="multipart/form-data">
 
                 <!-- Row 1: Name -->
                 <div class="seller-form-group">
@@ -112,7 +112,7 @@
                                class="seller-form-input"
                                min="0"
                                step="1"
-                               placeholder="e.g. 150"
+                               placeholder="150"
                                value="<%= product && product.price !== undefined ? product.price : '' %>"
                                required>
                     </div>
@@ -170,22 +170,30 @@
                 <!-- Row 5: Image & Rating -->
                 <div class="seller-form-row">
                     <div class="seller-form-group">
-                        <label for="inputImage">Image Asset Path</label>
+                        <label for="inputImage">Image (Upload File or Asset Path)</label>
+                        <input type="file"
+                               id="inputFileImage"
+                               name="productImage"
+                               class="seller-form-input"
+                               accept="image/*">
                         <input type="text"
                                id="inputImage"
                                name="image"
                                class="seller-form-input"
-                               placeholder="/images/items/default-relic.png"
+                               style="margin-top: 6px;"
+                               placeholder="Or enter path: /images/items/default-relic.png"
                                value="<%= product && product.image ? product.image : '/images/items/default-relic.png' %>">
                     </div>
 
                     <div class="seller-form-group">
-                        <label for="inputRating">Rating Stars</label>
-                        <input type="text"
-                               id="inputRating"
-                               name="rating"
-                               class="seller-form-input"
-                               value="<%= product && product.rating ? product.rating : '★★★★★' %>">
+                        <label for="selectRating">Masterwork Rating (1-5 Stars)</label>
+                        <select id="selectRating" name="rating" class="seller-form-select">
+                            <option value="5" <%= (!product || product.rating === '★★★★★' || product.rating === '5' || product.rating === 5) ? 'selected' : '' %>>★★★★★ (5 Stars - Sovereign Masterwork)</option>
+                            <option value="4" <%= (product && (product.rating === '★★★★☆' || product.rating === '4' || product.rating === 4)) ? 'selected' : '' %>>★★★★☆ (4 Stars - Exceptional Craft)</option>
+                            <option value="3" <%= (product && (product.rating === '★★★☆☆' || product.rating === '3' || product.rating === 3)) ? 'selected' : '' %>>★★★☆☆ (3 Stars - Seaworthy Standard)</option>
+                            <option value="2" <%= (product && (product.rating === '★★☆☆☆' || product.rating === '2' || product.rating === 2)) ? 'selected' : '' %>>★★☆☆☆ (2 Stars - Weathered Artifact)</option>
+                            <option value="1" <%= (product && (product.rating === '★☆☆☆☆' || product.rating === '1' || product.rating === 1)) ? 'selected' : '' %>>★☆☆☆☆ (1 Star - Crude Salvage)</option>
+                        </select>
                     </div>
                 </div>
 

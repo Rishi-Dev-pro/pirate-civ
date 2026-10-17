@@ -133,8 +133,16 @@ const resolveRequestCart = async (req) => {
  */
 export const getCart = async (req, res) => {
     try {
+        if (req.user && req.user.role === "seller") {
+            if (req.xhr || (req.headers.accept && req.headers.accept.includes("application/json"))) {
+                return res.status(403).json({ success: false, error: "Access denied: merchants cannot maintain a buyer cargo hold." });
+            }
+            return res.status(403).send("Access denied: merchants cannot maintain a buyer cargo hold.");
+        }
+
         const { isAuth, cart } = await resolveRequestCart(req);
         const formatted = formatCartResponse(cart);
+
 
         // Check if client expects JSON (AJAX / API)
         const isJsonReq = req.xhr ||
@@ -174,7 +182,15 @@ export const getCart = async (req, res) => {
  */
 export const addToCart = async (req, res) => {
     try {
+        if (req.user && req.user.role === "seller") {
+            return res.status(403).json({
+                success: false,
+                error: "Access denied: merchants cannot maintain a buyer cargo hold."
+            });
+        }
+
         const rawProductId = req.body.productId || req.body.id;
+
         const rawQuantity = req.body.quantity !== undefined ? req.body.quantity : req.body.qty;
 
         // 1. Validate Product ID

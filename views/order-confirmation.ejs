@@ -544,6 +544,17 @@
                     </p>
                 </div>
             </div>
+        <% } else if (typeof paymentSuccess !== 'undefined' && paymentSuccess) { %>
+            <!-- Demo Payment Cleared Banner -->
+            <div class="order-success-banner" role="status" id="paymentSuccessBanner" style="border-color:#48bb78; background:rgba(20,50,30,0.88);">
+                <div class="order-success-icon" style="color:#48bb78;">✓</div>
+                <div>
+                    <h1 class="order-success-title" style="color:#86efac;">Demo Payment Secured!</h1>
+                    <p class="order-success-subtitle" style="color:#dcfce7;">
+                        Your voyage doubloons have been authoritatively cleared into escrow. Merchant fleet fulfillment is now authorized.
+                    </p>
+                </div>
+            </div>
         <% } else if (isJustPlaced) { %>
             <!-- Freshly Placed Success Banner -->
             <div class="order-success-banner" role="status" id="placedSuccessBanner">
@@ -555,6 +566,23 @@
                         Merchant vessels are preparing dispatch for delivery.
                     </p>
                 </div>
+            </div>
+        <% } %>
+
+        <% if (order.paymentStatus === 'pending') { %>
+            <!-- Pending Payment Callout -->
+            <div style="background: rgba(212, 147, 57, 0.15); border: 2px solid #ffd57e; border-radius: 8px; padding: 18px 24px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;">
+                <div>
+                    <h3 style="font-family:'Cinzel', serif; color:#ffd57e; margin:0 0 4px 0; font-size:1.1rem;">
+                        ⚓ Payment Clearance Required
+                    </h3>
+                    <p style="margin:0; font-size:0.9rem; color:#fff4db;">
+                        This voyage is registered with status <strong>Pending Settlement</strong>. Complete demo payment so merchant caravels can be authorized to prepare cargo.
+                    </p>
+                </div>
+                <a href="/orders/<%= order._id %>/payment" id="btnPayOrder" class="order-btn-cta" style="margin:0; padding:12px 24px; background:linear-gradient(135deg, #ffd57e, #d49339); color:#0d1117; font-weight:700;">
+                    ⚓ Complete Demo Payment
+                </a>
             </div>
         <% } %>
 
@@ -810,6 +838,13 @@
                         <span class="summary-free">0 Doubloons (Exempt)</span>
                     </div>
 
+                    <div class="summary-line">
+                        <span>Payment Status:</span>
+                        <strong style="color: <%= order.paymentStatus === 'paid' ? '#86efac' : '#fde047' %>; text-transform: uppercase;">
+                            <%= order.paymentStatus || 'pending' %>
+                        </strong>
+                    </div>
+
                     <div class="summary-line summary-total-line" style="margin-top:14px; padding-top:14px; border-top:1px solid rgba(212,147,57,0.3);">
                         <span style="font-family:'Cinzel', serif; font-size:1.05rem; color:#ffd57e;">Grand Total:</span>
                         <span class="summary-total-gold" style="font-size:1.25rem;">
@@ -818,6 +853,11 @@
                     </div>
 
                     <div style="margin-top:24px;">
+                        <% if (order.paymentStatus === 'pending') { %>
+                            <a href="/orders/<%= order._id %>/payment" class="order-btn-cta" style="margin-bottom:12px; background:linear-gradient(135deg, #ffd57e, #d49339); color:#0d1117; font-weight:700;">
+                                ⚓ Complete Demo Payment
+                            </a>
+                        <% } %>
                         <a href="/orders" class="order-btn-secondary" id="btnAllVoyagesLedger">
                             📜 All Voyages Ledger
                         </a>

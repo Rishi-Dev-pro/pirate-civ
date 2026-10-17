@@ -8,6 +8,19 @@ import Product from "../models/product.js";
 import { ISLANDS_DATA } from "./islands.js";
 
 /**
+ * Canonical Island Presentation Backdrops
+ * Deterministic mapping for 6 distinct island leaf environments
+ */
+export const ISLAND_BACKDROPS = {
+    astrolabe: "/images/astrolabe-bg.jpg",
+    chronos: "/images/chronos-bg.jpg",
+    kraken_vault: "/images/kraken-bg.jpg",
+    cutlass_cove: "/images/cutlass-bg.jpg",
+    velvet_isle: "/images/velvet-bg.jpg",
+    booty_cay: "/images/booty-bg.jpg"
+};
+
+/**
  * Controller action: Render reusable Product Detail Page
  * Route: GET /product/:productId
  */
@@ -57,17 +70,22 @@ export const renderProductDetail = async (req, res) => {
             delete product.seller.googleId;
         }
 
-        // Island presentation lore metadata
-        const islandMeta = ISLANDS_DATA[product.island] || {
+        // Island presentation lore metadata with deterministic island backdrop
+        const rawIslandMeta = ISLANDS_DATA[product.island] || {};
+        const backdropImage = ISLAND_BACKDROPS[product.island] || "/images/astrolabe-bg.jpg";
+
+        const islandMeta = {
+            ...rawIslandMeta,
             id: product.island,
             slug: product.island,
-            name: product.island,
-            badge: "ARCHIPELAGO OUTPOST",
-            icon: "🏝️",
-            image: "/images/astrolabe-bg.jpg",
-            coordinates: "Uncharted Waters",
-            tradeWind: "Variable",
-            dangerRating: "Guarded Port"
+            name: rawIslandMeta.name || product.island,
+            badge: rawIslandMeta.badge || "ARCHIPELAGO OUTPOST",
+            icon: rawIslandMeta.icon || "🏝️",
+            image: backdropImage,
+            backdrop: backdropImage,
+            coordinates: rawIslandMeta.coordinates || "Uncharted Waters",
+            tradeWind: rawIslandMeta.tradeWind || "Variable",
+            dangerRating: rawIslandMeta.dangerRating || "Guarded Port"
         };
 
         const viewProduct = {
@@ -76,10 +94,17 @@ export const renderProductDetail = async (req, res) => {
             _id: product._id
         };
 
+        let isFavorited = false;
+        if (req.user && req.user.favorites && Array.isArray(req.user.favorites)) {
+            const pIdStr = product._id.toString();
+            isFavorited = req.user.favorites.some(fId => (fId._id || fId).toString() === pIdStr);
+        }
+
         res.render("product-detail", {
             page_title: `${product.name} | Pirate-Civ`,
             product: viewProduct,
             island: islandMeta,
+            isFavorited: isFavorited,
             user: req.user || null
         });
 
@@ -93,5 +118,6 @@ export const renderProductDetail = async (req, res) => {
 };
 
 export default {
-    renderProductDetail
+    renderProductDetail,
+    ISLAND_BACKDROPS
 };

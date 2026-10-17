@@ -8,6 +8,27 @@ import User from "../models/user.js";
 import Product, { CANONICAL_ISLANDS, TRADING_BRANCHES } from "../models/product.js";
 import Order, { ORDER_STATUSES, FULFILLMENT_STATUSES, PERMITTED_STATUS_TRANSITIONS } from "../models/order.js";
 import { ISLANDS_DATA } from "./islands.js";
+import { processAvatar, processProductImage } from "../middleware/upload.js";
+
+const STAR_MAP = {
+    "1": "★☆☆☆☆",
+    "2": "★★☆☆☆",
+    "3": "★★★☆☆",
+    "4": "★★★★☆",
+    "5": "★★★★★"
+};
+
+export function normalizeRating(rawRating) {
+    if (!rawRating) return "★★★★★";
+    const str = String(rawRating).trim();
+    if (STAR_MAP[str]) return STAR_MAP[str];
+    if (Object.values(STAR_MAP).includes(str)) return str;
+    const num = parseInt(str, 10);
+    if (!isNaN(num) && num >= 1 && num <= 5) {
+        return STAR_MAP[String(num)];
+    }
+    return "★★★★★";
+}
 
 /**
  * Controller action: Render Reusable Public Seller Profile / Storefront (Milestone 3.4)
@@ -179,6 +200,32 @@ export const renderSellerProducts = async (req, res) => {
             .sort({ createdAt: -1 })
             .lean();
 
+        // Compute order analytics strictly scoped to this seller's products (AUD-001 / Phase 6.3)
+        const sellerOrders = await Order.find({ "items.seller": sellerUser._id }).lean();
+        const productStats = {};
+        sellerOrders.forEach(ord => {
+            (ord.items || []).forEach(item => {
+                const sId = item.seller?._id || item.seller;
+                if (sId && sId.toString() === sellerUser._id.toString()) {
+                    const pId = (item.product?._id || item.product || "").toString();
+                    if (pId) {
+                        if (!productStats[pId]) {
+                            productStats[pId] = { unitsSold: 0, orderCount: 0, revenue: 0 };
+                        }
+                        const qty = Number(item.quantity) || 1;
+                        productStats[pId].unitsSold += qty;
+                        productStats[pId].orderCount += 1;
+                        productStats[pId].revenue += (item.lineTotal || (item.price * qty) || 0);
+                    }
+                }
+            });
+        });
+
+        const productsWithStats = products.map(p => ({
+            ...p,
+            analytics: productStats[p._id.toString()] || { unitsSold: 0, orderCount: 0, revenue: 0 }
+        }));
+
         const islandMeta = sellerUser.homeIsland && ISLANDS_DATA[sellerUser.homeIsland]
             ? ISLANDS_DATA[sellerUser.homeIsland]
             : null;
@@ -200,7 +247,7 @@ export const renderSellerProducts = async (req, res) => {
             page_title: `${seller.storeName || seller.name} — Product Management | Pirate-Civ`,
             seller,
             island: islandMeta,
-            products,
+            products: productsWithStats,
             activeCount,
             totalCount,
             storefrontUrl: `/seller/${seller.id}`,
@@ -427,12 +474,18 @@ export const updateProduct = async (req, res) => {
             product.isAvailable = isAvailable === true || isAvailable === "true" || isAvailable === "on" || isAvailable === 1 || isAvailable === "1";
         }
 
-        if (typeof image === "string" && image.trim()) {
+        if (req.file && req.file.buffer) {
+            try {
+                product.image = await processProductImage(req.file.buffer);
+            } catch (imgErr) {
+                console.error("Error processing product image update:", imgErr);
+            }
+        } else if (typeof image === "string" && image.trim()) {
             product.image = image.trim();
         }
 
-        if (typeof rating === "string" && rating.trim()) {
-            product.rating = rating.trim();
+        if (rating !== undefined && rating !== null && String(rating).trim()) {
+            product.rating = normalizeRating(rating);
         }
 
         await product.save();
@@ -712,12 +765,19 @@ export const createProduct = async (req, res) => {
             : (isAvailable === true || isAvailable === "true" || isAvailable === "on" || isAvailable === 1 || isAvailable === "1");
 
         // 8. Image & Rating
-        const trimmedImage = typeof image === "string" && image.trim()
+        let resolvedImage = typeof image === "string" && image.trim()
             ? image.trim()
             : "/images/items/default-relic.png";
-        const trimmedRating = typeof rating === "string" && rating.trim()
-            ? rating.trim()
-            : "★★★★★";
+
+        if (req.file && req.file.buffer) {
+            try {
+                resolvedImage = await processProductImage(req.file.buffer);
+            } catch (imgErr) {
+                console.error("Error processing product image create:", imgErr);
+            }
+        }
+
+        const normalizedRating = normalizeRating(rating);
 
         // 9. Slug Pre-Check & Duplicate Protection
         const baseSlug = trimmedName
@@ -743,8 +803,8 @@ export const createProduct = async (req, res) => {
             island: trimmedIsland,
             category: trimmedCategory,
             isAvailable: parsedAvailability,
-            image: trimmedImage,
-            rating: trimmedRating
+            image: resolvedImage,
+            rating: normalizedRating
         });
 
         await newProduct.save();
@@ -862,9 +922,9 @@ export const updateSellerProfile = async (req, res) => {
             name,
             storeName,
             homeIsland,
-            bio,
-            avatar
+            bio
         } = req.body;
+        const avatar = req.body.avatar !== undefined ? req.body.avatar : req.body.avatarPath;
 
         const renderFormError = (errorMessage, safeFormData = {}) => {
             const mergedSeller = {
@@ -969,8 +1029,16 @@ export const updateSellerProfile = async (req, res) => {
             }
         }
 
-        // 6. Validation: Avatar (Optional, Path or URL, safe scheme, Max 500 chars; retain saved value if omitted)
-        if (avatar !== undefined) {
+        // 6. Validation & Upload: Avatar (File upload, Remove avatar, or URL/Path)
+        if (req.body.removeAvatar === "true" || req.body.removeAvatar === true) {
+            user.avatar = "/images/avatars/default-pirate.png";
+        } else if (req.file && req.file.buffer) {
+            try {
+                user.avatar = await processAvatar(req.file.buffer);
+            } catch (avErr) {
+                console.error("Error processing seller avatar upload:", avErr);
+            }
+        } else if (avatar !== undefined) {
             if (avatar === null || avatar === "") {
                 user.avatar = "/images/avatars/default-pirate.png";
             } else {
@@ -1330,6 +1398,15 @@ export const updateOrderStatus = async (req, res) => {
 
         const rawStatus = req.body.status || req.body.targetStatus;
         const targetStatus = typeof rawStatus === "string" ? rawStatus.trim().toLowerCase() : "";
+
+        // Enforce payment requirement: Cannot confirm or start fulfillment on an unpaid order (Phase 6.3)
+        if (targetStatus === "confirmed" && order.paymentStatus !== "paid") {
+            const errorMsg = "Cannot fulfill order: payment has not been completed by the buyer.";
+            if (req.xhr || req.headers.accept?.includes("application/json")) {
+                return res.status(400).json({ success: false, error: errorMsg });
+            }
+            return res.redirect(`/seller/orders/${order._id}?error=${encodeURIComponent(errorMsg)}`);
+        }
 
         // Authoritative seller fulfillment lifecycle validation (AUD-001)
         if (!order.canTransitionFulfillment(sellerUser._id, targetStatus)) {

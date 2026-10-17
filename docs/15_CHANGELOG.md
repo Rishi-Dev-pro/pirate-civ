@@ -2,7 +2,57 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-18] — Phase 6.3: Premium Pirate UX + Navigation + Role Separation + Commerce Completion (COMPLETE)
+
+### Added & Architecture
+* **Role-Aware Global Navigation (`views/partials/header.ejs`):**
+  - Unified single navbar across the application; eliminated redundant lower sub-nav bars on all seller views.
+  - Deterministic `getActiveNavKey(currentRoute)` mapping preventing ambiguous multi-link active state bugs.
+  - Role-specific destinations: Buyer nav features Sea Chart, Cargo Hold, Favorites, My Voyages, Explorers, Guild Lore, Profile, Logout. Seller nav features Command Deck, Manage Cargo, Merchant Orders, Merchant Profile, Sea Chart, Guild Lore, Logout.
+  - Strict role isolation: Sellers never see Cargo Hold, Favorites, or buyer orders.
+* **Authentication Intent & Loop Resolution (`middleware/auth.js`, `controller/auth.js`):**
+  - Gateway and auth links pass explicit intent query (`/login?intent=buyer` -> `/home`, `/login?intent=seller` -> `/seller/dashboard`).
+  - Session preserves `req.session.authIntent` and `req.session.returnTo` server-side.
+  - Eliminated the buyer login redirect loop back to the gateway.
+* **Role Separation in Registration (`controller/auth.js`, `views/register.ejs`):**
+  - Server-side authoritative role assignment (`role: 'seller'` with `storeName` vs `role: 'buyer'`).
+  - Newly registered merchants immediately access `/seller/dashboard` without "Insufficient Access" errors.
+* **Honest Google OAuth Architecture (`controller/googleAuth.js`, `views/google-config-required.ejs`):**
+  - Implemented server-side OAuth2 code exchange with crypto CSRF state verification and preserved role intent.
+  - Displays honest, beautifully styled configuration guide when `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` are not set. No fake client-side credentials.
+* **Multi-Seller Dynamic Discovery (`controller/users.js`, `views/users.ejs`):**
+  - Removed all hardcoded seller assumptions; `/explorers` dynamically queries chartered merchants (`role: 'seller'`) with direct storefront links.
+  - Sellers receiving HTTP 403 trying to access buyer explorers.
+* **Persistent Buyer Favorites (`models/user.js`, `controller/favorites.js`, `views/favorites.ejs`):**
+  - Added `favorites: [{ type: ObjectId, ref: 'Product' }]` on User schema with MongoDB indexing.
+  - Created `/favorites` ledger and `/favorites/:id/toggle` endpoint with isolation per buyer. Sellers blocked (HTTP 403).
+* **Product Role Separation & Island Backdrop Continuity (`views/product-detail.ejs`, `controller/products.js`):**
+  - Unified `ISLAND_BACKDROPS` registry ensuring `/product/:id` displays the atmospheric backdrop of its parent island.
+  - Role-separated action deck: Buyers see "Stow in Hold" and "♡" Favorite toggle; Owner sellers see "Reforge Cargo" and "Manage in Vault"; Non-owner sellers see "View Merchant Storefront".
+* **Demo Payment Gateway & Seller Fulfillment Guard (`views/payment.ejs`, `controller/orders.js`, `controller/sellers.js`):**
+  - Dedicated demo settlement portal (`/orders/:id/payment`, `POST /orders/:id/pay`) with simulated cards, pirate gold, and disclaimer.
+  - Initial orders generated with `status: 'pending'` and `paymentStatus: 'pending'`.
+  - Seller order fulfillment guard: Sellers receive HTTP 400 if attempting to confirm an order before buyer completes payment.
+* **Media Uploads & Optimization Pipeline (`middleware/upload.js`, `controller/profile.js`, `views/profile.ejs`):**
+  - Multer memory storage + Sharp WebP conversion pipeline for avatars (500x500) and product images (1000x1000).
+  - Buyer profile (`/profile`) and Seller profile (`/seller/profile`) with upload, replace, and restore default seal.
+* **Seller Product Ratings & Analytics (`controller/sellers.js`, `views/seller/product-create.ejs`, `views/seller/product-edit.ejs`):**
+  - 1-5 star selector normalized securely to canonical string schema (`★★★★★`).
+  - Real-time sales units and revenue telemetry per product in seller products vault.
+* **Guild Lore Composition (`views/about.ejs`):**
+  - Replaced autoplay video with static dark-fantasy pirate composition covering story, 6 islands, guild charter, code, and trading guide.
+* **Test Verification:**
+  - 68/68 automated tests passing in `scratch/test_milestone_6_3.js`.
+  - 100/100 automated tests passing in `scratch/test_aud_001_multi_seller_fulfillment.js`.
+  - 92/92 automated tests passing in `scratch/test_milestone_5_4.js`.
+  - 70/70 automated tests passing in `scratch/test_milestone_5_3.js`.
+  - 90/90 automated tests passing in `scratch/test_milestone_6_2.js`.
+  - 82/82 automated tests passing in `scratch/test_milestone_3_5.js`.
+  - 27/27 JS files and 38/38 EJS template files syntax validated.
+  - Live browser journey verified across Desktop (1280x800) and Mobile (375x812) with 0 console errors.
+
 ## [2026-10-17] — UI Refinement: Pirate-Civ Gateway Correction & Login Back Navigation (COMPLETE)
+
 
 ### Refined & Corrected
 * **Cinematic Entry Gateway Correction (`views/gateway.ejs`):**

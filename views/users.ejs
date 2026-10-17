@@ -10,13 +10,13 @@
         content="width=device-width, initial-scale=1.0"
     >
 
-    <title><%= page_title %></title>
+    <title><%= page_title || "Chartered Merchants & Explorers | Pirate-Civ" %></title>
 
 
     <!-- Google Fonts -->
 
     <link
-        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap"
         rel="stylesheet"
     >
 
@@ -101,12 +101,12 @@
 
 
             <h1>
-                THE EXPLORERS
+                CHARTERED MERCHANTS
             </h1>
 
 
             <p class="heading-subtitle">
-                Those who have claimed their territory
+                Discover accredited merchant armators across the sovereign archipelago
             </p>
 
 
@@ -149,7 +149,7 @@
                         <span>✦</span>
 
                         <h2>
-                            REGISTERED EXPLORERS
+                            MERCHANT GUILD REGISTRY
                         </h2>
 
                         <span>✦</span>
@@ -158,8 +158,7 @@
 
 
                     <p class="parchment-description">
-                        The names of those brave enough
-                        to enter the unknown.
+                        Accredited trade posts and cartographic armators authorized to forge and dispatch wares.
                     </p>
 
 
@@ -171,7 +170,7 @@
                     <div class="users-list">
 
 
-                        <% if (users.length === 0) { %>
+                        <% if (!users || users.length === 0) { %>
 
                             <div class="no-users">
 
@@ -180,11 +179,11 @@
                                 </div>
 
                                 <h3>
-                                    No Explorers Yet
+                                    No Chartered Merchants Yet
                                 </h3>
 
                                 <p>
-                                    The territory remains unclaimed.
+                                    The trade ports are quiet. Stand by for arriving convoys.
                                 </p>
 
                             </div>
@@ -193,7 +192,7 @@
                         <% } else { %>
 
 
-                            <% users.forEach((explorer, index) => { %>
+                            <% users.forEach((merchant, index) => { %>
 
 
                                 <article
@@ -219,36 +218,30 @@
                                     <div class="explorer-info">
 
 
-                                        <h3>
-                                            <%= explorer.name %>
+                                        <h3 style="font-family: 'Cinzel', serif; color: #ffd700; margin-bottom: 4px;">
+                                            <%= merchant.storeName || merchant.name %>
                                         </h3>
 
 
-                                        <p>
-                                            <%= explorer.email %>
+                                        <% if (merchant.storeName && merchant.name && merchant.storeName !== merchant.name) { %>
+                                            <p style="color: #cbb493; font-size: 13px; margin-bottom: 4px;">
+                                                Guildmaster: <%= merchant.name %>
+                                            </p>
+                                        <% } %>
+
+                                        <p style="color: #ffd57e; font-size: 12px; margin-bottom: 8px;">
+                                            ⚓ Home Port: <%= (merchant.homeIsland || 'Archipelago').toUpperCase() %>
                                         </p>
 
+                                        <% if (merchant.bio) { %>
+                                            <p style="color: #a78860; font-size: 12px; line-height: 1.4; margin-bottom: 12px;">
+                                                <%= merchant.bio %>
+                                            </p>
+                                        <% } %>
 
-                                        <small>
-
-                                            Joined the realm
-
-                                            <% if (explorer.createdAt) { %>
-
-                                                •
-
-                                                <%= new Date(
-                                                    explorer.createdAt
-                                                ).toLocaleDateString("en-IN", {
-                                                    day: "2-digit",
-                                                    month: "short",
-                                                    year: "numeric"
-                                                }) %>
-
-                                            <% } %>
-
-                                        </small>
-
+                                        <a href="/seller/<%= merchant._id %>" class="btn-discover-storefront" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(212, 147, 57, 0.2); border: 1px solid rgba(212, 147, 57, 0.5); border-radius: 4px; color: #ffd700; font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-decoration: none; letter-spacing: 0.8px; transition: all 0.2s ease;">
+                                            <span>📜 DISCOVER STOREFRONT &rarr;</span>
+                                        </a>
 
                                     </div>
 
@@ -268,36 +261,6 @@
 
 
                     </div>
-
-
-                    <!-- =================================================
-                         FOOTER OF PARCHMENT
-                    ================================================== -->
-
-                    <div class="parchment-footer">
-
-                        <span></span>
-
-                        <div>
-                            ⚔
-                        </div>
-
-                        <span></span>
-
-                    </div>
-
-
-                    <p class="explorer-count">
-
-                        <%= users.length %>
-
-                        <%= users.length === 1
-                            ? "EXPLORER"
-                            : "EXPLORERS" %>
-
-                        HAVE ENTERED THE REALM
-
-                    </p>
 
 
                 </div>

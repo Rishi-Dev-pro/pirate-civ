@@ -322,6 +322,67 @@
                             ◉
                         </button>
 
+                <!-- ==================================
+                     COMMISSION ROLE SELECTION
+                =================================== -->
+
+                <div class="input-group">
+
+                    <label for="regRole">
+                        COMMISSION ROLE
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ⚓
+                        </span>
+
+                        <select
+                            id="regRole"
+                            name="role"
+                            class="auth-select"
+                            style="width: 100%; background: transparent; border: none; color: #ffd57e; font-family: 'Cinzel', serif; font-size: 14px; outline: none; padding: 12px 14px; cursor: pointer;"
+                            onchange="const sg = document.getElementById('storeNameGroup'); if (sg) { sg.style.display = (this.value === 'seller' ? 'block' : 'none'); }"
+                        >
+                            <option value="buyer" style="background: #120910; color: #ffd57e;" <%= (typeof intent !== 'undefined' && intent === 'seller') ? '' : 'selected' %>>
+                                Explorer Captain (Buyer)
+                            </option>
+                            <option value="seller" style="background: #120910; color: #ffd57e;" <%= (typeof intent !== 'undefined' && intent === 'seller') ? 'selected' : '' %>>
+                                Chartered Merchant (Seller)
+                            </option>
+                        </select>
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- ==================================
+                     STORE NAME (MERCHANT ONLY)
+                =================================== -->
+
+                <div class="input-group" id="storeNameGroup" style="<%= (typeof intent !== 'undefined' && intent === 'seller') ? 'display: block;' : 'display: none;' %>">
+
+                    <label for="storeName">
+                        MERCHANT TRADING POST NAME
+                    </label>
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            📜
+                        </span>
+
+                        <input
+                            type="text"
+                            id="storeName"
+                            name="storeName"
+                            placeholder="e.g. Cutlass Steel & Forgeworks"
+                            autocomplete="organization"
+                        >
+
                     </div>
 
                 </div>
@@ -349,6 +410,19 @@
 
                 </button>
 
+                <!-- ==================================
+                     GOOGLE AUTHENTICATION
+                =================================== -->
+
+                <div class="auth-oauth-divider">
+                    <span>⚓ OR SAIL WITH GOOGLE ⚓</span>
+                </div>
+
+                <a href="/auth/google?intent=<%= typeof intent !== 'undefined' ? intent : 'buyer' %>" class="btn-google-auth" id="btnGoogleRegister">
+                    <span class="google-icon">🌐</span>
+                    <span>CONTINUE WITH GOOGLE</span>
+                </a>
+
 
             </form>
 
@@ -364,7 +438,7 @@
                     Already an explorer?
                 </span>
 
-                <a href="/login">
+                <a href="/login?intent=<%= typeof intent !== 'undefined' ? intent : 'buyer' %>">
                     Return to the realm
                 </a>
 

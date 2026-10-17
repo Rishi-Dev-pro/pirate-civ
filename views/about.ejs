@@ -2,108 +2,357 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Guild Lore & Archipelago Chronicle | Pirate-Civ" %></title>
 
-    <title><%= page_title %></title>
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <link rel="stylesheet" href="/css/about.css">
+    <!-- Master & About Styles -->
+    <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
+    <link rel="stylesheet" href="/css/island-store.css?v=p35_v1">
+    <link rel="stylesheet" href="/css/about.css?v=p63_lore_v1">
 
+    <style>
+        .lore-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 24px 80px 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .lore-hero {
+            background: rgba(18, 24, 32, 0.92);
+            border: 1px solid rgba(212, 147, 57, 0.4);
+            border-radius: 12px;
+            padding: 40px 32px;
+            margin-bottom: 32px;
+            text-align: center;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+        }
+
+        .lore-hero h1 {
+            font-family: "Cinzel", serif;
+            font-size: 2.4rem;
+            color: #ffd57e;
+            margin: 0 0 12px 0;
+            letter-spacing: 0.05em;
+        }
+
+        .lore-hero p {
+            font-size: 1.05rem;
+            color: #fff4db;
+            max-width: 780px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        .lore-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 24px;
+            margin-bottom: 36px;
+        }
+
+        .lore-card {
+            background: rgba(18, 24, 32, 0.9);
+            border: 1px solid rgba(212, 147, 57, 0.25);
+            border-radius: 10px;
+            padding: 24px 26px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+            transition: all 0.25s ease;
+        }
+
+        .lore-card:hover {
+            border-color: #ffd57e;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(212, 147, 57, 0.25);
+        }
+
+        .lore-card-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 14px;
+            border-bottom: 1px solid rgba(212, 147, 57, 0.2);
+            padding-bottom: 10px;
+        }
+
+        .lore-card-header h2 {
+            font-family: "Cinzel", serif;
+            font-size: 1.25rem;
+            color: #ffd57e;
+            margin: 0;
+            letter-spacing: 0.04em;
+        }
+
+        .lore-card-header .icon {
+            font-size: 1.5rem;
+        }
+
+        .lore-card p {
+            font-size: 0.92rem;
+            color: #cbd5e1;
+            line-height: 1.6;
+            margin: 0 0 12px 0;
+        }
+
+        .island-mini-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .island-mini-pill {
+            background: rgba(10, 15, 20, 0.6);
+            border: 1px solid rgba(212, 147, 57, 0.2);
+            border-radius: 6px;
+            padding: 8px 10px;
+            font-size: 0.85rem;
+            color: #fff4db;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        .island-mini-pill:hover {
+            border-color: #ffd57e;
+            color: #ffd57e;
+            background: rgba(20, 30, 42, 0.7);
+        }
+
+        .trade-flow-steps {
+            list-style: none;
+            padding: 0;
+            margin: 16px 0;
+            counter-reset: trade-step;
+        }
+
+        .trade-flow-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+            font-size: 0.9rem;
+            color: #cbd5e1;
+        }
+
+        .trade-step-badge {
+            background: linear-gradient(135deg, #ffd57e, #d49339);
+            color: #0d1117;
+            font-weight: 800;
+            font-size: 0.75rem;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .lore-footer-banner {
+            background: rgba(18, 24, 32, 0.92);
+            border: 1px solid rgba(212, 147, 57, 0.35);
+            border-radius: 10px;
+            padding: 24px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .btn-gold {
+            background: linear-gradient(135deg, #ffd57e 0%, #d49339 50%, #a46c1b 100%);
+            border: 1px solid #ffd57e;
+            color: #0d1117;
+            padding: 12px 24px;
+            font-family: "Cinzel", serif;
+            font-size: 0.95rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-gold:hover {
+            filter: brightness(1.1);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 147, 57, 0.4);
+        }
+    </style>
 </head>
 
+<body class="theme-corsair">
 
-<body>
+    <!-- Atmospheric Fixed Backdrop (Replaces unoptimized demo video) -->
+    <div class="store-backdrop">
+        <img src="/images/astrolabe-bg.jpg"
+             alt="Archipelago Guild Lore Backdrop"
+             class="store-bg-img"
+             onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
+        <div class="store-vignette"></div>
+    </div>
 
-
-    <!-- Background Video -->
-
-    <video autoplay muted loop playsinline id="bg-video">
-
-        <source
-            src="/videos/about.mp4"
-            type="video/mp4"
-        >
-
-    </video>
-
-
-    <div class="overlay"></div>
-
-
-    <!-- Reusable Navbar -->
-
+    <!-- Reusable Main Navigation Bar -->
     <%- include("partials/header") %>
 
+    <main class="lore-container">
 
-    <!-- Hero -->
+        <!-- Breadcrumbs -->
+        <nav class="detail-nav-bar" aria-label="Guild Lore Breadcrumbs" style="margin-bottom: 24px;">
+            <div class="detail-breadcrumbs">
+                <a href="/home" class="crumb-link">Sea Chart</a>
+                <span class="crumb-separator">›</span>
+                <span class="crumb-current">Guild Lore & Archipelago Chronicle</span>
+            </div>
+            <div class="store-header-controls">
+                <a href="/contact" class="btn-store-cart" style="text-decoration:none;" title="Dispatch Inquiry to Admiralty">
+                    <span>✉️ CONTACT GUILD</span>
+                </a>
+            </div>
+        </nav>
 
-    <section class="hero">
-
-        <div class="hero-text">
-
-            <h1>
-                About
-                <span>Pirate-Civ</span>
-            </h1>
-
+        <!-- Hero Section -->
+        <section class="lore-hero">
+            <h1>The Grand Admiralty Chronicle</h1>
             <p>
-                Pirate-Civ is a dark-fantasy nautical e-commerce realm. Navigate uncharted
-                waters across six storied islands, discover rare maritime artifacts, and trade with
-                legendary merchant armators beneath skies lit by fire and brimstone.
+                Pirate-Civ is a sovereign dark-fantasy maritime commerce realm. Beyond the reaches of imperial crowns,
+                independent merchant houses and daring corsairs navigate uncharted straits, exchanging rare artifacts,
+                master forged blades, and prized apparel across six ancient trading ports.
             </p>
+        </section>
+
+        <!-- Lore Matrix Grid -->
+        <div class="lore-grid">
+
+            <!-- Card 1: The Six Islands -->
+            <article class="lore-card">
+                <div class="lore-card-header">
+                    <span class="icon">🏝️</span>
+                    <h2>The Six Sovereign Ports</h2>
+                </div>
+                <p>
+                    Each island harbors distinct maritime craft, guilds, and ecological environments. Trade routes weave between them in perpetual equilibrium.
+                </p>
+                <div class="island-mini-grid">
+                    <a href="/island/astrolabe" class="island-mini-pill">🧭 Astrolabe Bay</a>
+                    <a href="/island/chronos" class="island-mini-pill">⏳ Isle of Chronos</a>
+                    <a href="/island/kraken_vault" class="island-mini-pill">🐙 Kraken's Vault</a>
+                    <a href="/island/cutlass_cove" class="island-mini-pill">⚔️ Cutlass Cove</a>
+                    <a href="/island/velvet_isle" class="island-mini-pill">🍷 Velvet Isle</a>
+                    <a href="/island/booty_cay" class="island-mini-pill">🌴 Booty Cay</a>
+                </div>
+            </article>
+
+            <!-- Card 2: How Trading Works -->
+            <article class="lore-card">
+                <div class="lore-card-header">
+                    <span class="icon">🪙</span>
+                    <h2>How Archipelago Trading Works</h2>
+                </div>
+                <p>
+                    Every transaction is governed by the Guild's strict non-tamperable ledger:
+                </p>
+                <ul class="trade-flow-steps">
+                    <li class="trade-flow-step">
+                        <span class="trade-step-badge">1</span>
+                        <span><strong>Explore Islands:</strong> Discover rare relics stowed across independent merchant houses.</span>
+                    </li>
+                    <li class="trade-flow-step">
+                        <span class="trade-step-badge">2</span>
+                        <span><strong>Stow in Hold:</strong> Gather items into your persistent ship's cargo hold.</span>
+                    </li>
+                    <li class="trade-flow-step">
+                        <span class="trade-step-badge">3</span>
+                        <span><strong>Voyage Checkout:</strong> Seal your delivery coordinates and port anchorage.</span>
+                    </li>
+                    <li class="trade-flow-step">
+                        <span class="trade-step-badge">4</span>
+                        <span><strong>Demo Settlement:</strong> Settle order via simulated demo doubloons.</span>
+                    </li>
+                    <li class="trade-flow-step">
+                        <span class="trade-step-badge">5</span>
+                        <span><strong>Fleet Fulfillment:</strong> Track merchant caravels across nautical lifecycle stages.</span>
+                    </li>
+                </ul>
+            </article>
+
+            <!-- Card 3: The Merchant Guild -->
+            <article class="lore-card">
+                <div class="lore-card-header">
+                    <span class="icon">⚒️</span>
+                    <h2>Chartered Merchant Houses</h2>
+                </div>
+                <p>
+                    Merchants captain their own sovereign storefronts, forge unique catalog cargo, manage vault stock in real-time, and dispatch caravel fleets to fulfill buyer voyages.
+                </p>
+                <p>
+                    Each merchant operates with strict isolation: no merchant can tamper with another's wares or orders.
+                </p>
+                <div style="margin-top: 14px;">
+                    <a href="/explorers" class="island-mini-pill" style="display:inline-flex;">
+                        🧭 View Chartered Merchants
+                    </a>
+                </div>
+            </article>
+
+            <!-- Card 4: The Explorer's Code -->
+            <article class="lore-card">
+                <div class="lore-card-header">
+                    <span class="icon">📜</span>
+                    <h2>The Explorer's Code</h2>
+                </div>
+                <p>
+                    <strong>Article I:</strong> True inventory integrity. All listed stock is guarded in verified island vaults.
+                </p>
+                <p>
+                    <strong>Article II:</strong> Sovereign doubloons. Prices and discounts are enforced server-side; client manipulation is instantly repelled.
+                </p>
+                <p>
+                    <strong>Article III:</strong> Open seas. Any buyer may chart voyages; any registered merchant may forge cargo.
+                </p>
+            </article>
 
         </div>
 
-    </section>
+        <!-- Call to Action Banner -->
+        <section class="lore-footer-banner">
+            <div>
+                <h3 style="font-family:'Cinzel', serif; font-size:1.2rem; color:#ffd57e; margin:0 0 6px 0;">
+                    Ready to Cast Off from Port?
+                </h3>
+                <p style="color:#8b9bb4; font-size:0.9rem; margin:0;">
+                    Chart your course to the six trading islands or dispatch a query to the Grand Admiralty.
+                </p>
+            </div>
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <a href="/home#sea-chart-section" class="btn-gold" id="btnLoreSeaChart">
+                    🗺️ Explore the Archipelago
+                </a>
+                <a href="/contact" class="btn-store-cart" style="text-decoration:none;" id="btnLoreContact">
+                    ✉️ Contact Admiralty
+                </a>
+            </div>
+        </section>
 
+    </main>
 
-    <!-- Features -->
-
-    <section class="cards">
-
-        <div class="card">
-
-            <h3>⚓ The Archipelago</h3>
-
-            <p>
-                From the volcanic armories of Ignis to the gilded vaults of Golden Haven,
-                each island harbors specialized craft, rare relics, and distinct guilds of commerce.
-            </p>
-
-        </div>
-
-
-        <div class="card">
-
-            <h3>⚔ Merchant Armators</h3>
-
-            <p>
-                Independent corsairs and seafaring merchants anchor in our Grand Bazaar,
-                offering curated expeditions, nautical instruments, and legendary goods.
-            </p>
-
-        </div>
-
-
-        <div class="card">
-
-            <h3>🪙 Doubloon Economy</h3>
-
-            <p>
-                A unified maritime trading network backed by cryptographic security,
-                honored across all ports, trading posts, and contested sovereign waters.
-            </p>
-
-        </div>
-
-    </section>
-
-     <!-- Footer -->
-
+    <!-- Global Footer -->
     <%- include("partials/footer") %>
-
 
 </body>
 

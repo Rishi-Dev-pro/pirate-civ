@@ -1,6 +1,16 @@
 import crypto from "crypto";
-
 import User from "../models/user.js";
+
+const redirectToLogin = (req, res) => {
+    const isSeller = (req.originalUrl && req.originalUrl.startsWith("/seller")) ||
+                     (req.path && req.path.startsWith("/seller"));
+    const intent = isSeller ? "seller" : "buyer";
+    if (req.session) {
+        req.session.authIntent = intent;
+        req.session.returnTo = req.originalUrl || req.path;
+    }
+    return res.redirect("/login");
+};
 
 
 const authMiddleware = async (req, res, next) => {
@@ -11,9 +21,9 @@ const authMiddleware = async (req, res, next) => {
            Check Session
         ========================== */
 
-        if (!req.session.userId) {
+        if (!req.session || !req.session.userId) {
 
-            return res.redirect("/login");
+            return redirectToLogin(req, res);
 
         }
 
@@ -24,7 +34,7 @@ const authMiddleware = async (req, res, next) => {
 
         if (!req.session.authToken) {
 
-            return res.redirect("/login");
+            return redirectToLogin(req, res);
 
         }
 
@@ -34,12 +44,12 @@ const authMiddleware = async (req, res, next) => {
         ========================== */
 
         const cookieToken =
-            req.signedCookies.auth_token;
+            req.signedCookies ? req.signedCookies.auth_token : null;
 
 
         if (!cookieToken) {
 
-            return res.redirect("/login");
+            return redirectToLogin(req, res);
 
         }
 
@@ -56,7 +66,7 @@ const authMiddleware = async (req, res, next) => {
 
             res.clearCookie("auth_token");
 
-            return res.redirect("/login");
+            return redirectToLogin(req, res);
 
         }
 
@@ -76,7 +86,7 @@ const authMiddleware = async (req, res, next) => {
 
             res.clearCookie("auth_token");
 
-            return res.redirect("/login");
+            return redirectToLogin(req, res);
 
         }
 
@@ -104,7 +114,7 @@ const authMiddleware = async (req, res, next) => {
 
             res.clearCookie("auth_token");
 
-            return res.redirect("/login");
+            return redirectToLogin(req, res);
 
         }
 
@@ -125,7 +135,7 @@ const authMiddleware = async (req, res, next) => {
 
         console.log(error.message);
 
-        res.redirect("/login");
+        return redirectToLogin(req, res);
 
     }
 

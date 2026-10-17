@@ -44,21 +44,8 @@
             </div>
 
             <div class="store-header-controls">
-                <div class="doubloons-pill">
-                    <span class="coin-icon">🪙</span>
-                    <span>Merchant Registry</span>
-                </div>
-
-                <a href="/seller/dashboard" id="headerDeckLink" class="btn-store-cart" style="text-decoration: none;" title="Return to Command Deck">
-                    <span>⚓ COMMAND DECK</span>
-                </a>
-
                 <a href="<%= storefrontUrl %>" id="headerStorefrontLink" class="btn-store-cart" style="text-decoration: none;" title="Open Public Storefront">
-                    <span>📜 STOREFRONT</span>
-                </a>
-
-                <a href="/home" class="btn-store-close" title="Return to Sea Chart">
-                    &times;
+                    <span>📜 PUBLIC STOREFRONT</span>
                 </a>
             </div>
         </nav>
@@ -103,7 +90,7 @@
             <% } %>
 
             <!-- Edit Profile Form -->
-            <form method="POST" action="/seller/profile" id="formSellerProfile">
+            <form method="POST" action="/seller/profile" id="formSellerProfile" enctype="multipart/form-data">
 
                 <!-- Row 1: Captain Name & Storefront Title -->
                 <div class="seller-form-row">
@@ -170,17 +157,26 @@
                     </div>
 
                     <div class="seller-form-group">
-                        <label for="inputAvatar">Avatar Path / URL</label>
-                        <input type="text"
-                               id="inputAvatar"
+                        <label for="inputAvatar">Avatar (Upload Image or Asset Path)</label>
+                        <input type="file"
+                               id="inputFileAvatar"
                                name="avatar"
                                class="seller-form-input"
+                               accept="image/*">
+                        <input type="text"
+                               id="inputAvatar"
+                               name="avatarPath"
+                               class="seller-form-input"
+                               style="margin-top: 6px;"
                                maxlength="500"
                                placeholder="/images/avatars/default-pirate.png"
                                value="<%= seller && seller.avatar ? seller.avatar : '/images/avatars/default-pirate.png' %>">
-                        <span style="font-size: 0.75rem; color: #94a3b8; margin-top: 4px; display: block;">
-                            Local image path or web URL for your captain's seal
-                        </span>
+                        <div style="margin-top: 6px;">
+                            <label style="font-size: 0.78rem; color: #94a3b8; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                                <input type="checkbox" name="removeAvatar" value="true">
+                                Restore Default Seal
+                            </label>
+                        </div>
                     </div>
                 </div>
 

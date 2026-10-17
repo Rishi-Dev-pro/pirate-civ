@@ -44,29 +44,11 @@
             </div>
 
             <div class="store-header-controls">
-                <div class="doubloons-pill">
-                    <span class="coin-icon">🪙</span>
-                    <span>Merchant Vault</span>
-                </div>
-
-                <a href="/seller/dashboard" class="btn-store-cart" style="text-decoration: none;" title="Return to Command Deck">
-                    <span>⚓ DECK</span>
+                <a href="/seller/products/new" class="btn-store-cart" style="text-decoration: none; background: rgba(212, 147, 57, 0.25); border-color: rgba(255, 215, 0, 0.6); color: #ffd700;" title="Forge New Cargo">
+                    <span>➕ FORGE NEW CARGO</span>
                 </a>
-
-                <a href="/seller/orders" id="headerOrdersLink" class="btn-store-cart" style="text-decoration: none;" title="Dispatch Manifests">
-                    <span>📦 MANIFESTS</span>
-                </a>
-
-                <a href="/seller/profile" id="headerProfileLink" class="btn-store-cart" style="text-decoration: none;" title="Captain's Profile">
-                    <span>👤 PROFILE</span>
-                </a>
-
                 <a href="<%= storefrontUrl %>" class="btn-store-cart" style="text-decoration: none;" title="Open Public Storefront">
                     <span>📜 STOREFRONT</span>
-                </a>
-
-                <a href="/home" class="btn-store-close" title="Return to Sea Chart">
-                    &times;
                 </a>
             </div>
         </nav>
@@ -166,7 +148,9 @@
                                                 <a href="/product/<%= p._id %>" class="product-name-link" title="Inspect Public Details Sheet">
                                                     <%= p.name %>
                                                 </a>
-                                                <span class="product-slug-text">slug: <%= p.slug %></span>
+                                                <span class="product-slug-text">
+                                                    slug: <%= p.slug %> &bull; Sold: <strong><%= p.analytics ? p.analytics.unitsSold : 0 %></strong> (🪙 <%= (p.analytics ? p.analytics.revenue : 0).toLocaleString() %>)
+                                                </span>
                                             </div>
                                         </div>
                                     </td>

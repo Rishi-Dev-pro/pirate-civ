@@ -1,31 +1,32 @@
 import User from "../models/user.js";
 
-
+/**
+ * Controller action: Get all chartered merchants for Buyer Explorer Discovery (Phase 6.3)
+ * Scoped strictly to User.role === 'seller'. Never displays private emails or raw products.
+ */
 const getAllUsers = async (req, res) => {
 
     try {
 
-        const users = await User
-            .find({})
-            .select("-password -authSecretHash")
-            .sort({ createdAt: -1 });
-
+        const sellers = await User
+            .find({ role: "seller" })
+            .select("name storeName homeIsland bio avatar createdAt")
+            .sort({ createdAt: -1 })
+            .lean();
 
         res.render("users", {
 
-            page_title: "Registered Explorers",
+            page_title: "Chartered Merchants & Explorers | Pirate-Civ",
 
-            users: users,
+            users: sellers,
 
             user: req.user
 
         });
 
-
     } catch (error) {
 
-        console.log("Users Page Error:");
-        console.log(error.message);
+        console.error("Users Page Error:", error.message);
 
         res.status(500).send(
             "Something went wrong while loading the explorers."
@@ -34,7 +35,6 @@ const getAllUsers = async (req, res) => {
     }
 
 };
-
 
 export {
     getAllUsers

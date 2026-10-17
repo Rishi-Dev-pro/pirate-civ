@@ -46,25 +46,8 @@
             </div>
 
             <div class="store-header-controls">
-                <div class="doubloons-pill">
-                    <span class="coin-icon">🪙</span>
-                    <span>Merchant Deck</span>
-                </div>
-
                 <a href="/seller/orders" id="headerBackOrdersLink" class="btn-store-cart" style="text-decoration: none;" title="Return to Manifests">
-                    <span>📜 MANIFESTS</span>
-                </a>
-
-                <a href="/seller/dashboard" class="btn-store-cart" style="text-decoration: none;" title="Return to Command Deck">
-                    <span>⚓ DECK</span>
-                </a>
-
-                <a href="<%= storefrontUrl %>" class="btn-store-cart" style="text-decoration: none;" title="Open Public Storefront">
-                    <span>📜 STOREFRONT</span>
-                </a>
-
-                <a href="/seller/orders" class="btn-store-close" title="Return to Manifests">
-                    &times;
+                    <span>← BACK TO MANIFESTS</span>
                 </a>
             </div>
         </nav>
@@ -83,17 +66,32 @@
                 </div>
 
                 <div class="seller-stat-badges" style="align-items: center;">
-                    <span class="badge-status badge-status-<%= (typeof sellerStatus !== 'undefined' ? sellerStatus : (order.sellerStatus || order.status)) %>" id="manifestStatusBadge" style="font-size: 0.95rem; padding: 6px 16px;">
-                        ⚓ YOUR FULFILLMENT: <%= (typeof sellerStatus !== 'undefined' ? sellerStatus : (order.sellerStatus || order.status)).toUpperCase() %>
-                    </span>
+                    <% 
+                        const isOrderReady = order.paymentStatus === 'paid' || 
+                            ['confirmed', 'processing', 'shipped', 'delivered', 'partially_fulfilled'].includes(order.status) || 
+                            (order.fulfillments && order.fulfillments.some(f => ['confirmed', 'processing', 'shipped', 'delivered'].includes(f.status)));
+                    %>
+                    <% if (isOrderReady) { %>
+                        <span class="badge-status badge-pay-paid" id="manifestPaymentBadge" style="font-size: 0.95rem; padding: 6px 16px; background:rgba(34,197,94,0.2); border:1px solid #22c55e; color:#86efac;">
+                            🪙 PAYMENT: <%= (order.paymentStatus || 'paid').toUpperCase() %>
+                        </span>
+                        <span class="badge-status badge-status-<%= (typeof sellerStatus !== 'undefined' ? sellerStatus : (order.sellerStatus || order.status)) %>" id="manifestStatusBadge" style="font-size: 0.95rem; padding: 6px 16px;">
+                            ⚓ FULFILLMENT: <%= (typeof sellerStatus !== 'undefined' ? sellerStatus : (order.sellerStatus || order.status)).toUpperCase() %>
+                        </span>
+                    <% } else { %>
+                        <span class="badge-status badge-pay-pending" id="manifestPaymentBadge" style="font-size: 0.95rem; padding: 6px 16px; background:rgba(234,179,8,0.2); border:1px solid #eab308; color:#fde047;">
+                            ⏳ PAYMENT: PENDING
+                        </span>
+                        <span class="badge-status" id="manifestStatusBadge" style="font-size: 0.95rem; padding: 6px 16px; background:rgba(100,116,139,0.2); border:1px solid #64748b; color:#cbd5e1;">
+                            ⚓ FULFILLMENT: NOT READY (Awaiting Buyer Payment)
+                        </span>
+                    <% } %>
                     <% if (order.status === 'partially_fulfilled' || (order.fulfillments && order.fulfillments.length > 1)) { %>
+
                         <span class="badge-status badge-status-<%= order.status %>" id="overallStatusBadge" style="font-size: 0.85rem; padding: 4px 12px; background: rgba(212,147,57,0.15); border: 1px dashed #d49339;">
                             VOYAGE: <%= order.status.replace('_', ' ').toUpperCase() %>
                         </span>
                     <% } %>
-                    <span class="badge-status badge-pay-<%= order.paymentStatus %>" id="manifestPaymentBadge" style="font-size: 0.95rem; padding: 6px 16px;">
-                        🪙 PAYMENT: <%= (order.paymentStatus || 'pending').toUpperCase() %>
-                    </span>
                 </div>
             </header>
 
@@ -233,8 +231,9 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
                         <div>
                             <div style="font-size: 0.82rem; color: #b8a892; font-family: 'Cinzel', serif; text-transform: uppercase;">
-                                Your Fulfillment Stage
+                                YOUR FULFILLMENT: <%= (typeof sellerStatus !== 'undefined' ? sellerStatus : (order.sellerStatus || order.status)).toUpperCase() %>
                             </div>
+
                             <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px;">
                                 <% const effectiveSellerStatus = typeof sellerStatus !== 'undefined' ? sellerStatus : (order.sellerStatus || order.status); %>
                                 <span class="badge-status badge-status-<%= effectiveSellerStatus %>" style="font-size: 0.95rem; padding: 6px 14px;">
@@ -268,13 +267,20 @@
 
                             <div style="display: flex; gap: 12px; flex-wrap: wrap;" id="fulfillmentActionsDeck">
                                 <% if (permittedTransitions.includes("confirmed")) { %>
-                                    <form action="/seller/orders/<%= order.id %>/status" method="POST" style="margin: 0;">
-                                        <input type="hidden" name="status" value="confirmed">
-                                        <button type="submit" class="btn-form-submit" id="btnTransitionConfirmed" style="padding: 10px 20px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 6px;">
-                                            <span>📜</span>
-                                            <span>Confirm Manifest</span>
+                                    <% if (order.paymentStatus === "paid") { %>
+                                        <form action="/seller/orders/<%= order.id %>/status" method="POST" style="margin: 0;">
+                                            <input type="hidden" name="status" value="confirmed">
+                                            <button type="submit" class="btn-form-submit" id="btnTransitionConfirmed" style="padding: 10px 20px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 6px;">
+                                                <span>📜</span>
+                                                <span>Confirm Manifest</span>
+                                            </button>
+                                        </form>
+                                    <% } else { %>
+                                        <button type="button" class="btn-form-submit" id="btnTransitionConfirmedDisabled" disabled style="opacity: 0.5; cursor: not-allowed; padding: 10px 20px; font-size: 0.88rem; display: inline-flex; align-items: center; gap: 6px;" title="Buyer demo payment must be cleared before merchant fulfillment can begin.">
+                                            <span>⏳</span>
+                                            <span>Awaiting Buyer Payment</span>
                                         </button>
-                                    </form>
+                                    <% } %>
                                 <% } %>
 
                                 <% if (permittedTransitions.includes("processing")) { %>

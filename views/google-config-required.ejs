@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "Google Fleet Authentication Configuration | Pirate-Civ" %></title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/auth.css">
+    <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
+    <style>
+        .config-card {
+            max-width: 580px;
+            margin: 40px auto;
+            padding: 36px 32px;
+            background: rgba(14, 8, 12, 0.94);
+            border: 1px solid rgba(212, 147, 57, 0.45);
+            border-radius: 12px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.85);
+            text-align: center;
+            color: #d8c3a5;
+        }
+        .config-icon {
+            font-size: 3rem;
+            margin-bottom: 16px;
+        }
+        .config-title {
+            font-family: "Cinzel", serif;
+            font-size: 1.6rem;
+            color: #ffd700;
+            margin-bottom: 12px;
+            letter-spacing: 1px;
+        }
+        .config-desc {
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            color: #bfa78a;
+        }
+        .code-box {
+            background: rgba(4, 2, 6, 0.85);
+            border: 1px solid rgba(212, 147, 57, 0.25);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: left;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: #ffd57e;
+            margin-bottom: 24px;
+            line-height: 1.6;
+            overflow-x: auto;
+        }
+        .config-actions {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn-config-primary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #a76d1e, #d49339);
+            color: #0b0704;
+            font-family: "Cinzel", serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-config-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(212, 147, 57, 0.5);
+        }
+        .btn-config-secondary {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: rgba(212, 147, 57, 0.12);
+            border: 1px solid rgba(212, 147, 57, 0.35);
+            color: #ffd700;
+            font-family: "Cinzel", serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+        .btn-config-secondary:hover {
+            background: rgba(212, 147, 57, 0.22);
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body class="gateway-body" style="min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px;">
+
+    <div class="config-card">
+        <div class="config-icon">⚓</div>
+        <h1 class="config-title">GOOGLE FLEET AUTHENTICATION</h1>
+        <p class="config-desc">
+            Pirate-Civ implements server-side Google OAuth 2.0 authorization code flow.
+            To connect to Google's live identity fleet in your deployment, set your sovereign credentials in your <code>.env</code> file:
+        </p>
+
+        <div class="code-box">
+GOOGLE_CLIENT_ID=your_google_client_id_here.apps.googleusercontent.com<br>
+GOOGLE_CLIENT_SECRET=GOCSPX-your_google_client_secret_here<br>
+GOOGLE_CALLBACK_URL=http://localhost:3000/auth/google/callback
+        </div>
+
+        <div class="config-actions">
+            <a href="/login?intent=<%= typeof intent !== 'undefined' ? intent : 'buyer' %>" class="btn-config-primary">
+                Return to Sovereign Sign-In
+            </a>
+            <a href="/register?intent=<%= typeof intent !== 'undefined' ? intent : 'buyer' %>" class="btn-config-secondary">
+                Register with Email
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>

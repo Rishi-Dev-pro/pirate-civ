@@ -27,21 +27,27 @@ router.use((req, res, next) => {
 
 
 // =====================================================
+import { initiateGoogleAuth, handleGoogleCallback } from "../controller/googleAuth.js";
+
+// =====================================================
 // LOGIN PAGE
 // =====================================================
 
-router.get("/login", (req, res) => {
+router.get("/login", optionalAuth, (req, res) => {
+    if (req.user) {
+        if (req.user.role === "seller") return res.redirect("/seller/dashboard");
+        return res.redirect("/home");
+    }
+
+    const intent = (req.query.intent || req.session?.authIntent || "buyer").toLowerCase().trim();
+    if (req.session) req.session.authIntent = intent;
 
     res.render("login", {
-
         page_title: "Login",
-
-        error: null,
-
-        email: ""
-
+        error: req.query.error || null,
+        email: "",
+        intent: intent
     });
-
 });
 
 
@@ -49,21 +55,31 @@ router.get("/login", (req, res) => {
 // REGISTER PAGE
 // =====================================================
 
-router.get("/register", (req, res) => {
+router.get("/register", optionalAuth, (req, res) => {
+    if (req.user) {
+        if (req.user.role === "seller") return res.redirect("/seller/dashboard");
+        return res.redirect("/home");
+    }
+
+    const intent = (req.query.intent || req.session?.authIntent || "buyer").toLowerCase().trim();
+    if (req.session) req.session.authIntent = intent;
 
     res.render("register", {
-
         page_title: "Register",
-
-        error: null,
-
+        error: req.query.error || null,
         name: "",
-
-        email: ""
-
+        email: "",
+        intent: intent
     });
-
 });
+
+
+// =====================================================
+// GOOGLE OAUTH ROUTES
+// =====================================================
+
+router.get("/auth/google", initiateGoogleAuth);
+router.get("/auth/google/callback", handleGoogleCallback);
 
 
 // =====================================================
@@ -97,12 +113,20 @@ router.get(
 
 
 // =====================================================
-// USERS / REGISTERED EXPLORERS
+// USERS / CHARTERED EXPLORERS & MERCHANTS
 // =====================================================
+
+router.get(
+    "/explorers",
+    authMiddleware,
+    requireBuyer,
+    getAllUsers
+);
 
 router.get(
     "/users",
     authMiddleware,
+    requireBuyer,
     getAllUsers
 );
 
@@ -293,24 +317,39 @@ import {
     updateSellerProfile
 } from "../controller/sellers.js";
 
+import {
+    uploadAvatarMiddleware,
+    uploadProductImageMiddleware
+} from "../middleware/upload.js";
+
+import {
+    getFavorites,
+    toggleFavorite
+} from "../controller/favorites.js";
+
+import {
+    getBuyerProfile,
+    updateBuyerProfile
+} from "../controller/profile.js";
+
 router.get("/seller/dashboard", authMiddleware, requireSeller, renderSellerDashboard);
 router.get("/seller/portal", authMiddleware, requireSeller, (req, res) => res.redirect("/seller/dashboard"));
 router.get("/seller", authMiddleware, requireSeller, (req, res) => res.redirect("/seller/dashboard"));
 
-// Seller Profile Management (Milestone 4.5)
+// Seller Profile Management (Milestone 4.5 & Phase 6.3)
 router.get("/seller/profile", authMiddleware, requireSeller, renderSellerProfile);
-router.post("/seller/profile", authMiddleware, requireSeller, updateSellerProfile);
-router.post("/seller/profile/edit", authMiddleware, requireSeller, updateSellerProfile);
+router.post("/seller/profile", authMiddleware, requireSeller, uploadAvatarMiddleware, updateSellerProfile);
+router.post("/seller/profile/edit", authMiddleware, requireSeller, uploadAvatarMiddleware, updateSellerProfile);
 
-// Seller Product Management (Milestone 4.2 & 4.3)
+// Seller Product Management (Milestone 4.2 & 4.3 & Phase 6.3 Uploads)
 router.get("/seller/products", authMiddleware, requireSeller, renderSellerProducts);
 router.get("/seller/products/new", authMiddleware, requireSeller, renderCreateProduct);
-router.post("/seller/products/new", authMiddleware, requireSeller, createProduct);
-router.post("/seller/products", authMiddleware, requireSeller, createProduct);
+router.post("/seller/products/new", authMiddleware, requireSeller, uploadProductImageMiddleware, createProduct);
+router.post("/seller/products", authMiddleware, requireSeller, uploadProductImageMiddleware, createProduct);
 
 router.get("/seller/products/:productId/edit", authMiddleware, requireSeller, renderEditProduct);
-router.post("/seller/products/:productId/edit", authMiddleware, requireSeller, updateProduct);
-router.post("/seller/products/:productId/update", authMiddleware, requireSeller, updateProduct);
+router.post("/seller/products/:productId/edit", authMiddleware, requireSeller, uploadProductImageMiddleware, updateProduct);
+router.post("/seller/products/:productId/update", authMiddleware, requireSeller, uploadProductImageMiddleware, updateProduct);
 router.post("/seller/products/:productId/toggle-availability", authMiddleware, requireSeller, toggleProductAvailability);
 router.post("/seller/products/:productId/toggle", authMiddleware, requireSeller, toggleProductAvailability);
 router.post("/seller/products/:productId/delete", authMiddleware, requireSeller, deleteProduct);
@@ -334,6 +373,7 @@ router.get("/seller/:sellerId", authMiddleware, renderSellerStorefront);
 // CARGO CART / CARGO HOLD ROUTES (MILESTONE 3.5)
 // =====================================================
 
+import { forbidSeller } from "../middleware/roles.js";
 import {
     getCart,
     addToCart,
@@ -342,15 +382,16 @@ import {
     clearCart
 } from "../controller/cart.js";
 
-router.get("/cart", optionalAuth, getCart);
-router.post("/cart/add", optionalAuth, addToCart);
-router.post("/cart/update", optionalAuth, updateCartItem);
-router.post("/cart/remove", optionalAuth, removeCartItem);
-router.post("/cart/clear", optionalAuth, clearCart);
+router.get("/cart", optionalAuth, forbidSeller, getCart);
+router.post("/cart/add", optionalAuth, forbidSeller, addToCart);
+router.post("/cart/update", optionalAuth, forbidSeller, updateCartItem);
+router.post("/cart/remove", optionalAuth, forbidSeller, removeCartItem);
+router.post("/cart/clear", optionalAuth, forbidSeller, clearCart);
+
 
 
 // =====================================================
-// VOYAGE CHECKOUT ROUTES (MILESTONE 5.2)
+// VOYAGE CHECKOUT & DEMO PAYMENT ROUTES (MILESTONE 5.2 & PHASE 6.3)
 // =====================================================
 
 import { requireBuyer } from "../middleware/roles.js";
@@ -358,6 +399,8 @@ import {
     renderCheckout,
     validateCheckout,
     processCheckout,
+    renderPaymentPage,
+    processPayment,
     renderBuyerOrders,
     renderBuyerOrderDetail
 } from "../controller/orders.js";
@@ -366,9 +409,29 @@ router.get("/checkout", authMiddleware, requireBuyer, renderCheckout);
 router.post("/checkout", authMiddleware, requireBuyer, validateCheckout);
 router.post("/checkout/confirm", authMiddleware, requireBuyer, processCheckout);
 
+// Demo Payment Routes (Phase 6.3 Section 28 & 29)
+router.get("/orders/:orderId/payment", authMiddleware, requireBuyer, renderPaymentPage);
+router.post("/orders/:orderId/pay", authMiddleware, requireBuyer, processPayment);
+
 // Buyer Order History & Tracking (Milestone 5.4)
 router.get("/orders", authMiddleware, requireBuyer, renderBuyerOrders);
 router.get("/orders/:orderId", authMiddleware, requireBuyer, renderBuyerOrderDetail);
+
+
+// =====================================================
+// FAVORITES / WISHLIST ROUTES (PHASE 6.3 SECTION 25)
+// =====================================================
+
+router.get("/favorites", authMiddleware, requireBuyer, getFavorites);
+router.post("/favorites/:productId/toggle", authMiddleware, requireBuyer, toggleFavorite);
+
+
+// =====================================================
+// BUYER PROFILE MANAGEMENT (PHASE 6.3 SECTION 33)
+// =====================================================
+
+router.get("/profile", authMiddleware, getBuyerProfile);
+router.post("/profile", authMiddleware, uploadAvatarMiddleware, updateBuyerProfile);
 
 
 
