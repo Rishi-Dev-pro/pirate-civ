@@ -4,6 +4,45 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-17] — Phase 6 / Milestone 6.2: Role-Aware Global Navigation (MILESTONE 6.2 COMPLETE)
+
+### Added & Implemented
+* **Role-Aware Global Navigation Partial (`views/partials/header.ejs`):**
+  - Replaced legacy static header with a modular role-aware global navigation partial included across all application views.
+  - Implemented a role-aware navigation matrix catering to four states:
+    - **Guest:** Brand logo points to `/`, public links (The Sea Awaits `/`, Guild Lore `/about`, Dispatch `/contact`, Sign In `/login`, Join Crew `/register`), authenticated links strictly hidden.
+    - **Buyer:** Brand logo points to `/home`, Sea Chart (`/home`), Cargo Hold (`/cart`, `#navCargoHold`), My Voyages (`/orders`, `#navBuyerOrders`), Explorers (`/users`), Guild Lore (`/about`), Captain user badge (`#navUserBadge`), and Logout (`/logout`, `#navLogout`). Seller management links are strictly omitted.
+    - **Seller:** Brand logo points to `/seller/dashboard`, Command Deck (`/seller/dashboard`, `#navSellerDeck`), Manage Cargo (`/seller/products`, `#navSellerProducts`), Merchant Orders (`/seller/orders`, `#navSellerOrders`), Merchant Profile (`/seller/profile`, `#navSellerProfile`), Sea Chart (`/home`, `#navSeaChart`), Merchant badge (`#navUserBadge`), and Logout (`/logout`, `#navLogout`). Buyer-specific operational links are strictly omitted.
+    - **Admin:** Brand logo points to `/home`, Sea Chart (`/home`), Explorers (`/users`), Guild Lore (`/about`), Dispatch (`/contact`), Admin badge, and Logout.
+  - Active destination indicators: Evaluates current route using `isNavActive` helper against `currentPath` and `page_title`, attaching `.active` styling and `aria-current="page"` attribute.
+  - Mobile responsiveness: Collapsible mobile navigation menu via accessible toggle button (`#navToggleBtn`, `aria-expanded`, `aria-controls`), sliding down cleanly on viewports `≤ 900px` without horizontal overflow.
+* **Global Navigation Route Context Middleware (`routes/web.js`):**
+  - Attached router-level middleware setting `res.locals.currentPath = req.path` across all routes.
+  - Made `GET /about` use `optionalAuth`, allowing unauthenticated visitors to read Guild Lore without unexpected login redirects.
+  - Preserved existing authorization middleware: buyer and guest restrictions on seller routes remain strictly enforced (403/302).
+
+### Tested & Verified
+* 80 automated assertions in dedicated test suite `scratch/test_milestone_6_2.js`:
+  - Group A: Guest navigation (public links, Sign In, Register, brand destination, omission of authenticated links).
+  - Group B: Buyer navigation (Sea Chart, Cargo Hold, My Voyages, Explorers, Captain badge, omission of seller links).
+  - Group C: Seller navigation (Command Deck, Manage Cargo, Merchant Orders, Merchant Profile, Sea Chart, Merchant badge, omission of buyer orders).
+  - Group D: Authorization regression (guest redirects, buyer 403 on seller routes, seller access, ownership isolation).
+  - Group E: Navigation consistency, active indicators, and mobile toggle accessibility.
+* Full regression pass across all milestone suites (636/636 assertions passing):
+  - Phase 6.1: 45/45
+  - Phase 5.4: 92/92
+  - Phase 5.3: 70/70
+  - Phase 5.2: 64/64
+  - Phase 5.1: 80/80
+  - Phase 4.5: 76/76
+  - Phase 4.4: 75/75
+  - Phase 4.3: 61/61
+  - Phase 4.2: 67/67
+  - Phase 4.1: 64/64
+  - Phase 3.6: 96/96
+* Code health: 22/22 JS files pass syntax validation; 34/34 EJS templates compile cleanly.
+* Real browser execution via browser subagent: verified guest, buyer, and seller flows, responsive hamburger menu, and authorization protection.
+
 ## [2026-10-17] — Phase 6 / Milestone 6.1: Pirate-Civ Entry Map Gateway (MILESTONE 6.1 COMPLETE)
 
 ### Added & Implemented

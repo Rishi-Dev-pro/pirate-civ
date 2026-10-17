@@ -81,6 +81,16 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
   - Displayed the 6 canonical islands as world-building constellation chips.
   - Fully responsive on desktop and mobile viewports with accessible keyboard focus states and subtle interactive hover effects.
   - Validated with 45/45 automated tests (`scratch/test_milestone_6_1.js`), 636/636 regression assertions, and real browser verification with 0 console errors. **MILESTONE 6.1 COMPLETE.**
+* **Role-Aware Global Navigation (Milestone 6.2 COMPLETE):** Established a consistent, role-aware global navigation system across all views via `views/partials/header.ejs`.
+  - Replaced legacy static header with a unified, role-aware navigation matrix catering to 4 states:
+    1. **Guest State (`!user`):** Brand logo points to `/`, public links for The Sea Awaits (`/`), Guild Lore (`/about`), Dispatch (`/contact`), Sign In (`/login`), and Join Crew (`/register`). Authenticated-only links (Logout, Cargo Hold, My Voyages, Seller Deck/Cargo/Orders/Profile) are strictly hidden.
+    2. **Buyer State (`user.role === 'buyer'`):** Brand logo points to `/home`, Sea Chart (`/home`), Cargo Hold (`/cart`, `#navCargoHold`), My Voyages (`/orders`, `#navBuyerOrders`), Explorers (`/users`), Guild Lore (`/about`), user identity badge (`#navUserBadge`, `⚓ Captain [Name]`), and Logout (`/logout`, `#navLogout`). Seller management links are strictly omitted.
+    3. **Seller State (`user.role === 'seller'`):** Brand logo points to `/seller/dashboard`, Command Deck (`/seller/dashboard`, `#navSellerDeck`), Manage Cargo (`/seller/products`, `#navSellerProducts`), Merchant Orders (`/seller/orders`, `#navSellerOrders`), Merchant Profile (`/seller/profile`, `#navSellerProfile`), Sea Chart (`/home`, `#navSeaChart`), merchant identity badge (`#navUserBadge`), and Logout (`/logout`). Buyer-specific `#navBuyerOrders` is strictly omitted.
+    4. **Admin State (`user.role === 'admin'`):** Brand logo points to `/home`, Sea Chart (`/home`), Explorers (`/users`), Guild Lore (`/about`), Dispatch (`/contact`), admin identity badge (`#navUserBadge`), and Logout (`/logout`).
+  - Active destination indicator: Uses `isNavActive` helper checking `currentPath` and `page_title`, adding `.active` styling and `aria-current="page"`.
+  - Mobile responsiveness: Collapsible mobile navigation menu via accessible toggle button (`#navToggleBtn`, `aria-expanded`, `aria-controls`), sliding down cleanly on viewports `≤ 900px` without horizontal overflow.
+  - Zero authorization changes: Server-side RBAC and middleware remain authoritative.
+  - Validated with 80/80 automated dedicated tests (`scratch/test_milestone_6_2.js`), 636/636 regression assertions (5.4, 5.3, 5.2, 5.1, 4.5, 4.4, 4.3, 4.2, 4.1, 3.6), 22 JS and 34 EJS syntax checks, and browser verification. **MILESTONE 6.2 COMPLETE.**
 
 ---
 

@@ -17,6 +17,14 @@ import authMiddleware, { optionalAuth } from "../middleware/auth.js";
 
 const router = express.Router();
 
+// =====================================================
+// GLOBAL NAVIGATION CONTEXT MIDDLEWARE
+// =====================================================
+router.use((req, res, next) => {
+    res.locals.currentPath = req.path;
+    next();
+});
+
 
 // =====================================================
 // LOGIN PAGE
@@ -142,14 +150,14 @@ router.get(
 
 router.get(
     "/about",
-    authMiddleware,
+    optionalAuth,
     (req, res) => {
 
         res.render("about", {
 
             page_title: "About Us Page",
 
-            user: req.user
+            user: req.user || null
 
         });
 

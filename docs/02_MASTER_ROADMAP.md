@@ -244,9 +244,16 @@ gantt
   - Canonical 6-island archipelago displayed as world-building constellation chips.
   - Fully responsive layout on desktop and mobile viewports with accessible keyboard focus states and subtle interactive hover effects.
   - Validated with 45/45 dedicated automated tests (`scratch/test_milestone_6_1.js`), 636/636 regression assertions (5.4, 5.3, 5.2, 5.1, 4.5, 4.4, 4.3, 4.2, 4.1, 3.6), 22 JS and 34 EJS syntax checks, and real browser verification with 0 console errors.
-* **Milestone 6.2: Role-Aware Global Navigation [NEXT]**
-  - Update `views/partials/header.ejs` to dynamically render options based on `req.user.role`.
-* **Milestone 6.3: Comprehensive UI Polish & Micro-Interactions**
+* **Milestone 6.2: Role-Aware Global Navigation [COMPLETE]**
+  - Replaced legacy navigation in `views/partials/header.ejs` with a unified role-aware navigation matrix for Guest, Buyer, Seller, and Admin states.
+  - Guest: Logo points to `/`, public links (Sea Chart `/`, Guild Lore `/about`, Dispatch `/contact`, Sign In `/login`, Join Crew `/register`), authenticated links strictly hidden.
+  - Buyer: Logo points to `/home`, Sea Chart (`/home`), Cargo Hold (`/cart`, `#navCargoHold`), My Voyages (`/orders`, `#navBuyerOrders`), Explorers (`/users`), Captain badge, Logout. Seller links strictly omitted.
+  - Seller: Logo points to `/seller/dashboard`, Command Deck (`/seller/dashboard`, `#navSellerDeck`), Manage Cargo (`/seller/products`, `#navSellerProducts`), Merchant Orders (`/seller/orders`, `#navSellerOrders`), Merchant Profile (`/seller/profile`, `#navSellerProfile`), Sea Chart (`/home`), Merchant badge, Logout. Buyer order links strictly omitted.
+  - Admin: Logo points to `/home`, Sea Chart (`/home`), Explorers (`/users`), Lore, Dispatch, Admin badge, Logout.
+  - Implemented active destination styling (`.active`, `aria-current="page"`) via `isNavActive` helper checking `currentPath` and `page_title`.
+  - Added responsive collapsible mobile menu with accessible hamburger toggle (`#navToggleBtn`).
+  - Validated with 80/80 dedicated automated tests (`scratch/test_milestone_6_2.js`), 636/636 regression assertions (5.4, 5.3, 5.2, 5.1, 4.5, 4.4, 4.3, 4.2, 4.1, 3.6), 22 JS and 34 EJS syntax checks, and browser verification.
+* **Milestone 6.3: Comprehensive UI Polish & Micro-Interactions [NEXT]**
   - Polish empty states (empty cart, no orders, empty island listings).
   - Add skeleton loaders and smooth page transitions.
   - Audit and fix all tablet/mobile responsive breakpoints.

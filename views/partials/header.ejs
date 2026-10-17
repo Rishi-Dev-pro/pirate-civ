@@ -1,35 +1,278 @@
-<nav class="navbar">
+<%
+    const activeRoute = (typeof currentPath !== 'undefined' && currentPath) ? currentPath : '';
+    const activeTitle = (typeof page_title !== 'undefined' && page_title) ? page_title.toLowerCase() : '';
+    const currentUser = (typeof user !== 'undefined' && user) ? user : null;
+    const userRole = currentUser ? currentUser.role : 'guest';
 
-    <h2 class="logo">Rishi's Web</h2>
+    function isNavActive(targetPath, keywords = []) {
+        if (activeRoute && (activeRoute === targetPath || (targetPath !== '/' && targetPath !== '/home' && activeRoute.startsWith(targetPath)))) {
+            return true;
+        }
+        if (keywords && keywords.some(k => activeTitle.includes(k.toLowerCase()))) {
+            return true;
+        }
+        return false;
+    }
+%>
 
-    <div class="nav-links">
+<nav class="navbar" role="navigation" aria-label="Main Navigation">
 
-        <a href="/">Home</a>
+    <!-- Brand Logo with Role-Aware Destination -->
+    <a href="<%= currentUser ? (userRole === 'seller' ? '/seller/dashboard' : '/home') : '/' %>" class="logo nav-brand" id="navBrandLogo" title="Pirate-Civ Sovereign Seas">
+        <span class="logo-symbol" aria-hidden="true"><%= userRole === 'seller' ? '⚓' : '🏴‍☠️' %></span>
+        <span class="logo-text">PIRATE-CIV</span>
+    </a>
 
-        <a href="/about">About</a>
+    <!-- Mobile Navigation Toggle -->
+    <button class="nav-toggle" id="navToggleBtn" type="button" aria-expanded="false" aria-controls="navLinksMenu" aria-label="Toggle Navigation Menu">
+        <span class="toggle-icon">☰</span>
+    </button>
 
-        <a href="/contact">Contact</a>
+    <!-- Role-Aware Navigation Links -->
+    <div class="nav-links" id="navLinksMenu">
 
-        <a href="/logout" class="logout-btn">
-            Logout
-        </a>
+        <% if (!currentUser) { %>
+            <!-- ================= GUEST NAVIGATION ================= -->
+            <a href="/" class="nav-link <%= isNavActive('/', ['gateway', 'sea awaits']) ? 'active' : '' %>" id="navGateway" <%= isNavActive('/', ['gateway', 'sea awaits']) ? 'aria-current="page"' : '' %>>
+                The Sea Awaits
+            </a>
 
-        <a href="/users" class="nav-users">
-    ⚓ Explorers
-</a>
+            <a href="/about" class="nav-link <%= isNavActive('/about', ['about', 'lore']) ? 'active' : '' %>" id="navAbout" <%= isNavActive('/about', ['about', 'lore']) ? 'aria-current="page"' : '' %>>
+                Guild Lore
+            </a>
 
-        <% if (typeof user !== 'undefined' && user && user.role === 'buyer') { %>
-            <a href="/orders" class="nav-buyer-orders" id="navBuyerOrders">
+            <a href="/contact" class="nav-link <%= isNavActive('/contact', ['contact']) ? 'active' : '' %>" id="navContact" <%= isNavActive('/contact', ['contact']) ? 'aria-current="page"' : '' %>>
+                Dispatch
+            </a>
+
+            <a href="/login" class="nav-link nav-btn-signin <%= isNavActive('/login', ['login']) ? 'active' : '' %>" id="navLogin" <%= isNavActive('/login', ['login']) ? 'aria-current="page"' : '' %>>
+                Sign In
+            </a>
+
+            <a href="/register" class="nav-link nav-btn-register <%= isNavActive('/register', ['register']) ? 'active' : '' %>" id="navRegister" <%= isNavActive('/register', ['register']) ? 'aria-current="page"' : '' %>>
+                Join Crew
+            </a>
+
+        <% } else if (userRole === 'buyer') { %>
+            <!-- ================= BUYER NAVIGATION ================= -->
+            <a href="/home" class="nav-link <%= isNavActive('/home', ['home', 'sea chart']) ? 'active' : '' %>" id="navSeaChart" <%= isNavActive('/home', ['home', 'sea chart']) ? 'aria-current="page"' : '' %>>
+                🗺️ Sea Chart
+            </a>
+
+            <a href="/cart" class="nav-link nav-cart <%= isNavActive('/cart', ['cargo hold', 'cart']) ? 'active' : '' %>" id="navCargoHold" <%= isNavActive('/cart', ['cargo hold', 'cart']) ? 'aria-current="page"' : '' %>>
+                📦 Cargo Hold
+            </a>
+
+            <a href="/orders" class="nav-link nav-buyer-orders <%= isNavActive('/orders', ['voyage', 'manifest', 'orders']) ? 'active' : '' %>" id="navBuyerOrders" <%= isNavActive('/orders', ['voyage', 'manifest', 'orders']) ? 'aria-current="page"' : '' %>>
                 ⚓ My Voyages
             </a>
-        <% } %>
 
-        <% if (typeof user !== 'undefined' && user && user.role === 'seller') { %>
-            <a href="/seller/dashboard" class="nav-seller-deck" id="navSellerDeck">
+            <a href="/users" class="nav-link nav-users <%= isNavActive('/users', ['explorers', 'users']) ? 'active' : '' %>" id="navUsers" <%= isNavActive('/users', ['explorers', 'users']) ? 'aria-current="page"' : '' %>>
+                👥 Explorers
+            </a>
+
+            <a href="/about" class="nav-link <%= isNavActive('/about', ['about', 'lore']) ? 'active' : '' %>" id="navAbout" <%= isNavActive('/about', ['about', 'lore']) ? 'aria-current="page"' : '' %>>
+                Guild Lore
+            </a>
+
+            <span class="nav-user-badge" id="navUserBadge" title="Chartered Captain">
+                <span class="badge-icon">⚓</span> Captain <%= currentUser.name %>
+            </span>
+
+            <a href="/logout" class="nav-link logout-btn" id="navLogout">
+                Logout
+            </a>
+
+        <% } else if (userRole === 'seller') { %>
+            <!-- ================= SELLER NAVIGATION ================= -->
+            <a href="/seller/dashboard" class="nav-link nav-seller-deck <%= isNavActive('/seller/dashboard', ['command deck']) ? 'active' : '' %>" id="navSellerDeck" <%= isNavActive('/seller/dashboard', ['command deck']) ? 'aria-current="page"' : '' %>>
                 ⚓ Command Deck
+            </a>
+
+            <a href="/seller/products" class="nav-link nav-seller-products <%= isNavActive('/seller/products', ['cargo vault', 'forge new cargo', 'reforge cargo']) ? 'active' : '' %>" id="navSellerProducts" <%= isNavActive('/seller/products', ['cargo vault', 'forge new cargo', 'reforge cargo']) ? 'aria-current="page"' : '' %>>
+                📦 Manage Cargo
+            </a>
+
+            <a href="/seller/orders" class="nav-link nav-seller-orders <%= isNavActive('/seller/orders', ['dispatch manifests']) ? 'active' : '' %>" id="navSellerOrders" <%= isNavActive('/seller/orders', ['dispatch manifests']) ? 'aria-current="page"' : '' %>>
+                📜 Merchant Orders
+            </a>
+
+            <a href="/seller/profile" class="nav-link nav-seller-profile <%= isNavActive('/seller/profile', ['merchant profile']) ? 'active' : '' %>" id="navSellerProfile" <%= isNavActive('/seller/profile', ['merchant profile']) ? 'aria-current="page"' : '' %>>
+                ⚙️ Merchant Profile
+            </a>
+
+            <a href="/home" class="nav-link <%= isNavActive('/home', ['home', 'sea chart']) ? 'active' : '' %>" id="navSeaChart" <%= isNavActive('/home', ['home', 'sea chart']) ? 'aria-current="page"' : '' %>>
+                🗺️ Sea Chart
+            </a>
+
+            <span class="nav-user-badge" id="navUserBadge" title="Chartered Merchant">
+                <span class="badge-icon">⚓</span> <%= currentUser.storeName || currentUser.name %>
+            </span>
+
+            <a href="/logout" class="nav-link logout-btn" id="navLogout">
+                Logout
+            </a>
+
+        <% } else if (userRole === 'admin') { %>
+            <!-- ================= ADMIN NAVIGATION ================= -->
+            <a href="/home" class="nav-link <%= isNavActive('/home', ['home', 'sea chart']) ? 'active' : '' %>" id="navSeaChart" <%= isNavActive('/home', ['home', 'sea chart']) ? 'aria-current="page"' : '' %>>
+                🗺️ Sea Chart
+            </a>
+
+            <a href="/users" class="nav-link nav-users <%= isNavActive('/users', ['explorers', 'users']) ? 'active' : '' %>" id="navUsers" <%= isNavActive('/users', ['explorers', 'users']) ? 'aria-current="page"' : '' %>>
+                👥 Explorers
+            </a>
+
+            <a href="/about" class="nav-link <%= isNavActive('/about', ['about', 'lore']) ? 'active' : '' %>" id="navAbout" <%= isNavActive('/about', ['about', 'lore']) ? 'aria-current="page"' : '' %>>
+                Guild Lore
+            </a>
+
+            <a href="/contact" class="nav-link <%= isNavActive('/contact', ['contact']) ? 'active' : '' %>" id="navContact" <%= isNavActive('/contact', ['contact']) ? 'aria-current="page"' : '' %>>
+                Dispatch
+            </a>
+
+            <span class="nav-user-badge" id="navUserBadge" title="Admiralty Authority">
+                <span class="badge-icon">🛡️</span> Admin <%= currentUser.name %>
+            </span>
+
+            <a href="/logout" class="nav-link logout-btn" id="navLogout">
+                Logout
             </a>
         <% } %>
 
     </div>
 
 </nav>
+
+<style>
+/* Scoped & Unified Role-Aware Navigation Enhancements */
+.navbar .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none !important;
+    transition: transform 0.2s ease, text-shadow 0.2s ease;
+}
+.navbar .logo:hover {
+    transform: translateY(-1px);
+    text-shadow: 0 0 15px rgba(212, 147, 57, 0.45);
+}
+.logo-symbol {
+    font-size: 1.15rem;
+}
+.nav-user-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 10px;
+    border-radius: 14px;
+    background: rgba(198, 159, 88, 0.12);
+    border: 1px solid rgba(198, 159, 88, 0.32);
+    color: #e5b36a;
+    font-family: "Cinzel", serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.6px;
+    white-space: nowrap;
+}
+.nav-links a.active {
+    color: #ffd700 !important;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.45);
+}
+.nav-links a.active::after {
+    width: 100% !important;
+    background: linear-gradient(90deg, transparent, #ffd700, transparent) !important;
+}
+.nav-links a.nav-btn-signin {
+    color: #e5b36a;
+}
+.nav-links a.nav-btn-register {
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: rgba(198, 159, 88, 0.16);
+    border: 1px solid rgba(198, 159, 88, 0.38);
+    color: #ffd700;
+}
+.nav-links a.nav-btn-register:hover {
+    background: rgba(198, 159, 88, 0.28);
+    color: #ffffff;
+}
+.nav-toggle {
+    display: none;
+    background: rgba(22, 10, 15, 0.85);
+    border: 1px solid rgba(198, 159, 88, 0.35);
+    border-radius: 5px;
+    color: #d2a261;
+    font-size: 17px;
+    padding: 4px 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.nav-toggle:focus-visible {
+    outline: 2px solid #ffd700;
+    outline-offset: 2px;
+}
+@media (max-width: 900px) {
+    .nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .navbar .nav-links {
+        display: none;
+        position: absolute;
+        top: calc(100% + 8px);
+        left: 0;
+        right: 0;
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+        padding: 16px 18px;
+        background: rgba(9, 5, 13, 0.97);
+        border: 1px solid rgba(150, 94, 40, 0.5);
+        border-radius: 8px;
+        box-shadow: 0 12px 36px rgba(0, 0, 0, 0.85);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        z-index: 1001;
+    }
+    .navbar .nav-links.nav-links-open {
+        display: flex;
+    }
+    .navbar .nav-links a {
+        font-size: 11px !important;
+        padding: 8px 10px;
+        border-radius: 4px;
+    }
+    .navbar .nav-links a:hover,
+    .navbar .nav-links a:focus-visible {
+        background: rgba(198, 159, 88, 0.12);
+    }
+    .navbar .nav-user-badge {
+        align-self: flex-start;
+        margin: 4px 0;
+    }
+}
+</style>
+
+<script>
+    (function() {
+        const toggleBtn = document.getElementById("navToggleBtn");
+        const linksMenu = document.getElementById("navLinksMenu");
+        if (toggleBtn && linksMenu) {
+            toggleBtn.addEventListener("click", function(e) {
+                e.stopPropagation();
+                const isExpanded = toggleBtn.getAttribute("aria-expanded") === "true";
+                toggleBtn.setAttribute("aria-expanded", String(!isExpanded));
+                linksMenu.classList.toggle("nav-links-open");
+            });
+            document.addEventListener("click", function(e) {
+                if (!linksMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
+                    toggleBtn.setAttribute("aria-expanded", "false");
+                    linksMenu.classList.remove("nav-links-open");
+                }
+            });
+        }
+    })();
+</script>

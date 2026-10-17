@@ -136,3 +136,34 @@ Every page across the application must fulfill five UX states:
   - Mobile (`≤ 880px`): Single column vertical stack, no horizontal scroll, touch-friendly tap targets (`min-height: 48px`), and accessible `:focus-visible` golden borders.
 * **Performance:** Lightweight CSS-only visual effects, zero external map dependencies, zero client frameworks, and zero database lookups on `GET /`.
 
+---
+
+## 7. Role-Aware Global Navigation Guidelines (`views/partials/header.ejs`)
+
+* **Architecture:** Single unified partial included across all application views (`<%- include("partials/header") %>`), deriving navigation state strictly from authenticated session `user.role` or guest default.
+* **Role-Based Navigation Matrix:**
+  - **Guest:**
+    - Brand Logo: Points to root landing gateway (`/`).
+    - Links: The Sea Awaits (`/`), Guild Lore (`/about`), Dispatch (`/contact`), Sign In (`/login`), Join Crew (`/register`).
+    - Prohibited: Authenticated-only links (Logout, Cargo Hold, My Voyages, Command Deck, Manage Cargo, Merchant Orders, Merchant Profile) are strictly omitted.
+  - **Buyer (`user.role === 'buyer'`):**
+    - Brand Logo: Points directly to Sea Chart (`/home`).
+    - Links: Sea Chart (`/home`), Cargo Hold (`/cart`, `#navCargoHold`), My Voyages (`/orders`, `#navBuyerOrders`), Explorers (`/users`), Guild Lore (`/about`).
+    - Identity: Compact Captain user badge (`<span id="navUserBadge">⚓ Captain [Name]</span>`).
+    - Actions: Logout (`/logout`, `#navLogout`).
+    - Prohibited: Seller management links (Command Deck, Manage Cargo, Merchant Orders, Merchant Profile) are strictly omitted.
+  - **Seller (`user.role === 'seller'`):**
+    - Brand Logo: Points directly to Command Deck (`/seller/dashboard`).
+    - Links: Command Deck (`/seller/dashboard`, `#navSellerDeck`), Manage Cargo (`/seller/products`, `#navSellerProducts`), Merchant Orders (`/seller/orders`, `#navSellerOrders`), Merchant Profile (`/seller/profile`, `#navSellerProfile`), Sea Chart (`/home`, `#navSeaChart`).
+    - Identity: Compact Merchant badge (`<span id="navUserBadge">⚓ [Store/Captain Name]</span>`).
+    - Actions: Logout (`/logout`, `#navLogout`).
+    - Prohibited: Buyer-specific operational links (`#navBuyerOrders`, Checkout) are strictly omitted.
+  - **Admin (`user.role === 'admin'`):**
+    - Brand Logo: Points to `/home`.
+    - Links: Sea Chart (`/home`), Explorers (`/users`), Guild Lore (`/about`), Dispatch (`/contact`), Admin badge, Logout.
+* **Active Destination State:** Indicated through `.active` CSS class and `aria-current="page"` attribute, evaluated via `isNavActive` helper checking `currentPath` and `page_title`.
+* **Responsive Mobile Drawer:**
+  - On viewports `≤ 900px`, links collapse into an accessible floating menu toggled by `#navToggleBtn` (`aria-expanded`, `aria-controls`).
+  - Closes on outside clicks; maintains accessible tap targets (`min-height: 44px`) and prevents horizontal overflow.
+
+
