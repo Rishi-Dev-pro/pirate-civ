@@ -79,6 +79,13 @@
 
             <h2>Send a Message</h2>
 
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="error-message" role="alert" style="background: rgba(220, 53, 69, 0.2); border: 1px solid rgba(220, 53, 69, 0.5); border-radius: 12px; padding: 14px 18px; margin-bottom: 20px; color: #ff9999; display: flex; align-items: center; gap: 10px; font-size: 15px;">
+                    <span style="font-size: 1.2rem;">⚠️</span>
+                    <span><%= error %></span>
+                </div>
+            <% } %>
+
             <% if (success) { %>
 
     <div class="success-message">
@@ -101,45 +108,43 @@
 
 <% } %>
 
+            <% const values = typeof formData !== 'undefined' && formData ? formData : {}; %>
 
             <form action="/contact" method="POST">
-
 
                 <input
                     type="text"
                     name="name"
                     placeholder="Your Name"
+                    value="<%= values.name || '' %>"
                     required
                 >
-
 
                 <input
                     type="email"
                     name="email"
                     placeholder="Your Email"
+                    value="<%= values.email || '' %>"
                     required
                 >
-
 
                 <input
                     type="text"
                     name="subject"
                     placeholder="Subject"
+                    value="<%= values.subject || '' %>"
                 >
-
 
                 <textarea
                     name="message"
                     rows="6"
                     placeholder="Write your message..."
                     required
-                ></textarea>
-
+                ><%= values.message || '' %></textarea>
 
                 <button type="submit">
                     Send Message
                 </button>
-
 
             </form>
 

@@ -316,6 +316,7 @@ A comparison between documentation files and actual code identified several drif
 - **Blocks Phase 6.3?** NO.
 
 ### Finding AUD-003
+- **Status:** **REMEDIATED**
 - **Severity:** P2 (Medium)
 - **Category:** Bug / Error Handling & Validation
 - **File:** `controller/contact.js`
@@ -326,9 +327,15 @@ A comparison between documentation files and actual code identified several drif
 - **Reproduction / reasoning:** `POST /contact` with empty body triggers catch block.
 - **Impact:** Low. Contact form is rarely used, but error response is unpolished.
 - **Recommended fix:** Add input validation before `new Contact()` and render `contact.ejs` with `error` message on failure.
+- **Remediation Summary:**
+  - Added safe pre-validation in `controller/contact.js` for missing/non-object body, whitespace-only/missing `name`, missing/invalid `email` format via RFC-aligned regex, and missing/whitespace-only `message`.
+  - Malformed or invalid input returns HTTP 400 and renders the contact form with an alert banner and retains entered `formData` (JSON requests receive `{ error, details }`).
+  - Raw Mongoose `ValidationError` exceptions are caught defensively and returned as HTTP 400 instead of HTTP 500.
+  - Added dedicated test suite `scratch/test_aud_003_contact.js` verifying 26/26 assertions covering missing bodies, whitespace, invalid emails, error rendering, form data retention, and valid submissions.
 - **Blocks Phase 6.3?** NO.
 
 ### Finding AUD-004
+- **Status:** **REMEDIATED**
 - **Severity:** P2 (Medium)
 - **Category:** Documentation Drift
 - **File:** `docs/05_ROUTE_MAP.md`
@@ -339,6 +346,12 @@ A comparison between documentation files and actual code identified several drif
 - **Reproduction / reasoning:** Cross-referencing `docs/05_ROUTE_MAP.md` with `routes/web.js`.
 - **Impact:** Documentation inconsistency.
 - **Recommended fix:** Reconcile `docs/05_ROUTE_MAP.md` with `routes/web.js`.
+- **Remediation Summary:**
+  - `docs/05_ROUTE_MAP.md` was reconciled against `routes/web.js` and middleware guards.
+  - Removed nonexistent phantom routes (`/buyer/login`, `/buyer/register`, `/seller/login`, `/seller/register`, `POST /seller/register`, `/auth/google`, `/sellers`, `/profile`).
+  - Corrected `POST /contact` authentication requirement to reflect `authMiddleware`.
+  - Corrected `/cart` endpoints (`/cart`, `/cart/add`, `/cart/update`, `/cart/remove`, `/cart/clear`) to reflect `optionalAuth` (session cart for guests, DB cart for buyers).
+  - Clarified `/users` as the active Registered Explorers directory and documented actual seller aliases (`/seller`, `/seller/portal`, `/islands`).
 - **Blocks Phase 6.3?** NO.
 
 ### Finding AUD-005
@@ -452,13 +465,13 @@ Our independent execution of all 12 test suites established the **actual execute
 | **Multi-Seller Logic** | **CONCERN** | Line items isolated; fulfillment status is document-level (P2 AUD-001). |
 | **Stock Consistency** | **CONCERN** | Standalone MongoDB demo lacks multi-document ACID transactions (P2 AUD-002). |
 | **Database** | **PASS** | Mongoose singleton, connection lifecycle listeners, effective compound indexes. |
-| **Error Handling** | **CONCERN** | Centralized handler in place; contact form 500 on validation error (P2 AUD-003). |
+| **Error Handling** | **PASS** | Centralized handler in place; contact form validation returns HTTP 400 with retained data (AUD-003 REMEDIATED). |
 | **Validation** | **PASS** | Comprehensive type and range validation before DB queries. |
 | **EJS / Views** | **PASS** | 34 templates compile cleanly; role-aware navigation active. |
 | **Client JavaScript** | **PASS** | Defensive null checks, smooth asynchronous cart interactions. |
 | **Performance** | **PASS** | Strategic `.lean()`, parallel telemetry counts. |
 | **Security** | **PASS** | No injection, XSS protection, safe URL protocols. |
-| **Documentation** | **CONCERN** | Stale routes in `docs/05_ROUTE_MAP.md` (P2 AUD-004). |
+| **Documentation** | **PASS** | `docs/05_ROUTE_MAP.md` reconciled against actual routes (AUD-004 REMEDIATED). |
 | **Testing** | **PASS** | 888 passing assertions across 12 automated test suites. |
 
 ---
@@ -470,7 +483,8 @@ Our independent execution of all 12 test suites established the **actual execute
 - **Rationale:** The codebase contains **ZERO P0 (Critical)** and **ZERO P1 (High)** defects. 
 - Authentication, authorization, data isolation, cart security, and checkout validation are completely sound.
 - All 12 regression test suites pass with 100% success (888 passing assertions).
-- The identified P2 (Medium) and P3 (Low) findings represent architectural design nuances, documentation drift, and polish opportunities that do not block visual and UX work.
+- AUD-003 (contact validation) and AUD-004 (route map drift) have been remediated.
+- The remaining identified P2 (Medium) and P3 (Low) findings represent architectural design nuances and polish opportunities that do not block visual and UX work.
 - **Pirate-Civ is fully ready to proceed to Phase 6.3 (Comprehensive UI Polish & Micro-Interactions).**
 
 ---
@@ -478,8 +492,8 @@ Our independent execution of all 12 test suites established the **actual execute
 ## 28. Recommended Next Actions
 
 1. **Proceed to Phase 6.3:** Focus on UI polish, empty states, micro-interactions, and mobile responsive refinements.
-2. **Post-Phase 6 Schedule:**
-   - Update `docs/05_ROUTE_MAP.md` to eliminate documentation drift (AUD-004).
-   - Add input validation to `controller/contact.js` to return HTTP 400 on empty submissions (AUD-003).
-   - Render themed 403 page instead of plain text in `roles.js` (AUD-006).
-   - Remove unused `"config"` dependency from `package.json` (AUD-007).
+2. **Audit Remediation Status:**
+   - [x] Update `docs/05_ROUTE_MAP.md` to eliminate documentation drift (AUD-004 — **REMEDIATED**).
+   - [x] Add input validation to `controller/contact.js` to return HTTP 400 on empty submissions (AUD-003 — **REMEDIATED**).
+   - [ ] Render themed 403 page instead of plain text in `roles.js` (AUD-006).
+   - [ ] Remove unused `"config"` dependency from `package.json` (AUD-007).
