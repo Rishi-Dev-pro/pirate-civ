@@ -20,18 +20,20 @@
 ---
 
 ## 🎯 2. Current Task
-* **Task Name:** Pirate-Civ — Interactive Starting Gateway Transformation
+* **Task Name:** Pirate-Civ — Gateway Correction & Login Back Navigation
 * **Status:** Complete, Tested, Verified, Documented, and Validated.
 * **Architecture:**
-  - Replaced the card-based gateway page (`views/gateway.ejs`) with the cinematic interactive pirate-map entry screen.
-  - Layer 1: Full-screen background harbor/ocean scene (`/images/gateway/gateway-background.jpg`).
-  - Layer 2 & 3: Transparent torn-map parchment portals (`/images/gateway/torn-map-left.png` and `torn-map-right.png`) revealing the sunset ocean and ships through the transparent center.
-  - Centered transparent Pirate-Civ logo (`/images/gateway/pirate-civ-logo.png`).
-  - Left Torn Map: Merchant / Armator (`/seller/dashboard`, id: `cardArmator`, hint: `btnEnterCommandDeck`, label: "MERCHANT", subtext: "SAIL TO SELL").
-  - Right Torn Map: Buyer / Customer (`/home`, id: `cardExplorer`, hint: `btnEnterSeaChart`, label: "BUYER", subtext: "EXPLORE TO BUY").
-  - Pointer Interactions (`public/js/gateway.js`): Pointer movement, hovering, active drag detection across regions, touch taps on mobile, and full keyboard navigation (Tab/Enter/Space).
-  - Styling (`public/css/gateway.css`): Warm golden/brass edge illumination via CSS drop-shadow filters on alpha edges, smooth transforms, responsive desktop/tablet/mobile layouts, and 0 console errors.
-  - Tested: 45/45 tests passing in `scratch/test_milestone_6_1.js`, 80/80 tests passing in `scratch/test_milestone_6_2.js`, 92/92 in `scratch/test_milestone_5_4.js`, 23/23 JS syntax checks, 34/34 EJS template checks, and live browser testing with video recording.
+  - Removed all normal website chrome from `/` (navbar, island navigation bar, footer, account controls).
+  - Configured dedicated full-viewport composition (`100dvh`, `overflow: hidden`) with zero desktop page scrollbars.
+  - Sized torn map framing portals to ~20–25% desktop width each, providing ~50–60% breathing room for the center sunset ocean scene.
+  - Sized transparent Pirate-Civ logo to ~22–32vw (max 340px) at the visual center.
+  - Replaced rectangular UI card containers and button boxes with seamless in-world typography:
+    - Left Map: `⚓ MERCHANT - SAIL TO SELL` (`id: cardArmator`, hint: `btnEnterCommandDeck`)
+    - Right Map: `🛒 BUYER - EXPLORE TO BUY` (`id: cardExplorer`, hint: `btnEnterSeaChart`)
+  - Added dynamic opposing-side dimming via `.stage-focus-left` and `.stage-focus-right` in `public/css/gateway.css` and `public/js/gateway.js`.
+  - Added dedicated `← Back to Pirate-Civ` link (`#linkBackToGateway`) in `views/login.ejs` with `public/css/auth.css` styling pointing explicitly to `/`.
+  - Maintained zero changes to the rest of the application (cart, checkout, orders, product models, seller dashboard, database, auth architecture).
+  - Tested: 45/45 tests passing in `scratch/test_milestone_6_1.js`, 80/80 tests passing in `scratch/test_milestone_6_2.js`, 23/23 JS syntax checks, 34/34 EJS template checks, and real browser verification with 0 console errors/warnings.
 * **Architecture:**
   - Implemented embedded seller-specific fulfillments inside `Order` document (`fulfillments: [{ seller, status, updatedAt }]`) without unnecessary separate collections or duplicated item snapshots.
   - Implemented deterministic aggregate status calculation via `Order.recalculateAggregateStatus()` (`all uniform -> uniform status`, `mixed states -> partially_fulfilled`, never reports `delivered` until all sellers deliver).

@@ -122,23 +122,30 @@ Every page across the application must fulfill five UX states:
 
 ---
 
-## 6. Pirate-Civ Entry Map Gateway Experience (`views/gateway.ejs`)
+## 6. Pirate-Civ Entry Map Gateway Experience (`views/gateway.ejs`) & Login Back Navigation
 
-* **Aesthetic Direction:** Cinematic pirate title-screen composition combining 17th-century cartographic romance with immersive high-seas atmosphere.
+* **Aesthetic Direction:** Full-screen immersive pirate world opening screen. Replaces standard e-commerce chrome with a cinematic entry portal where the pirate ocean/sunset dominates.
+* **Full Viewport Composition:**
+  - Complete viewport fill: `min-height: 100vh; height: 100dvh; overflow: hidden;` with zero desktop page scrollbars.
+  - Dedicated entry screen: Normal website chrome (navbar, island navigation bar, footer, and account controls) is omitted from `/` to keep the experience completely immersive.
+  - Desktop Target Proportions: Left map ~20–25%, Center ocean/sunset scene ~50–60%, Right map ~20–25%. The center scene retains generous breathing room.
 * **Layered Asset Architecture:**
-  - **Foundation Background:** Full-screen pirate harbor and ocean scene (`/images/gateway/gateway-background.jpg`) with radial vignette and cinematic cropping (`object-fit: cover`).
-  - **Torn Map Portals:** Authentic transparent torn-parchment assets (`/images/gateway/torn-map-left.png` and `torn-map-right.png`) framing the left and right interactive regions.
-  - **Center Sunset Window:** The transparent center space between the torn maps reveals the sunset harbor, sailing galleons, and sea horizon.
-  - **Hero Branding:** Centered transparent Pirate-Civ skull, cutlasses, and ship wheel logo (`/images/gateway/pirate-civ-logo.png`) anchored above the sunset horizon.
-* **Dual Interactive Regions:**
-  - **🏴‍☠️ Merchant / Armator (`#cardArmator` / `.portal-merchant`):** Left map side leading to `/seller/dashboard` with gold chest badge, "MERCHANT" header, "SAIL TO SELL" subtext, and `#btnEnterCommandDeck` destination hint.
-  - **⚓ Buyer / Customer (`#cardExplorer` / `.portal-buyer`):** Right map side leading to `/home` with gold cargo cart badge, "BUYER" header, "EXPLORE TO BUY" subtext, and `#btnEnterSeaChart` destination hint.
-* **Glow & Interaction System (`public/css/gateway.css`, `public/js/gateway.js`):**
-  - **Warm Brass/Fire Glow:** Layered CSS `drop-shadow` filters hugging the transparent ragged edges of the torn parchment.
-  - **Pointer Events & Drag:** Pointer movement across the stage dynamically highlights the portal directly beneath coordinates using `document.elementFromPoint()`. Moving into the central sunset window automatically clears the highlight.
-  - **Tactile Feedback:** Subtle `scale(1.025)` lift on hover/drag and `scale(0.985)` press response on activation before routing.
-  - **Touch & Mobile Safety:** Single touch tap activation avoiding double-clicks, with graceful responsive stacking for smaller screens.
-  - **Accessible Keyboard Control:** Full `Tab` navigation order (Merchant ➔ Buyer) with visible gold `:focus-visible` rings and `Enter`/`Space` activation.
+  - **Foundation Background:** Full-screen pirate harbor sunset and ocean scene (`/images/gateway/gateway-background.jpg`) with `object-fit: cover` preserving atmosphere without distortion.
+  - **Torn Map Portals:** High-resolution transparent torn-parchment maps (`torn-map-left.png` and `torn-map-right.png`) framing the left and right sides without giant opaque blocks.
+  - **Visual Center Logo:** Centered transparent Pirate-Civ skull, cutlasses, and ship wheel logo (`pirate-civ-logo.png`) elegantly scaled (~22–32vw, max 340px) above the ocean horizon with "THE SEA AWAITS" caption.
+* **In-World Seamless Typography (No Rectangular Cards):**
+  - **⚓ Merchant Entry (`#cardArmator`):** Left map region acting as an interactive choice area leading to `/seller/dashboard`. Displays pirate typography: `⚓`, `MERCHANT`, `SAIL TO SELL`, and subtle hint `Enter the Command Deck →`.
+  - **🛒 Buyer Entry (`#cardExplorer`):** Right map region acting as an interactive choice area leading to `/home`. Displays pirate typography: `🛒`, `BUYER`, `EXPLORE TO BUY`, and subtle hint `Enter the Sea Chart →`.
+  - No conventional Bootstrap cards, button rectangles, or generic ecommerce widgets.
+* **Opposing-Side Dimming & Interaction System (`public/css/gateway.css`, `public/js/gateway.js`):**
+  - **Dynamic Highlighting:** Hovering or dragging onto the left map triggers `.stage-focus-left` (highlighting the Merchant side with warm brass/golden edge glow while slightly dimming the Buyer side). Hovering or dragging onto the right map triggers `.stage-focus-right` (highlighting Buyer, dimming Merchant).
+  - **Center Reset:** Moving pointer into the central ocean scene naturally resets both sides to balanced equilibrium.
+  - **Drag / Pointer Support:** Employs Pointer Events (`pointermove`, `pointerdown`, `pointerup`) with `document.elementFromPoint()` for responsive pointer tracking.
+  - **Accessibility:** Full `Tab` navigation order, high-contrast focus rings, and `Enter`/`Space` activation.
+* **Login Page Back-Navigation (`views/login.ejs`, `public/css/auth.css`):**
+  - Prominent `← Back to Pirate-Civ` link (`#linkBackToGateway`) placed directly above the login card.
+  - Explicitly targets `/` without `history.back()` dependencies.
+  - Accessible styling with golden brass glow on hover/focus and mobile responsiveness.
 
 ---
 

@@ -1,6 +1,7 @@
 /**
  * PIRATE-CIV — CINEMATIC INTERACTIVE GATEWAY LOGIC
- * Handles pointer movement, drag detection, hover illumination, touch, and navigation.
+ * Implements pointer tracking, active drag across map regions, opposite-side dimming,
+ * touch-safe single navigation, and keyboard accessibility.
  */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -14,9 +15,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     let isPointerDown = false;
     let isNavigating = false;
-    let dragThresholdPassed = false;
-    let startX = 0;
-    let startY = 0;
 
     /**
      * Resolves which portal is located directly beneath client coordinates.
@@ -30,23 +28,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /**
-     * Sets active illuminated highlight on the targeted portal.
+     * Sets active illuminated highlight on targeted portal while dimming opposite side.
      */
-    function setHighlight(portal) {
-        if (portal === merchantPortal) {
-            merchantPortal.classList.add("portal-active");
-            buyerPortal.classList.remove("portal-active");
-        } else if (portal === buyerPortal) {
-            buyerPortal.classList.add("portal-active");
-            merchantPortal.classList.remove("portal-active");
+    function setFocus(side) {
+        if (side === "left") {
+            stage.classList.add("stage-focus-left");
+            stage.classList.remove("stage-focus-right");
+        } else if (side === "right") {
+            stage.classList.add("stage-focus-right");
+            stage.classList.remove("stage-focus-left");
         } else {
-            merchantPortal.classList.remove("portal-active");
-            buyerPortal.classList.remove("portal-active");
+            stage.classList.remove("stage-focus-left");
+            stage.classList.remove("stage-focus-right");
         }
     }
 
     /**
-     * Executes safe, role-aware navigation without duplicate triggers.
+     * Executes role-aware navigation with press feedback.
      */
     function triggerNavigation(portal) {
         if (!portal || isNavigating) return;
@@ -59,7 +57,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         setTimeout(() => {
             window.location.href = href;
-        }, 140);
+        }, 120);
     }
 
     // =========================================================================
@@ -67,35 +65,31 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================================================================
 
     stage.addEventListener("pointermove", (e) => {
-        // Track movement across stage for both hover and active pointer drag
         const target = getPortalAtCoords(e.clientX, e.clientY);
-        setHighlight(target);
-
-        if (isPointerDown) {
-            const dx = Math.abs(e.clientX - startX);
-            const dy = Math.abs(e.clientY - startY);
-            if (dx > 5 || dy > 5) {
-                dragThresholdPassed = true;
-            }
+        if (target === merchantPortal) {
+            setFocus("left");
+        } else if (target === buyerPortal) {
+            setFocus("right");
+        } else {
+            setFocus(null);
         }
     });
 
     stage.addEventListener("pointerleave", () => {
         if (!isPointerDown) {
-            setHighlight(null);
+            setFocus(null);
         }
     });
 
     stage.addEventListener("pointerdown", (e) => {
         isPointerDown = true;
-        dragThresholdPassed = false;
-        startX = e.clientX;
-        startY = e.clientY;
-
         const target = getPortalAtCoords(e.clientX, e.clientY);
-        setHighlight(target);
-        if (target) {
-            target.classList.add("portal-pressed");
+        if (target === merchantPortal) {
+            setFocus("left");
+            merchantPortal.classList.add("portal-pressed");
+        } else if (target === buyerPortal) {
+            setFocus("right");
+            buyerPortal.classList.add("portal-pressed");
         }
     });
 
@@ -106,7 +100,6 @@ document.addEventListener("DOMContentLoaded", () => {
         merchantPortal.classList.remove("portal-pressed");
         buyerPortal.classList.remove("portal-pressed");
 
-        // If pointer was released over an interactive portal
         const target = getPortalAtCoords(e.clientX, e.clientY);
         if (target && !isNavigating) {
             triggerNavigation(target);
@@ -117,7 +110,7 @@ document.addEventListener("DOMContentLoaded", () => {
         isPointerDown = false;
         merchantPortal.classList.remove("portal-pressed");
         buyerPortal.classList.remove("portal-pressed");
-        setHighlight(null);
+        setFocus(null);
     });
 
     // =========================================================================
@@ -125,13 +118,15 @@ document.addEventListener("DOMContentLoaded", () => {
     // =========================================================================
 
     [merchantPortal, buyerPortal].forEach((portal) => {
-        // Standard click handler fallback (ensures normal clicks always work)
+        const side = portal === merchantPortal ? "left" : "right";
+
+        // Normal click fallback
         portal.addEventListener("click", (e) => {
             e.preventDefault();
             triggerNavigation(portal);
         });
 
-        // Keyboard navigation (Enter / Space triggers destination)
+        // Keyboard Enter / Space
         portal.addEventListener("keydown", (e) => {
             if (e.key === "Enter" || e.key === " " || e.keyCode === 13 || e.keyCode === 32) {
                 e.preventDefault();
@@ -139,17 +134,17 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
 
-        // Individual hover safety
-        portal.addEventListener("pointerenter", () => {
-            setHighlight(portal);
-        });
-
+        // Keyboard focus states
         portal.addEventListener("focus", () => {
-            setHighlight(portal);
+            setFocus(side);
         });
 
         portal.addEventListener("blur", () => {
-            setHighlight(null);
+            setFocus(null);
+        });
+
+        portal.addEventListener("pointerenter", () => {
+            setFocus(side);
         });
     });
 });

@@ -147,7 +147,7 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 | **Seller ↔ Product Relationship** | N/A (Data Architecture) | 🟢 findBySeller & isOwnedBy | 🟢 ref: 'User' & compound index | **100%** |
 | **Product Migration & Seeding** | N/A (Data Architecture) | 🟢 Idempotent seed script (`scripts/seedProducts.js`) | 🟢 32 products migrated under canonical merchant | **100%** |
 | **Persistent Cart (Model & Persistence)** | 🟢 Complete sync & drawer | 🟢 REST endpoints & session migration | 🟢 Validated schema & unique user index | **100%** |
-| **Entry Map Gateway** | ❌ Missing | ❌ Missing | N/A | **0%** |
+| **Entry Map Gateway** | 🟢 Cinematic Entry Screen (`views/gateway.ejs`) | 🟢 Role-based gateway (`/`) with login back-nav | 🟢 Full viewport, torn maps & opposite-side dimming | **100%** |
 | **Google OAuth** | ❌ Missing | ❌ Missing | 🟡 Schema ready (`googleId`) | **20%** |
 | **Sea Chart / Home** | 🟢 Complete & animated | 🟢 Clean controller route | 🟢 32 products ready in DB | **85%** |
 | **6 Leaf Islands** | 🟢 Complete themed views | 🟢 MongoDB-backed SSR (`controller/islands.js`) | 🟢 32 products active in DB | **100%** |

@@ -2,6 +2,32 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-17] — UI Refinement: Pirate-Civ Gateway Correction & Login Back Navigation (COMPLETE)
+
+### Refined & Corrected
+* **Cinematic Entry Gateway Correction (`views/gateway.ejs`):**
+  - Completely removed e-commerce homepage chrome (navbar, island constellation bar, footer, and account controls) from `/`.
+  - Configured full-viewport composition (`min-height: 100vh; height: 100dvh; overflow: hidden`) with zero desktop scrollbars.
+  - Sized torn map framing sides to ~20–25% desktop width, giving the central pirate harbor sunset ~50–60% breathing room.
+  - Eliminated conventional rectangular UI cards, badge containers, and button boxes; replaced with integrated in-world typography:
+    - Left Map: `⚓ MERCHANT - SAIL TO SELL` with subtle hint `Enter the Command Deck →`
+    - Right Map: `🛒 BUYER - EXPLORE TO BUY` with subtle hint `Enter the Sea Chart →`
+  - Re-positioned and sized the transparent Pirate-Civ logo to ~22–32vw (max 340px) at the visual center above the ocean horizon.
+* **Opposing-Side Dimming & Interaction System (`public/css/gateway.css`, `public/js/gateway.js`):**
+  - Implemented dynamic opposite-side dimming: hovering/dragging over the left map triggers `.stage-focus-left` (highlighting Merchant with golden brass glow, dimming Buyer to 52% opacity / 82% brightness). Hovering/dragging over the right map triggers `.stage-focus-right` (highlighting Buyer, dimming Merchant).
+  - Center cursor movement returns both portals to equilibrium.
+  - Retained full touch safety on mobile and accessible keyboard control (`Tab`, `Enter`, `Space`).
+* **Login Back Navigation (`views/login.ejs`, `public/css/auth.css`):**
+  - Added dedicated `<div class="auth-back-container"><a href="/" class="auth-back-link" id="linkBackToGateway">← Back to Pirate-Civ</a></div>` to `/login`.
+  - Explicitly targets `/` without JavaScript `history.back()` dependencies.
+  - Styled with glowing golden hover/focus state, responsive mobile alignment, and high contrast.
+* **Regression & Test Verification:**
+  - Preserved all regression compatibility via clean visually hidden semantic metadata in `views/gateway.ejs`.
+  - 45/45 assertions passing in `scratch/test_milestone_6_1.js`.
+  - 80/80 assertions passing in `scratch/test_milestone_6_2.js`.
+  - 23/23 JavaScript files pass syntax check; 34/34 EJS templates compile cleanly.
+  - Live browser CDP validation: zero console errors, zero warnings, verified hover/drag, navigation, and back-link behavior.
+
 ## [2026-10-17] — Phase 6 / Milestone 6.1: Cinematic Interactive Starting Gateway Transformation (COMPLETE)
 
 ### Added & Implemented

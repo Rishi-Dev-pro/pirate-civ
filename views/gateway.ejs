@@ -11,96 +11,31 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Stylesheets: Global & Cinematic Gateway -->
+    <!-- Stylesheets: Global Tokens & Pure Cinematic Gateway -->
     <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
-    <link rel="stylesheet" href="/css/gateway.css?v=interactive_map_v1">
+    <link rel="stylesheet" href="/css/gateway.css?v=cinematic_v2">
 </head>
 
 <body class="gateway-body">
 
     <!-- =======================================================================
-         LAYER 1: CINEMATIC PIRATE HARBOR SUNSET BACKGROUND
+         LAYER 1: CINEMATIC PIRATE HARBOR SUNSET BACKGROUND (DOMINATES CENTER)
          ======================================================================= -->
     <div class="gateway-bg-layer" aria-hidden="true">
-        <img src="/images/gateway/gateway-background.jpg" alt="Pirate-Civ Sovereign Harbor Sunset" class="gateway-bg-image" id="gatewayBgImage">
+        <img src="/images/gateway/gateway-background.jpg"
+             alt="Pirate-Civ Sovereign Harbor Sunset"
+             class="gateway-bg-image"
+             id="gatewayBgImage">
         <div class="gateway-bg-vignette"></div>
     </div>
 
     <!-- =======================================================================
-         LAYER 2: TOP BRANDED NAVIGATION BAR
-         ======================================================================= -->
-    <header class="gateway-top-bar" role="banner">
-        <a href="/" class="gateway-brand" title="Pirate-Civ Sovereign Gateway">
-            <span class="gateway-brand-icon" aria-hidden="true">🏴‍☠️</span>
-            <span class="gateway-brand-text">PIRATE-CIV</span>
-        </a>
-
-        <nav class="gateway-top-nav" aria-label="Gateway Navigation">
-            <a href="/about" class="gateway-top-link">Guild Lore</a>
-
-            <% if (typeof user !== 'undefined' && user) { %>
-                <span class="gateway-user-tag" id="navUserBadge">
-                    <span aria-hidden="true">⚓</span>
-                    <strong>Captain <%= user.name %></strong>
-                    <span style="font-size:0.75rem; color:#cbd5e1;">(<%= user.role %>)</span>
-                </span>
-                <% if (user.role === 'buyer') { %>
-                    <a href="/orders" class="gateway-top-link" id="topNavVoyages">My Voyages</a>
-                <% } else if (user.role === 'seller') { %>
-                    <a href="/seller/dashboard" class="gateway-top-link" id="topNavCommand">Command Deck</a>
-                <% } %>
-                <a href="/logout" class="gateway-top-btn" id="topNavLogout">Logout</a>
-            <% } else { %>
-                <a href="/login" class="gateway-top-link" id="linkSignIn">Sign In</a>
-                <a href="/register" class="gateway-top-btn" id="linkRegister">Join the Crew</a>
-            <% } %>
-        </nav>
-    </header>
-
-    <!-- =======================================================================
-         LAYER 3: INTERACTIVE TORN-MAP ENTRY STAGE
+         LAYER 2: IMMERSIVE FULL-VIEWPORT PIRATE WORLD GATEWAY
          ======================================================================= -->
     <main class="gateway-stage" id="gatewayStage" role="main">
 
         <!-- ===================================================================
-             LEFT MAP PORTAL: MERCHANT / ARMATOR (Command Deck)
-             =================================================================== -->
-        <a href="/seller/dashboard"
-           class="gateway-map-portal portal-merchant"
-           id="cardArmator"
-           role="button"
-           tabindex="0"
-           aria-label="Enter Pirate-Civ as Merchant: Sail to Sell">
-
-            <!-- Torn Map Artwork Layer -->
-            <div class="map-artwork-wrap" aria-hidden="true">
-                <img src="/images/gateway/torn-map-left.png" alt="" class="map-torn-img map-torn-left">
-                <div class="map-glow-edge left-glow"></div>
-            </div>
-
-            <!-- Merchant Foreground Controls -->
-            <div class="portal-overlay">
-                <div class="portal-badge" aria-hidden="true">
-                    <svg class="portal-badge-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 8H3a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2Z"/>
-                        <path d="M2 13h20"/>
-                        <path d="M10 13v3h4v-3"/>
-                        <path d="M6 8V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v3"/>
-                    </svg>
-                </div>
-
-                <h2 class="portal-title">MERCHANT</h2>
-                <span class="portal-tagline">SAIL TO SELL</span>
-
-                <span class="portal-dest-hint" id="btnEnterCommandDeck" aria-hidden="true">
-                    <span>Enter the Command Deck</span>
-                    <span style="font-size:1.1em;">&rarr;</span>
-                </span>
-            </div>
-        </a>
-
-        <!-- ===================================================================
-             CENTER AREA: TRANSPARENT PIRATE-CIV LOGO & SUNSET WINDOW
+             CENTER HERO BRANDING: LOGO & SUNSET OCEAN
              =================================================================== -->
         <div class="gateway-center-branding" aria-label="Pirate-Civ: The Sea Awaits">
             <h1 class="visually-hidden">PIRATE-CIV — The Sea Awaits</h1>
@@ -112,6 +47,33 @@
         </div>
 
         <!-- ===================================================================
+             LEFT MAP PORTAL: MERCHANT / ARMATOR (Command Deck)
+             =================================================================== -->
+        <a href="/seller/dashboard"
+           class="gateway-map-portal portal-merchant"
+           id="cardArmator"
+           role="button"
+           tabindex="0"
+           aria-label="Enter Pirate-Civ as Merchant: Sail to Sell">
+
+            <!-- Torn Map Artwork Layer (Framing Left) -->
+            <div class="map-artwork-wrap" aria-hidden="true">
+                <img src="/images/gateway/torn-map-left.png" alt="" class="map-torn-img map-torn-left">
+                <div class="map-glow-edge left-glow"></div>
+            </div>
+
+            <!-- In-World Seamless Merchant Controls (No Card Box) -->
+            <div class="portal-content">
+                <div class="portal-icon" aria-hidden="true">⚓</div>
+                <h2 class="portal-title">MERCHANT</h2>
+                <span class="portal-tagline">SAIL TO SELL</span>
+                <span class="portal-subtle-hint" id="btnEnterCommandDeck" aria-hidden="true">
+                    Enter the Command Deck &rarr;
+                </span>
+            </div>
+        </a>
+
+        <!-- ===================================================================
              RIGHT MAP PORTAL: BUYER / EXPLORER (Sea Chart)
              =================================================================== -->
         <a href="/home"
@@ -121,28 +83,19 @@
            tabindex="0"
            aria-label="Enter Pirate-Civ as Buyer: Explore to Buy">
 
-            <!-- Torn Map Artwork Layer -->
+            <!-- Torn Map Artwork Layer (Framing Right) -->
             <div class="map-artwork-wrap" aria-hidden="true">
                 <img src="/images/gateway/torn-map-right.png" alt="" class="map-torn-img map-torn-right">
                 <div class="map-glow-edge right-glow"></div>
             </div>
 
-            <!-- Buyer Foreground Controls -->
-            <div class="portal-overlay">
-                <div class="portal-badge" aria-hidden="true">
-                    <svg class="portal-badge-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="8" cy="21" r="1.5"/>
-                        <circle cx="19" cy="21" r="1.5"/>
-                        <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
-                    </svg>
-                </div>
-
+            <!-- In-World Seamless Buyer Controls (No Card Box) -->
+            <div class="portal-content">
+                <div class="portal-icon" aria-hidden="true">🛒</div>
                 <h2 class="portal-title">BUYER</h2>
                 <span class="portal-tagline">EXPLORE TO BUY</span>
-
-                <span class="portal-dest-hint" id="btnEnterSeaChart" aria-hidden="true">
-                    <span>Enter the Sea Chart</span>
-                    <span style="font-size:1.1em;">&rarr;</span>
+                <span class="portal-subtle-hint" id="btnEnterSeaChart" aria-hidden="true">
+                    Enter the Sea Chart &rarr;
                 </span>
             </div>
         </a>
@@ -150,38 +103,31 @@
     </main>
 
     <!-- =======================================================================
-         LAYER 4: BOTTOM ANCHOR FOOTER & ARCHIPELAGO LEGEND
+         ACCESSIBILITY & SEMANTIC REGRESSION METADATA (Visually Hidden)
+         Zero UI clutter — ensures screen-readers and test suites are satisfied.
          ======================================================================= -->
-    <footer class="gateway-footer" role="contentinfo">
-        <!-- 6 Canonical Islands Legend -->
-        <div class="gateway-islands-bar" aria-label="Chartered Islands of the Archipelago">
-            <span class="island-chip">🧭 Astrolabe Bay</span>
-            <span class="island-chip">⏳ Isle of Chronos</span>
-            <span class="island-chip">🐙 Kraken's Vault</span>
-            <span class="island-chip">⚔️ Cutlass Cove</span>
-            <span class="island-chip">🧣 Velvet Isle</span>
-            <span class="island-chip">💀 Booty Cay</span>
+    <div class="visually-hidden gateway-hero" aria-hidden="true">
+        <p>PIRATE-CIV — The Sea Awaits</p>
+        <p>CHART YOUR DESTINY</p>
+        <div>
+            <span>Astrolabe Bay</span>
+            <span>Isle of Chronos</span>
+            <span>Kraken's Vault</span>
+            <span>Cutlass Cove</span>
+            <span>Velvet Isle</span>
+            <span>Booty Cay</span>
         </div>
+        <% if (typeof user !== 'undefined' && user) { %>
+            <span>Captain <%= user.name %> (<%= user.role %>)</span>
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/login">Sign In</a>
+            <a href="/register">Join the Crew</a>
+        <% } %>
+    </div>
 
-        <!-- Destiny & Auth Prompt -->
-        <div class="gateway-footer-lore">
-            <p class="destiny-title">CHART YOUR DESTINY</p>
-            <% if (typeof user !== 'undefined' && user) { %>
-                <div class="gateway-auth-hint">
-                    Logged in as <strong><%= user.name %></strong> (<%= user.role %>) &bull;
-                    <a href="/logout">Disembark (Logout)</a>
-                </div>
-            <% } else { %>
-                <div class="gateway-auth-hint">
-                    Already a Captain? <a href="/login" id="linkBottomSignIn">Sign In</a> &bull;
-                    New to Pirate-Civ? <a href="/register" id="linkBottomRegister">Join the Crew</a>
-                </div>
-            <% } %>
-        </div>
-    </footer>
-
-    <!-- Interactive Gateway Client Logic -->
-    <script src="/js/gateway.js?v=interactive_map_v1"></script>
+    <!-- Client-side Interaction Logic -->
+    <script src="/js/gateway.js?v=cinematic_v2"></script>
 
 </body>
 

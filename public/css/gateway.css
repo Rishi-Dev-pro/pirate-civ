@@ -1,22 +1,19 @@
 /* ==========================================================================
-   PIRATE-CIV — CINEMATIC INTERACTIVE GATEWAY STYLES
-   Milestone 6.1: Interactive Map Entry Screen
+   PIRATE-CIV — CINEMATIC PIRATE WORLD ENTRY GATEWAY
+   Immersive full-viewport opening screen without website chrome or card boxes.
    ========================================================================== */
 
 :root {
     --gw-gold: #c69f58;
     --gw-gold-bright: #ffd700;
     --gw-gold-glow: rgba(255, 215, 0, 0.45);
-    --gw-brass-glow: rgba(212, 147, 57, 0.55);
-    --gw-fire-glow: rgba(255, 120, 20, 0.4);
+    --gw-brass-glow: rgba(212, 147, 57, 0.65);
+    --gw-fire-glow: rgba(255, 130, 25, 0.45);
     --gw-parchment: #f5eedc;
     --gw-parchment-muted: #bfa98b;
     --gw-dark-abyss: #080b10;
-    --gw-dark-card: rgba(10, 14, 22, 0.82);
-    --gw-border-gold: rgba(198, 159, 88, 0.35);
 }
 
-/* Base Viewport & Reset */
 *, *::before, *::after {
     box-sizing: border-box;
 }
@@ -24,25 +21,29 @@
 html, body {
     margin: 0;
     padding: 0;
-    width: 100%;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
     min-height: 100vh;
+    overflow: hidden;
     background-color: var(--gw-dark-abyss);
     color: var(--gw-parchment);
     font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    overflow-x: hidden;
+    user-select: none;
+    -webkit-user-select: none;
 }
 
 body.gateway-body {
     position: relative;
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    width: 100vw;
     height: 100vh;
-    overflow: hidden;
+    height: 100dvh;
 }
 
 /* ==========================================================================
-   1. FULL BACKGROUND LAYER (Cinematic Pirate Harbor Scene)
+   1. FULL VIEWPORT BACKGROUND SCENE (Dominates Center)
    ========================================================================== */
 .gateway-bg-layer {
     position: fixed;
@@ -52,7 +53,7 @@ body.gateway-body {
     z-index: 1;
     overflow: hidden;
     pointer-events: none;
-    animation: fadeInScene 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: fadeInScene 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
 .gateway-bg-image {
@@ -60,150 +61,76 @@ body.gateway-body {
     height: 100%;
     object-fit: cover;
     object-position: center 60%;
-    filter: brightness(92%) contrast(108%);
-    transform: scale(1.02);
-    transition: transform 1.2s ease-out;
+    filter: brightness(98%) contrast(106%);
 }
 
 .gateway-bg-vignette {
     position: absolute;
     inset: 0;
-    background: radial-gradient(circle at 50% 50%, rgba(8, 11, 16, 0.05) 0%, rgba(8, 11, 16, 0.35) 65%, rgba(6, 8, 12, 0.75) 100%);
+    background: radial-gradient(circle at 50% 50%, transparent 40%, rgba(8, 11, 16, 0.3) 75%, rgba(6, 8, 12, 0.6) 100%);
     pointer-events: none;
 }
 
 /* ==========================================================================
-   2. TOP NAVIGATION BAR (Atmospheric Nautical Glass)
-   ========================================================================== */
-.gateway-top-bar {
-    position: relative;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 12px 28px;
-    background: linear-gradient(180deg, rgba(8, 11, 16, 0.88) 0%, rgba(8, 11, 16, 0.45) 80%, transparent 100%);
-    backdrop-filter: blur(8px);
-    border-bottom: 1px solid rgba(198, 159, 88, 0.2);
-    flex-shrink: 0;
-}
-
-.gateway-brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-decoration: none;
-    color: var(--gw-gold-bright);
-    transition: transform 0.2s ease;
-}
-
-.gateway-brand:hover,
-.gateway-brand:focus-visible {
-    transform: scale(1.02);
-    outline: none;
-}
-
-.gateway-brand-icon {
-    font-size: 1.4rem;
-    filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.6));
-}
-
-.gateway-brand-text {
-    font-family: "Cinzel", serif;
-    font-size: 1.25rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    color: var(--gw-gold-bright);
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
-}
-
-.gateway-top-nav {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-.gateway-top-link {
-    font-family: "Cinzel", serif;
-    font-size: 0.84rem;
-    color: var(--gw-gold);
-    text-decoration: none;
-    letter-spacing: 0.06em;
-    padding: 6px 14px;
-    border-radius: 4px;
-    transition: all 0.2s ease;
-}
-
-.gateway-top-link:hover,
-.gateway-top-link:focus-visible {
-    color: #ffffff;
-    background: rgba(198, 159, 88, 0.18);
-    text-shadow: 0 0 8px rgba(255, 215, 0, 0.6);
-    outline: none;
-}
-
-.gateway-top-btn {
-    font-family: "Cinzel", serif;
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: #080b10;
-    background: linear-gradient(135deg, #e5be75 0%, #c69f58 100%);
-    padding: 7px 18px;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: all 0.25s ease;
-    box-shadow: 0 2px 10px rgba(198, 159, 88, 0.35);
-}
-
-.gateway-top-btn:hover,
-.gateway-top-btn:focus-visible {
-    background: linear-gradient(135deg, #ffd700 0%, #e5be75 100%);
-    box-shadow: 0 4px 18px rgba(255, 215, 0, 0.6);
-    transform: translateY(-1px);
-    outline: none;
-}
-
-.gateway-user-tag {
-    font-size: 0.84rem;
-    color: #bbf7d0;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 4px 12px;
-    background: rgba(14, 20, 28, 0.65);
-    border: 1px solid rgba(198, 159, 88, 0.25);
-    border-radius: 16px;
-}
-
-/* ==========================================================================
-   3. THE MAIN INTERACTIVE STAGE
+   2. MAIN INTERACTIVE GATEWAY STAGE (Full Viewport)
    ========================================================================== */
 .gateway-stage {
     position: relative;
     z-index: 10;
-    flex: 1;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
     display: flex;
     align-items: stretch;
     justify-content: space-between;
-    width: 100%;
-    height: calc(100vh - 120px);
-    max-height: calc(100vh - 120px);
     overflow: hidden;
-    user-select: none;
     touch-action: pan-y;
 }
 
 /* ==========================================================================
-   4. TORN MAP PORTALS (LEFT = MERCHANT, RIGHT = BUYER)
+   3. CENTER BRANDING AREA (Pirate-Civ Logo & Sunset Ocean)
+   ========================================================================== */
+.gateway-center-branding {
+    position: absolute;
+    top: clamp(20px, 4.5vh, 48px);
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 15;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    pointer-events: none;
+    animation: logoSettle 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.gateway-hero-logo {
+    width: clamp(200px, 25vw, 340px);
+    height: auto;
+    max-height: 170px;
+    object-fit: contain;
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.92))
+            drop-shadow(0 0 24px rgba(255, 180, 50, 0.3));
+    transition: transform 0.35s ease;
+}
+
+.gateway-tagline {
+    font-family: "Cinzel", serif;
+    font-size: clamp(0.7rem, 0.95vw, 0.85rem);
+    font-weight: 700;
+    letter-spacing: 0.32em;
+    color: #ffd700;
+    margin: 4px 0 0 0;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.95), 0 0 10px rgba(198, 159, 88, 0.45);
+    opacity: 0.95;
+}
+
+/* ==========================================================================
+   4. TORN MAP PORTALS (~22-25% Width, Framing the Ocean)
    ========================================================================== */
 .gateway-map-portal {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 32vw;
-    min-width: 280px;
-    max-width: 520px;
     height: 100%;
     display: flex;
     flex-direction: column;
@@ -212,26 +139,32 @@ body.gateway-body {
     color: inherit;
     cursor: pointer;
     z-index: 20;
-    transition: transform 0.32s cubic-bezier(0.16, 1, 0.3, 1),
-                filter 0.32s cubic-bezier(0.16, 1, 0.3, 1);
     outline: none;
+    opacity: 0.96;
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+                opacity 0.35s ease,
+                filter 0.35s ease;
 }
 
-/* Left Map Portal (Merchant) */
+/* Merchant (Left) */
 .portal-merchant {
     left: 0;
+    width: clamp(230px, 23.5vw, 440px);
     align-items: flex-start;
-    padding-left: clamp(24px, 5vw, 64px);
-    padding-right: 40px;
+    padding-left: clamp(24px, 3.8vw, 56px);
+    padding-right: 20px;
+    transform-origin: left center;
 }
 
-/* Right Map Portal (Buyer) */
+/* Buyer (Right) */
 .portal-buyer {
     right: 0;
+    width: clamp(220px, 22.5vw, 420px);
     align-items: flex-end;
-    padding-right: clamp(24px, 5vw, 64px);
-    padding-left: 40px;
+    padding-right: clamp(24px, 3.8vw, 56px);
+    padding-left: 20px;
     text-align: right;
+    transform-origin: right center;
 }
 
 /* Map Artwork Wrapper */
@@ -265,101 +198,189 @@ body.gateway-body {
             drop-shadow(-2px 0 8px rgba(198, 159, 88, 0.35));
 }
 
-/* Inner Glow Accent Overlay */
 .map-glow-edge {
     position: absolute;
     top: 0;
     bottom: 0;
-    width: 80px;
+    width: 70px;
     pointer-events: none;
-    opacity: 0.65;
+    opacity: 0.55;
     transition: opacity 0.35s ease, transform 0.35s ease;
 }
 
 .left-glow {
     right: 0;
-    background: radial-gradient(ellipse at right center, rgba(255, 180, 50, 0.45) 0%, rgba(212, 147, 57, 0.15) 50%, transparent 100%);
+    background: radial-gradient(ellipse at right center, rgba(255, 185, 50, 0.4) 0%, rgba(212, 147, 57, 0.12) 50%, transparent 100%);
 }
 
 .right-glow {
     left: 0;
-    background: radial-gradient(ellipse at left center, rgba(255, 180, 50, 0.45) 0%, rgba(212, 147, 57, 0.15) 50%, transparent 100%);
+    background: radial-gradient(ellipse at left center, rgba(255, 185, 50, 0.4) 0%, rgba(212, 147, 57, 0.12) 50%, transparent 100%);
 }
 
 /* ==========================================================================
-   5. HOVER, DRAG & ACTIVE HIGHLIGHT STATES
+   5. SEAMLESS IN-WORLD TYPOGRAPHY & NAUTICAL ICONS (No Card Boxes!)
    ========================================================================== */
-.gateway-map-portal:hover,
-.gateway-map-portal:focus-visible,
-.gateway-map-portal.portal-active {
+.portal-content {
+    position: relative;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    pointer-events: none;
+    max-width: 280px;
+    transform: translateY(-2%);
+}
+
+.portal-merchant .portal-content {
+    align-items: flex-start;
+}
+
+.portal-buyer .portal-content {
+    align-items: flex-end;
+}
+
+/* Raw Nautical Icon */
+.portal-icon {
+    font-size: clamp(2rem, 3.2vw, 2.6rem);
+    line-height: 1;
+    margin-bottom: 12px;
+    color: #ffd700;
+    filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.95))
+            drop-shadow(0 0 14px rgba(255, 215, 0, 0.55));
+    transition: transform 0.35s ease, filter 0.35s ease;
+}
+
+/* Main Role Title */
+.portal-title {
+    font-family: "Cinzel", serif;
+    font-size: clamp(1.8rem, 2.8vw, 2.4rem);
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    margin: 0 0 6px 0;
+    color: #ffd700;
+    background: linear-gradient(180deg, #ffffff 0%, #ffd700 65%, #b8860b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.95));
+    transition: color 0.3s ease, filter 0.3s ease;
+}
+
+/* Subtext Tagline */
+.portal-tagline {
+    font-family: "Cinzel", serif;
+    font-size: clamp(0.72rem, 1vw, 0.86rem);
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    color: #f5eedc;
+    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.95), 0 0 6px rgba(198, 159, 88, 0.5);
+    margin: 0 0 14px 0;
+    text-transform: uppercase;
+}
+
+/* Subtle Hint (No Button Box, Clean In-World Text) */
+.portal-subtle-hint {
+    display: inline-block;
+    font-family: "Cinzel", serif;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(229, 190, 117, 0.85);
+    text-shadow: 0 1px 6px rgba(0, 0, 0, 0.95);
+    opacity: 0.85;
+    transition: color 0.3s ease, opacity 0.3s ease, transform 0.3s ease;
+}
+
+/* ==========================================================================
+   6. INTERACTION & OPPOSITE-SIDE DIMMING
+   ========================================================================== */
+
+/* Merchant Active -> Left Bright, Right Dimmed */
+.stage-focus-left .portal-merchant,
+.portal-merchant:focus-visible {
+    opacity: 1;
     transform: scale(1.025);
     z-index: 25;
 }
 
-.portal-merchant:hover,
-.portal-merchant:focus-visible,
-.portal-merchant.portal-active {
-    transform-origin: left center;
+.stage-focus-left .portal-merchant .map-torn-left,
+.portal-merchant:focus-visible .map-torn-left {
+    filter: brightness(1.15)
+            drop-shadow(6px 0 24px rgba(255, 205, 70, 0.85))
+            drop-shadow(14px 0 45px rgba(255, 140, 20, 0.5));
 }
 
-.portal-buyer:hover,
-.portal-buyer:focus-visible,
-.portal-buyer.portal-active {
-    transform-origin: right center;
-}
-
-.gateway-map-portal:hover .map-torn-left,
-.gateway-map-portal:focus-visible .map-torn-left,
-.gateway-map-portal.portal-active .map-torn-left {
-    filter: brightness(1.12)
-            drop-shadow(6px 0 24px rgba(255, 200, 70, 0.85))
-            drop-shadow(12px 0 45px rgba(255, 130, 20, 0.55));
-}
-
-.gateway-map-portal:hover .map-torn-right,
-.gateway-map-portal:focus-visible .map-torn-right,
-.gateway-map-portal.portal-active .map-torn-right {
-    filter: brightness(1.12)
-            drop-shadow(-6px 0 24px rgba(255, 200, 70, 0.85))
-            drop-shadow(-12px 0 45px rgba(255, 130, 20, 0.55));
-}
-
-.gateway-map-portal:hover .map-glow-edge,
-.gateway-map-portal:focus-visible .map-glow-edge,
-.gateway-map-portal.portal-active .map-glow-edge {
+.stage-focus-left .portal-merchant .map-glow-edge,
+.portal-merchant:focus-visible .map-glow-edge {
     opacity: 1;
-    transform: scaleX(1.3);
+    transform: scaleX(1.4);
 }
 
-.gateway-map-portal:hover .portal-badge,
-.gateway-map-portal:focus-visible .portal-badge,
-.gateway-map-portal.portal-active .portal-badge {
-    transform: translateY(-4px) scale(1.08);
-    filter: drop-shadow(0 6px 20px rgba(255, 215, 0, 0.8));
-    border-color: #ffd700;
+.stage-focus-left .portal-merchant .portal-icon,
+.portal-merchant:focus-visible .portal-icon {
+    transform: scale(1.12);
+    filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 1))
+            drop-shadow(0 0 20px rgba(255, 215, 0, 0.9));
 }
 
-.gateway-map-portal:hover .portal-title,
-.gateway-map-portal:focus-visible .portal-title,
-.gateway-map-portal.portal-active .portal-title {
-    color: #ffffff;
-    text-shadow: 0 0 16px rgba(255, 215, 0, 0.8), 0 2px 4px rgba(0, 0, 0, 0.9);
-}
-
-.gateway-map-portal:hover .portal-dest-hint,
-.gateway-map-portal:focus-visible .portal-dest-hint,
-.gateway-map-portal.portal-active .portal-dest-hint {
-    opacity: 1;
-    transform: translateY(0);
-    border-color: rgba(255, 215, 0, 0.6);
-    background: rgba(14, 20, 28, 0.85);
+.stage-focus-left .portal-merchant .portal-subtle-hint,
+.portal-merchant:focus-visible .portal-subtle-hint {
     color: #ffd700;
+    opacity: 1;
+    transform: translateX(3px);
 }
 
-/* Active / Pressed State */
+.stage-focus-left .portal-buyer {
+    opacity: 0.52;
+    filter: brightness(0.82);
+    transform: scale(0.985);
+}
+
+/* Buyer Active -> Right Bright, Left Dimmed */
+.stage-focus-right .portal-buyer,
+.portal-buyer:focus-visible {
+    opacity: 1;
+    transform: scale(1.025);
+    z-index: 25;
+}
+
+.stage-focus-right .portal-buyer .map-torn-right,
+.portal-buyer:focus-visible .map-torn-right {
+    filter: brightness(1.15)
+            drop-shadow(-6px 0 24px rgba(255, 205, 70, 0.85))
+            drop-shadow(-14px 0 45px rgba(255, 140, 20, 0.5));
+}
+
+.stage-focus-right .portal-buyer .map-glow-edge,
+.portal-buyer:focus-visible .map-glow-edge {
+    opacity: 1;
+    transform: scaleX(1.4);
+}
+
+.stage-focus-right .portal-buyer .portal-icon,
+.portal-buyer:focus-visible .portal-icon {
+    transform: scale(1.12);
+    filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 1))
+            drop-shadow(0 0 20px rgba(255, 215, 0, 0.9));
+}
+
+.stage-focus-right .portal-buyer .portal-subtle-hint,
+.portal-buyer:focus-visible .portal-subtle-hint {
+    color: #ffd700;
+    opacity: 1;
+    transform: translateX(-3px);
+}
+
+.stage-focus-right .portal-merchant {
+    opacity: 0.52;
+    filter: brightness(0.82);
+    transform: scale(0.985);
+}
+
+/* Pressed State */
 .gateway-map-portal:active,
 .gateway-map-portal.portal-pressed {
-    transform: scale(0.985) !important;
+    transform: scale(0.98) !important;
     transition: transform 0.1s ease !important;
 }
 
@@ -369,135 +390,33 @@ body.gateway-body {
 }
 
 /* ==========================================================================
-   6. PORTAL CONTENT OVERLAYS (Icons, Typography)
+   7. KEYFRAME ANIMATIONS
    ========================================================================== */
-.portal-overlay {
-    position: relative;
-    z-index: 10;
-    display: flex;
-    flex-direction: column;
-    max-width: 320px;
-    pointer-events: none;
-    transform: translateY(-5%);
+@keyframes fadeInScene {
+    from {
+        opacity: 0;
+        transform: scale(1.03);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
-.portal-merchant .portal-overlay {
-    align-items: flex-start;
-}
-
-.portal-buyer .portal-overlay {
-    align-items: flex-end;
-}
-
-/* Emblem / Icon Badge */
-.portal-badge {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 68px;
-    height: 68px;
-    border-radius: 12px;
-    background: rgba(18, 14, 10, 0.82);
-    border: 1.5px solid var(--gw-border-gold);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7), inset 0 1px 4px rgba(255, 215, 0, 0.3);
-    margin-bottom: 16px;
-    transition: all 0.3s ease;
-    backdrop-filter: blur(4px);
-}
-
-.portal-badge-svg {
-    width: 38px;
-    height: 38px;
-    fill: none;
-    stroke: var(--gw-gold-bright);
-    stroke-width: 1.8;
-    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.9));
-}
-
-/* Typography Hierarchy */
-.portal-title {
-    font-family: "Cinzel", serif;
-    font-size: clamp(1.8rem, 3.4vw, 2.6rem);
-    font-weight: 800;
-    letter-spacing: 0.12em;
-    margin: 0 0 6px 0;
-    color: #ffd700;
-    background: linear-gradient(180deg, #ffffff 0%, #ffd700 65%, #b8860b 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 2px 10px rgba(0, 0, 0, 0.9));
-    transition: all 0.3s ease;
-}
-
-.portal-tagline {
-    font-family: "Cinzel", serif;
-    font-size: clamp(0.75rem, 1.2vw, 0.92rem);
-    font-weight: 600;
-    letter-spacing: 0.24em;
-    color: #e5be75;
-    text-shadow: 0 2px 8px rgba(0, 0, 0, 0.85);
-    margin: 0 0 18px 0;
-    text-transform: uppercase;
-}
-
-.portal-dest-hint {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: "Cinzel", serif;
-    font-size: 0.74rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: #c69f58;
-    background: rgba(14, 20, 28, 0.65);
-    border: 1px solid rgba(198, 159, 88, 0.3);
-    padding: 6px 14px;
-    border-radius: 20px;
-    opacity: 0.82;
-    transform: translateY(2px);
-    transition: all 0.3s ease;
-    backdrop-filter: blur(6px);
+@keyframes logoSettle {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -15px) scale(0.96);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, 0) scale(1);
+    }
 }
 
 /* ==========================================================================
-   7. CENTER BRANDING AREA (Pirate-Civ Logo & Sunset Window)
+   8. VISUALLY HIDDEN ACCESSIBILITY CONTAINER (Zero Visual Clutter)
    ========================================================================== */
-.gateway-center-branding {
-    position: absolute;
-    left: 50%;
-    top: 6%;
-    transform: translateX(-50%);
-    z-index: 15;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    pointer-events: none;
-    animation: logoSettle 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-
-.gateway-hero-logo {
-    width: clamp(260px, 34vw, 440px);
-    height: auto;
-    max-height: 220px;
-    object-fit: contain;
-    filter: drop-shadow(0 6px 20px rgba(0, 0, 0, 0.95))
-            drop-shadow(0 0 30px rgba(255, 180, 50, 0.35));
-    transition: transform 0.3s ease;
-}
-
-.gateway-tagline {
-    font-family: "Cinzel", serif;
-    font-size: clamp(0.72rem, 1.1vw, 0.88rem);
-    font-weight: 700;
-    letter-spacing: 0.32em;
-    color: #ffd700;
-    margin: 4px 0 0 0;
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.95), 0 0 10px rgba(198, 159, 88, 0.5);
-    opacity: 0.92;
-}
-
-/* Accessible Hidden Heading */
 .visually-hidden {
     position: absolute;
     width: 1px;
@@ -511,148 +430,37 @@ body.gateway-body {
 }
 
 /* ==========================================================================
-   8. BOTTOM FOOTER LORE & ARCHIPELAGO LEGEND
+   9. RESPONSIVE PRESENTATION (Mobile & Tablet)
    ========================================================================== */
-.gateway-footer {
-    position: relative;
-    z-index: 50;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 28px;
-    background: linear-gradient(0deg, rgba(8, 11, 16, 0.92) 0%, rgba(8, 11, 16, 0.6) 80%, transparent 100%);
-    border-top: 1px solid rgba(198, 159, 88, 0.2);
-    backdrop-filter: blur(8px);
-    flex-shrink: 0;
-    gap: 16px;
-}
-
-.gateway-islands-bar {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.island-chip {
-    font-family: "Cinzel", serif;
-    font-size: 0.7rem;
-    letter-spacing: 0.04em;
-    color: #c69f58;
-    background: rgba(14, 20, 28, 0.7);
-    border: 1px solid rgba(198, 159, 88, 0.2);
-    border-radius: 12px;
-    padding: 3px 10px;
-    transition: all 0.2s ease;
-    text-decoration: none;
-}
-
-.island-chip:hover {
-    color: #ffd700;
-    border-color: rgba(255, 215, 0, 0.5);
-    transform: translateY(-1px);
-}
-
-.gateway-footer-lore {
-    text-align: right;
-    font-size: 0.76rem;
-    color: var(--gw-parchment-muted);
-}
-
-.destiny-title {
-    font-family: "Cinzel", serif;
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    color: var(--gw-gold);
-    margin: 0;
-}
-
-.gateway-auth-hint {
-    font-size: 0.74rem;
-    color: #cbd5e1;
-    margin-top: 2px;
-}
-
-.gateway-auth-hint a {
-    color: #ffd700;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    font-weight: 600;
-}
-
-.gateway-auth-hint a:hover,
-.gateway-auth-hint a:focus-visible {
-    color: #ffffff;
-    outline: none;
-}
-
-/* ==========================================================================
-   9. KEYFRAME ANIMATIONS
-   ========================================================================== */
-@keyframes fadeInScene {
-    from {
-        opacity: 0;
-        transform: scale(1.05);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1.02);
-    }
-}
-
-@keyframes logoSettle {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -18px) scale(0.96);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, 0) scale(1);
-    }
-}
-
-/* ==========================================================================
-   10. RESPONSIVE BREAKPOINTS (Desktop, Tablet, Mobile)
-   ========================================================================== */
-@media (max-width: 1100px) {
-    .gateway-map-portal {
-        width: 34vw;
-    }
+@media (max-width: 900px) {
     .portal-merchant {
+        width: clamp(200px, 28vw, 320px);
         padding-left: 20px;
-        padding-right: 20px;
     }
+
     .portal-buyer {
+        width: clamp(200px, 28vw, 320px);
         padding-right: 20px;
-        padding-left: 20px;
     }
+
     .gateway-hero-logo {
-        width: 300px;
-    }
-    .gateway-footer {
-        flex-direction: column;
-        text-align: center;
-        padding: 10px 16px;
-    }
-    .gateway-footer-lore {
-        text-align: center;
+        width: 240px;
     }
 }
 
 @media (max-width: 768px) {
     body.gateway-body {
-        height: auto;
-        min-height: 100vh;
+        height: 100dvh;
         overflow-y: auto;
     }
 
     .gateway-stage {
         height: auto;
-        max-height: none;
+        min-height: 100dvh;
         flex-direction: column;
-        padding: 20px 16px 40px 16px;
-        gap: 20px;
+        justify-content: space-between;
+        padding: 24px 16px 28px 16px;
+        gap: 16px;
         align-items: center;
     }
 
@@ -661,58 +469,54 @@ body.gateway-body {
         left: auto;
         top: auto;
         transform: none;
-        margin-bottom: 24px;
-        margin-top: 10px;
+        margin-bottom: 8px;
+        order: 1;
     }
 
     .gateway-hero-logo {
-        width: min(85vw, 320px);
-        max-height: 160px;
+        width: min(75vw, 240px);
+        max-height: 120px;
     }
 
     .gateway-map-portal {
         position: relative;
         width: 100%;
-        max-width: 440px;
-        height: 260px;
-        border-radius: 12px;
+        max-width: 380px;
+        height: 190px;
+        border-radius: 8px;
         overflow: hidden;
         border: 1px solid rgba(198, 159, 88, 0.4);
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7);
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
     }
 
     .portal-merchant {
+        order: 2;
         align-items: center;
         text-align: center;
-        padding: 24px;
+        padding: 16px;
+        transform-origin: center center;
     }
 
-    .portal-merchant .portal-overlay {
+    .portal-merchant .portal-content {
         align-items: center;
         transform: none;
     }
 
     .portal-buyer {
+        order: 3;
         align-items: center;
         text-align: center;
-        padding: 24px;
+        padding: 16px;
+        transform-origin: center center;
     }
 
-    .portal-buyer .portal-overlay {
+    .portal-buyer .portal-content {
         align-items: center;
         transform: none;
     }
 
-    .map-torn-img {
-        object-fit: cover;
-    }
-
-    .gateway-footer {
-        flex-direction: column;
-        gap: 12px;
-    }
-
-    .gateway-islands-bar {
-        justify-content: center;
+    .stage-focus-left .portal-buyer,
+    .stage-focus-right .portal-merchant {
+        opacity: 0.75;
     }
 }
