@@ -448,13 +448,27 @@ export const processCheckout = async (req, res) => {
 
         // -------------------------------------------------------------
         // STEP B: CREATE ORDER DOCUMENT (INITIAL STATUS: 'pending')
+        // Automatically group by distinct seller for seller fulfillments (AUD-001)
         // -------------------------------------------------------------
         const portFee = 0; // Trade Port Fee: 0 Doubloons (Exempt)
         const totalDoubloons = subtotal + portFee;
 
+        const distinctSellerIds = [];
+        for (const item of orderItems) {
+            const sIdStr = item.seller.toString();
+            if (!distinctSellerIds.includes(sIdStr)) {
+                distinctSellerIds.push(sIdStr);
+            }
+        }
+        const fulfillments = distinctSellerIds.map(sId => ({
+            seller: sId,
+            status: "pending"
+        }));
+
         const newOrder = new Order({
             buyer: req.user._id, // Authoritative authenticated buyer ID
             items: orderItems,
+            fulfillments: fulfillments,
             subtotal: subtotal,
             totalDoubloons: totalDoubloons,
             status: "pending",
@@ -555,6 +569,7 @@ export const renderBuyerOrders = async (req, res) => {
         // Query orders strictly scoped to authenticated buyer using compound index { buyer: 1, createdAt: -1 }
         const orders = await Order.findByBuyer(req.user._id)
             .populate("items.seller", "name storeName homeIsland")
+            .populate("fulfillments.seller", "name storeName homeIsland")
             .lean();
 
         // Support JSON format for automated testing and client hydration
@@ -612,7 +627,9 @@ export const renderBuyerOrderDetail = async (req, res) => {
         const order = await Order.findOne({
             _id: orderId,
             buyer: req.user._id
-        }).populate("items.seller", "name storeName homeIsland");
+        })
+            .populate("items.seller", "name storeName homeIsland")
+            .populate("fulfillments.seller", "name storeName homeIsland");
 
         if (!order) {
             if (req.xhr || req.headers.accept?.includes("application/json")) {
@@ -624,7 +641,14 @@ export const renderBuyerOrderDetail = async (req, res) => {
             });
         }
 
-        const currentStageIndex = TRACKING_STAGES.findIndex(s => s.key === order.status);
+        let currentStageIndex = TRACKING_STAGES.findIndex(s => s.key === order.status);
+        if (currentStageIndex === -1 && order.status === "partially_fulfilled" && Array.isArray(order.fulfillments) && order.fulfillments.length > 0) {
+            const activeStatuses = order.fulfillments.map(f => f.status).filter(s => s !== "cancelled");
+            const stageIndices = activeStatuses.map(s => TRACKING_STAGES.findIndex(stage => stage.key === s)).filter(idx => idx !== -1);
+            if (stageIndices.length > 0) {
+                currentStageIndex = Math.min(...stageIndices);
+            }
+        }
         const isCancelled = order.status === "cancelled";
 
         if (req.xhr || req.headers.accept?.includes("application/json") || req.query.format === "json") {

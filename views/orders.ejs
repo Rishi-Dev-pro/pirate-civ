@@ -193,6 +193,12 @@
             color: #ff8585;
         }
 
+        .order-status-partially_fulfilled {
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid #38bdf8;
+            color: #7dd3fc;
+        }
+
         .voyage-stage-callout {
             display: flex;
             align-items: center;
@@ -421,7 +427,8 @@
                 processing: "⚒ Cargo Processing",
                 shipped: "🚢 Fleet Underway",
                 delivered: "🏝️ Delivered to Harbor",
-                cancelled: "☠ Voyage Cancelled"
+                cancelled: "☠ Voyage Cancelled",
+                partially_fulfilled: "⚓ Partially Dispatched"
             };
         %>
 
@@ -515,6 +522,34 @@
                                     <div class="voyage-info-val" style="color:#bbf7d0; text-transform:capitalize;">🪙 <%= order.paymentStatus || 'pending' %></div>
                                 </div>
                             </div>
+
+                            <!-- Multi-Seller Fulfillment Breakdown (AUD-001) -->
+                            <% if (order.fulfillments && order.fulfillments.length > 1) { %>
+                                <div class="voyage-merchants-breakdown" style="margin-bottom: 14px; padding: 10px 12px; background: rgba(10, 15, 20, 0.5); border: 1px solid rgba(212, 147, 57, 0.2); border-radius: 6px;">
+                                    <div style="font-family: 'Cinzel', serif; font-size: 0.72rem; color: #ffd57e; text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em;">
+                                        Merchant Fulfillments
+                                    </div>
+                                    <div style="display: flex; flex-direction: column; gap: 6px;">
+                                        <% order.fulfillments.forEach(function(f) {
+                                            const mName = f.seller?.storeName || f.seller?.name || 'Chartered Merchant';
+                                            const fStatus = f.status || 'pending';
+                                            let icon = '⚓';
+                                            if (fStatus === 'confirmed') icon = '✓';
+                                            else if (fStatus === 'processing') icon = '⚒';
+                                            else if (fStatus === 'shipped') icon = '🚢';
+                                            else if (fStatus === 'delivered') icon = '🏝️';
+                                            else if (fStatus === 'cancelled') icon = '☠';
+                                        %>
+                                            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.82rem;">
+                                                <span style="color: #cbd5e1;"><%= icon %> <%= mName %></span>
+                                                <span class="order-status-badge order-status-<%= fStatus %>" style="font-size: 0.68rem; padding: 2px 8px;">
+                                                    ● <%= fStatus.toUpperCase() %>
+                                                </span>
+                                            </div>
+                                        <% }); %>
+                                    </div>
+                                </div>
+                            <% } %>
 
                             <!-- Cargo Items Preview (up to 3 items) -->
                             <% if (order.items && order.items.length > 0) { %>

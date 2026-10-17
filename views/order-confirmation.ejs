@@ -99,6 +99,12 @@
             color: #69f0ae;
         }
 
+        .order-status-partially_fulfilled {
+            background: rgba(212, 147, 57, 0.2);
+            border: 1px solid #ffd57e;
+            color: #ffd57e;
+        }
+
         .order-status-cancelled {
             background: rgba(220, 53, 69, 0.15);
             border: 1px solid #dc3545;
@@ -599,6 +605,60 @@
                                 </div>
                             <% }); %>
                         </div>
+
+                        <% if (order.fulfillments && order.fulfillments.length > 1) { %>
+                            <div class="merchant-fulfillment-timelines" style="margin-top: 24px; padding-top: 18px; border-top: 1px dashed rgba(212, 147, 57, 0.25);">
+                                <h3 style="font-family: 'Cinzel', serif; font-size: 0.95rem; color: #ffd57e; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+                                    <span>⚓</span> Merchant Fleet Progress
+                                </h3>
+                                <div style="display: flex; flex-direction: column; gap: 14px;">
+                                    <% order.fulfillments.forEach(function(f) {
+                                        const sellerObj = f.seller || {};
+                                        const sName = sellerObj.storeName || sellerObj.name || ("Merchant #" + String(sellerObj._id || f.seller).slice(-4));
+                                        const sStatus = f.status || "pending";
+                                        const sIdx = stages.findIndex(s => s.key === sStatus);
+                                    %>
+                                        <div style="background: rgba(14, 20, 28, 0.6); border: 1px solid rgba(212, 147, 57, 0.2); border-radius: 8px; padding: 12px 16px;">
+                                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                                <div>
+                                                    <strong style="color: #fff4db; font-family: 'Cinzel', serif; font-size: 0.9rem;"><%= sName %></strong>
+                                                    <span style="font-size: 0.75rem; color: #8b9bb4; margin-left: 6px;"><%= sellerObj.homeIsland || 'Archipelago' %></span>
+                                                </div>
+                                                <span class="order-status-badge order-status-<%= sStatus %>" style="font-size: 0.72rem; padding: 3px 10px;">
+                                                    ● <%= sStatus %>
+                                                </span>
+                                            </div>
+                                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                                <% stages.forEach(function(st, stepIdx) {
+                                                    const isDone = sIdx > stepIdx;
+                                                    const isCur = sIdx === stepIdx;
+                                                    let stepColor = "#64748b";
+                                                    let stepBorder = "rgba(100, 116, 139, 0.3)";
+                                                    let stepBg = "rgba(18, 24, 32, 0.5)";
+                                                    let icon = "○";
+                                                    if (isDone) {
+                                                        stepColor = "#5cf59b";
+                                                        stepBorder = "rgba(56, 239, 125, 0.4)";
+                                                        stepBg = "rgba(56, 239, 125, 0.1)";
+                                                        icon = "✓";
+                                                    } else if (isCur) {
+                                                        stepColor = "#ffd57e";
+                                                        stepBorder = "#d49339";
+                                                        stepBg = "rgba(212, 147, 57, 0.2)";
+                                                        icon = st.icon;
+                                                    }
+                                                %>
+                                                    <div style="font-size: 0.75rem; color: <%= stepColor %>; background: <%= stepBg %>; border: 1px solid <%= stepBorder %>; padding: 4px 10px; border-radius: 4px; display: inline-flex; align-items: center; gap: 4px;">
+                                                        <span><%= icon %></span>
+                                                        <span><%= st.label %></span>
+                                                    </div>
+                                                <% }); %>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                            </div>
+                        <% } %>
                     </section>
                 <% } %>
 
@@ -644,6 +704,33 @@
                             <p style="margin:0; font-size:0.9rem; color:#fff4db; line-height:1.4;">
                                 "<%= order.shippingAddress.recipientNotes %>"
                             </p>
+                        </div>
+                    <% } %>
+
+                    <!-- Merchant Dispatch Manifests (Multi-Seller Fulfillment) -->
+                    <% if (order.fulfillments && order.fulfillments.length > 0) { %>
+                        <div style="background: rgba(14, 20, 28, 0.7); border: 1px solid rgba(212, 147, 57, 0.3); border-radius: 8px; padding: 16px; margin-bottom: 20px;">
+                            <div style="font-family: 'Cinzel', serif; font-size: 0.95rem; color: #ffd57e; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between;">
+                                <span>⚓ Merchant Dispatch Manifests (<%= order.fulfillments.length %> <%= order.fulfillments.length === 1 ? 'Merchant' : 'Merchants' %>)</span>
+                                <span style="font-size: 0.75rem; color: #8b9bb4; font-family: 'Inter', sans-serif;">Independent merchant fulfillment tracking</span>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px;">
+                                <% order.fulfillments.forEach(function(f) {
+                                    const sellerObj = f.seller || {};
+                                    const sName = sellerObj.storeName || sellerObj.name || ("Merchant #" + String(sellerObj._id || f.seller).slice(-4));
+                                    const sStatus = f.status || "pending";
+                                %>
+                                    <div style="background: rgba(18, 24, 32, 0.9); border: 1px solid rgba(212, 147, 57, 0.2); border-radius: 6px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between;">
+                                        <div style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 8px;">
+                                            <div style="font-weight: 600; font-size: 0.88rem; color: #fff4db;"><%= sName %></div>
+                                            <div style="font-size: 0.72rem; color: #8b9bb4;"><%= sellerObj.homeIsland || 'Archipelago' %></div>
+                                        </div>
+                                        <span class="order-status-badge order-status-<%= sStatus %>" style="font-size: 0.72rem; padding: 3px 8px; white-space: nowrap;">
+                                            ● <%= sStatus %>
+                                        </span>
+                                    </div>
+                                <% }); %>
+                            </div>
                         </div>
                     <% } %>
 

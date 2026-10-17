@@ -4,6 +4,49 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [2026-10-17] — Audit Remediation: AUD-001 Multi-Seller Order Fulfillment Architecture (REMEDIATED)
+
+### Added & Implemented
+* **Embedded Seller Fulfillment Architecture (`models/order.js`):**
+  - Added embedded `fulfillments` subdocument array to `orderSchema`: `[{ seller: ObjectId (ref: User), status: String (enum), updatedAt: Date }]`.
+  - Added compound index `{ "fulfillments.seller": 1, "fulfillments.status": 1 }` on `Order`.
+  - Exported `FULFILLMENT_STATUSES` (6 canonical statuses: `pending`, `confirmed`, `processing`, `shipped`, `delivered`, `cancelled`).
+  - Preserved `ORDER_STATUSES` length of 6 for historical contract invariance, while introducing `AGGREGATE_ORDER_STATUSES = [...ORDER_STATUSES, "partially_fulfilled"]` on the root `status` field.
+  - Added canonical model helper methods:
+    - `initializeFulfillments()`: automatically extracts unique sellers from order items and creates exactly one fulfillment per distinct seller initialized to `pending`.
+    - `recalculateAggregateStatus()`: deterministically computes root order status (all uniform statuses match that status; mixed combinations evaluate to `partially_fulfilled`; never reports `delivered` until all sellers deliver).
+    - `getFulfillmentForSeller(sellerId)`: returns the seller's fulfillment record.
+    - `canTransitionFulfillment(sellerId, targetStatus)`: checks permitted transitions against `PERMITTED_STATUS_TRANSITIONS`.
+    - `transitionFulfillment(sellerId, targetStatus)`: updates the seller's fulfillment and calls `recalculateAggregateStatus()`.
+* **Checkout Order Creation (`controller/orders.js`):**
+  - Updated `processCheckout` to automatically group cart items by unique `seller` and initialize `fulfillments` alongside immutable snapshots.
+* **Seller Order Management & Isolation (`controller/sellers.js`):**
+  - Updated `renderSellerOrders` to calculate telemetry counts based on the authenticated seller's fulfillment status and populate `sellerStatus`.
+  - Updated `renderSellerOrderDetail` to scope available status transitions strictly to the seller's own fulfillment state.
+  - Updated `updateOrderStatus` (`POST /seller/orders/:orderId/status`) to update strictly `req.user._id`'s fulfillment subdocument, recalculating aggregate `order.status` and leaving other merchants untouched.
+* **Buyer Post-Purchase & Tracking Views (`views/orders.ejs`, `views/order-confirmation.ejs`):**
+  - Added `.order-status-partially_fulfilled` CSS styling and stage label ("⚓ Partially Dispatched").
+  - Added multi-merchant fulfillment status breakdown in buyer order history (`/orders`).
+  - Added individual Merchant Fleet Progress timeline cards to nautical voyage tracking in order confirmation / detail (`/orders/:orderId`).
+* **Seller Manifest Views (`views/seller/orders.ejs`, `views/seller/order-detail.ejs`):**
+  - Prominently display the seller's sovereign fulfillment status (`sellerStatus`) on status badges.
+  - Display overall voyage aggregate status subtitle when orders are multi-seller or `partially_fulfilled`.
+  - Updated operations deck and guild notices to explain multi-merchant sovereign fulfillment isolation.
+* **Backward Compatibility:**
+  - Preserved backward compatibility for historical orders without `fulfillments` arrays; `canTransitionTo` and `transitionTo` gracefully synchronize root status and fulfillment subdocs.
+
+### Tested & Verified
+* 100 automated assertions in dedicated test suite `scratch/test_aud_001_multi_seller_fulfillment.js`:
+  - Group 1: Schema & taxonomy validation, compound index configuration (7/7 passed).
+  - Group 2: Fulfillment creation, single-seller vs multi-seller, deduplication (10/10 passed).
+  - Group 3: Seller isolation and lifecycle transitions (12/12 passed).
+  - Group 4: Deterministic aggregate status recalculation across uniform and mixed combinations (12/12 passed).
+  - Group 5: Historical snapshot invariance after status transitions (21/21 passed).
+  - Group 6: Backward compatibility for legacy orders without fulfillments (6/6 passed).
+  - Group 7: Live HTTP / SSR integration tests, buyer isolation, seller isolation, terminal transition rejections (32/32 passed).
+* Full regression pass across all suites: 1,199 passing assertions across 15 test suites with 100% pass rate.
+* Static code health: 22/22 JavaScript files pass syntax validation; 34/34 EJS templates compile cleanly.
+
 ## [2026-10-17] — Phase 6 / Milestone 6.2: Role-Aware Global Navigation (MILESTONE 6.2 COMPLETE)
 
 ### Added & Implemented

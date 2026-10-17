@@ -83,9 +83,14 @@
                 </div>
 
                 <div class="seller-stat-badges" style="align-items: center;">
-                    <span class="badge-status badge-status-<%= order.status %>" id="manifestStatusBadge" style="font-size: 0.95rem; padding: 6px 16px;">
-                        ⚓ STATUS: <%= order.status.toUpperCase() %>
+                    <span class="badge-status badge-status-<%= (typeof sellerStatus !== 'undefined' ? sellerStatus : (order.sellerStatus || order.status)) %>" id="manifestStatusBadge" style="font-size: 0.95rem; padding: 6px 16px;">
+                        ⚓ YOUR FULFILLMENT: <%= (typeof sellerStatus !== 'undefined' ? sellerStatus : (order.sellerStatus || order.status)).toUpperCase() %>
                     </span>
+                    <% if (order.status === 'partially_fulfilled' || (order.fulfillments && order.fulfillments.length > 1)) { %>
+                        <span class="badge-status badge-status-<%= order.status %>" id="overallStatusBadge" style="font-size: 0.85rem; padding: 4px 12px; background: rgba(212,147,57,0.15); border: 1px dashed #d49339;">
+                            VOYAGE: <%= order.status.replace('_', ' ').toUpperCase() %>
+                        </span>
+                    <% } %>
                     <span class="badge-status badge-pay-<%= order.paymentStatus %>" id="manifestPaymentBadge" style="font-size: 0.95rem; padding: 6px 16px;">
                         🪙 PAYMENT: <%= (order.paymentStatus || 'pending').toUpperCase() %>
                     </span>
@@ -96,7 +101,7 @@
             <% if (query && query.updated) { %>
                 <div class="seller-alert-banner" id="bannerSuccessUpdated" role="alert" style="margin-top: 20px;">
                     <span>✨</span>
-                    <span>Voyage manifest fulfillment status transitioned successfully to <strong><%= order.status.toUpperCase() %></strong>.</span>
+                    <span>Voyage manifest fulfillment status transitioned successfully to <strong><%= (typeof sellerStatus !== 'undefined' ? sellerStatus : (order.sellerStatus || order.status)).toUpperCase() %></strong>.</span>
                 </div>
             <% } %>
 
@@ -228,24 +233,25 @@
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 20px;">
                         <div>
                             <div style="font-size: 0.82rem; color: #b8a892; font-family: 'Cinzel', serif; text-transform: uppercase;">
-                                Current Lifecycle Stage
+                                Your Fulfillment Stage
                             </div>
                             <div style="display: flex; align-items: center; gap: 10px; margin-top: 6px;">
-                                <span class="badge-status badge-status-<%= order.status %>" style="font-size: 0.95rem; padding: 6px 14px;">
-                                    <%= order.status.toUpperCase() %>
+                                <% const effectiveSellerStatus = typeof sellerStatus !== 'undefined' ? sellerStatus : (order.sellerStatus || order.status); %>
+                                <span class="badge-status badge-status-<%= effectiveSellerStatus %>" style="font-size: 0.95rem; padding: 6px 14px;">
+                                    <%= effectiveSellerStatus.toUpperCase() %>
                                 </span>
                                 <span style="color: #cbd5e1; font-size: 0.9rem;">
-                                    <% if (order.status === 'pending') { %>
-                                        Awaiting merchant confirmation to reserve wharf dock space.
-                                    <% } else if (order.status === 'confirmed') { %>
+                                    <% if (effectiveSellerStatus === 'pending') { %>
+                                        Awaiting your merchant confirmation to reserve wharf dock space.
+                                    <% } else if (effectiveSellerStatus === 'confirmed') { %>
                                         Manifest confirmed. Cargo ready for packing and wharf crating.
-                                    <% } else if (order.status === 'processing') { %>
+                                    <% } else if (effectiveSellerStatus === 'processing') { %>
                                         Cargo being packed at harbor docks. Ready for vessel boarding.
-                                    <% } else if (order.status === 'shipped') { %>
+                                    <% } else if (effectiveSellerStatus === 'shipped') { %>
                                         Fleet has weighed anchor and is sailing toward recipient harbor.
-                                    <% } else if (order.status === 'delivered') { %>
-                                        Cargo safely discharged at destination dock. Voyage complete.
-                                    <% } else if (order.status === 'cancelled') { %>
+                                    <% } else if (effectiveSellerStatus === 'delivered') { %>
+                                        Cargo safely discharged at destination dock. Your fulfillment is complete.
+                                    <% } else if (effectiveSellerStatus === 'cancelled') { %>
                                         Voyage revoked. No further nautical operations permitted.
                                     <% } %>
                                 </span>
@@ -320,7 +326,7 @@
                                     Terminal Voyage State Reached
                                 </div>
                                 <div style="font-size: 0.84rem; color: #94a3b8; margin-top: 2px;">
-                                    This manifest has achieved terminal status (<strong><%= order.status.toUpperCase() %></strong>). Under Admiralty Guild laws, no further status transitions may be applied.
+                                    This manifest has achieved terminal status (<strong><%= (typeof sellerStatus !== 'undefined' ? sellerStatus : (order.sellerStatus || order.status)).toUpperCase() %></strong>). Under Admiralty Guild laws, no further status transitions may be applied.
                                 </div>
                             </div>
                         </div>
@@ -331,7 +337,7 @@
             <!-- Multi-Merchant Isolation & Limitation Notice -->
             <footer style="margin-top: 32px; padding-top: 20px; border-top: 1px dashed rgba(212, 147, 57, 0.25); color: #64748b; font-size: 0.82rem; line-height: 1.6;">
                 <p style="margin: 0;">
-                    ⚓ <strong>Admiralty Guild Order Protocol:</strong> In multi-seller voyages, each merchant views strictly the items and line valuations chartered under their sovereign merchant house. Status updates apply to the complete voyage manifest under the unified Order lifecycle.
+                    ⚓ <strong>Admiralty Guild Order Protocol:</strong> In multi-seller voyages, each merchant manages strictly their sovereign fulfillment manifest. Lifecycle transitions update your merchant dispatch status while preserving independent fulfillment states for fellow merchants across the archipelago.
                 </p>
             </footer>
 

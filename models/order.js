@@ -13,6 +13,20 @@ export const ORDER_STATUSES = [
     "cancelled"
 ];
 
+export const FULFILLMENT_STATUSES = [
+    "pending",
+    "confirmed",
+    "processing",
+    "shipped",
+    "delivered",
+    "cancelled"
+];
+
+export const AGGREGATE_ORDER_STATUSES = [
+    ...ORDER_STATUSES,
+    "partially_fulfilled"
+];
+
 export const PAYMENT_STATUSES = [
     "pending",
     "paid",
@@ -28,6 +42,32 @@ export const PERMITTED_STATUS_TRANSITIONS = {
     delivered: [],
     cancelled: []
 };
+
+
+/* =========================================================
+   SELLER FULFILLMENT SCHEMA (Embedded Subdocument)
+   Stores seller-specific fulfillment lifecycle state (AUD-001)
+========================================================= */
+
+const sellerFulfillmentSchema = new mongoose.Schema({
+    seller: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: [true, "Seller reference is required"]
+    },
+    status: {
+        type: String,
+        enum: {
+            values: FULFILLMENT_STATUSES,
+            message: "{VALUE} is not a valid fulfillment status"
+        },
+        default: "pending"
+    },
+    updatedAt: {
+        type: Date,
+        default: Date.now
+    }
+}, { _id: false });
 
 
 /* =========================================================
@@ -165,10 +205,14 @@ const orderSchema = new mongoose.Schema({
             return undefined;
         }
     },
+    fulfillments: {
+        type: [sellerFulfillmentSchema],
+        default: []
+    },
     status: {
         type: String,
         enum: {
-            values: ORDER_STATUSES,
+            values: AGGREGATE_ORDER_STATUSES,
             message: "{VALUE} is not a valid order status"
         },
         default: "pending",
@@ -195,6 +239,7 @@ const orderSchema = new mongoose.Schema({
 /* =========================================================
    PRE-VALIDATE HOOK
    Compute subtotal and totalDoubloons if omitted
+   Auto-initialize fulfillments from items if missing (AUD-001)
 ========================================================= */
 
 orderSchema.pre("validate", function() {
@@ -210,6 +255,11 @@ orderSchema.pre("validate", function() {
 
         if (this.totalDoubloons === undefined || this.totalDoubloons === null) {
             this.totalDoubloons = this.subtotal;
+        }
+
+        // Initialize seller fulfillments if missing or empty
+        if (!Array.isArray(this.fulfillments) || this.fulfillments.length === 0) {
+            this.initializeFulfillments();
         }
     }
 });
@@ -228,10 +278,12 @@ orderSchema.virtual("total")
    INDEXES
    1. buyer + createdAt: Fast customer order history sorting
    2. items.seller + status: Fast merchant order fulfillment queues
+   3. fulfillments.seller + fulfillments.status: Seller fulfillment state indexing
 ========================================================= */
 
 orderSchema.index({ buyer: 1, createdAt: -1 });
 orderSchema.index({ "items.seller": 1, status: 1 });
+orderSchema.index({ "fulfillments.seller": 1, "fulfillments.status": 1 });
 
 
 /* =========================================================
@@ -239,12 +291,135 @@ orderSchema.index({ "items.seller": 1, status: 1 });
 ========================================================= */
 
 /**
+ * Initialize fulfillments from order items if not already set.
+ * Deduplicates by seller ID (exactly one fulfillment per distinct seller).
+ */
+orderSchema.methods.initializeFulfillments = function() {
+    if (!Array.isArray(this.items) || this.items.length === 0) {
+        return;
+    }
+    if (!Array.isArray(this.fulfillments)) {
+        this.fulfillments = [];
+    }
+
+    const existingSellerIds = new Set(
+        this.fulfillments.map(f => (f.seller?._id || f.seller)?.toString()).filter(Boolean)
+    );
+
+    const initialStatus = this.status && this.status !== "partially_fulfilled" ? this.status : "pending";
+
+    for (const item of this.items) {
+        const itemSellerId = (item.seller?._id || item.seller)?.toString();
+        if (itemSellerId && !existingSellerIds.has(itemSellerId)) {
+            existingSellerIds.add(itemSellerId);
+            this.fulfillments.push({
+                seller: item.seller?._id || item.seller,
+                status: initialStatus
+            });
+        }
+    }
+};
+
+/**
+ * Recalculate root order status based on all seller fulfillments (AUD-001).
+ * Deterministic aggregate rules:
+ * - All pending -> pending
+ * - All confirmed -> confirmed
+ * - All processing -> processing
+ * - All shipped -> shipped
+ * - All delivered -> delivered
+ * - All cancelled -> cancelled
+ * - Mixed seller states -> partially_fulfilled
+ * @returns {string} The aggregate status
+ */
+orderSchema.methods.recalculateAggregateStatus = function() {
+    if (!Array.isArray(this.fulfillments) || this.fulfillments.length === 0) {
+        if (Array.isArray(this.items) && this.items.length > 0) {
+            this.initializeFulfillments();
+        }
+    }
+
+    if (!Array.isArray(this.fulfillments) || this.fulfillments.length === 0) {
+        return this.status || "pending";
+    }
+
+    const statuses = this.fulfillments.map(f => f.status);
+    const uniqueStatuses = [...new Set(statuses)];
+
+    if (uniqueStatuses.length === 1) {
+        this.status = uniqueStatuses[0];
+    } else {
+        this.status = "partially_fulfilled";
+    }
+
+    return this.status;
+};
+
+/**
+ * Find fulfillment entry for a given seller.
+ * @param {mongoose.Types.ObjectId|string} sellerId
+ * @returns {Object|null}
+ */
+orderSchema.methods.getFulfillmentForSeller = function(sellerId) {
+    if (!sellerId) return null;
+    const sIdStr = (sellerId._id || sellerId).toString();
+
+    if (!Array.isArray(this.fulfillments) || this.fulfillments.length === 0) {
+        this.initializeFulfillments();
+    }
+
+    return this.fulfillments.find(f => {
+        const itemSellerId = f.seller?._id || f.seller;
+        return itemSellerId && itemSellerId.toString() === sIdStr;
+    }) || null;
+};
+
+/**
+ * Check if a specific seller's fulfillment can transition to target status.
+ * @param {mongoose.Types.ObjectId|string} sellerId
+ * @param {string} targetStatus
+ * @returns {boolean}
+ */
+orderSchema.methods.canTransitionFulfillment = function(sellerId, targetStatus) {
+    if (!targetStatus || !FULFILLMENT_STATUSES.includes(targetStatus)) {
+        return false;
+    }
+    const fulfillment = this.getFulfillmentForSeller(sellerId);
+    if (!fulfillment) {
+        return false;
+    }
+    const permitted = PERMITTED_STATUS_TRANSITIONS[fulfillment.status] || [];
+    return permitted.includes(targetStatus);
+};
+
+/**
+ * Transition a specific seller's fulfillment status and recalculate aggregate status.
+ * Leaves all other sellers' fulfillments strictly untouched.
+ * @param {mongoose.Types.ObjectId|string} sellerId
+ * @param {string} targetStatus
+ * @returns {Order} this
+ */
+orderSchema.methods.transitionFulfillment = function(sellerId, targetStatus) {
+    const fulfillment = this.getFulfillmentForSeller(sellerId);
+    if (!fulfillment) {
+        throw new Error(`Seller '${sellerId}' does not have a fulfillment record in this order.`);
+    }
+    if (!this.canTransitionFulfillment(sellerId, targetStatus)) {
+        throw new Error(`Invalid status transition from '${fulfillment.status}' to '${targetStatus}'.`);
+    }
+    fulfillment.status = targetStatus;
+    fulfillment.updatedAt = new Date();
+    this.recalculateAggregateStatus();
+    return this;
+};
+
+/**
  * Check if transitioning to the target status is permitted.
  * @param {string} targetStatus
  * @returns {boolean}
  */
 orderSchema.methods.canTransitionTo = function(targetStatus) {
-    if (!targetStatus || !ORDER_STATUSES.includes(targetStatus)) {
+    if (!targetStatus || !AGGREGATE_ORDER_STATUSES.includes(targetStatus)) {
         return false;
     }
     const permitted = PERMITTED_STATUS_TRANSITIONS[this.status] || [];
@@ -254,6 +429,7 @@ orderSchema.methods.canTransitionTo = function(targetStatus) {
 /**
  * Transition order status to a new permitted status.
  * Throws an Error if transition is not permitted.
+ * Updates fulfillments if single-seller order.
  * @param {string} targetStatus
  * @returns {Order} this
  */
@@ -262,6 +438,10 @@ orderSchema.methods.transitionTo = function(targetStatus) {
         throw new Error(`Invalid status transition from '${this.status}' to '${targetStatus}'`);
     }
     this.status = targetStatus;
+    if (Array.isArray(this.fulfillments) && this.fulfillments.length === 1) {
+        this.fulfillments[0].status = targetStatus;
+        this.fulfillments[0].updatedAt = new Date();
+    }
     return this;
 };
 

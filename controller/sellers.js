@@ -6,7 +6,7 @@
 import mongoose from "mongoose";
 import User from "../models/user.js";
 import Product, { CANONICAL_ISLANDS, TRADING_BRANCHES } from "../models/product.js";
-import Order, { ORDER_STATUSES, PERMITTED_STATUS_TRANSITIONS } from "../models/order.js";
+import Order, { ORDER_STATUSES, FULFILLMENT_STATUSES, PERMITTED_STATUS_TRANSITIONS } from "../models/order.js";
 import { ISLANDS_DATA } from "./islands.js";
 
 /**
@@ -1055,29 +1055,47 @@ export const renderSellerOrders = async (req, res) => {
         // Leverages compound index { "items.seller": 1, status: 1 }
         const allSellerOrders = await Order.findBySeller(sellerUser._id)
             .populate("buyer", "name")
+            .populate("fulfillments.seller", "name storeName")
             .lean();
 
-        // 2. Compute seller order telemetry (strictly scoped to this seller's orders)
+        // 2. Compute seller order telemetry (strictly scoped to this seller's fulfillments - AUD-001)
         const telemetry = {
             total: allSellerOrders.length,
-            pending: allSellerOrders.filter(o => o.status === "pending").length,
-            confirmed: allSellerOrders.filter(o => o.status === "confirmed").length,
-            processing: allSellerOrders.filter(o => o.status === "processing").length,
-            shipped: allSellerOrders.filter(o => o.status === "shipped").length,
-            delivered: allSellerOrders.filter(o => o.status === "delivered").length,
-            cancelled: allSellerOrders.filter(o => o.status === "cancelled").length
+            pending: 0,
+            confirmed: 0,
+            processing: 0,
+            shipped: 0,
+            delivered: 0,
+            cancelled: 0
         };
 
-        // 3. Optional status filtering via query parameter
+        allSellerOrders.forEach(o => {
+            const f = (o.fulfillments || []).find(item => {
+                const sId = item.seller?._id || item.seller;
+                return sId && sId.toString() === sellerIdStr;
+            });
+            const s = f ? f.status : o.status;
+            if (telemetry[s] !== undefined) {
+                telemetry[s]++;
+            }
+        });
+
+        // 3. Optional status filtering via query parameter (based on seller's fulfillment status)
         const activeFilter = typeof req.query.status === "string" ? req.query.status.trim().toLowerCase() : "all";
         let filteredOrders = allSellerOrders;
-        if (activeFilter && activeFilter !== "all" && ORDER_STATUSES.includes(activeFilter)) {
-            filteredOrders = allSellerOrders.filter(o => o.status === activeFilter);
+        if (activeFilter && activeFilter !== "all" && FULFILLMENT_STATUSES.includes(activeFilter)) {
+            filteredOrders = allSellerOrders.filter(o => {
+                const f = (o.fulfillments || []).find(item => {
+                    const sId = item.seller?._id || item.seller;
+                    return sId && sId.toString() === sellerIdStr;
+                });
+                const s = f ? f.status : o.status;
+                return s === activeFilter;
+            });
         }
 
-        // 4. Transform orders: expose ONLY seller-relevant items and calculate seller-specific totals
-        // Multi-seller rule: An order may contain items from multiple merchants.
-        // We must NEVER leak other sellers' items, private prices, or operations!
+        // 4. Transform orders: expose ONLY seller-relevant items, fulfillment status, and totals
+        // Multi-seller rule (AUD-001): Each seller sees their own fulfillment state and cargo items!
         const viewOrders = filteredOrders.map(order => {
             const sellerItems = (order.items || []).filter(item => {
                 const itemSellerId = item.seller?._id || item.seller;
@@ -1093,12 +1111,20 @@ export const renderSellerOrders = async (req, res) => {
 
             const sellerItemCount = sellerItems.reduce((sum, item) => sum + (item.quantity || 0), 0);
 
+            const sellerFulfillment = (order.fulfillments || []).find(f => {
+                const itemSellerId = f.seller?._id || f.seller;
+                return itemSellerId && itemSellerId.toString() === sellerIdStr;
+            });
+            const sellerStatus = sellerFulfillment ? sellerFulfillment.status : order.status;
+
             return {
                 ...order,
                 id: order._id.toString(),
                 items: sellerItems,
                 sellerSubtotal,
                 sellerItemCount,
+                sellerStatus,
+                fulfillmentStatus: sellerStatus,
                 buyerName: order.buyer ? order.buyer.name : "Archipelago Explorer",
                 formattedDate: order.createdAt ? new Date(order.createdAt).toLocaleDateString("en-US", {
                     year: "numeric",
@@ -1145,7 +1171,7 @@ export const renderSellerOrders = async (req, res) => {
 };
 
 /**
- * Controller action: Render Seller Order Detail Page (Milestone 4.4)
+ * Controller action: Render Seller Order Detail Page (Milestone 4.4 & AUD-001)
  * Route: GET /seller/orders/:orderId
  * Protected by: authMiddleware, requireSeller
  */
@@ -1166,6 +1192,7 @@ export const renderSellerOrderDetail = async (req, res) => {
 
         const order = await Order.findById(orderId)
             .populate("buyer", "name")
+            .populate("fulfillments.seller", "name storeName")
             .lean();
 
         if (!order) {
@@ -1195,7 +1222,14 @@ export const renderSellerOrderDetail = async (req, res) => {
             return sum + lt;
         }, 0);
 
-        const permittedTransitions = PERMITTED_STATUS_TRANSITIONS[order.status] || [];
+        // Seller-specific fulfillment lifecycle state (AUD-001)
+        const sellerFulfillment = (order.fulfillments || []).find(f => {
+            const itemSellerId = f.seller?._id || f.seller;
+            return itemSellerId && itemSellerId.toString() === sellerIdStr;
+        });
+        const sellerStatus = sellerFulfillment ? sellerFulfillment.status : order.status;
+
+        const permittedTransitions = PERMITTED_STATUS_TRANSITIONS[sellerStatus] || [];
 
         const islandMeta = sellerUser.homeIsland && ISLANDS_DATA[sellerUser.homeIsland]
             ? ISLANDS_DATA[sellerUser.homeIsland]
@@ -1216,6 +1250,8 @@ export const renderSellerOrderDetail = async (req, res) => {
             id: order._id.toString(),
             items: sellerItems,
             sellerSubtotal,
+            sellerStatus,
+            fulfillmentStatus: sellerStatus,
             buyerName: order.buyer ? order.buyer.name : "Archipelago Explorer",
             formattedDate: order.createdAt ? new Date(order.createdAt).toLocaleDateString("en-US", {
                 year: "numeric",
@@ -1248,9 +1284,13 @@ export const renderSellerOrderDetail = async (req, res) => {
 };
 
 /**
- * Controller action: Perform Order Status Transition (Milestone 4.4)
+ * Controller action: Perform Order Status Transition (Milestone 4.4 & AUD-001)
  * Route: POST /seller/orders/:orderId/status
  * Protected by: authMiddleware, requireSeller
+ *
+ * Updates ONLY this authenticated seller's fulfillment status.
+ * Leaves all other sellers' fulfillments strictly untouched.
+ * Automatically recalculates root Order.status as the aggregate status.
  */
 export const updateOrderStatus = async (req, res) => {
     try {
@@ -1291,28 +1331,33 @@ export const updateOrderStatus = async (req, res) => {
         const rawStatus = req.body.status || req.body.targetStatus;
         const targetStatus = typeof rawStatus === "string" ? rawStatus.trim().toLowerCase() : "";
 
-        // Authoritative lifecycle validation using existing Order model methods
-        if (!order.canTransitionTo(targetStatus)) {
-            const errorMsg = `Invalid status transition from '${order.status}' to '${targetStatus}'.`;
+        // Authoritative seller fulfillment lifecycle validation (AUD-001)
+        if (!order.canTransitionFulfillment(sellerUser._id, targetStatus)) {
+            const fulfillment = order.getFulfillmentForSeller(sellerUser._id);
+            const currentFulfillmentStatus = fulfillment ? fulfillment.status : order.status;
+            const errorMsg = `Invalid status transition from '${currentFulfillmentStatus}' to '${targetStatus}'.`;
             if (req.xhr || req.headers.accept?.includes("application/json")) {
                 return res.status(400).json({
                     success: false,
                     error: errorMsg,
-                    currentStatus: order.status
+                    currentStatus: currentFulfillmentStatus
                 });
             }
             return res.redirect(`/seller/orders/${order._id}?error=${encodeURIComponent(errorMsg)}`);
         }
 
-        // Apply transition
-        order.transitionTo(targetStatus);
+        // Apply transition to strictly this seller's fulfillment and recalculate aggregate status
+        order.transitionFulfillment(sellerUser._id, targetStatus);
         await order.save();
+
+        const updatedFulfillment = order.getFulfillmentForSeller(sellerUser._id);
 
         if (req.xhr || req.headers.accept?.includes("application/json")) {
             return res.json({
                 success: true,
                 orderId: order._id,
-                status: order.status
+                status: updatedFulfillment ? updatedFulfillment.status : order.status,
+                orderStatus: order.status
             });
         }
 

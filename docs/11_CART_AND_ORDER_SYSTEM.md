@@ -287,5 +287,45 @@ Milestone 5.4 completes the customer-facing post-purchase experience with an aut
 - **Role-Aware Navigation:**
   - Added conditional `⚓ My Voyages` navigation link (`#navBuyerOrders`) in `views/partials/header.ejs` displayed strictly for authenticated buyers.
 
+---
+
+## 7. Multi-Seller Order Fulfillment Architecture (AUD-001 Remediation)
+
+When an Order contains wares from multiple independent merchants across the archipelago, fulfillment states must not be treated as a single monolithic lifecycle. Pirate-Civ embeds sovereign fulfillment records inside the Order document to guarantee seller lifecycle isolation while maintaining normalized historical records without redundant collections.
+
+### 7.1 Embedded Seller Fulfillment Schema
+Each Order embeds a `fulfillments` array (`models/order.js`):
+```js
+fulfillments: [
+    {
+        seller: { type: ObjectId, ref: "User", required: true },
+        status: {
+            type: String,
+            enum: ["pending", "confirmed", "processing", "shipped", "delivered", "cancelled"],
+            default: "pending"
+        },
+        updatedAt: { type: Date, default: Date.now }
+    }
+]
+```
+- **Compound Index:** `{ "fulfillments.seller": 1, "fulfillments.status": 1 }` facilitates rapid seller-scoped queries.
+- **Automatic Initialization:** Created automatically during checkout and document validation. Products are grouped by seller; exactly one fulfillment record is created per distinct seller and initialized to `pending`.
+
+### 7.2 Deterministic Aggregate Status Recalculation
+The root `Order.status` field represents the authoritative aggregate lifecycle of the entire voyage, derived via `Order.recalculateAggregateStatus()`:
+- **All Uniform:** If all seller fulfillments share the exact same status (`pending`, `confirmed`, `processing`, `shipped`, `delivered`, or `cancelled`), `Order.status` reflects that shared state.
+- **Mixed States (`partially_fulfilled`):** When merchants are at different stages (e.g. Seller A is `shipped` while Seller B is `processing`, or Seller A is `delivered` while Seller B is `shipped`), `Order.status` becomes `partially_fulfilled`.
+- **Delivered Invariance:** The voyage aggregate status can never report `delivered` until every participating merchant has safely discharged their chartered cargo.
+
+### 7.3 Seller Lifecycle Isolation & Security
+- **Strict Server-Side Derivation:** Seller identity is derived solely from `req.user._id`.
+- **Independent Transitions:** When Seller A updates their fulfillment status via `POST /seller/orders/:orderId/status`, only Seller A's subdocument in `order.fulfillments` is updated. Seller B and Seller C remain untouched.
+- **Cross-Seller Guards:** Seller A cannot modify another seller's fulfillment, edit line items, alter financials, or jump beyond canonical state machine transitions.
+- **Historical Snapshot Preservation:** Item details (name, price, quantity, lineTotal, seller) remain frozen in historical snapshot records inside `Order.items` and are never mutated by fulfillment lifecycle updates.
+
+### 7.4 Buyer Visibility & Multi-Merchant Tracking
+- **Voyage Ledger (`GET /orders`):** Displays the overall voyage status badge alongside a multi-merchant fulfillment breakdown when an order has multiple sellers.
+- **Tracking Detail (`GET /orders/:orderId`):** Renders the primary nautical voyage tracking timeline plus individual merchant fleet progress cards for each merchant involved.
+
 
 

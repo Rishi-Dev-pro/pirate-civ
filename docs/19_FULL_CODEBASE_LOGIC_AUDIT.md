@@ -290,16 +290,26 @@ A comparison between documentation files and actual code identified several drif
 ## 23. Confirmed Findings
 
 ### Finding AUD-001
+- **Status:** **REMEDIATED**
 - **Severity:** P2 (Medium)
 - **Category:** Design Risk / Multi-Seller Logic
-- **File:** `controller/sellers.js`
-- **Function / Route:** `updateOrderStatus` (`POST /seller/orders/:orderId/status`)
-- **Observed behavior:** When an order contains items from multiple merchants (e.g., Seller A and Seller B), either merchant can advance or cancel the `order.status`. Because `order.status` is stored at the document level rather than per line-item, transitioning status modifies the overall status for all merchants in that order.
-- **Expected behavior:** In a multi-vendor marketplace, line-item fulfillment statuses should ideally be tracked individually per seller (e.g. `items[i].status`), or an order status should represent an aggregate of line-item statuses.
-- **Why it matters:** Seller A advancing an order to `shipped` or `cancelled` affects wares sold by Seller B.
-- **Reproduction / reasoning:** In `controller/sellers.js`, `order.transitionTo(targetStatus)` updates `order.status` on the root `Order` document.
-- **Impact:** Medium. Line items and revenues are isolated, but fulfillment lifecycle is shared.
-- **Recommended fix:** Introduce per-item fulfillment status (`item.status`) in `orderItemSchema` during future multi-vendor enhancements.
+- **File:** `models/order.js`, `controller/orders.js`, `controller/sellers.js`, `views/orders.ejs`, `views/order-confirmation.ejs`, `views/seller/orders.ejs`, `views/seller/order-detail.ejs`
+- **Function / Route:** `updateOrderStatus` (`POST /seller/orders/:orderId/status`), checkout process, and order views.
+- **Observed behavior:** When an order contains items from multiple merchants (e.g., Seller A and Seller B), either merchant could advance or cancel the root `order.status`. Because `order.status` was stored at the document level rather than per seller, transitioning status modified the overall status for all merchants in that order.
+- **Expected behavior:** In a multi-vendor marketplace, fulfillment statuses must be tracked independently per seller without creating unnecessary collections or duplicating historical item snapshot records. Root order status should be derived deterministically as an aggregate state (including `partially_fulfilled` for mixed seller states).
+- **Why it matters:** Seller A advancing an order to `shipped` or `cancelled` affected wares sold by Seller B.
+- **Reproduction / reasoning:** In `controller/sellers.js`, `order.transitionTo(targetStatus)` updated `order.status` on the root `Order` document.
+- **Impact:** Medium. Line items and revenues were isolated, but fulfillment lifecycle was shared.
+- **Remediation Summary:**
+  - Added embedded `fulfillments: [{ seller: ObjectId, status: String, updatedAt: Date }]` to `Order` model with compound index `{ "fulfillments.seller": 1, "fulfillments.status": 1 }`.
+  - Added canonical `recalculateAggregateStatus()` method returning uniform status (`pending`, `confirmed`, `processing`, `shipped`, `delivered`, `cancelled`) or `partially_fulfilled` when seller fulfillments are in mixed lifecycle stages.
+  - Added seller lifecycle isolation methods `getFulfillmentForSeller(sellerId)`, `canTransitionFulfillment(sellerId, targetStatus)`, and `transitionFulfillment(sellerId, targetStatus)`.
+  - Automated fulfillment initialization during checkout (`processCheckout`) and schema pre-validation, deduplicating multiple items from the same seller to guarantee exactly one fulfillment record per distinct seller.
+  - Updated `updateOrderStatus` in `controller/sellers.js` to strictly target the authenticated seller's fulfillment (`req.user._id`), keeping all co-chartered sellers' fulfillments untouched and recalculating aggregate `order.status`.
+  - Updated buyer order history (`views/orders.ejs`) and tracking detail (`views/order-confirmation.ejs`) to display overall voyage status and individual merchant fleet progress timelines.
+  - Updated seller order console and detail views to display seller-specific fulfillment status prominently while presenting overall voyage status.
+  - Preserved backward compatibility for legacy orders lacking `fulfillments` arrays.
+  - Verified with 100/100 passing automated assertions in `scratch/test_aud_001_multi_seller_fulfillment.js`.
 - **Blocks Phase 6.3?** NO.
 
 ### Finding AUD-002
@@ -462,7 +472,7 @@ Our independent execution of all 12 test suites established the **actual execute
 | **Cart** | **PASS** | Server-authoritative prices, live stock clamping, guest-to-user migration. |
 | **Checkout** | **PASS** | Strict multi-stage validation, zero writes on invalid states. |
 | **Orders** | **PASS** | Immutable historical snapshots, canonical state machine transitions. |
-| **Multi-Seller Logic** | **CONCERN** | Line items isolated; fulfillment status is document-level (P2 AUD-001). |
+| **Multi-Seller Logic** | **PASS** | Seller-specific embedded fulfillment records and deterministic aggregate status (AUD-001 REMEDIATED). |
 | **Stock Consistency** | **CONCERN** | Standalone MongoDB demo lacks multi-document ACID transactions (P2 AUD-002). |
 | **Database** | **PASS** | Mongoose singleton, connection lifecycle listeners, effective compound indexes. |
 | **Error Handling** | **PASS** | Centralized handler in place; contact form validation returns HTTP 400 with retained data (AUD-003 REMEDIATED). |
@@ -472,7 +482,7 @@ Our independent execution of all 12 test suites established the **actual execute
 | **Performance** | **PASS** | Strategic `.lean()`, parallel telemetry counts. |
 | **Security** | **PASS** | No injection, XSS protection, safe URL protocols. |
 | **Documentation** | **PASS** | `docs/05_ROUTE_MAP.md` reconciled against actual routes (AUD-004 REMEDIATED). |
-| **Testing** | **PASS** | 888 passing assertions across 12 automated test suites. |
+| **Testing** | **PASS** | 1,199 passing assertions across all automated test suites (100% pass rate). |
 
 ---
 

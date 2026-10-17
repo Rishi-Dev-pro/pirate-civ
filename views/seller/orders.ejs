@@ -285,9 +285,14 @@
 
                                     <!-- Order Status -->
                                     <td>
-                                        <span class="badge-status badge-status-<%= o.status %>" id="statusBadge_<%= o.id %>">
-                                            <%= o.status.toUpperCase() %>
+                                        <span class="badge-status badge-status-<%= o.sellerStatus || o.status %>" id="statusBadge_<%= o.id %>">
+                                            <%= (o.sellerStatus || o.status).toUpperCase() %>
                                         </span>
+                                        <% if (o.status === 'partially_fulfilled' || (o.fulfillments && o.fulfillments.length > 1)) { %>
+                                            <div style="font-size: 0.72rem; color: #8b9bb4; margin-top: 4px;" title="Overall voyage aggregate status">
+                                                Voyage: <%= o.status.replace('_', ' ').toUpperCase() %>
+                                            </div>
+                                        <% } %>
                                     </td>
 
                                     <!-- Payment Status -->

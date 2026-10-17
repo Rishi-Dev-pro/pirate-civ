@@ -150,3 +150,28 @@ This log preserves key architectural choices, trade-offs, and design decisions m
   1. Storing tracking events as separate documents in a new `Tracking` collection. Rejected as over-engineered for the current milestone (Ponytail principle / YAGNI).
   2. Introducing client-side WebSockets for live status updates. Rejected as premature scope expansion (expressly on the NO-GO list).
 * **Consequences:** Order tracking state is driven directly by authoritative Order document status, ensuring complete consistency across the Seller Order Console and Buyer Voyage Ledger.
+
+---
+
+### Decision 012: Multi-Seller Order Fulfillment Architecture (AUD-001 Remediation)
+* **Date:** 2026-10-17
+* **Status:** Accepted
+* **Context:** In Pirate-Civ, a single checkout Order can contain cargo items originating from multiple distinct merchants. Prior to AUD-001 remediation, `Order` possessed only one global `status` at the document root. When Seller A advanced their cargo status from `pending` to `confirmed` or `shipped`, it mutated the entire Order document, incorrectly altering the fulfillment state for Seller B and Seller C.
+* **Decision:**
+  1. Embed seller fulfillment states directly within the existing `Order` document as an array: `fulfillments: [{ seller: ObjectId, status: String, updatedAt: Date }]`.
+  2. Maintain historical item snapshots exclusively inside authoritative `Order.items`; do NOT duplicate product data into the fulfillment records.
+  3. Automatically initialize exactly one fulfillment record per distinct seller during checkout order creation and schema validation, defaulting to `pending`.
+  4. Root `Order.status` becomes a deterministically computed aggregate status via `Order.recalculateAggregateStatus()`:
+     - Uniform states: when all fulfillments share the same status, root `status` matches that state (`pending`, `confirmed`, `processing`, `shipped`, `delivered`, `cancelled`).
+     - Mixed states: when seller fulfillments are at different stages, root `status` becomes `partially_fulfilled`.
+     - Invariance: root status never falsely claims `delivered` until every seller fulfillment reaches `delivered`.
+  5. Seller lifecycle actions (`POST /seller/orders/:orderId/status`) update strictly `req.user._id`'s fulfillment subdocument, recalculating aggregate `order.status` and leaving all co-chartered sellers untouched.
+  6. MongoDB transaction architecture (AUD-002) is intentionally kept outside this remediation to maintain focused milestone boundaries.
+* **Reason:**
+  - Embedding fulfills the exact requirements without introducing the complexity, query joins, or orphan document risks of an unnecessary separate `Fulfillments` collection (Ponytail principle / YAGNI).
+  - Keeps historical item records immutable and normalized.
+  - Guarantees server-enforced merchant isolation and accurate multi-merchant buyer tracking.
+* **Alternatives Considered:**
+  1. Separate `Fulfillment` collection with multi-document references. Rejected as over-engineered; requires multi-collection joins and introduces synchronization overhead without tangible benefit for the current scale.
+  2. Per-item status field (`items[i].status`). Rejected in favor of per-seller fulfillment records because merchant operations naturally happen at the merchant manifest level rather than requiring sellers to click 10 buttons for 10 line items.
+* **Consequences:** Seller order views and buyer tracking seamlessly reflect individual merchant lifecycle progress, while legacy orders without fulfillments retain full backward compatibility without crashing.
