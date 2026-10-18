@@ -480,7 +480,9 @@
                 <% orderList.forEach(function(order) {
                     const itemCount = (order.items || []).reduce((sum, item) => sum + (item.quantity || 1), 0);
                     const isCancelled = order.status === 'cancelled';
-                    const stageText = stageLabels[order.status] || order.status;
+                    const stageText = (order.paymentStatus === 'paid' && order.status === 'pending')
+                        ? "⚓ Awaiting Merchant Confirmation"
+                        : (stageLabels[order.status] || order.status);
                 %>
                     <article class="voyage-card" data-order-id="<%= order._id %>">
                         <div>

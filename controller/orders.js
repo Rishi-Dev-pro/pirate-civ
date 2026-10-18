@@ -764,19 +764,15 @@ export const processPayment = async (req, res) => {
             return res.status(404).render("home", { page_title: "Voyage Not Found | Pirate-Civ", user: req.user });
         }
 
-        // Apply authoritative demo payment settlement
+        // Apply authoritative demo payment settlement (AUD-6.3-F01)
+        // Financial settlement is separate from merchant fulfillment.
+        // Payment transitions paymentStatus to "paid".
+        // Seller fulfillments remain independent in their current status ('pending'),
+        // requiring each merchant to explicitly review and confirm their own fulfillment.
         order.paymentStatus = "paid";
-        if (order.status === "pending") {
-            order.status = "confirmed";
-        }
 
-        // Also advance fulfillments that were awaiting payment
-        if (Array.isArray(order.fulfillments)) {
-            order.fulfillments.forEach(f => {
-                if (f.status === "pending") {
-                    f.status = "confirmed";
-                }
-            });
+        if (typeof order.recalculateAggregateStatus === "function") {
+            order.recalculateAggregateStatus();
         }
 
         await order.save();
@@ -784,7 +780,7 @@ export const processPayment = async (req, res) => {
         if (req.xhr || req.headers.accept?.includes("application/json")) {
             return res.json({
                 success: true,
-                message: "Demo payment authorized successfully. Voyage confirmed.",
+                message: "Demo payment authorized successfully. Awaiting merchant fulfillment confirmation.",
                 orderId: order._id.toString(),
                 status: order.status,
                 paymentStatus: order.paymentStatus
