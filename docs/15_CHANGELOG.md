@@ -2,7 +2,21 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
-## [2026-10-18] — Phase 6.3: Merchant Guild Registry — Open Parchment / Admiralty Chart Visual Redesign
+## [2026-10-18] — Global Navbar Unification
+* **Global Navbar Unification Across All Pages (`views/partials/header.ejs`, `public/css/island-store.css`, `public/css/users.css`, `public/css/contact.css`, `public/js/mindmap.js`):**
+  - **Single Source of Truth Navbar Shell:** Unified the canonical floating navbar from `/home` across every page in the application. Sized to `width: min(1100px, calc(100% - 60px))`, `position: fixed`, `top: 18px`, `left: 50%`, `transform: translateX(-50%)`, with `min-height: 62px`, dark translucent gradient background, fine brass borders (`1px solid rgba(150, 94, 40, 0.45)`), rounded corners (`7px`), and inner gold edge hairline.
+  - **Purged Page-Specific Navbar Overrides:**
+    - Removed `body.island-store-body .navbar` override from `public/css/island-store.css` (which forced `position: static`, `width: 1360px`, and divergent border colors on `/cart`, `/orders`, `/product/:id`, `/seller/*`, and island views).
+    - Removed duplicate `.navbar` declarations and mobile media overrides from `public/css/users.css` (which caused font mismatches and injected rogue anchor emojis on Explorers).
+    - Removed rogue un-scoped `.active` CSS rule from `public/css/contact.css` (which turned navbar links purple).
+    - Removed dynamic DOM insertion of rogue second Cargo Hold button (`#navCargoHoldBtn`) from `public/js/mindmap.js`.
+  - **Self-Contained Header Partial CSS:** Encapsulated canonical `.navbar`, `.navbar .logo`, `.navbar .nav-links`, and `.navbar .nav-links a` styles directly inside the `<style>` block of `views/partials/header.ejs` to guarantee 100% visual and dimensional consistency across pages regardless of stylesheet load order.
+  - **Page Content Top Spacing:** Adjusted main container top padding and margins (`.island-store-wrapper`, `.cart-manifest-container`, `.product-detail-wrapper`, `.seller-discovery-wrapper`, `.seller-dashboard-wrapper`, `.ledger-container`, `.profile-container`, `.lore-container`, `.payment-container`, `.favorites-wrapper`) to ensure breadcrumbs and content cleanly clear the fixed 80px bottom edge of the canonical navbar.
+  - **Captain Name Deduplication:** Fixed display name presentation logic in `views/partials/header.ejs` to dynamically check if the authenticated user's name already includes the "Captain" prefix, preventing duplicated strings such as "Captain Captain Browser" while properly displaying "Captain Rishi" or "Captain Browser".
+  - **Dynamic Cargo Hold Count:** Added dynamic badge support (`#navCargoCount`) on the canonical buyer Cargo Hold link (`#navCargoHold`) displaying item count without breaking navbar geometry.
+  - **Preserved Role-Aware Navigation:** Maintained strict role separation where seller command deck destinations never leak buyer shopping links, and guest navigations remain cleanly role-correct.
+  - **Verification:** 106/106 automated checks passed in `scratch/verify_global_navbar_unification.js`, 51/51 tests passed in `scratch/test_navigation_cleanup.js`, 70/70 tests passed in `scratch/test_milestone_6_3.js`, and 38/38 EJS template syntax checks clean.
+
 * **Merchant Guild Registry — Open Parchment / Admiralty Chart Visual Redesign (`views/users.ejs`, `public/css/users.css`):**
   - **Complete Removal of Cards & Boxes:** Fully eliminated the rectangular card/box/glass container paradigm (`background: transparent`, `border: none`, `box-shadow: none`, `backdrop-filter: none`). The aged parchment map (`/images/users-parchment.png`) itself is now the sole interface surface.
   - **Printed & Engraved Aesthetic:** Merchant entries are rendered as open document listings printed directly onto the parchment in dark iron gall ink (`#2D180C`), warm brown metadata (`#523520`), and antique gold accents (`#9A6624`).

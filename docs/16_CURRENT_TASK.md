@@ -14,11 +14,21 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Merchant Guild Registry — Open Parchment / Admiralty Chart Visual Redesign Completed + Verified**
+* **Active Status:** **Global Navbar Unification Across All Pages Completed + Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Global Navbar Unification (`views/partials/header.ejs`, `public/css/island-store.css`, `public/css/users.css`, `public/css/contact.css`, `public/js/mindmap.js`):**
+  - **Single Canonical Navbar Shell:** Unconditionally applied the home page canonical navbar shell (`width: min(1100px, calc(100% - 60px))`, fixed top positioning at 18px, centered with `left: 50%; transform: translateX(-50%)`, `min-height: 62px`, dark translucent gradient, fine brass borders `1px solid rgba(150, 94, 40, 0.45)`, rounded corners, and gold inner border line) across every single page.
+  - **Purged Overrides:** Removed rogue `body.island-store-body .navbar` static 1360px override from `island-store.css`, eliminated duplicate `.navbar` styles and emoji rules from `users.css`, purged rogue purple `.active` selector from `contact.css`, and removed duplicate `.nav-cargo-btn` DOM insertion from `mindmap.js`.
+  - **Self-Contained Header CSS:** Encapsulated canonical navbar styles directly in `views/partials/header.ejs` so that all pages render the exact same navbar object regardless of external CSS loading.
+  - **Content Padding Accommodations:** Main containers on all pages updated with 96px top clearance to prevent fixed navbar overlap.
+  - **Display Name Deduplication:** Fixed presentation logic to eliminate "Captain Captain Browser" while properly displaying "Captain Rishi" or "Captain Browser".
+  - **Dynamic Cargo Count:** Added `#navCargoCount` badge support cleanly integrated with the canonical `#navCargoHold` link.
+  - **Role Awareness Preserved:** Seller pages retain exclusive command deck links with zero buyer shopping leaks, and guests retain public nav.
+  - **Verification:** 106/106 automated tests passing in `scratch/verify_global_navbar_unification.js`, 51/51 tests passing in `scratch/test_navigation_cleanup.js`, 70/70 tests passing in `scratch/test_milestone_6_3.js`, 38/38 EJS template syntax checks clean.
+
 * **Merchant Guild Registry — Open Parchment / Admiralty Chart Visual Redesign (`views/users.ejs`, `public/css/users.css`):**
   - **Complete Removal of Cards & Boxes:** Fully eliminated the rectangular card/box/glass container paradigm (`background: transparent`, `border: none`, `box-shadow: none`, `backdrop-filter: none`). The aged parchment map (`/images/users-parchment.png`) itself is now the sole interface surface.
   - **Printed & Engraved Aesthetic:** Merchant entries are rendered as open document listings printed directly onto the parchment in dark iron gall ink (`#2D180C`), warm brown metadata (`#523520`), and antique gold accents (`#9A6624`).

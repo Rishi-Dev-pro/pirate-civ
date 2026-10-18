@@ -75,7 +75,7 @@
             </a>
 
             <a href="/cart" class="nav-link nav-cart <%= currentNavKey === 'cart' ? 'active' : '' %>" id="navCargoHold" <%- currentNavKey === 'cart' ? 'aria-current="page"' : '' %>>
-                📦 Cargo Hold
+                📦 Cargo Hold<span class="nav-cargo-count" id="navCargoCount"><%= (typeof cart !== 'undefined' && cart && cart.itemCount > 0) ? ` (${cart.itemCount})` : '' %></span>
             </a>
 
             <a href="/orders" class="nav-link nav-buyer-orders <%= currentNavKey === 'orders' ? 'active' : '' %>" id="navBuyerOrders" <%- currentNavKey === 'orders' ? 'aria-current="page"' : '' %>>
@@ -83,14 +83,18 @@
             </a>
 
             <!-- Single Captain Identity Control (No duplicate Profile in top bar) -->
+            <%
+                const rawBuyerName = (currentUser && currentUser.name) ? currentUser.name.trim() : 'Captain';
+                const cleanCaptainName = /^captain\s+/i.test(rawBuyerName) ? rawBuyerName : ('Captain ' + rawBuyerName);
+            %>
             <a href="/profile" class="nav-user-badge" id="navUserBadge" title="Chartered Captain Profile" style="text-decoration: none;">
-                <span class="badge-icon">⚓</span> Captain <%= currentUser.name %>
+                <span class="badge-icon">⚓</span> <%= cleanCaptainName %>
             </a>
 
             <a href="/logout" class="nav-link logout-btn" id="navLogout">
                 Logout
             </a>
-<% } else if (userRole === 'seller') { %>
+        <% } else if (userRole === 'seller') { %>
             <!-- ================= SELLER NAVIGATION ================= -->
             <a href="/seller/dashboard" class="nav-link nav-seller-deck <%= currentNavKey === 'seller_deck' ? 'active' : '' %>" id="navSellerDeck" <%- currentNavKey === 'seller_deck' ? 'aria-current="page"' : '' %>>
                 ⚓ Command Deck
@@ -204,20 +208,130 @@
 <% } %>
 
 <style>
-/* Scoped & Unified Role-Aware Navigation Enhancements */
+/* =========================================================
+   CANONICAL GLOBAL NAVBAR (SINGLE SOURCE OF TRUTH)
+========================================================= */
+.navbar {
+    position: fixed !important;
+    top: 18px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    z-index: 1000 !important;
+    width: min(1100px, calc(100% - 60px)) !important;
+    min-height: 62px !important;
+    padding: 0 24px !important;
+    margin: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 30px !important;
+    box-sizing: border-box !important;
+    border: 1px solid rgba(150, 94, 40, 0.45) !important;
+    border-radius: 7px !important;
+    background: linear-gradient(
+        90deg,
+        rgba(9, 5, 13, 0.92),
+        rgba(22, 10, 15, 0.88),
+        rgba(9, 5, 13, 0.92)
+    ) !important;
+    box-shadow:
+        inset 0 1px rgba(220, 165, 88, 0.08),
+        0 12px 40px rgba(0, 0, 0, 0.55),
+        0 0 25px rgba(131, 56, 19, 0.08) !important;
+    backdrop-filter: blur(14px) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+}
+
+.navbar::before {
+    content: "" !important;
+    position: absolute !important;
+    left: 12px !important;
+    right: 12px !important;
+    bottom: 4px !important;
+    height: 1px !important;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(156, 94, 38, 0.35),
+        transparent
+    ) !important;
+    pointer-events: none !important;
+}
+
 .navbar .logo {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    color: #d2a261 !important;
+    font-family: "Cinzel", serif !important;
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    letter-spacing: 1.5px !important;
+    white-space: nowrap !important;
     text-decoration: none !important;
+    text-shadow: 0 2px 4px #000, 0 0 15px rgba(190, 105, 32, 0.12) !important;
     transition: transform 0.2s ease, text-shadow 0.2s ease;
 }
 .navbar .logo:hover {
-    transform: translateY(-1px);
-    text-shadow: 0 0 15px rgba(212, 147, 57, 0.45);
+    transform: translateY(-1px) !important;
+    text-shadow: 0 0 15px rgba(212, 147, 57, 0.45) !important;
 }
 .logo-symbol {
     font-size: 1.15rem;
+}
+
+.navbar .nav-links {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-end !important;
+    gap: 25px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+.navbar .nav-links a {
+    position: relative !important;
+    color: #a99179 !important;
+    font-family: "Cinzel", serif !important;
+    font-size: 11px !important;
+    font-weight: 500 !important;
+    letter-spacing: 1px !important;
+    text-decoration: none !important;
+    text-transform: uppercase !important;
+    white-space: nowrap !important;
+    transition: color .3s ease, transform .3s ease, text-shadow .3s ease;
+}
+
+.navbar .nav-links a:hover {
+    color: #d49a50 !important;
+    transform: translateY(-1px);
+    text-shadow: 0 0 10px rgba(212, 119, 37, 0.45);
+}
+
+.navbar .nav-links a::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -8px;
+    width: 0;
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, #b87431, transparent);
+    transition: width .3s ease;
+}
+
+.navbar .nav-links a:hover::after {
+    width: 100%;
+}
+
+.navbar .nav-links a.logout-btn,
+.navbar .nav-links a[href="/logout"] {
+    color: #a35d42 !important;
+}
+
+.navbar .nav-links a.logout-btn:hover,
+.navbar .nav-links a[href="/logout"]:hover {
+    color: #d1774d !important;
 }
 .nav-user-badge {
     display: inline-flex;
@@ -467,6 +581,10 @@
 }
 
 @media (max-width: 900px) {
+    .navbar {
+        width: calc(100% - 32px) !important;
+        padding: 0 16px !important;
+    }
     .nav-toggle {
         display: inline-flex;
         align-items: center;

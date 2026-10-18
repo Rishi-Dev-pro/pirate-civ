@@ -1446,27 +1446,21 @@
     }
 
     function setupCartUi() {
-        let cartBtn = document.getElementById("navCargoHoldBtn");
-        if (!cartBtn) {
-            const navLinks = document.querySelector(".nav-links");
-            if (navLinks) {
-                cartBtn = document.createElement("a");
-                cartBtn.id = "navCargoHoldBtn";
-                cartBtn.href = "#";
-                cartBtn.className = "nav-cargo-btn";
-                cartBtn.innerHTML = `🪙 Cargo Hold (<span id="cargoCount">0</span>)`;
-                cartBtn.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    toggleCargoDrawer();
-                });
-                navLinks.insertBefore(cartBtn, navLinks.querySelector("a[href='/logout']"));
-            }
+        // Global navbar unification: #navCargoHold is canonically rendered by header.ejs
+        const navCargoCount = document.getElementById("navCargoCount");
+        if (navCargoCount && state.cart && state.cart.length > 0) {
+            navCargoCount.textContent = ` (${state.cart.length})`;
         }
     }
 
     function updateCartUi() {
         const count = document.getElementById("cargoCount");
         if (count) count.textContent = state.cart.length;
+
+        const navCargoCount = document.getElementById("navCargoCount");
+        if (navCargoCount) {
+            navCargoCount.textContent = state.cart.length > 0 ? ` (${state.cart.length})` : "";
+        }
 
         const drawerList = document.getElementById("cargoDrawerList");
         const drawerTotal = document.getElementById("cargoTotalDoubloons");

@@ -17,16 +17,6 @@
     z-index:-2;
 }
 
-/* Active Navbar */
-
-.active{
-
-    background:rgba(255,255,255,.12);
-
-    color:#d66cff !important;
-
-    border-radius:12px;
-}
 
 /* Heading */
 
