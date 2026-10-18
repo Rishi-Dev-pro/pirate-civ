@@ -14,19 +14,21 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Merchant Guild Registry Visual Redesign Completed + Verified**
+* **Active Status:** **Merchant Guild Registry Glassmorphism Refinement Completed + Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
-* **Merchant Guild Registry Visual Redesign (`views/users.ejs`, `public/css/users.css`):**
-  - **Parchment Framing & Zero Page Scrollbar:** Centered and fully contained within `/images/users-parchment.png`. Sized to viewport constraints (`height: min(calc(100vh - 110px), 820px)` with `aspect-ratio: 599 / 806`) preventing outer page scrollbars on desktop (`height: 100vh; overflow: hidden`).
-  - **Contained Internal Scrolling:** Smooth native scrolling enabled within `.registry-scroll-area` while hiding visual scrollbars (`scrollbar-width: none`, `::-webkit-scrollbar { display: none }`).
-  - **High-Contrast Dark Charter Cards:** Dark translucent panels (`rgba(9, 13, 20, 0.92)` with brass border `rgba(201, 161, 84, 0.42)`) providing high contrast against the parchment map.
-  - **Structured Card Hierarchy:** Circular merchant crest/monogram seal, Cinzel display store name, warm gray guildmaster tag, brass uppercase home port (`HOME PORT · [ISLAND]`), concise bio, and accessible `DISCOVER STOREFRONT →` button.
-  - **Cartoon Emoji Elimination:** Replaced all cartoon emojis with refined typographic ornaments (`✦`, `·`, `→`).
-  - **Mobile Responsiveness:** Proportional scaling, vertical card layouts, full-width touch-friendly storefront buttons, and smooth touch scrolling.
-  - **Verification:** 50/50 automated tests passing in `scratch/test_registry_redesign.js`, 51/51 in `scratch/test_navigation_cleanup.js`, 70/70 in `scratch/test_milestone_6_3.js`, and browser end-to-end CDP recording.
+* **Merchant Guild Registry Glassmorphism Refinement (`views/users.ejs`, `public/css/users.css`):**
+  - **Smoked Glassmorphism Panels:** Replaced heavy opaque cards with translucent smoked glass panels (`background: linear-gradient(135deg, rgba(9, 18, 25, 0.72), rgba(15, 12, 18, 0.58))` with `backdrop-filter: blur(10px) saturate(115%)` and fine brass borders `rgba(216, 177, 98, 0.34)`), allowing the rich parchment texture to remain visible beneath the cards.
+  - **Atmospheric Oceanic Lighting:** Added subtle sea-teal ambient glow behind the parchment frame (`rgba(32, 107, 112, 0.16)`) and updated drop-shadows to illuminate the parchment as an ancient navigation instrument against the dark starfield.
+  - **Enchanted Crest Seal:** Replaced simple borders with a double-ring antique brass seal with subtle cyan inner glow (`inset 0 0 10px rgba(32, 107, 112, 0.22)`), supporting seller avatars and serif monograms.
+  - **Document Section Divider:** Introduced an antique section divider (`─────────────── ◇ ───────────────`) between the fixed header and the scrolling glass cards.
+  - **Restrained Glass & Brass Storefront Button:** Styled action link with dark translucent glass, thin brass border, warm ivory text, and subtle hover wash (`rgba(32, 107, 112, 0.25)`).
+  - **Hover Dynamics:** Refined 2px upward lift, brighter brass rim, and subtle teal ambient reflection on card hover.
+  - **Parchment Margins & Density:** Widened parchment side margins (`left: 13.5%`, `right: 13.5%`) ensuring content never touches torn edges, while providing vertical breathing room for ~3 comfortably visible cards on desktop.
+  - **Zero Page Scrollbar:** Maintained viewport containment (`height: 100vh; overflow: hidden`) and hidden native scrolling (`scrollbar-width: none`).
+  - **Verification:** 53/53 automated tests passing in `scratch/test_registry_redesign.js`.
 * **Global Navigation Streamlining & Captain Side Panel (`views/partials/header.ejs`):**
   - **Top Navbar Density Reduction:** Cleaned up overloaded authenticated buyer navbar from 10 items down to core primary destinations: Sea Chart (`/home`, `#navSeaChart`), Cargo Hold (`/cart`, `#navCargoHold`), My Voyages (`/orders`, `#navBuyerOrders`), Captain Identity Badge (`#navUserBadge`), and Logout (`#navLogout`).
   - **Duplicate Profile Removal:** Completely eliminated duplicate standalone top-level `Profile` navigation link next to Captain Rishi badge. The Captain badge remains the singular profile entry in the top navbar.

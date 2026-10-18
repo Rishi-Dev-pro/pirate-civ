@@ -622,15 +622,15 @@ body {
 
 
 /* =========================================================
-   PARCHMENT MAP FRAME
+   PARCHMENT MAP FRAME & ATMOSPHERIC LIGHTING
 ========================================================= */
 
 .parchment-wrapper,
 .registry-map-frame {
     position: relative;
-    height: min(calc(100vh - 110px), 820px);
+    height: min(calc(100vh - 105px), 840px);
     aspect-ratio: 599 / 806;
-    max-width: min(650px, 94vw);
+    max-width: min(660px, 94vw);
     width: auto;
     margin: 0 auto;
     display: flex;
@@ -639,6 +639,23 @@ body {
     animation:
         parchmentReveal 0.9s
         cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Subtle atmospheric oceanic lighting behind parchment */
+.parchment-wrapper::before,
+.registry-map-frame::before {
+    content: "";
+    position: absolute;
+    inset: -30px;
+    background: radial-gradient(
+        circle at 50% 40%,
+        rgba(32, 107, 112, 0.16) 0%,
+        rgba(15, 45, 55, 0.08) 35%,
+        transparent 65%
+    );
+    pointer-events: none;
+    z-index: -1;
+    filter: blur(25px);
 }
 
 @keyframes parchmentReveal {
@@ -659,9 +676,9 @@ body {
     overflow: hidden;
     border-radius: 4px;
     filter:
-        drop-shadow(0 20px 45px rgba(0, 0, 0, 0.85))
-        drop-shadow(0 0 35px rgba(10, 5, 2, 0.65))
-        drop-shadow(0 0 15px rgba(171, 71, 20, 0.15));
+        drop-shadow(0 24px 50px rgba(0, 0, 0, 0.88))
+        drop-shadow(0 0 40px rgba(7, 24, 30, 0.6))
+        drop-shadow(0 0 22px rgba(32, 107, 112, 0.16));
 }
 
 .parchment-image {
@@ -685,8 +702,8 @@ body {
     background: radial-gradient(
         ellipse at center,
         transparent 30%,
-        rgba(91, 42, 16, 0.05) 65%,
-        rgba(40, 18, 9, 0.18) 100%
+        rgba(91, 42, 16, 0.04) 65%,
+        rgba(40, 18, 9, 0.16) 100%
     );
     mix-blend-mode: multiply;
     opacity: 0.55;
@@ -695,9 +712,9 @@ body {
 .parchment-content {
     position: absolute;
     z-index: 5;
-    left: 12%;
-    right: 12%;
-    top: 10.5%;
+    left: 13.5%;
+    right: 13.5%;
+    top: 11%;
     bottom: 9.5%;
     display: flex;
     flex-direction: column;
@@ -708,23 +725,22 @@ body {
 
 
 /* =========================================================
-   REGISTRY HEADER
+   REGISTRY HEADER & SECTION DIVIDER
 ========================================================= */
 
 .registry-header {
     flex-shrink: 0;
     text-align: center;
-    padding-bottom: 9px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid rgba(82, 43, 17, 0.28);
+    padding-bottom: 2px;
+    margin-bottom: 6px;
 }
 
 .registry-title {
-    color: #382012;
+    color: #351E0E;
     font-family: "Cinzel", serif;
     font-size: clamp(15px, 2.1vw, 21px);
     font-weight: 700;
-    letter-spacing: 2px;
+    letter-spacing: 0.1em;
     line-height: 1.2;
     margin-bottom: 4px;
     text-shadow:
@@ -737,21 +753,49 @@ body {
 }
 
 .registry-title .title-gem {
-    color: #8c4c1e;
+    color: #8C4C1E;
     font-size: 11px;
     vertical-align: middle;
     opacity: 0.85;
 }
 
 .registry-subtitle {
-    color: #4a2d18;
+    color: #4A2D18;
     font-family: "Inter", sans-serif;
-    font-size: clamp(10px, 1.15vw, 12px);
+    font-size: clamp(10px, 1.15vw, 11.5px);
     font-weight: 500;
-    line-height: 1.4;
-    letter-spacing: 0.2px;
+    line-height: 1.45;
+    letter-spacing: 0.02em;
     max-width: 440px;
-    margin: 0 auto;
+    margin: 0 auto 6px;
+    text-shadow: 0 1px 0 rgba(255, 238, 204, 0.5);
+}
+
+.registry-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 6px auto 10px;
+    width: 85%;
+    opacity: 0.8;
+}
+
+.registry-divider span:first-child,
+.registry-divider span:last-child {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(140, 76, 30, 0.38),
+        transparent
+    );
+}
+
+.divider-gem {
+    color: #8C4C1E;
+    font-size: 9px;
     text-shadow: 0 1px 0 rgba(255, 238, 204, 0.5);
 }
 
@@ -766,7 +810,7 @@ body {
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 4px 6px 12px;
+    padding: 4px 6px 14px;
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -785,7 +829,7 @@ body {
 
 
 /* =========================================================
-   DARK TRANSLUCENT MERCHANT CHARTER CARDS
+   TRANSLUCENT SMOKED GLASS MERCHANT CHARTER CARDS
 ========================================================= */
 
 .merchant-card,
@@ -794,24 +838,26 @@ body {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 13px 15px;
+    padding: 16px 18px;
     background: linear-gradient(
         135deg,
-        rgba(9, 13, 20, 0.92) 0%,
-        rgba(17, 14, 12, 0.86) 100%
+        rgba(9, 18, 25, 0.72) 0%,
+        rgba(15, 12, 18, 0.58) 100%
     );
-    border: 1px solid rgba(201, 161, 84, 0.42);
+    backdrop-filter: blur(10px) saturate(115%);
+    -webkit-backdrop-filter: blur(10px) saturate(115%);
+    border: 1px solid rgba(216, 177, 98, 0.34);
     border-radius: 6px;
     box-shadow:
-        inset 0 0 18px rgba(0, 0, 0, 0.38),
-        0 4px 16px rgba(0, 0, 0, 0.28);
-    backdrop-filter: blur(4px);
+        0 12px 30px rgba(0, 0, 0, 0.30),
+        inset 0 1px 0 rgba(255, 255, 255, 0.07);
     animation: cardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: var(--delay, 0s);
     transition:
-        transform 0.22s ease,
-        border-color 0.22s ease,
-        box-shadow 0.22s ease;
+        transform 0.24s ease,
+        background 0.24s ease,
+        border-color 0.24s ease,
+        box-shadow 0.24s ease;
 }
 
 @keyframes cardFadeIn {
@@ -828,38 +874,63 @@ body {
 .merchant-card:hover,
 .explorer-card:hover {
     transform: translateY(-2px);
-    border-color: rgba(224, 184, 114, 0.75);
+    background: linear-gradient(
+        135deg,
+        rgba(11, 23, 33, 0.80) 0%,
+        rgba(19, 15, 24, 0.68) 100%
+    );
+    border-color: rgba(231, 201, 129, 0.58);
     box-shadow:
-        inset 0 0 18px rgba(0, 0, 0, 0.3),
-        0 8px 24px rgba(0, 0, 0, 0.35),
-        0 0 12px rgba(201, 161, 84, 0.18);
+        0 16px 36px rgba(0, 0, 0, 0.38),
+        inset 0 1px 0 rgba(255, 255, 255, 0.12),
+        0 0 18px rgba(32, 107, 112, 0.16);
 }
 
 
 /* =========================================================
-   CARD TOP: CREST + IDENTITY
+   CARD TOP: ENCHANTED CREST + IDENTITY
 ========================================================= */
 
 .card-top {
     display: flex;
     align-items: flex-start;
-    gap: 12px;
+    gap: 14px;
 }
 
 .merchant-crest {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     border-radius: 50%;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(circle, rgba(32, 24, 18, 0.95), rgba(12, 10, 8, 0.98));
-    border: 1px solid rgba(201, 161, 84, 0.45);
+    background: radial-gradient(
+        circle,
+        rgba(13, 23, 32, 0.85) 0%,
+        rgba(7, 13, 18, 0.95) 100%
+    );
+    border: 1px solid rgba(216, 177, 98, 0.45);
     box-shadow:
-        inset 0 0 10px rgba(0, 0, 0, 0.65),
-        0 2px 6px rgba(0, 0, 0, 0.35);
+        0 0 0 2px rgba(9, 18, 25, 0.6),
+        0 0 0 3px rgba(216, 177, 98, 0.22),
+        inset 0 0 10px rgba(32, 107, 112, 0.22),
+        0 4px 10px rgba(0, 0, 0, 0.35);
+    position: relative;
     overflow: hidden;
+    backdrop-filter: blur(4px);
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease;
+}
+
+.merchant-card:hover .merchant-crest {
+    border-color: rgba(231, 201, 129, 0.7);
+    box-shadow:
+        0 0 0 2px rgba(9, 18, 25, 0.6),
+        0 0 0 3px rgba(231, 201, 129, 0.35),
+        inset 0 0 12px rgba(155, 197, 196, 0.35),
+        0 0 12px rgba(32, 107, 112, 0.25);
 }
 
 .crest-avatar {
@@ -870,10 +941,10 @@ body {
 
 .crest-monogram {
     font-family: "Cinzel", serif;
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 700;
-    color: #e0b872;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+    color: #E7C981;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
 }
 
 .merchant-meta {
@@ -883,71 +954,74 @@ body {
 
 .merchant-name {
     font-family: "Cinzel", serif;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 700;
-    letter-spacing: 0.8px;
-    color: #e8c47a;
-    margin-bottom: 2px;
+    letter-spacing: 0.06em;
+    color: #E7C981;
+    margin-bottom: 3px;
     line-height: 1.25;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.7);
+    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
 }
 
 .merchant-guildmaster {
     font-size: 12px;
-    color: #c4b5a2;
-    margin-bottom: 3px;
-    line-height: 1.3;
-}
-
-.merchant-guildmaster .meta-label {
-    color: #8f8272;
-    font-size: 11px;
-    margin-right: 4px;
-}
-
-.merchant-guildmaster .guildmaster-name {
-    color: #c4b5a2;
-}
-
-.merchant-port {
+    color: #BFAEA0;
+    letter-spacing: 0.02em;
+    margin-bottom: 6px;
+    line-height: 1.35;
     display: inline-flex;
     align-items: center;
     gap: 5px;
+}
+
+.merchant-guildmaster .meta-label {
+    color: #8F8272;
+    font-size: 11px;
+}
+
+.merchant-guildmaster .meta-bullet {
+    color: rgba(216, 177, 98, 0.5);
     font-size: 10px;
-    letter-spacing: 0.6px;
-    margin-top: 1px;
+}
+
+.merchant-guildmaster .guildmaster-name {
+    color: #DED3C4;
+    font-weight: 500;
+}
+
+.merchant-port {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    margin-top: 2px;
 }
 
 .port-label {
-    color: #8f8272;
+    color: #8F8272;
     font-weight: 600;
-    font-size: 9px;
-    letter-spacing: 0.8px;
-}
-
-.port-bullet {
-    color: rgba(201, 161, 84, 0.6);
-    font-size: 8px;
+    font-size: 8.5px;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
 }
 
 .port-name {
-    color: #d4af37;
+    color: #D6B56A;
     font-family: "Cinzel", serif;
-    font-weight: 600;
-    font-size: 10.5px;
+    font-weight: 700;
+    font-size: 11px;
     letter-spacing: 0.8px;
 }
 
 
 /* =========================================================
-   CARD BIO
+   CARD BIO (WARM IVORY READABILITY)
 ========================================================= */
 
 .merchant-bio {
-    font-size: 11.5px;
-    line-height: 1.45;
-    color: #cfc2b0;
-    margin: 0;
+    font-size: 12px;
+    line-height: 1.5;
+    color: #DED3C4;
+    margin: 6px 0 10px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -957,7 +1031,7 @@ body {
 
 
 /* =========================================================
-   CARD BOTTOM & ACTION BUTTON
+   CARD BOTTOM & GLASS/BRASS ACTION BUTTON
 ========================================================= */
 
 .card-bottom {
@@ -970,33 +1044,40 @@ body {
 .btn-discover-storefront {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    padding: 7px 14px;
-    background: rgba(18, 14, 12, 0.9);
-    border: 1px solid rgba(201, 161, 84, 0.55);
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(9, 18, 25, 0.65);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(216, 177, 98, 0.45);
     border-radius: 4px;
-    color: #e5be75;
+    color: #E7C981;
     font-family: "Cinzel", serif;
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 700;
     text-decoration: none;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.08em;
+    box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.06),
+        0 2px 8px rgba(0, 0, 0, 0.25);
     transition:
-        background 0.2s ease,
-        border-color 0.2s ease,
-        color 0.2s ease,
-        box-shadow 0.2s ease;
+        background 0.22s ease,
+        border-color 0.22s ease,
+        color 0.22s ease,
+        box-shadow 0.22s ease;
 }
 
 .btn-discover-storefront:hover {
-    background: rgba(201, 161, 84, 0.22);
-    border-color: #ffd700;
-    color: #ffffff;
-    box-shadow: 0 0 10px rgba(201, 161, 84, 0.35);
+    background: rgba(32, 107, 112, 0.25);
+    border-color: #E7C981;
+    color: #FFFFFF;
+    box-shadow:
+        0 0 14px rgba(155, 197, 196, 0.28),
+        inset 0 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .btn-discover-storefront:focus-visible {
-    outline: 2px solid #ffd700;
+    outline: 2px solid #E7C981;
     outline-offset: 2px;
 }
 
@@ -1006,7 +1087,7 @@ body {
 }
 
 .btn-discover-storefront:hover .btn-arrow {
-    transform: translateX(3px);
+    transform: translateX(4px);
 }
 
 
@@ -1019,7 +1100,7 @@ body {
     display: flex;
     align-items: center;
     gap: 12px;
-    padding-top: 8px;
+    padding-top: 10px;
     margin-top: auto;
 }
 
@@ -1035,9 +1116,9 @@ body {
 }
 
 .registry-footer-seal {
-    color: #704016;
+    color: #8C4C1E;
     font-size: 11px;
-    opacity: 0.7;
+    opacity: 0.8;
 }
 
 
@@ -1054,7 +1135,7 @@ body {
 .no-users-symbol {
     margin-bottom: 10px;
     font-size: 26px;
-    color: #8c4c1e;
+    color: #8C4C1E;
     opacity: 0.75;
 }
 
@@ -1069,7 +1150,7 @@ body {
 .no-users p {
     font-size: 12px;
     font-style: italic;
-    color: #613c20;
+    color: #613C20;
     opacity: 0.85;
 }
 
@@ -1090,8 +1171,8 @@ body {
     }
 
     .parchment-content {
-        left: 11.5%;
-        right: 11.5%;
+        left: 12%;
+        right: 12%;
     }
 }
 
@@ -1111,25 +1192,25 @@ body {
 
     .parchment-wrapper,
     .registry-map-frame {
-        height: min(calc(100dvh - 82px), 700px);
+        height: min(calc(100dvh - 82px), 720px);
         max-width: 96vw;
     }
 
     .parchment-content {
-        left: 10.5%;
-        right: 10.5%;
+        left: 11%;
+        right: 11%;
         top: 9.5%;
         bottom: 8.5%;
     }
 
     .registry-header {
-        padding-bottom: 6px;
-        margin-bottom: 6px;
+        padding-bottom: 4px;
+        margin-bottom: 4px;
     }
 
     .registry-title {
         font-size: 14.5px;
-        letter-spacing: 1.2px;
+        letter-spacing: 0.08em;
     }
 
     .registry-subtitle {
@@ -1137,29 +1218,33 @@ body {
         line-height: 1.35;
     }
 
+    .registry-divider {
+        margin: 4px auto 8px;
+    }
+
     .registry-scroll-area,
     .users-list {
-        gap: 8px;
-        padding: 2px 4px 8px;
+        gap: 10px;
+        padding: 2px 4px 10px;
     }
 
     .merchant-card,
     .explorer-card {
-        padding: 10px 12px;
+        padding: 12px 14px;
         gap: 8px;
     }
 
     .merchant-crest {
-        width: 36px;
-        height: 36px;
+        width: 38px;
+        height: 38px;
     }
 
     .crest-monogram {
-        font-size: 14px;
+        font-size: 15px;
     }
 
     .merchant-name {
-        font-size: 13.5px;
+        font-size: 14px;
     }
 
     .merchant-guildmaster {
@@ -1167,7 +1252,7 @@ body {
     }
 
     .merchant-bio {
-        font-size: 10.5px;
+        font-size: 11px;
         -webkit-line-clamp: 2;
     }
 
@@ -1178,7 +1263,7 @@ body {
     .btn-discover-storefront {
         width: 100%;
         justify-content: center;
-        padding: 6px 10px;
+        padding: 8px 12px;
         font-size: 10px;
     }
 }

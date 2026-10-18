@@ -113,6 +113,13 @@
                             Accredited trade posts and cartographic armators authorized to forge and dispatch wares.
                         </p>
 
+                        <!-- Subtle Document Section Divider -->
+                        <div class="registry-divider" aria-hidden="true">
+                            <span></span>
+                            <span class="divider-gem">◇</span>
+                            <span></span>
+                        </div>
+
                     </header>
 
 
@@ -180,14 +187,14 @@
 
                                             <% if (merchant.storeName && merchant.name && merchant.storeName.trim().toLowerCase() !== merchant.name.trim().toLowerCase()) { %>
                                                 <p class="merchant-guildmaster">
-                                                    <span class="meta-label">Guildmaster:</span>
+                                                    <span class="meta-label">Guildmaster</span>
+                                                    <span class="meta-bullet" aria-hidden="true">·</span>
                                                     <span class="guildmaster-name"><%= merchant.name %></span>
                                                 </p>
                                             <% } %>
 
                                             <div class="merchant-port">
                                                 <span class="port-label">HOME PORT</span>
-                                                <span class="port-bullet" aria-hidden="true">·</span>
                                                 <span class="port-name"><%= (merchant.homeIsland || 'Archipelago').replace(/_/g, ' ').toUpperCase() %></span>
                                             </div>
 

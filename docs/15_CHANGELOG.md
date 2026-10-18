@@ -2,6 +2,17 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-18] — Phase 6.3: Merchant Guild Registry Glassmorphism Refinement
+* **Merchant Guild Registry Glassmorphism Refinement (`views/users.ejs`, `public/css/users.css`):**
+  - **Smoked Glassmorphism Panels:** Replaced heavy opaque charter cards with translucent smoked glass panels (`background: linear-gradient(135deg, rgba(9, 18, 25, 0.72), rgba(15, 12, 18, 0.58))` with `backdrop-filter: blur(10px) saturate(115%)` and `border: 1px solid rgba(216, 177, 98, 0.34)`), allowing the rich parchment texture to remain visible beneath the cards.
+  - **Atmospheric Oceanic Lighting:** Added subtle sea-teal ambient glow behind the parchment frame (`rgba(32, 107, 112, 0.16)`) and updated drop-shadows to illuminate the parchment as an ancient navigation instrument against the dark starfield.
+  - **Enchanted Crest Seal:** Replaced simple borders with a double-ring antique brass seal with subtle cyan inner glow (`inset 0 0 10px rgba(32, 107, 112, 0.22)`), supporting seller avatars and serif monograms.
+  - **Document Section Divider:** Introduced an antique section divider (`─────────────── ◇ ───────────────`) between the fixed header and the scrolling glass cards.
+  - **Restrained Glass & Brass Storefront Button:** Styled action link with dark translucent glass, thin brass border, warm ivory text, and subtle hover wash (`rgba(32, 107, 112, 0.25)`).
+  - **Hover Dynamics:** Refined 2px upward lift, brighter brass rim, and subtle teal ambient reflection on card hover.
+  - **Parchment Margins & Density:** Widened parchment side margins (`left: 13.5%`, `right: 13.5%`) ensuring content never touches torn edges, while providing vertical breathing room for ~3 comfortably visible cards on desktop.
+  - **Verification:** 53/53 automated tests passing in `scratch/test_registry_redesign.js`.
+
 ## [2026-10-18] — Phase 6.3: Merchant Guild Registry Visual Redesign
 * **Merchant Guild Registry Visual Redesign (`views/users.ejs`, `public/css/users.css`):**
   - **Parchment Framing & Zero Page Scrollbar:** The registry is now centered around and strictly contained within `/images/users-parchment.png`. Constrained the page viewport on desktop (`height: 100vh; overflow: hidden`) and sized the parchment to responsive viewport limits (`height: min(calc(100vh - 110px), 820px)` with `aspect-ratio: 599 / 806`), preventing browser window scrollbars.
