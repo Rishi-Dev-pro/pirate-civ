@@ -73,109 +73,66 @@
          MAIN
     ====================================================== -->
 
-    <main class="users-page">
+    <!-- =====================================================
+         MAIN REGISTRY VIEWPORT
+    ====================================================== -->
 
-
-        <!-- =================================================
-             PAGE TITLE
-        ================================================== -->
-
-        <section class="users-heading">
-
-            <div class="heading-symbol">
-                ⚓
-            </div>
-
-
-            <div class="heading-line">
-
-                <span></span>
-
-                <p>
-                    TERRA INCOGNITA
-                </p>
-
-                <span></span>
-
-            </div>
-
-
-            <h1>
-                CHARTERED MERCHANTS
-            </h1>
-
-
-            <p class="heading-subtitle">
-                Discover accredited merchant armators across the sovereign archipelago
-            </p>
-
-
-            <div class="heading-ornament">
-                ✦
-            </div>
-
-        </section>
-
-
+    <main class="users-page registry-page">
 
         <!-- =================================================
-             PARCHMENT
+             PARCHMENT CHARTER MAP FRAME
         ================================================== -->
 
-        <section class="parchment-wrapper">
-
+        <section class="registry-map-frame parchment-wrapper">
 
             <div class="parchment">
 
-
-                <!-- Parchment background -->
-
+                <!-- Parchment texture map -->
                 <img
                     src="/images/users-parchment.png"
-                    alt=""
+                    alt="Merchant Guild Registry Parchment"
                     class="parchment-image"
                 >
 
-
                 <!-- =================================================
-                     CONTENT ON PARCHMENT
+                     PARCHMENT ILLUMINATED CONTENT
                 ================================================== -->
 
                 <div class="parchment-content">
 
+                    <!-- Fixed Registry Header -->
+                    <header class="registry-header">
 
-                    <div class="parchment-title">
-
-                        <span>✦</span>
-
-                        <h2>
+                        <h1 class="registry-title">
+                            <span class="title-gem" aria-hidden="true">✦</span>
                             MERCHANT GUILD REGISTRY
-                        </h2>
+                            <span class="title-gem" aria-hidden="true">✦</span>
+                        </h1>
 
-                        <span>✦</span>
+                        <p class="registry-subtitle">
+                            Accredited trade posts and cartographic armators authorized to forge and dispatch wares.
+                        </p>
 
-                    </div>
-
-
-                    <p class="parchment-description">
-                        Accredited trade posts and cartographic armators authorized to forge and dispatch wares.
-                    </p>
-
+                    </header>
 
 
                     <!-- =================================================
-                         USER LIST
+                         INTERNAL SCROLLABLE CHARTER REGISTRY
                     ================================================== -->
 
-                    <div class="users-list">
-
+                    <div
+                        class="registry-scroll-area users-list"
+                        tabindex="0"
+                        role="region"
+                        aria-label="Merchant Guild Registry List"
+                    >
 
                         <% if (!users || users.length === 0) { %>
 
                             <div class="no-users">
 
-                                <div class="no-users-icon">
-                                    ⚓
+                                <div class="no-users-symbol" aria-hidden="true">
+                                    ✦
                                 </div>
 
                                 <h3>
@@ -188,89 +145,97 @@
 
                             </div>
 
-
                         <% } else { %>
-
 
                             <% users.forEach((merchant, index) => { %>
 
-
                                 <article
-                                    class="explorer-card"
-                                    style="--delay: <%= index * 0.08 %>s;"
+                                    class="merchant-card explorer-card"
+                                    style="--delay: <%= index * 0.05 %>s;"
                                 >
 
+                                    <div class="card-top">
 
-                                    <div class="explorer-number">
+                                        <!-- Merchant Crest / Avatar / Monogram -->
+                                        <div class="merchant-crest" aria-hidden="true">
+                                            <% if (merchant.avatar) { %>
+                                                <img
+                                                    src="<%= merchant.avatar %>"
+                                                    alt=""
+                                                    class="crest-avatar"
+                                                >
+                                            <% } else { %>
+                                                <span class="crest-monogram">
+                                                    <%= (merchant.storeName || merchant.name || 'M').charAt(0).toUpperCase() %>
+                                                </span>
+                                            <% } %>
+                                        </div>
 
-                                        <span>
-                                            <%= String(index + 1).padStart(2, "0") %>
-                                        </span>
+                                        <!-- Merchant Identity & Home Port -->
+                                        <div class="merchant-meta">
+
+                                            <h2 class="merchant-name">
+                                                <%= merchant.storeName || merchant.name %>
+                                            </h2>
+
+                                            <% if (merchant.storeName && merchant.name && merchant.storeName.trim().toLowerCase() !== merchant.name.trim().toLowerCase()) { %>
+                                                <p class="merchant-guildmaster">
+                                                    <span class="meta-label">Guildmaster:</span>
+                                                    <span class="guildmaster-name"><%= merchant.name %></span>
+                                                </p>
+                                            <% } %>
+
+                                            <div class="merchant-port">
+                                                <span class="port-label">HOME PORT</span>
+                                                <span class="port-bullet" aria-hidden="true">·</span>
+                                                <span class="port-name"><%= (merchant.homeIsland || 'Archipelago').replace(/_/g, ' ').toUpperCase() %></span>
+                                            </div>
+
+                                        </div>
 
                                     </div>
 
-
-                                    <div class="explorer-icon">
-                                        ⚓
-                                    </div>
-
-
-                                    <div class="explorer-info">
-
-
-                                        <h3 style="font-family: 'Cinzel', serif; color: #ffd700; margin-bottom: 4px;">
-                                            <%= merchant.storeName || merchant.name %>
-                                        </h3>
-
-
-                                        <% if (merchant.storeName && merchant.name && merchant.storeName !== merchant.name) { %>
-                                            <p style="color: #cbb493; font-size: 13px; margin-bottom: 4px;">
-                                                Guildmaster: <%= merchant.name %>
-                                            </p>
-                                        <% } %>
-
-                                        <p style="color: #ffd57e; font-size: 12px; margin-bottom: 8px;">
-                                            ⚓ Home Port: <%= (merchant.homeIsland || 'Archipelago').toUpperCase() %>
+                                    <!-- Merchant Description / Bio if available -->
+                                    <% if (merchant.bio) { %>
+                                        <p class="merchant-bio">
+                                            <%= merchant.bio %>
                                         </p>
+                                    <% } %>
 
-                                        <% if (merchant.bio) { %>
-                                            <p style="color: #a78860; font-size: 12px; line-height: 1.4; margin-bottom: 12px;">
-                                                <%= merchant.bio %>
-                                            </p>
-                                        <% } %>
+                                    <!-- Storefront Discovery Link -->
+                                    <div class="card-bottom">
 
-                                        <a href="/seller/<%= merchant._id %>" class="btn-discover-storefront" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 14px; background: rgba(212, 147, 57, 0.2); border: 1px solid rgba(212, 147, 57, 0.5); border-radius: 4px; color: #ffd700; font-family: 'Cinzel', serif; font-size: 11px; font-weight: 700; text-decoration: none; letter-spacing: 0.8px; transition: all 0.2s ease;">
-                                            <span>📜 DISCOVER STOREFRONT &rarr;</span>
+                                        <a
+                                            href="/seller/<%= merchant._id %>"
+                                            class="btn-discover-storefront"
+                                            aria-label="Discover storefront for <%= merchant.storeName || merchant.name %>"
+                                        >
+                                            <span>DISCOVER STOREFRONT</span>
+                                            <span class="btn-arrow" aria-hidden="true">&rarr;</span>
                                         </a>
 
                                     </div>
 
-
-                                    <div class="explorer-mark">
-                                        ✦
-                                    </div>
-
-
                                 </article>
-
 
                             <% }) %>
 
-
                         <% } %>
-
 
                     </div>
 
+                    <!-- Subtle Parchment Bottom Seal -->
+                    <footer class="registry-footer">
+                        <span></span>
+                        <div class="registry-footer-seal" aria-hidden="true">✦</div>
+                        <span></span>
+                    </footer>
 
                 </div>
 
-
             </div>
 
-
         </section>
-
 
     </main>
 

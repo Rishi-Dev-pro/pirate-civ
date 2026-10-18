@@ -14,11 +14,19 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Navigation Cleanup & Captain Side Panel Completed + Verified**
+* **Active Status:** **Merchant Guild Registry Visual Redesign Completed + Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Merchant Guild Registry Visual Redesign (`views/users.ejs`, `public/css/users.css`):**
+  - **Parchment Framing & Zero Page Scrollbar:** Centered and fully contained within `/images/users-parchment.png`. Sized to viewport constraints (`height: min(calc(100vh - 110px), 820px)` with `aspect-ratio: 599 / 806`) preventing outer page scrollbars on desktop (`height: 100vh; overflow: hidden`).
+  - **Contained Internal Scrolling:** Smooth native scrolling enabled within `.registry-scroll-area` while hiding visual scrollbars (`scrollbar-width: none`, `::-webkit-scrollbar { display: none }`).
+  - **High-Contrast Dark Charter Cards:** Dark translucent panels (`rgba(9, 13, 20, 0.92)` with brass border `rgba(201, 161, 84, 0.42)`) providing high contrast against the parchment map.
+  - **Structured Card Hierarchy:** Circular merchant crest/monogram seal, Cinzel display store name, warm gray guildmaster tag, brass uppercase home port (`HOME PORT · [ISLAND]`), concise bio, and accessible `DISCOVER STOREFRONT →` button.
+  - **Cartoon Emoji Elimination:** Replaced all cartoon emojis with refined typographic ornaments (`✦`, `·`, `→`).
+  - **Mobile Responsiveness:** Proportional scaling, vertical card layouts, full-width touch-friendly storefront buttons, and smooth touch scrolling.
+  - **Verification:** 50/50 automated tests passing in `scratch/test_registry_redesign.js`, 51/51 in `scratch/test_navigation_cleanup.js`, 70/70 in `scratch/test_milestone_6_3.js`, and browser end-to-end CDP recording.
 * **Global Navigation Streamlining & Captain Side Panel (`views/partials/header.ejs`):**
   - **Top Navbar Density Reduction:** Cleaned up overloaded authenticated buyer navbar from 10 items down to core primary destinations: Sea Chart (`/home`, `#navSeaChart`), Cargo Hold (`/cart`, `#navCargoHold`), My Voyages (`/orders`, `#navBuyerOrders`), Captain Identity Badge (`#navUserBadge`), and Logout (`#navLogout`).
   - **Duplicate Profile Removal:** Completely eliminated duplicate standalone top-level `Profile` navigation link next to Captain Rishi badge. The Captain badge remains the singular profile entry in the top navbar.

@@ -2,6 +2,17 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-18] — Phase 6.3: Merchant Guild Registry Visual Redesign
+* **Merchant Guild Registry Visual Redesign (`views/users.ejs`, `public/css/users.css`):**
+  - **Parchment Framing & Zero Page Scrollbar:** The registry is now centered around and strictly contained within `/images/users-parchment.png`. Constrained the page viewport on desktop (`height: 100vh; overflow: hidden`) and sized the parchment to responsive viewport limits (`height: min(calc(100vh - 110px), 820px)` with `aspect-ratio: 599 / 806`), preventing browser window scrollbars.
+  - **Contained Internal Scrolling:** Established an internal scroll region (`.registry-scroll-area`) with native scrolling enabled while hiding the visual scrollbar via `scrollbar-width: none` and `::-webkit-scrollbar { display: none }`.
+  - **High-Contrast Dark Charter Cards:** Addressed parchment background text bleed by placing every merchant inside a dark translucent card (`background: linear-gradient(135deg, rgba(9, 13, 20, 0.92), rgba(17, 14, 12, 0.86))` with brass border `rgba(201, 161, 84, 0.42)` and subtle inner shadow), providing crisp contrast and readability.
+  - **Structured Card Hierarchy:** Designed structured cards featuring a circular merchant crest/avatar badge or monogram initial, brass/gold display store name (`Cinzel`), muted warm gray guildmaster label, uppercase brass home port tag (`HOME PORT · [ISLAND]`), concise bio excerpt, and prominent accessible `DISCOVER STOREFRONT →` button.
+  - **Refined Hover Dynamics:** Subtle 2px lift, slightly illuminated brass border (`rgba(224, 184, 114, 0.75)`), restrained brass glow, and arrow translation without cartoon bouncing.
+  - **Cartoon Emoji Elimination:** Replaced all cartoon emojis (`⚓`, `📜`, `❤️`, `👥`, `🧭`, `🏴‍☠️`) with refined typographic ornaments (`✦`, `·`, `→`) and dark iron-gall ink styled text headers.
+  - **Mobile Responsiveness:** Tested and verified on mobile viewports ($\le 650\text{px}$) with proportional scaling, vertical card layouts, full-width touch-friendly storefront buttons, and smooth touch scrolling.
+  - **Verification:** 50/50 dedicated automated tests passing in `scratch/test_registry_redesign.js`, 51/51 navigation cleanup tests passing in `scratch/test_navigation_cleanup.js`, 70/70 Phase 6.3 regression tests passing in `scratch/test_milestone_6_3.js`, and browser end-to-end CDP verification.
+
 ## [2026-10-18] — Phase 6.3: Navigation Cleanup & Captain Side Panel
 * **Navbar Density Cleanup & Captain Side Panel (`views/partials/header.ejs`):**
   - **Top Navbar Streamlining:** Reduced authenticated buyer top navigation density from 10 items down to essential primary destinations: Sea Chart (`/home`, `#navSeaChart`), Cargo Hold (`/cart`, `#navCargoHold`), My Voyages (`/orders`, `#navBuyerOrders`), Captain identity control (`#navUserBadge`), and Logout (`#navLogout`).
