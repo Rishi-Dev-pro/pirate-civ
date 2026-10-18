@@ -87,41 +87,48 @@
                 const rawBuyerName = (currentUser && currentUser.name) ? currentUser.name.trim() : 'Captain';
                 const cleanCaptainName = /^captain\s+/i.test(rawBuyerName) ? rawBuyerName : ('Captain ' + rawBuyerName);
             %>
-            <a href="/profile" class="nav-user-badge" id="navUserBadge" title="Chartered Captain Profile" style="text-decoration: none;">
-                <span class="badge-icon">⚓</span> <%= cleanCaptainName %>
+            <a href="/profile" class="nav-user-badge" id="navUserBadge" title="<%= cleanCaptainName %>" aria-label="Chartered Captain Profile: <%= cleanCaptainName %>" style="text-decoration: none;">
+                <span class="badge-icon">⚓</span> <span class="nav-user-name"><%= cleanCaptainName %></span>
             </a>
 
             <a href="/logout" class="nav-link logout-btn" id="navLogout">
                 Logout
             </a>
         <% } else if (userRole === 'seller') { %>
-            <!-- ================= SELLER NAVIGATION ================= -->
-            <a href="/seller/dashboard" class="nav-link nav-seller-deck <%= currentNavKey === 'seller_deck' ? 'active' : '' %>" id="navSellerDeck" <%- currentNavKey === 'seller_deck' ? 'aria-current="page"' : '' %>>
-                ⚓ Command Deck
-            </a>
-
-            <a href="/seller/products" class="nav-link nav-seller-products <%= currentNavKey === 'seller_products' ? 'active' : '' %>" id="navSellerProducts" <%- currentNavKey === 'seller_products' ? 'aria-current="page"' : '' %>>
-                📦 Manage Cargo
-            </a>
-
-            <a href="/seller/orders" class="nav-link nav-seller-orders <%= currentNavKey === 'seller_orders' ? 'active' : '' %>" id="navSellerOrders" <%- currentNavKey === 'seller_orders' ? 'aria-current="page"' : '' %>>
-                📜 Merchant Orders
-            </a>
-
-            <a href="/seller/profile" class="nav-link nav-seller-profile <%= currentNavKey === 'seller_profile' ? 'active' : '' %>" id="navSellerProfile" <%- currentNavKey === 'seller_profile' ? 'aria-current="page"' : '' %>>
-                ⚙️ Merchant Profile
-            </a>
-
+            <!-- ================= SELLER NAVIGATION (UNIFIED & STREAMLINED) ================= -->
             <a href="/home" class="nav-link <%= currentNavKey === 'seachart' ? 'active' : '' %>" id="navSeaChart" <%- currentNavKey === 'seachart' ? 'aria-current="page"' : '' %>>
                 🗺️ Sea Chart
             </a>
 
-            <a href="/about" class="nav-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%- currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
-                Guild Lore
+            <a href="/seller/dashboard" class="nav-link nav-seller-deck <%= currentNavKey === 'seller_deck' ? 'active' : '' %>" id="navSellerDeck" <%- currentNavKey === 'seller_deck' ? 'aria-current="page"' : '' %>>
+                ⚓ Seller Deck
             </a>
 
-            <a href="/seller/profile" class="nav-user-badge" id="navUserBadge" title="Chartered Merchant Profile" style="text-decoration: none;">
-                <span class="badge-icon">⚓</span> <%= currentUser.storeName || currentUser.name %>
+            <a href="/seller/orders" class="nav-link nav-seller-orders <%= currentNavKey === 'seller_orders' ? 'active' : '' %>" id="navSellerOrders" <%- currentNavKey === 'seller_orders' ? 'aria-current="page"' : '' %>>
+                📜 Orders
+            </a>
+
+            <!-- Mobile-only secondary drawer links -->
+            <a href="/seller/products" class="nav-link nav-seller-products nav-mobile-only <%= currentNavKey === 'seller_products' ? 'active' : '' %>" id="navSellerProducts" <%- currentNavKey === 'seller_products' ? 'aria-current="page"' : '' %>>
+                📦 Products / Forge Cargo
+            </a>
+
+            <a href="/seller/profile" class="nav-link nav-seller-profile nav-mobile-only <%= currentNavKey === 'seller_profile' ? 'active' : '' %>" id="navSellerProfile" <%- currentNavKey === 'seller_profile' ? 'aria-current="page"' : '' %>>
+                ⚙️ Seller Profile
+            </a>
+
+            <a href="/about" class="nav-link nav-mobile-only <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%- currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
+                📜 Guild Lore
+            </a>
+
+            <%
+                const rawSellerDisplayName = (currentUser && (currentUser.storeName || currentUser.name)) ? (currentUser.storeName || currentUser.name).trim() : 'Merchant';
+                const fullSellerLabel = (currentUser && currentUser.storeName && currentUser.name && currentUser.storeName !== currentUser.name)
+                    ? `${currentUser.storeName} — Captain ${currentUser.name.replace(/^captain\s+/i, '')}`
+                    : rawSellerDisplayName;
+            %>
+            <a href="/seller/profile" class="nav-user-badge" id="navUserBadge" title="<%= fullSellerLabel %>" aria-label="Chartered Merchant Profile: <%= fullSellerLabel %>" style="text-decoration: none;">
+                <span class="badge-icon">⚓</span> <span class="nav-user-name"><%= rawSellerDisplayName %></span>
             </a>
 
             <a href="/logout" class="nav-link logout-btn" id="navLogout">
@@ -347,12 +354,24 @@
     font-weight: 600;
     letter-spacing: 0.6px;
     white-space: nowrap;
+    max-width: 170px;
     transition: all 0.2s ease;
+}
+.nav-user-badge .nav-user-name {
+    display: inline-block;
+    max-width: 130px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
 }
 .nav-user-badge:hover {
     background: rgba(198, 159, 88, 0.25);
     border-color: rgba(255, 215, 0, 0.6);
     color: #ffd700;
+}
+.nav-mobile-only {
+    display: none !important;
 }
 .nav-links a.active {
     color: #ffd700 !important;
@@ -591,7 +610,7 @@
         justify-content: center;
     }
     .navbar .nav-links {
-        display: none;
+        display: none !important;
         position: absolute;
         top: calc(100% + 8px);
         left: 0;
@@ -610,7 +629,10 @@
         z-index: 1001;
     }
     .navbar .nav-links.nav-links-open {
-        display: flex;
+        display: flex !important;
+    }
+    .navbar .nav-links.nav-links-open a.nav-mobile-only {
+        display: block !important;
     }
     .navbar .nav-links a {
         font-size: 11px !important;
@@ -624,6 +646,10 @@
     .navbar .nav-user-badge {
         align-self: flex-start;
         margin: 4px 0;
+        max-width: 100% !important;
+    }
+    .navbar .nav-user-badge .nav-user-name {
+        max-width: 220px !important;
     }
     .captain-panel {
         top: 88px;

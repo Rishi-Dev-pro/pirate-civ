@@ -14,11 +14,28 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Buyer Cargo / Checkout / My Voyages Flow Repair Completed + Verified**
+* **Active Status:** **Seller Navbar Unification & Crowding Fix Completed + Verified Across Desktop, Tablet, and Mobile**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Seller Navbar Unification & Crowding Fix (`views/partials/header.ejs`, `scratch/test_seller_navbar_unification.js`, `scratch/browser_seller_navbar_test.js`):**
+  - **Identical Canonical Shell Baseline:** Standardized the seller navbar to use the exact same physical navbar shell as the canonical buyer navbar: `position: fixed !important; top: 18px !important; left: 50% !important; transform: translateX(-50%) !important; width: min(1100px, calc(100% - 60px)) !important; min-height: 62px !important;` with dark glassmorphic gradient (`rgba(9, 5, 13, 0.92)` to `rgba(22, 10, 15, 0.88)`), brass borders (`1px solid rgba(150, 94, 40, 0.45)`), rounded corners (`7px`), and inner gold hairline accent.
+  - **Eliminated Horizontal Crowding:** Streamlined primary desktop seller navigation from 8 items down to the compact 5 canonical items:
+    1. Brand Logo: `⚓ PIRATE-CIV` (role-aware link to `/seller/dashboard`)
+    2. Sea Chart: `🗺️ SEA CHART` (`/home`)
+    3. Seller Deck: `⚓ SELLER DECK` (`/seller/dashboard`)
+    4. Orders: `📜 ORDERS` (`/seller/orders`)
+    5. Merchant Identity Badge: `⚓ [Store Name / Captain Name]` (`/seller/profile`)
+    6. Logout: `LOGOUT` (`/logout`)
+  - **Secondary Actions Preserved in Seller Deck & Mobile Drawer:** Secondary destinations (`📦 Products / Forge Cargo`, `⚙️ Seller Profile`, `📜 Guild Lore`) remain fully active on the Seller Deck dashboard and are marked `.nav-mobile-only` to display cleanly within the mobile drawer menu (`#navLinksMenu.nav-links-open`) on screens <= 900px.
+  - **Identity Badge Sizing & Truncation:** Added CSS-based text-overflow truncation (`max-width: 170px;` on `.navbar .nav-user-badge`, `max-width: 130px; overflow: hidden; text-overflow: ellipsis;` on `.nav-user-name`) with full accessible titles and ARIA labels. Prevents long store names from stretching or wrapping the navbar.
+  - **Deterministic Single-Active State:** Preserved strict, singular `.active` states: `/home` activates `navSeaChart`, `/seller/dashboard` activates `navSellerDeck`, and `/seller/orders` activates `navSellerOrders`. Secondary subpages (`/seller/products`, `/seller/profile`) produce zero false active highlights on top-bar primary links.
+  - **Strict Role Separation Maintained:** Sellers never see buyer Cargo Hold, My Voyages, or Captain's Log side panel. Buyers never see Seller Deck, Orders, Products, or Seller Profile.
+  - **Mobile Drawer Architecture:** Normalized mobile drawer CSS (`@media (max-width: 900px)`): `.navbar .nav-links` is properly hidden by default (`display: none !important;`) and opens upon tapping `#navToggleBtn` (`display: flex !important; flex-direction: column;`).
+  - **Content Clearance Verified:** All 7 seller views (`dashboard.ejs`, `products.ejs`, `product-create.ejs`, `product-edit.ejs`, `orders.ejs`, `order-detail.ejs`, `profile.ejs`) utilize `.seller-dashboard-wrapper` with 96px top clearance, preventing content from hiding beneath the fixed navbar.
+  - **Automated & Browser Verification:** 144/144 tests passing in `scratch/test_seller_navbar_unification.js`, 106/106 tests in `scratch/verify_global_navbar_unification.js`, 51/51 tests in `scratch/test_navigation_cleanup.js`, 70/70 tests in `scratch/test_milestone_6_3.js`, and 38/38 clean EJS syntax checks. Live browser CDP verification performed across 1440x900, 1366x768, 1024x768 (tablet), and 390x844 (mobile closed + open drawer) with 0 console errors and 0 horizontal overflows.
+
 * **Buyer Cargo / Checkout / My Voyages Flow Repair (`controller/cart.js`, `public/js/island-store.js`, `public/js/favorites.js`):**
   - **Fixed Bug A — Favorites "STOW IN HOLD" Raw JSON Elimination:** In `controller/cart.js::addToCart`, standard HTML form POSTs (without `Accept: application/json` or `X-Requested-With`) previously returned raw JSON directly to the browser. Introduced `handleResponse()` returning JSON when requested via fetch/AJAX and safely redirecting back to `req.get("Referrer") || "/favorites"` on both success and error for standard form submissions. Also updated `public/js/favorites.js` with document-level event delegation to guarantee submission interception and seamless client toast/badge updates.
   - **Fixed Bug B — "SECURE CARGO HOLD" Navigation on `/cart`:** In `public/js/island-store.js`, client-side hydration via `renderManifestPage()` dynamically replaced `#cartManifestContent`'s innerHTML with a `<button id="btnManifestCheckout">` instead of an anchor link. In `wireManifestEventListeners()`, clicking the button lacked `window.location.href = "/checkout"`, leaving the user on `/cart` with no action. Furthermore, `storeState.cart` initializes as `[]` before `fetchCartFromServer()` resolves, causing spurious "Your cargo hold is empty!" alerts when clicking before network response. Fixed by rendering a semantic `<a href="/checkout" id="btnManifestCheckout" class="btn-manifest-checkout">`, adding `window.location.href = "/checkout"` on valid items, and checking SSR table rows (`.manifest-item-row`) so initial clicks are never prematurely blocked.
