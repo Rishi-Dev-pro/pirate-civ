@@ -725,50 +725,112 @@ body {
 
 
 /* =========================================================
-   REGISTRY HEADER & SECTION DIVIDER
+   REGISTRY HEADER & CARTO DECORATION
 ========================================================= */
 
+.parchment-decor-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 1;
+    mix-blend-mode: multiply;
+    overflow: hidden;
+}
+
+.map-decor-ship {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 140px;
+    height: 125px;
+    opacity: 0.28;
+}
+
+.map-decor-island-1 {
+    position: absolute;
+    top: 250px;
+    right: 10px;
+    width: 155px;
+    height: 85px;
+    opacity: 0.22;
+}
+
+.map-decor-island-2 {
+    position: absolute;
+    bottom: 60px;
+    right: 12px;
+    width: 150px;
+    height: 95px;
+    opacity: 0.22;
+}
+
+.map-decor-compass-left {
+    position: absolute;
+    top: 180px;
+    left: -20px;
+    width: 100px;
+    height: 100px;
+    opacity: 0.20;
+}
+
 .registry-header {
+    position: relative;
+    z-index: 4;
     flex-shrink: 0;
     text-align: center;
     padding-bottom: 2px;
     margin-bottom: 6px;
 }
 
-.registry-title {
-    color: #351E0E;
-    font-family: "Cinzel", serif;
-    font-size: clamp(15px, 2.1vw, 21px);
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    line-height: 1.2;
-    margin-bottom: 4px;
-    text-shadow:
-        0 1px 1px rgba(255, 238, 204, 0.8),
-        0 2px 4px rgba(45, 20, 8, 0.22);
+.registry-compass-rose {
     display: flex;
-    align-items: center;
     justify-content: center;
-    gap: 8px;
+    margin-bottom: 2px;
 }
 
-.registry-title .title-gem {
-    color: #8C4C1E;
-    font-size: 11px;
-    vertical-align: middle;
-    opacity: 0.85;
+.header-compass-svg {
+    width: 38px;
+    height: 38px;
+    display: block;
+    filter: drop-shadow(0 1px 0 rgba(255, 240, 215, 0.6));
+}
+
+.registry-title {
+    color: #2D180C;
+    font-family: "Cinzel", serif;
+    font-size: clamp(16px, 2.2vw, 22px);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.18;
+    margin-bottom: 5px;
+    text-shadow:
+        0 1px 0 rgba(255, 240, 215, 0.7),
+        0 2px 4px rgba(45, 20, 8, 0.18);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.registry-title .title-primary {
+    display: block;
+}
+
+.registry-title .title-secondary {
+    display: block;
+    letter-spacing: 0.12em;
 }
 
 .registry-subtitle {
-    color: #4A2D18;
-    font-family: "Inter", sans-serif;
-    font-size: clamp(10px, 1.15vw, 11.5px);
-    font-weight: 500;
+    color: #4A2E1A;
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-size: clamp(10.5px, 1.15vw, 12px);
     line-height: 1.45;
-    letter-spacing: 0.02em;
+    letter-spacing: 0.01em;
     max-width: 440px;
     margin: 0 auto 6px;
-    text-shadow: 0 1px 0 rgba(255, 238, 204, 0.5);
+    text-shadow: 0 1px 0 rgba(255, 240, 215, 0.5);
 }
 
 .registry-divider {
@@ -777,8 +839,8 @@ body {
     justify-content: center;
     gap: 12px;
     margin: 6px auto 10px;
-    width: 85%;
-    opacity: 0.8;
+    width: 88%;
+    opacity: 0.85;
 }
 
 .registry-divider span:first-child,
@@ -788,15 +850,15 @@ body {
     background: linear-gradient(
         90deg,
         transparent,
-        rgba(140, 76, 30, 0.38),
+        rgba(122, 76, 28, 0.45),
         transparent
     );
 }
 
-.divider-gem {
-    color: #8C4C1E;
-    font-size: 9px;
-    text-shadow: 0 1px 0 rgba(255, 238, 204, 0.5);
+.divider-star {
+    color: #7A4C1C;
+    font-size: 10px;
+    text-shadow: 0 1px 0 rgba(255, 240, 215, 0.6);
 }
 
 
@@ -806,14 +868,16 @@ body {
 
 .registry-scroll-area,
 .users-list {
+    position: relative;
+    z-index: 3;
     flex: 1 1 auto;
     min-height: 0;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 4px 6px 14px;
+    padding: 2px 6px 14px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 6px;
     scrollbar-width: none;
     -ms-overflow-style: none;
     scroll-behavior: smooth;
@@ -829,41 +893,30 @@ body {
 
 
 /* =========================================================
-   TRANSLUCENT SMOKED GLASS MERCHANT CHARTER CARDS
+   OPEN PARCHMENT DOCUMENT ENTRIES (NO BOXES, NO CARDS)
 ========================================================= */
 
+.merchant-entry,
 .merchant-card,
 .explorer-card {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    padding: 16px 18px;
-    background: linear-gradient(
-        135deg,
-        rgba(9, 18, 25, 0.72) 0%,
-        rgba(15, 12, 18, 0.58) 100%
-    );
-    backdrop-filter: blur(10px) saturate(115%);
-    -webkit-backdrop-filter: blur(10px) saturate(115%);
-    border: 1px solid rgba(216, 177, 98, 0.34);
-    border-radius: 6px;
-    box-shadow:
-        0 12px 30px rgba(0, 0, 0, 0.30),
-        inset 0 1px 0 rgba(255, 255, 255, 0.07);
-    animation: cardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    padding: 8px 4px 0;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    animation: entryFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
     animation-delay: var(--delay, 0s);
-    transition:
-        transform 0.24s ease,
-        background 0.24s ease,
-        border-color 0.24s ease,
-        box-shadow 0.24s ease;
 }
 
-@keyframes cardFadeIn {
+@keyframes entryFadeIn {
     from {
         opacity: 0;
-        transform: translateY(10px);
+        transform: translateY(8px);
     }
     to {
         opacity: 1;
@@ -871,66 +924,83 @@ body {
     }
 }
 
-.merchant-card:hover,
-.explorer-card:hover {
-    transform: translateY(-2px);
-    background: linear-gradient(
-        135deg,
-        rgba(11, 23, 33, 0.80) 0%,
-        rgba(19, 15, 24, 0.68) 100%
-    );
-    border-color: rgba(231, 201, 129, 0.58);
-    box-shadow:
-        0 16px 36px rgba(0, 0, 0, 0.38),
-        inset 0 1px 0 rgba(255, 255, 255, 0.12),
-        0 0 18px rgba(32, 107, 112, 0.16);
+.entry-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
 }
 
 
 /* =========================================================
-   CARD TOP: ENCHANTED CREST + IDENTITY
+   HERALDIC GUILD SEALS & RADIATING ASTROLABE TICK RING
 ========================================================= */
 
-.card-top {
-    display: flex;
-    align-items: flex-start;
-    gap: 14px;
-}
-
-.merchant-crest {
-    width: 46px;
-    height: 46px;
-    border-radius: 50%;
+.seal-container {
+    position: relative;
+    width: 68px;
+    height: 68px;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: radial-gradient(
-        circle,
-        rgba(13, 23, 32, 0.85) 0%,
-        rgba(7, 13, 18, 0.95) 100%
-    );
-    border: 1px solid rgba(216, 177, 98, 0.45);
-    box-shadow:
-        0 0 0 2px rgba(9, 18, 25, 0.6),
-        0 0 0 3px rgba(216, 177, 98, 0.22),
-        inset 0 0 10px rgba(32, 107, 112, 0.22),
-        0 4px 10px rgba(0, 0, 0, 0.35);
+    margin-top: 2px;
+}
+
+.seal-astrolabe-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+.merchant-crest {
     position: relative;
+    z-index: 2;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
-    backdrop-filter: blur(4px);
+    border: 2px solid #C89B4E;
+    box-shadow:
+        0 0 0 1px #5A3820,
+        0 0 0 2.5px rgba(200, 155, 78, 0.45),
+        inset 0 0 8px rgba(0, 0, 0, 0.65),
+        0 3px 6px rgba(45, 20, 8, 0.35);
     transition:
-        border-color 0.25s ease,
+        transform 0.25s ease,
         box-shadow 0.25s ease;
 }
 
-.merchant-card:hover .merchant-crest {
-    border-color: rgba(231, 201, 129, 0.7);
+.merchant-entry:hover .merchant-crest {
+    transform: rotate(2deg) scale(1.02);
     box-shadow:
-        0 0 0 2px rgba(9, 18, 25, 0.6),
-        0 0 0 3px rgba(231, 201, 129, 0.35),
-        inset 0 0 12px rgba(155, 197, 196, 0.35),
-        0 0 12px rgba(32, 107, 112, 0.25);
+        0 0 0 1px #5A3820,
+        0 0 0 3px rgba(230, 185, 95, 0.65),
+        inset 0 0 10px rgba(0, 0, 0, 0.75),
+        0 4px 10px rgba(45, 20, 8, 0.4);
+}
+
+.seal-navy {
+    background: radial-gradient(circle at 40% 35%, #183C60 0%, #0C2136 60%, #06111C 100%);
+}
+
+.seal-burgundy {
+    background: radial-gradient(circle at 40% 35%, #52181E 0%, #300C10 60%, #1A0507 100%);
+}
+
+.seal-teal {
+    background: radial-gradient(circle at 40% 35%, #164843 0%, #0B2B28 60%, #051614 100%);
+}
+
+.crest-emblem-svg {
+    width: 36px;
+    height: 36px;
+    display: block;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.6));
 }
 
 .crest-avatar {
@@ -941,52 +1011,71 @@ body {
 
 .crest-monogram {
     font-family: "Cinzel", serif;
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 700;
-    color: #E7C981;
+    color: #E8C882;
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
 }
 
-.merchant-meta {
+
+/* =========================================================
+   ENTRY CONTENT: TYPOGRAPHY PRINTED ON PARCHMENT
+========================================================= */
+
+.entry-content {
     flex: 1 1 auto;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.merchant-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .merchant-name {
     font-family: "Cinzel", serif;
-    font-size: 16px;
+    font-size: 16.5px;
     font-weight: 700;
     letter-spacing: 0.06em;
-    color: #E7C981;
-    margin-bottom: 3px;
+    color: #2D180C;
+    margin-bottom: 2px;
     line-height: 1.25;
-    text-shadow: 0 1px 3px rgba(0, 0, 0, 0.85);
+    text-transform: uppercase;
+    text-shadow: 0 1px 0 rgba(255, 240, 215, 0.55);
+    transition: color 0.2s ease;
+}
+
+.merchant-entry:hover .merchant-name {
+    color: #7A4C1C;
 }
 
 .merchant-guildmaster {
-    font-size: 12px;
-    color: #BFAEA0;
-    letter-spacing: 0.02em;
-    margin-bottom: 6px;
+    font-size: 11.5px;
+    color: #523520;
+    margin-bottom: 3px;
     line-height: 1.35;
     display: inline-flex;
     align-items: center;
-    gap: 5px;
+    gap: 4px;
 }
 
 .merchant-guildmaster .meta-label {
-    color: #8F8272;
+    color: #6E4527;
     font-size: 11px;
 }
 
 .merchant-guildmaster .meta-bullet {
-    color: rgba(216, 177, 98, 0.5);
+    color: #8F5B2F;
     font-size: 10px;
+    margin: 0 1px;
 }
 
 .merchant-guildmaster .guildmaster-name {
-    color: #DED3C4;
-    font-weight: 500;
+    color: #2D180C;
+    font-weight: 600;
 }
 
 .merchant-port {
@@ -994,34 +1083,32 @@ body {
     flex-direction: column;
     gap: 1px;
     margin-top: 2px;
+    margin-bottom: 4px;
 }
 
 .port-label {
-    color: #8F8272;
-    font-weight: 600;
+    color: #7A4C1C;
+    font-weight: 700;
     font-size: 8.5px;
     letter-spacing: 1.2px;
     text-transform: uppercase;
 }
 
 .port-name {
-    color: #D6B56A;
+    color: #9A6624;
     font-family: "Cinzel", serif;
     font-weight: 700;
-    font-size: 11px;
+    font-size: 11.5px;
     letter-spacing: 0.8px;
 }
 
-
-/* =========================================================
-   CARD BIO (WARM IVORY READABILITY)
-========================================================= */
-
 .merchant-bio {
-    font-size: 12px;
-    line-height: 1.5;
-    color: #DED3C4;
-    margin: 6px 0 10px;
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-size: 11.5px;
+    line-height: 1.45;
+    color: #3E2717;
+    margin: 4px 0 6px;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
@@ -1031,9 +1118,10 @@ body {
 
 
 /* =========================================================
-   CARD BOTTOM & GLASS/BRASS ACTION BUTTON
+   STOREFRONT DISCOVERY LINK (PRINTED PARCHMENT LINK)
 ========================================================= */
 
+.entry-action,
 .card-bottom {
     display: flex;
     align-items: center;
@@ -1044,50 +1132,81 @@ body {
 .btn-discover-storefront {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: rgba(9, 18, 25, 0.65);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
-    border: 1px solid rgba(216, 177, 98, 0.45);
-    border-radius: 4px;
-    color: #E7C981;
+    gap: 6px;
+    padding: 2px 0;
+    background: transparent !important;
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    color: #2D180C;
     font-family: "Cinzel", serif;
     font-size: 10.5px;
     font-weight: 700;
     text-decoration: none;
     letter-spacing: 0.08em;
-    box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.06),
-        0 2px 8px rgba(0, 0, 0, 0.25);
+    border-bottom: 1px solid rgba(122, 76, 28, 0.45);
     transition:
-        background 0.22s ease,
-        border-color 0.22s ease,
-        color 0.22s ease,
-        box-shadow 0.22s ease;
+        color 0.2s ease,
+        border-color 0.2s ease,
+        text-shadow 0.2s ease;
 }
 
 .btn-discover-storefront:hover {
-    background: rgba(32, 107, 112, 0.25);
-    border-color: #E7C981;
-    color: #FFFFFF;
-    box-shadow:
-        0 0 14px rgba(155, 197, 196, 0.28),
-        inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    background: transparent !important;
+    color: #8C551C;
+    border-bottom-color: #8C551C;
+    text-shadow: 0 0 6px rgba(184, 126, 47, 0.35);
 }
 
 .btn-discover-storefront:focus-visible {
-    outline: 2px solid #E7C981;
-    outline-offset: 2px;
+    outline: 1px solid #8C551C;
+    outline-offset: 3px;
 }
 
 .btn-discover-storefront .btn-arrow {
     font-size: 12px;
-    transition: transform 0.2s ease;
+    color: #7A4C1C;
+    transition: transform 0.2s ease, color 0.2s ease;
 }
 
 .btn-discover-storefront:hover .btn-arrow {
     transform: translateX(4px);
+    color: #8C551C;
+}
+
+
+/* =========================================================
+   THIN DOCUMENT DIVIDER BETWEEN MERCHANTS
+========================================================= */
+
+.entry-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    margin: 12px 0 4px;
+    opacity: 0.8;
+}
+
+.entry-divider span:first-child,
+.entry-divider span:last-child {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(122, 76, 28, 0.42),
+        transparent
+    );
+}
+
+.entry-divider .divider-star {
+    color: #7A4C1C;
+    font-size: 9.5px;
+    text-shadow: 0 1px 0 rgba(255, 240, 215, 0.5);
 }
 
 
@@ -1096,11 +1215,13 @@ body {
 ========================================================= */
 
 .registry-footer {
+    position: relative;
+    z-index: 4;
     flex-shrink: 0;
     display: flex;
     align-items: center;
     gap: 12px;
-    padding-top: 10px;
+    padding-top: 6px;
     margin-top: auto;
 }
 
@@ -1116,7 +1237,7 @@ body {
 }
 
 .registry-footer-seal {
-    color: #8C4C1E;
+    color: #7A4C1C;
     font-size: 11px;
     opacity: 0.8;
 }
@@ -1204,8 +1325,13 @@ body {
     }
 
     .registry-header {
-        padding-bottom: 4px;
+        padding-bottom: 2px;
         margin-bottom: 4px;
+    }
+
+    .header-compass-svg {
+        width: 32px;
+        height: 32px;
     }
 
     .registry-title {
@@ -1224,47 +1350,58 @@ body {
 
     .registry-scroll-area,
     .users-list {
-        gap: 10px;
-        padding: 2px 4px 10px;
+        gap: 6px;
+        padding: 2px 2px 8px;
     }
 
+    .merchant-entry,
     .merchant-card,
     .explorer-card {
-        padding: 12px 14px;
-        gap: 8px;
+        padding: 6px 2px 0;
+    }
+
+    .entry-layout {
+        gap: 12px;
+    }
+
+    .seal-container {
+        width: 52px;
+        height: 52px;
     }
 
     .merchant-crest {
-        width: 38px;
-        height: 38px;
+        width: 40px;
+        height: 40px;
+    }
+
+    .crest-emblem-svg {
+        width: 28px;
+        height: 28px;
     }
 
     .crest-monogram {
-        font-size: 15px;
+        font-size: 16px;
     }
 
     .merchant-name {
-        font-size: 14px;
+        font-size: 13.5px;
     }
 
     .merchant-guildmaster {
-        font-size: 11px;
+        font-size: 10.5px;
     }
 
     .merchant-bio {
-        font-size: 11px;
+        font-size: 10.5px;
         -webkit-line-clamp: 2;
     }
 
-    .card-bottom {
-        justify-content: stretch;
+    .btn-discover-storefront {
+        font-size: 9.5px;
     }
 
-    .btn-discover-storefront {
-        width: 100%;
-        justify-content: center;
-        padding: 8px 12px;
-        font-size: 10px;
+    .entry-divider {
+        margin: 8px 0 2px;
     }
 }
 

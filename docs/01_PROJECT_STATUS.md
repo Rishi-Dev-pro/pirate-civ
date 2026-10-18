@@ -100,12 +100,12 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
   - Mobile responsiveness: Collapsible mobile navigation menu via accessible toggle button (`#navToggleBtn`, `aria-expanded`, `aria-controls`), sliding down cleanly on viewports `≤ 900px` without horizontal overflow.
   - Zero authorization changes: Server-side RBAC and middleware remain authoritative.
   - Validated with 80/80 automated dedicated tests (`scratch/test_milestone_6_2.js`), 636/636 regression assertions (5.4, 5.3, 5.2, 5.1, 4.5, 4.4, 4.3, 4.2, 4.1, 3.6), 22 JS and 34 EJS syntax checks, and browser verification. **MILESTONE 6.2 COMPLETE.**
+* **Merchant Guild Registry — Open Parchment / Admiralty Chart Visual Redesign (Phase 6.3 COMPLETE):** Fully eliminated all rectangular card, box, and glass containers on `/explorers`. The ancient parchment map (`/images/users-parchment.png`) itself is the interface. Merchant listings appear printed directly onto the aged chart in iron gall ink, anchored by heraldic guild seal medallions (navy/ship, burgundy/cutlasses, teal/trident) with radiating astrolabe compass tick rings, faint copperplate map illustrations (Spanish galleon ship, coastal mountain islands, lookout watchtower, and compass markings), printed document citations (`DISCOVER STOREFRONT →`), and thin ornamental dividers with 8-point nautical stars (`──────── ✦ ────────`). Maintained internal scrolling within parchment safe zones without page scrollbars.
 
 ---
 
 ### 🟡 PARTIALLY COMPLETE
-* **Explorer Page (`/users`):** Displays all registered users from MongoDB in a nautical grid (`views/users.ejs`), but treats them as generic students/users rather than pirate merchants and marketplace sellers.
-* **Responsive UI:** Desktop layouts are polished, but certain island product grids, cart drawers, and mind map canvas scaling require mobile/tablet tuning.
+* **Responsive UI:** Desktop layouts and core pages are polished, but certain island product grids, cart drawers, and mind map canvas scaling require ongoing mobile/tablet tuning.
 
 ---
 

@@ -14,21 +14,20 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Merchant Guild Registry Glassmorphism Refinement Completed + Verified**
+* **Active Status:** **Merchant Guild Registry — Open Parchment / Admiralty Chart Visual Redesign Completed + Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
-* **Merchant Guild Registry Glassmorphism Refinement (`views/users.ejs`, `public/css/users.css`):**
-  - **Smoked Glassmorphism Panels:** Replaced heavy opaque cards with translucent smoked glass panels (`background: linear-gradient(135deg, rgba(9, 18, 25, 0.72), rgba(15, 12, 18, 0.58))` with `backdrop-filter: blur(10px) saturate(115%)` and fine brass borders `rgba(216, 177, 98, 0.34)`), allowing the rich parchment texture to remain visible beneath the cards.
-  - **Atmospheric Oceanic Lighting:** Added subtle sea-teal ambient glow behind the parchment frame (`rgba(32, 107, 112, 0.16)`) and updated drop-shadows to illuminate the parchment as an ancient navigation instrument against the dark starfield.
-  - **Enchanted Crest Seal:** Replaced simple borders with a double-ring antique brass seal with subtle cyan inner glow (`inset 0 0 10px rgba(32, 107, 112, 0.22)`), supporting seller avatars and serif monograms.
-  - **Document Section Divider:** Introduced an antique section divider (`─────────────── ◇ ───────────────`) between the fixed header and the scrolling glass cards.
-  - **Restrained Glass & Brass Storefront Button:** Styled action link with dark translucent glass, thin brass border, warm ivory text, and subtle hover wash (`rgba(32, 107, 112, 0.25)`).
-  - **Hover Dynamics:** Refined 2px upward lift, brighter brass rim, and subtle teal ambient reflection on card hover.
-  - **Parchment Margins & Density:** Widened parchment side margins (`left: 13.5%`, `right: 13.5%`) ensuring content never touches torn edges, while providing vertical breathing room for ~3 comfortably visible cards on desktop.
-  - **Zero Page Scrollbar:** Maintained viewport containment (`height: 100vh; overflow: hidden`) and hidden native scrolling (`scrollbar-width: none`).
-  - **Verification:** 53/53 automated tests passing in `scratch/test_registry_redesign.js`.
+* **Merchant Guild Registry — Open Parchment / Admiralty Chart Visual Redesign (`views/users.ejs`, `public/css/users.css`):**
+  - **Complete Removal of Cards & Boxes:** Fully eliminated the rectangular card/box/glass container paradigm (`background: transparent`, `border: none`, `box-shadow: none`, `backdrop-filter: none`). The aged parchment map (`/images/users-parchment.png`) itself is now the sole interface surface.
+  - **Printed & Engraved Aesthetic:** Merchant entries are rendered as open document listings printed directly onto the parchment in dark iron gall ink (`#2D180C`), warm brown metadata (`#523520`), and antique gold accents (`#9A6624`).
+  - **Heraldic Guild Seals & Astrolabe Ticks:** Each merchant entry is anchored by a circular guild seal medallion with double brass bezel and radiating compass tick ring (`.seal-astrolabe-svg`), featuring authentic heraldic nautical emblems (golden galleon ship on navy, crossed cutlasses on burgundy, sea trident on teal) or uploaded seller avatars.
+  - **Faint Cartographic Map Illustrations:** Implemented faint copperplate map etchings multiplied into the parchment fiber (`.parchment-decor-layer`), including a vintage Spanish galleon ship under full sail in the upper right, coastal mountain islands, lookout watchtower with palm trees, and nautical compass circles.
+  - **Printed Document Storefront Link:** Transformed the action link into an authentic printed document citation (`DISCOVER STOREFRONT →`) with clean serif typography, delicate antique underline (`border-bottom: 1px solid rgba(122, 76, 28, 0.45)`), and hover arrow translation (`translateX(4px)`).
+  - **Document Section Dividers:** Subtle engraved hairline dividers with center 8-point nautical compass stars (`──────── ✦ ────────`) separate each charter entry cleanly across the parchment safe zone.
+  - **Scrolling & Containment Integrity:** Maintained strict viewport containment (`height: 100vh; overflow: hidden`) and hidden internal scrollbar (`scrollbar-width: none`), ensuring content never touches torn edges and no browser scrollbars appear.
+  - **Verification:** 53/53 tests in `scratch/test_registry_redesign.js`, 51/51 tests in `scratch/test_navigation_cleanup.js`, 70/70 tests in `scratch/test_milestone_6_3.js`, 38/38 EJS template syntax checks, and complete browser CDP testing on desktop (1280x800) and mobile (390x844).
 * **Global Navigation Streamlining & Captain Side Panel (`views/partials/header.ejs`):**
   - **Top Navbar Density Reduction:** Cleaned up overloaded authenticated buyer navbar from 10 items down to core primary destinations: Sea Chart (`/home`, `#navSeaChart`), Cargo Hold (`/cart`, `#navCargoHold`), My Voyages (`/orders`, `#navBuyerOrders`), Captain Identity Badge (`#navUserBadge`), and Logout (`#navLogout`).
   - **Duplicate Profile Removal:** Completely eliminated duplicate standalone top-level `Profile` navigation link next to Captain Rishi badge. The Captain badge remains the singular profile entry in the top navbar.
