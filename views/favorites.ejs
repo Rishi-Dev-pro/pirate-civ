@@ -22,7 +22,7 @@
     <!-- Reusable Main Navigation Bar -->
     <%- include("partials/header") %>
 
-    <main class="favorites-wrapper" style="max-width: 1200px; margin: 96px auto 30px auto; padding: 0 20px;">
+    <main class="favorites-wrapper">
 
         <!-- Breadcrumbs -->
         <nav class="detail-nav-bar" aria-label="Breadcrumb Navigation" style="margin-bottom: 24px;">
@@ -34,7 +34,7 @@
             <div class="store-header-controls">
                 <div class="doubloons-pill">
                     <span class="coin-icon">❤️</span>
-                    <span><%= products.length %> Saved Treasures</span>
+                    <span id="favCountBadge"><%= products.length %> Saved Treasures</span>
                 </div>
                 <a href="/home" class="btn-store-cart" style="text-decoration: none;" title="Return to Sea Chart">
                     <span>🗺️ SEA CHART</span>
@@ -43,23 +43,27 @@
         </nav>
 
         <section class="favorites-container">
-            <header class="favorites-header" style="text-align: center; margin-bottom: 32px;">
-                <h1 style="font-family: 'Cinzel', serif; font-size: 2.2rem; color: #ffd700; letter-spacing: 1px; margin-bottom: 8px;">
-                    CAPTAIN'S FAVORITES
-                </h1>
-                <p style="color: #cbb493; font-size: 1rem;">
-                    Treasures and legendary relics marked for future voyages across the archipelago.
+            <!-- Dedicated High-Contrast Hero Card -->
+            <header class="favorites-hero-card">
+                <div class="favorites-title-badge">
+                    <span class="favorites-badge-gem">✦</span>
+                    <span>TREASURE VAULT LEDGER</span>
+                    <span class="favorites-badge-gem">✦</span>
+                </div>
+                <h1 class="favorites-title">CAPTAIN'S FAVORITES</h1>
+                <p class="favorites-subtitle">
+                    Treasures and legendary relics marked for future voyages across the sovereign archipelago.
                 </p>
             </header>
 
             <% if (!products || products.length === 0) { %>
                 <!-- Empty State -->
-                <div class="favorites-empty-card" style="background: rgba(14, 8, 12, 0.92); border: 1px solid rgba(212, 147, 57, 0.35); border-radius: 12px; padding: 60px 24px; text-align: center; max-width: 600px; margin: 40px auto; box-shadow: 0 16px 48px rgba(0,0,0,0.7);">
-                    <div style="font-size: 3.5rem; margin-bottom: 16px;">⚓</div>
-                    <h2 style="font-family: 'Cinzel', serif; color: #ffd700; font-size: 1.5rem; margin-bottom: 12px;">
+                <div class="favorites-empty-card">
+                    <div class="empty-icon-wrap">⚓</div>
+                    <h2 class="empty-title">
                         NO TREASURES MARKED YET
                     </h2>
-                    <p style="color: #bfa78a; font-size: 0.95rem; line-height: 1.6; margin-bottom: 28px;">
+                    <p class="empty-desc">
                         The archipelago harbors countless ancient relics, weapons, and provisions. Set sail across the six trading ports and mark your favored wares.
                     </p>
                     <a href="/home" class="btn-detail-add-cart" style="display: inline-block; padding: 12px 28px; text-decoration: none;">
@@ -68,52 +72,73 @@
                 </div>
             <% } else { %>
                 <!-- Products Grid -->
-                <div class="favorites-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px;">
+                <div class="favorites-grid">
                     <% products.forEach(product => { %>
-                        <article class="store-card" style="background: rgba(16, 10, 14, 0.92); border: 1px solid rgba(212, 147, 57, 0.35); border-radius: 10px; overflow: hidden; display: flex; flex-direction: column; transition: transform 0.2s ease, box-shadow 0.2s ease;">
-                            <div class="store-card-image" style="height: 200px; position: relative; background: radial-gradient(circle, rgba(212,147,57,0.12), transparent); display: flex; align-items: center; justify-content: center; padding: 14px;">
-                                <img src="<%= product.image || '/images/items/default-relic.png' %>"
-                                     alt="<%= product.name %>"
-                                     style="max-height: 100%; max-width: 100%; object-fit: contain;"
-                                     loading="lazy"
-                                     decoding="async">
-                                <span style="position: absolute; top: 10px; left: 10px; font-size: 11px; background: rgba(0,0,0,0.75); border: 1px solid rgba(212,147,57,0.4); padding: 3px 8px; border-radius: 4px; color: #ffd57e; font-family: 'Cinzel', serif;">
-                                    <%= (product.island || 'Archipelago').toUpperCase() %>
+                        <article class="favorite-item-card" id="favorite-card-<%= product._id %>">
+                            <!-- Card Header: Island Tag + Dismiss Action -->
+                            <div class="favorite-card-top">
+                                <span class="favorite-island-tag">
+                                    <span style="opacity: 0.85;">🧭</span> <%= (product.island || 'Archipelago').toUpperCase() %>
                                 </span>
+                                <form action="/favorites/<%= product._id %>/toggle" method="POST" class="remove-fav-form">
+                                    <button type="submit" class="btn-remove-favorite" title="Remove from Favorites" aria-label="Remove <%= product.name || product.title %> from Favorites">
+                                        <span>✕</span>
+                                        <span>DISMISS</span>
+                                    </button>
+                                </form>
                             </div>
 
-                            <div class="store-card-body" style="padding: 18px; flex: 1; display: flex; flex-direction: column;">
-                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-                                    <span style="color: #ffd700; font-size: 12px;"><%= product.rating || '★★★★★' %></span>
-                                    <span style="font-family: 'Cinzel', serif; font-size: 14px; font-weight: 700; color: #ffd700;">
+                            <!-- Relic Showcase Asset -->
+                            <a href="/product/<%= product.slug || product._id %>" class="favorite-asset-link" title="Inspect <%= product.name || product.title %>">
+                                <div class="favorite-asset-box">
+                                    <div class="favorite-asset-glow"></div>
+                                    <img src="<%= product.image || '/images/items/default-relic.png' %>"
+                                         alt="<%= product.name || product.title %>"
+                                         class="favorite-asset-img"
+                                         onerror="this.onerror=null; this.src='/images/items/default-relic.png';"
+                                         loading="lazy"
+                                         decoding="async">
+                                </div>
+                            </a>
+
+                            <!-- Card Body Information -->
+                            <div class="favorite-card-info">
+                                <div class="favorite-meta-row">
+                                    <span class="favorite-rating"><%= product.rating || '★★★★★' %></span>
+                                    <span class="favorite-price">
                                         🪙 <%= product.price %> Doubloons
                                     </span>
                                 </div>
 
-                                <h3 style="font-family: 'Cinzel', serif; font-size: 1.1rem; color: #fff; margin-bottom: 8px;">
-                                    <a href="/product/<%= product.slug || product._id %>" style="color: inherit; text-decoration: none;">
-                                        <%= product.name %>
+                                <h3 class="favorite-item-title">
+                                    <a href="/product/<%= product.slug || product._id %>" class="favorite-title-link">
+                                        <%= product.name || product.title %>
                                     </a>
                                 </h3>
 
-                                <p style="color: #bfa78a; font-size: 0.85rem; line-height: 1.5; margin-bottom: 16px; flex: 1;">
-                                    <%= product.description ? (product.description.slice(0, 90) + (product.description.length > 90 ? '...' : '')) : '' %>
+                                <% if (product.seller && (product.seller.storeName || product.seller.name)) { %>
+                                    <div class="favorite-seller-badge">
+                                        <span class="seller-icon">⚓</span>
+                                        <span><%= product.seller.storeName || product.seller.name %></span>
+                                    </div>
+                                <% } %>
+
+                                <p class="favorite-item-desc">
+                                    <%= product.description ? (product.description.slice(0, 95) + (product.description.length > 95 ? '...' : '')) : 'Rare antiquities recovered from uncharted sea waters.' %>
                                 </p>
 
-                                <div class="store-card-actions" style="display: flex; gap: 8px; flex-wrap: wrap;">
-                                    <form action="/cart/add" method="POST" style="flex: 1;">
+                                <div class="favorite-card-actions">
+                                    <form action="/cart/add" method="POST" class="favorite-stow-form">
                                         <input type="hidden" name="productId" value="<%= product._id %>">
                                         <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" class="btn-add-cart" style="width: 100%; padding: 8px 12px; font-size: 12px;">
+                                        <button type="submit" class="btn-favorite-stow">
                                             <span>🛒 STOW IN HOLD</span>
                                         </button>
                                     </form>
 
-                                    <form action="/favorites/<%= product._id %>/toggle" method="POST">
-                                        <button type="submit" class="btn-store-cart" title="Remove from Favorites" style="padding: 8px 12px; background: rgba(220, 53, 69, 0.2); border-color: rgba(220, 53, 69, 0.5); color: #ff9999;">
-                                            ✕
-                                        </button>
-                                    </form>
+                                    <a href="/product/<%= product.slug || product._id %>" class="btn-favorite-inspect" title="Inspect <%= product.name %>">
+                                        <span>🔍 DETAILS</span>
+                                    </a>
                                 </div>
                             </div>
                         </article>

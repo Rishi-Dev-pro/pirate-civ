@@ -14,12 +14,19 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Global Navbar Unification Across All Pages Completed + Verified**
+* **Active Status:** **Favorites Page Visual Regression Fix Completed + Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
-* **Global Navbar Unification (`views/partials/header.ejs`, `public/css/island-store.css`, `public/css/users.css`, `public/css/contact.css`, `public/js/mindmap.js`):**
+* **Favorites Page Visual Regression Fix (`views/favorites.ejs`, `public/css/favorites.css`, `public/images/items/default-relic.png`):**
+  - **High-Contrast Hero Header Ledger:** Replaced bare text header over dark backdrop with a dedicated `.favorites-hero-card` featuring deep nautical surface (`rgba(14, 22, 32, 0.94)` to `rgba(8, 14, 22, 0.98)`), restrained brass border (`rgba(212, 147, 57, 0.45)`), gold hairline accent, and `backdrop-filter: blur(12px)`.
+  - **Restored Typography & Readability:** `CAPTAIN'S FAVORITES` rendered in high-contrast gold (`#ffd700`) with glow and drop shadow; subtitle rendered in crisp warm parchment/ivory (`#e5d3b6`). Added `.favorites-title-badge` ("✦ TREASURE VAULT LEDGER ✦") with golden diamond gems.
+  - **Translucent Nautical Relic Cards:** Implemented `.favorite-item-card` with dark glassmorphism surfaces (`rgba(16, 25, 36, 0.88)`), subtle inner gold highlight, 10px rounded corners, and hover lift.
+  - **Fixed Missing Asset Bug (Vane's Astrolabe):** Added canonical fallback relic asset `public/images/items/default-relic.png` (antique brass astrolabe-sextant instrument) and added resilient `onerror` fallbacks in template. Vane's Astrolabe now renders an authentic, crisp antique relic with 200 OK (0 broken image icons / 0 console 404s).
+  - **Nautical Actions & Interactions:** Restyled card actions with authentic pirate typography: `.btn-favorite-stow` ("🛒 STOW IN HOLD"), `.btn-favorite-inspect` ("🔍 DETAILS"), and `.btn-remove-favorite` ("✕ DISMISS").
+  - **Canonical Global Navbar Protection:** Zero changes to the global navbar or `views/partials/header.ejs`. The page cleanly preserves the canonical fixed navbar, Captain badge, and left-docked Captain's Log panel.
+  - **Verification:** 31/31 checks passing in `scratch/test_favorites_visual_fix.js`, 106/106 checks passing in `scratch/verify_global_navbar_unification.js`, 51/51 checks passing in `scratch/test_navigation_cleanup.js`, 70/70 checks passing in `scratch/test_milestone_6_3.js`, 38/38 EJS template syntax checks clean.
   - **Single Canonical Navbar Shell:** Unconditionally applied the home page canonical navbar shell (`width: min(1100px, calc(100% - 60px))`, fixed top positioning at 18px, centered with `left: 50%; transform: translateX(-50%)`, `min-height: 62px`, dark translucent gradient, fine brass borders `1px solid rgba(150, 94, 40, 0.45)`, rounded corners, and gold inner border line) across every single page.
   - **Purged Overrides:** Removed rogue `body.island-store-body .navbar` static 1360px override from `island-store.css`, eliminated duplicate `.navbar` styles and emoji rules from `users.css`, purged rogue purple `.active` selector from `contact.css`, and removed duplicate `.nav-cargo-btn` DOM insertion from `mindmap.js`.
   - **Self-Contained Header CSS:** Encapsulated canonical navbar styles directly in `views/partials/header.ejs` so that all pages render the exact same navbar object regardless of external CSS loading.
