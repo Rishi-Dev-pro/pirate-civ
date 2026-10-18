@@ -2,6 +2,20 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-18] — Phase 6.3: Navigation Cleanup & Captain Side Panel
+* **Navbar Density Cleanup & Captain Side Panel (`views/partials/header.ejs`):**
+  - **Top Navbar Streamlining:** Reduced authenticated buyer top navigation density from 10 items down to essential primary destinations: Sea Chart (`/home`, `#navSeaChart`), Cargo Hold (`/cart`, `#navCargoHold`), My Voyages (`/orders`, `#navBuyerOrders`), Captain identity control (`#navUserBadge`), and Logout (`#navLogout`).
+  - **Duplicate Profile Link Removal:** Removed redundant top-level `Profile` navigation link adjacent to `Captain [Name]`. Single account/profile entry preserved via Captain user badge.
+  - **Compact Captain Side Panel (`#captainSidePanel`):** Introduced a compact, unobtrusive nautical secondary navigation panel docked on the left of authenticated buyer views:
+    - Favorites (`/favorites`, `#sideNavFavorites`)
+    - Explorers (`/explorers`, `#sideNavExplorers`)
+    - Guild Lore (`/about`, `#sideNavAbout`)
+    - Profile (`/profile`, `#sideNavProfile`)
+    - Collapse/expand toggle button (`#captainPanelToggle`) with localStorage state preservation and mobile overlay behavior.
+  - **Deterministic Active State:** Ensured exactly one active destination (`aria-current="page"`, `.active`) across the interface without dual highlights.
+  - **Role-Awareness Preserved:** Merchant command deck and guest navigation remain completely role-isolated; sellers never receive buyer shopping actions or side panel.
+  - **Responsive Behavior:** Compact floating overlay on viewports $\le 900\text{px}$ with click-outside auto-collapse, no horizontal overflow.
+
 ## [2026-10-18] — Phase 6.3: Premium Pirate UX + Navigation + Role Separation + Commerce Completion (COMPLETE)
 
 ### Added & Architecture

@@ -14,11 +14,23 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **AUD-6.3-F01 Remediated & Codebase Verified (Pending Tomorrow's Interactive Browser QA)**
+* **Active Status:** **Navigation Cleanup & Captain Side Panel Completed + Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Global Navigation Streamlining & Captain Side Panel (`views/partials/header.ejs`):**
+  - **Top Navbar Density Reduction:** Cleaned up overloaded authenticated buyer navbar from 10 items down to core primary destinations: Sea Chart (`/home`, `#navSeaChart`), Cargo Hold (`/cart`, `#navCargoHold`), My Voyages (`/orders`, `#navBuyerOrders`), Captain Identity Badge (`#navUserBadge`), and Logout (`#navLogout`).
+  - **Duplicate Profile Removal:** Completely eliminated duplicate standalone top-level `Profile` navigation link next to Captain Rishi badge. The Captain badge remains the singular profile entry in the top navbar.
+  - **Compact Captain Side Panel (`#captainSidePanel`):** Implemented a compact, nautical-themed secondary navigation panel docked on the left of authenticated buyer views:
+    - Favorites (`/favorites`, `#sideNavFavorites`)
+    - Explorers (`/explorers`, `#sideNavExplorers`)
+    - Guild Lore (`/about`, `#sideNavAbout`)
+    - Profile (`/profile`, `#sideNavProfile`)
+    - Accessible collapse/expand toggle (`#captainPanelToggle`) with localStorage persistence and mobile overlay behavior.
+  - **Deterministic Single Active State:** Preserved exact 1:1 active link mapping (`aria-current="page"`, `.active`) across every route; no dual-active highlights or parent-child conflicts.
+  - **Role-Awareness & RBAC Intact:** Seller command deck navigation and guest navigation remain completely role-isolated; merchants never receive buyer shopping links or Captain side panel.
+  - **Mobile Responsiveness:** Viewports $\le 900\text{px}$ utilize a compact, touch-friendly floating drawer with click-outside auto-collapse without horizontal overflow.
 * **Phase 6.3 Forensic Audit:** Performed exhaustive audit recorded in [`docs/20_PHASE_6_3_FORENSIC_AUDIT.md`](./20_PHASE_6_3_FORENSIC_AUDIT.md).
 * **Finding Remediated (AUD-6.3-F01 — P1):**
   - **Issue:** Buyer payment (`POST /orders/:id/pay`) was automatically setting `order.status = 'confirmed'` and advancing all seller fulfillments from `pending` to `confirmed`, conflating financial settlement with merchant fulfillment acceptance.

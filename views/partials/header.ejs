@@ -48,56 +48,41 @@
 
         <% if (!currentUser) { %>
             <!-- ================= GUEST NAVIGATION ================= -->
-            <a href="/" class="nav-link <%= currentNavKey === 'gateway' ? 'active' : '' %>" id="navGateway" <%= currentNavKey === 'gateway' ? 'aria-current="page"' : '' %>>
+            <a href="/" class="nav-link <%= currentNavKey === 'gateway' ? 'active' : '' %>" id="navGateway" <%- currentNavKey === 'gateway' ? 'aria-current="page"' : '' %>>
                 The Sea Awaits
             </a>
 
-            <a href="/about" class="nav-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%= currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
+            <a href="/about" class="nav-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%- currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
                 Guild Lore
             </a>
 
-            <a href="/contact" class="nav-link <%= currentNavKey === 'contact' ? 'active' : '' %>" id="navContact" <%= currentNavKey === 'contact' ? 'aria-current="page"' : '' %>>
+            <a href="/contact" class="nav-link <%= currentNavKey === 'contact' ? 'active' : '' %>" id="navContact" <%- currentNavKey === 'contact' ? 'aria-current="page"' : '' %>>
                 Dispatch
             </a>
 
-            <a href="/login" class="nav-link nav-btn-signin <%= currentNavKey === 'login' ? 'active' : '' %>" id="navLogin" <%= currentNavKey === 'login' ? 'aria-current="page"' : '' %>>
+            <a href="/login" class="nav-link nav-btn-signin <%= currentNavKey === 'login' ? 'active' : '' %>" id="navLogin" <%- currentNavKey === 'login' ? 'aria-current="page"' : '' %>>
                 Sign In
             </a>
 
-            <a href="/register" class="nav-link nav-btn-register <%= currentNavKey === 'register' ? 'active' : '' %>" id="navRegister" <%= currentNavKey === 'register' ? 'aria-current="page"' : '' %>>
+            <a href="/register" class="nav-link nav-btn-register <%= currentNavKey === 'register' ? 'active' : '' %>" id="navRegister" <%- currentNavKey === 'register' ? 'aria-current="page"' : '' %>>
                 Join Crew
             </a>
 
         <% } else if (userRole === 'buyer') { %>
-            <!-- ================= BUYER NAVIGATION ================= -->
-            <a href="/home" class="nav-link <%= currentNavKey === 'seachart' ? 'active' : '' %>" id="navSeaChart" <%= currentNavKey === 'seachart' ? 'aria-current="page"' : '' %>>
+            <!-- ================= BUYER NAVIGATION (STREAMLINED) ================= -->
+            <a href="/home" class="nav-link <%= currentNavKey === 'seachart' ? 'active' : '' %>" id="navSeaChart" <%- currentNavKey === 'seachart' ? 'aria-current="page"' : '' %>>
                 🗺️ Sea Chart
             </a>
 
-            <a href="/cart" class="nav-link nav-cart <%= currentNavKey === 'cart' ? 'active' : '' %>" id="navCargoHold" <%= currentNavKey === 'cart' ? 'aria-current="page"' : '' %>>
+            <a href="/cart" class="nav-link nav-cart <%= currentNavKey === 'cart' ? 'active' : '' %>" id="navCargoHold" <%- currentNavKey === 'cart' ? 'aria-current="page"' : '' %>>
                 📦 Cargo Hold
             </a>
 
-            <a href="/orders" class="nav-link nav-buyer-orders <%= currentNavKey === 'orders' ? 'active' : '' %>" id="navBuyerOrders" <%= currentNavKey === 'orders' ? 'aria-current="page"' : '' %>>
+            <a href="/orders" class="nav-link nav-buyer-orders <%= currentNavKey === 'orders' ? 'active' : '' %>" id="navBuyerOrders" <%- currentNavKey === 'orders' ? 'aria-current="page"' : '' %>>
                 ⚓ My Voyages
             </a>
 
-            <a href="/favorites" class="nav-link nav-favorites <%= currentNavKey === 'favorites' ? 'active' : '' %>" id="navFavorites" <%= currentNavKey === 'favorites' ? 'aria-current="page"' : '' %>>
-                ❤️ Favorites
-            </a>
-
-            <a href="/explorers" class="nav-link nav-users <%= currentNavKey === 'explorers' ? 'active' : '' %>" id="navUsers" <%= currentNavKey === 'explorers' ? 'aria-current="page"' : '' %>>
-                👥 Explorers
-            </a>
-
-            <a href="/about" class="nav-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%= currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
-                Guild Lore
-            </a>
-
-            <a href="/profile" class="nav-link nav-profile <%= currentNavKey === 'profile' ? 'active' : '' %>" id="navProfile" <%= currentNavKey === 'profile' ? 'aria-current="page"' : '' %>>
-                👤 Profile
-            </a>
-
+            <!-- Single Captain Identity Control (No duplicate Profile in top bar) -->
             <a href="/profile" class="nav-user-badge" id="navUserBadge" title="Chartered Captain Profile" style="text-decoration: none;">
                 <span class="badge-icon">⚓</span> Captain <%= currentUser.name %>
             </a>
@@ -105,30 +90,29 @@
             <a href="/logout" class="nav-link logout-btn" id="navLogout">
                 Logout
             </a>
-
-        <% } else if (userRole === 'seller') { %>
+<% } else if (userRole === 'seller') { %>
             <!-- ================= SELLER NAVIGATION ================= -->
-            <a href="/seller/dashboard" class="nav-link nav-seller-deck <%= currentNavKey === 'seller_deck' ? 'active' : '' %>" id="navSellerDeck" <%= currentNavKey === 'seller_deck' ? 'aria-current="page"' : '' %>>
+            <a href="/seller/dashboard" class="nav-link nav-seller-deck <%= currentNavKey === 'seller_deck' ? 'active' : '' %>" id="navSellerDeck" <%- currentNavKey === 'seller_deck' ? 'aria-current="page"' : '' %>>
                 ⚓ Command Deck
             </a>
 
-            <a href="/seller/products" class="nav-link nav-seller-products <%= currentNavKey === 'seller_products' ? 'active' : '' %>" id="navSellerProducts" <%= currentNavKey === 'seller_products' ? 'aria-current="page"' : '' %>>
+            <a href="/seller/products" class="nav-link nav-seller-products <%= currentNavKey === 'seller_products' ? 'active' : '' %>" id="navSellerProducts" <%- currentNavKey === 'seller_products' ? 'aria-current="page"' : '' %>>
                 📦 Manage Cargo
             </a>
 
-            <a href="/seller/orders" class="nav-link nav-seller-orders <%= currentNavKey === 'seller_orders' ? 'active' : '' %>" id="navSellerOrders" <%= currentNavKey === 'seller_orders' ? 'aria-current="page"' : '' %>>
+            <a href="/seller/orders" class="nav-link nav-seller-orders <%= currentNavKey === 'seller_orders' ? 'active' : '' %>" id="navSellerOrders" <%- currentNavKey === 'seller_orders' ? 'aria-current="page"' : '' %>>
                 📜 Merchant Orders
             </a>
 
-            <a href="/seller/profile" class="nav-link nav-seller-profile <%= currentNavKey === 'seller_profile' ? 'active' : '' %>" id="navSellerProfile" <%= currentNavKey === 'seller_profile' ? 'aria-current="page"' : '' %>>
+            <a href="/seller/profile" class="nav-link nav-seller-profile <%= currentNavKey === 'seller_profile' ? 'active' : '' %>" id="navSellerProfile" <%- currentNavKey === 'seller_profile' ? 'aria-current="page"' : '' %>>
                 ⚙️ Merchant Profile
             </a>
 
-            <a href="/home" class="nav-link <%= currentNavKey === 'seachart' ? 'active' : '' %>" id="navSeaChart" <%= currentNavKey === 'seachart' ? 'aria-current="page"' : '' %>>
+            <a href="/home" class="nav-link <%= currentNavKey === 'seachart' ? 'active' : '' %>" id="navSeaChart" <%- currentNavKey === 'seachart' ? 'aria-current="page"' : '' %>>
                 🗺️ Sea Chart
             </a>
 
-            <a href="/about" class="nav-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%= currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
+            <a href="/about" class="nav-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%- currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
                 Guild Lore
             </a>
 
@@ -142,19 +126,19 @@
 
         <% } else if (userRole === 'admin') { %>
             <!-- ================= ADMIN NAVIGATION ================= -->
-            <a href="/home" class="nav-link <%= currentNavKey === 'seachart' ? 'active' : '' %>" id="navSeaChart" <%= currentNavKey === 'seachart' ? 'aria-current="page"' : '' %>>
+            <a href="/home" class="nav-link <%= currentNavKey === 'seachart' ? 'active' : '' %>" id="navSeaChart" <%- currentNavKey === 'seachart' ? 'aria-current="page"' : '' %>>
                 🗺️ Sea Chart
             </a>
 
-            <a href="/explorers" class="nav-link nav-users <%= currentNavKey === 'explorers' ? 'active' : '' %>" id="navUsers" <%= currentNavKey === 'explorers' ? 'aria-current="page"' : '' %>>
+            <a href="/explorers" class="nav-link nav-users <%= currentNavKey === 'explorers' ? 'active' : '' %>" id="navUsers" <%- currentNavKey === 'explorers' ? 'aria-current="page"' : '' %>>
                 👥 Explorers
             </a>
 
-            <a href="/about" class="nav-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%= currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
+            <a href="/about" class="nav-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="navAbout" <%- currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
                 Guild Lore
             </a>
 
-            <a href="/contact" class="nav-link <%= currentNavKey === 'contact' ? 'active' : '' %>" id="navContact" <%= currentNavKey === 'contact' ? 'aria-current="page"' : '' %>>
+            <a href="/contact" class="nav-link <%= currentNavKey === 'contact' ? 'active' : '' %>" id="navContact" <%- currentNavKey === 'contact' ? 'aria-current="page"' : '' %>>
                 Dispatch
             </a>
 
@@ -170,6 +154,54 @@
     </div>
 
 </nav>
+
+<% if (currentUser && userRole === 'buyer') { %>
+<!-- ==========================================
+     CAPTAIN'S LOG / CHART — COMPACT SIDE PANEL
+========================================== -->
+<aside class="captain-panel" id="captainSidePanel" aria-label="Captain's Navigation Chart">
+    <!-- Collapse / Expand Toggle Button -->
+    <button type="button" class="captain-panel-toggle" id="captainPanelToggle" aria-expanded="true" aria-controls="captainPanelBody" title="Toggle Captain's Chart">
+        <span class="panel-toggle-icon" aria-hidden="true">⚓</span>
+        <span class="panel-toggle-text">Captain's Log</span>
+        <span class="panel-collapse-arrow" id="panelCollapseArrow" aria-hidden="true">‹</span>
+    </button>
+
+    <div class="captain-panel-body" id="captainPanelBody">
+        <div class="captain-panel-header">
+            <span class="panel-ornament" aria-hidden="true">✦</span>
+            <span class="panel-title">CAPTAIN'S CHART</span>
+            <span class="panel-ornament" aria-hidden="true">✦</span>
+        </div>
+
+        <nav class="captain-panel-nav" aria-label="Captain Log Secondary Navigation">
+            <a href="/favorites" class="captain-panel-link <%= currentNavKey === 'favorites' ? 'active' : '' %>" id="sideNavFavorites" <%- currentNavKey === 'favorites' ? 'aria-current="page"' : '' %>>
+                <span class="panel-link-icon" aria-hidden="true">❤️</span>
+                <span class="panel-link-label">Favorites</span>
+            </a>
+
+            <a href="/explorers" class="captain-panel-link <%= currentNavKey === 'explorers' ? 'active' : '' %>" id="sideNavExplorers" <%- currentNavKey === 'explorers' ? 'aria-current="page"' : '' %>>
+                <span class="panel-link-icon" aria-hidden="true">👥</span>
+                <span class="panel-link-label">Explorers</span>
+            </a>
+
+            <a href="/about" class="captain-panel-link <%= currentNavKey === 'about' ? 'active' : '' %>" id="sideNavAbout" <%- currentNavKey === 'about' ? 'aria-current="page"' : '' %>>
+                <span class="panel-link-icon" aria-hidden="true">📜</span>
+                <span class="panel-link-label">Guild Lore</span>
+            </a>
+
+            <a href="/profile" class="captain-panel-link <%= currentNavKey === 'profile' ? 'active' : '' %>" id="sideNavProfile" <%- currentNavKey === 'profile' ? 'aria-current="page"' : '' %>>
+                <span class="panel-link-icon" aria-hidden="true">👤</span>
+                <span class="panel-link-label">Profile</span>
+            </a>
+        </nav>
+
+        <div class="captain-panel-footer">
+            <span class="panel-motto">Sovereign Seas</span>
+        </div>
+    </div>
+</aside>
+<% } %>
 
 <style>
 /* Scoped & Unified Role-Aware Navigation Enhancements */
@@ -245,6 +277,195 @@
     outline: 2px solid #ffd700;
     outline-offset: 2px;
 }
+/* =========================================================
+   CAPTAIN'S LOG — COMPACT SECONDARY SIDE PANEL
+========================================================= */
+.captain-panel {
+    position: fixed;
+    top: 98px;
+    left: 20px;
+    z-index: 950;
+    width: 172px;
+    background: linear-gradient(
+        165deg,
+        rgba(14, 8, 17, 0.94) 0%,
+        rgba(24, 11, 20, 0.92) 50%,
+        rgba(10, 5, 14, 0.96) 100%
+    );
+    border: 1px solid rgba(198, 159, 88, 0.35);
+    border-radius: 6px;
+    box-shadow:
+        0 10px 32px rgba(0, 0, 0, 0.65),
+        inset 0 1px 0 rgba(255, 215, 0, 0.12);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    padding: 6px;
+    transition: width 0.22s ease, padding 0.22s ease, transform 0.22s ease;
+    user-select: none;
+}
+
+/* Panel Collapse Toggle */
+.captain-panel-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    background: rgba(198, 159, 88, 0.1);
+    border: 1px solid rgba(198, 159, 88, 0.25);
+    border-radius: 4px;
+    padding: 5px 8px;
+    color: #e5b36a;
+    font-family: "Cinzel", serif;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+.captain-panel-toggle:hover {
+    background: rgba(198, 159, 88, 0.22);
+    border-color: rgba(255, 215, 0, 0.5);
+    color: #ffd700;
+}
+.captain-panel-toggle:focus-visible {
+    outline: 2px solid #ffd700;
+    outline-offset: 1px;
+}
+.panel-toggle-icon {
+    font-size: 12px;
+    line-height: 1;
+}
+.panel-toggle-text {
+    flex-grow: 1;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.panel-collapse-arrow {
+    font-size: 14px;
+    line-height: 1;
+    transition: transform 0.22s ease;
+}
+
+/* Collapsed State */
+.captain-panel.collapsed {
+    width: 38px;
+    padding: 5px;
+}
+.captain-panel.collapsed .captain-panel-body,
+.captain-panel.collapsed .panel-toggle-text {
+    display: none;
+}
+.captain-panel.collapsed .captain-panel-toggle {
+    justify-content: center;
+    padding: 5px 0;
+}
+.captain-panel.collapsed .panel-collapse-arrow {
+    transform: rotate(180deg);
+}
+
+/* Panel Header */
+.captain-panel-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 8px 4px 6px 4px;
+    margin-top: 4px;
+    border-bottom: 1px solid rgba(150, 94, 40, 0.25);
+    color: #ffd700;
+}
+.panel-title {
+    font-family: "Cinzel", serif;
+    font-size: 9.5px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: #e5b36a;
+}
+.panel-ornament {
+    font-size: 8px;
+    color: rgba(212, 147, 57, 0.7);
+}
+
+/* Secondary Navigation Links */
+.captain-panel-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding: 6px 0;
+}
+.captain-panel-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 4px;
+    color: #cbb493;
+    font-family: "Cinzel", serif;
+    font-size: 10.5px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.captain-panel-link:hover {
+    color: #ffd700;
+    background: rgba(198, 159, 88, 0.14);
+    transform: translateX(2px);
+    text-shadow: 0 0 8px rgba(212, 147, 57, 0.4);
+}
+.captain-panel-link:focus-visible {
+    outline: 2px solid #ffd700;
+    outline-offset: 1px;
+}
+.captain-panel-link.active {
+    color: #ffd700 !important;
+    background: rgba(198, 159, 88, 0.22);
+    border-left: 2px solid #ffd700;
+    font-weight: 600;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+.panel-link-icon {
+    font-size: 12px;
+    line-height: 1;
+}
+.panel-link-label {
+    white-space: nowrap;
+}
+
+/* Panel Footer */
+.captain-panel-footer {
+    text-align: center;
+    padding: 6px 0 2px 0;
+    border-top: 1px solid rgba(150, 94, 40, 0.2);
+}
+.panel-motto {
+    font-family: "Cinzel", serif;
+    font-size: 7.5px;
+    letter-spacing: 1.5px;
+    color: rgba(198, 159, 88, 0.6);
+    text-transform: uppercase;
+}
+
+/* Desktop vs Mobile Secondary Nav Group */
+.nav-mobile-secondary {
+    display: none;
+}
+.nav-mobile-divider {
+    font-family: "Cinzel", serif;
+    font-size: 9px;
+    letter-spacing: 1.5px;
+    color: #e5b36a;
+    text-align: center;
+    padding: 6px 0 4px 0;
+    border-top: 1px solid rgba(198, 159, 88, 0.25);
+    border-bottom: 1px solid rgba(198, 159, 88, 0.15);
+    margin: 4px 0;
+    text-transform: uppercase;
+}
+
 @media (max-width: 900px) {
     .nav-toggle {
         display: inline-flex;
@@ -286,6 +507,25 @@
         align-self: flex-start;
         margin: 4px 0;
     }
+    .captain-panel {
+        top: 88px;
+        left: 14px;
+        z-index: 1002;
+    }
+    .captain-panel.collapsed {
+        width: 38px;
+        padding: 5px;
+    }
+    .captain-panel:not(.collapsed) {
+        width: 180px;
+        box-shadow: 0 16px 48px rgba(0, 0, 0, 0.88);
+    }
+}
+@media (min-width: 901px) and (max-width: 1260px) {
+    .captain-panel {
+        left: 10px;
+        top: 92px;
+    }
 }
 </style>
 
@@ -304,6 +544,37 @@
                 if (!linksMenu.contains(e.target) && !toggleBtn.contains(e.target)) {
                     toggleBtn.setAttribute("aria-expanded", "false");
                     linksMenu.classList.remove("nav-links-open");
+                }
+            });
+        }
+
+        const panel = document.getElementById("captainSidePanel");
+        const panelToggle = document.getElementById("captainPanelToggle");
+        if (panel && panelToggle) {
+            try {
+                const isMobile = window.innerWidth <= 900;
+                const saved = localStorage.getItem("pirate_captain_panel_collapsed");
+                // On mobile default to collapsed if no explicit preference saved
+                if (saved === "true" || (isMobile && saved !== "false")) {
+                    panel.classList.add("collapsed");
+                    panelToggle.setAttribute("aria-expanded", "false");
+                }
+            } catch (e) {}
+
+            panelToggle.addEventListener("click", function(e) {
+                e.stopPropagation();
+                panel.classList.toggle("collapsed");
+                const isCollapsed = panel.classList.contains("collapsed");
+                panelToggle.setAttribute("aria-expanded", String(!isCollapsed));
+                try {
+                    localStorage.setItem("pirate_captain_panel_collapsed", String(isCollapsed));
+                } catch (e) {}
+            });
+
+            document.addEventListener("click", function(e) {
+                if (window.innerWidth <= 900 && !panel.contains(e.target) && !panelToggle.contains(e.target)) {
+                    panel.classList.add("collapsed");
+                    panelToggle.setAttribute("aria-expanded", "false");
                 }
             });
         }
