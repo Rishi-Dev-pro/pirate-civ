@@ -77,6 +77,10 @@
         if (cartBadgeEl) {
             cartBadgeEl.textContent = `(${totalCount})`;
         }
+        const navCargoCountEl = document.getElementById("navCargoCount");
+        if (navCargoCountEl) {
+            navCargoCountEl.textContent = totalCount > 0 ? ` (${totalCount})` : "";
+        }
     }
 
     // Sync state with server-provided cart object
@@ -368,9 +372,9 @@
                     </div>
 
                     <div class="summary-actions">
-                        <button id="btnManifestCheckout" class="btn-manifest-checkout">
+                        <a href="/checkout" id="btnManifestCheckout" class="btn-manifest-checkout" style="text-decoration:none; display:flex; align-items:center; justify-content:center;">
                             ⚓ Secure Cargo Hold
-                        </button>
+                        </a>
                         <button id="btnClearHold" class="btn-manifest-clear">
                             🗑️ Jettison All Cargo
                         </button>
@@ -417,12 +421,15 @@
         const checkoutBtn = document.getElementById("btnManifestCheckout");
         if (checkoutBtn) {
             checkoutBtn.addEventListener("click", (e) => {
-                if (storeState.cart.length === 0) {
+                const hasItems = (Array.isArray(storeState.cart) && storeState.cart.length > 0) ||
+                    document.querySelectorAll(".manifest-item-row").length > 0;
+                if (!hasItems) {
                     e.preventDefault();
                     showToast("Your cargo hold is empty!");
                     return;
                 }
-                // Allow direct navigation to /checkout
+                // Navigate to /checkout
+                window.location.href = "/checkout";
             });
         }
     }
@@ -558,12 +565,27 @@
         const checkoutBtn = document.getElementById("btnCheckoutCargo");
         if (checkoutBtn) {
             checkoutBtn.addEventListener("click", () => {
-                if (storeState.cart.length === 0) {
+                const hasItems = (Array.isArray(storeState.cart) && storeState.cart.length > 0) ||
+                    document.querySelectorAll(".manifest-item-row").length > 0 ||
+                    storeState.itemCount > 0;
+                if (!hasItems) {
                     showToast("Your cargo hold is empty!");
                     return;
                 }
                 window.location.href = "/checkout";
             });
+        }
+
+        // Initialize hold count from server-rendered DOM if present
+        const ssrRows = document.querySelectorAll(".manifest-item-row");
+        if (ssrRows.length > 0 && storeState.cart.length === 0) {
+            const summaryCountEl = document.getElementById("summaryItemCount");
+            if (summaryCountEl) {
+                const parsed = parseInt(summaryCountEl.textContent, 10);
+                if (!isNaN(parsed) && parsed > 0) {
+                    storeState.itemCount = parsed;
+                }
+            }
         }
 
         // Initial wire up of manifest page controls if already rendered via SSR

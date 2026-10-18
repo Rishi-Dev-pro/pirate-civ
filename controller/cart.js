@@ -182,11 +182,23 @@ export const getCart = async (req, res) => {
  */
 export const addToCart = async (req, res) => {
     try {
+        const isJsonReq = req.xhr ||
+            (req.headers.accept && req.headers.accept.includes("application/json")) ||
+            Boolean(req.is("json")) ||
+            req.query.format === "json";
+
+        const handleResponse = (statusCode, success, messageOrError, extraData = {}) => {
+            if (isJsonReq) {
+                const body = { success, ...(success ? { message: messageOrError } : { error: messageOrError }), ...extraData };
+                return res.status(statusCode).json(body);
+            }
+            // For standard HTML form submissions, never dump raw JSON — redirect back safely
+            const referrer = req.get("Referrer") || "/favorites";
+            return res.redirect(referrer);
+        };
+
         if (req.user && req.user.role === "seller") {
-            return res.status(403).json({
-                success: false,
-                error: "Access denied: merchants cannot maintain a buyer cargo hold."
-            });
+            return handleResponse(403, false, "Access denied: merchants cannot maintain a buyer cargo hold.");
         }
 
         const rawProductId = req.body.productId || req.body.id;
@@ -195,10 +207,7 @@ export const addToCart = async (req, res) => {
 
         // 1. Validate Product ID
         if (!rawProductId || !mongoose.isValidObjectId(rawProductId)) {
-            return res.status(400).json({
-                success: false,
-                error: "Invalid product identifier provided"
-            });
+            return handleResponse(400, false, "Invalid product identifier provided");
         }
 
         // 2. Validate Quantity (must be positive integer)
@@ -206,10 +215,7 @@ export const addToCart = async (req, res) => {
         if (rawQuantity !== undefined) {
             const num = Number(rawQuantity);
             if (!Number.isInteger(num) || num < 1) {
-                return res.status(400).json({
-                    success: false,
-                    error: "Quantity must be a positive integer"
-                });
+                return handleResponse(400, false, "Quantity must be a positive integer");
             }
             qty = num;
         }
@@ -217,27 +223,17 @@ export const addToCart = async (req, res) => {
         // 3. Verify Product exists and is available
         const product = await Product.findById(rawProductId);
         if (!product) {
-            return res.status(404).json({
-                success: false,
-                error: "Product not found in archipelago catalog"
-            });
+            return handleResponse(404, false, "Product not found in archipelago catalog");
         }
 
         if (product.isAvailable !== true) {
-            return res.status(400).json({
-                success: false,
-                error: "Product is currently unavailable for trade"
-            });
+            return handleResponse(400, false, "Product is currently unavailable for trade");
         }
 
         // Real-time stock validation: check if stock is exhausted
         const maxStock = typeof product.stock === "number" ? product.stock : 10;
         if (maxStock <= 0) {
-            return res.status(400).json({
-                success: false,
-                error: `Cannot stow "${product.name}": vault reserve is exhausted (out of stock)`,
-                availableStock: 0
-            });
+            return handleResponse(400, false, `Cannot stow "${product.name}": vault reserve is exhausted (out of stock)`, { availableStock: 0 });
         }
 
         // 4. Persist to MongoDB Cart for authenticated users (User Isolation guaranteed)
@@ -254,14 +250,10 @@ export const addToCart = async (req, res) => {
 
             if (currentInCart + qty > maxStock) {
                 const remaining = Math.max(0, maxStock - currentInCart);
-                return res.status(400).json({
-                    success: false,
-                    error: remaining > 0
-                        ? `Cannot stow requested quantity: only ${remaining} additional unit(s) available in vault reserve (already stowed: ${currentInCart}, max: ${maxStock})`
-                        : `Cannot stow additional units: maximum vault reserve limit (${maxStock}) already stowed in cargo hold`,
-                    availableStock: maxStock,
-                    currentInCart
-                });
+                const errorMsg = remaining > 0
+                    ? `Cannot stow requested quantity: only ${remaining} additional unit(s) available in vault reserve (already stowed: ${currentInCart}, max: ${maxStock})`
+                    : `Cannot stow additional units: maximum vault reserve limit (${maxStock}) already stowed in cargo hold`;
+                return handleResponse(400, false, errorMsg, { availableStock: maxStock, currentInCart });
             }
 
             userCart.addItem(product._id, qty);
@@ -272,9 +264,7 @@ export const addToCart = async (req, res) => {
                 select: "name slug price image rating island category stock isAvailable"
             });
 
-            return res.json({
-                success: true,
-                message: `Stowed ${product.name} in cargo hold`,
+            return handleResponse(200, true, `Stowed ${product.name} in cargo hold`, {
                 authenticated: true,
                 cart: formatCartResponse(userCart)
             });
@@ -295,14 +285,10 @@ export const addToCart = async (req, res) => {
 
         if (currentSessionQty + qty > maxStock) {
             const remaining = Math.max(0, maxStock - currentSessionQty);
-            return res.status(400).json({
-                success: false,
-                error: remaining > 0
-                    ? `Cannot stow requested quantity: only ${remaining} additional unit(s) available in vault reserve (already stowed: ${currentSessionQty}, max: ${maxStock})`
-                    : `Cannot stow additional units: maximum vault reserve limit (${maxStock}) already stowed in temporary cargo`,
-                availableStock: maxStock,
-                currentInCart: currentSessionQty
-            });
+            const errorMsg = remaining > 0
+                ? `Cannot stow requested quantity: only ${remaining} additional unit(s) available in vault reserve (already stowed: ${currentSessionQty}, max: ${maxStock})`
+                : `Cannot stow additional units: maximum vault reserve limit (${maxStock}) already stowed in temporary cargo`;
+            return handleResponse(400, false, errorMsg, { availableStock: maxStock, currentInCart: currentSessionQty });
         }
 
         if (existingSessionItem) {
@@ -317,19 +303,24 @@ export const addToCart = async (req, res) => {
         }
 
         const { cart } = await resolveRequestCart(req);
-        return res.json({
-            success: true,
-            message: `Stowed ${product.name} in temporary session cargo`,
+        return handleResponse(200, true, `Stowed ${product.name} in temporary session cargo`, {
             authenticated: false,
             cart: formatCartResponse(cart)
         });
 
     } catch (error) {
         console.error("Error in addToCart:", error);
-        return res.status(500).json({
-            success: false,
-            error: "Failed to stow item in cargo hold"
-        });
+        const isJsonReq = req.xhr ||
+            (req.headers.accept && req.headers.accept.includes("application/json")) ||
+            Boolean(req.is("json")) ||
+            req.query.format === "json";
+        if (isJsonReq) {
+            return res.status(500).json({
+                success: false,
+                error: "Failed to stow item in cargo hold"
+            });
+        }
+        return res.redirect(req.get("Referrer") || "/cart");
     }
 };
 

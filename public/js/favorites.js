@@ -114,6 +114,23 @@
         });
     }
 
+    // Delegated click handler to intercept any click directly on .btn-favorite-stow
+    document.addEventListener("click", function(e) {
+        const btn = e.target.closest(".btn-favorite-stow");
+        if (btn) {
+            const form = btn.closest(".favorite-stow-form");
+            if (form && form.dataset.submitting !== "true") {
+                // If the form has an attached submit listener, let submit event trigger
+                // Otherwise dispatch submit
+                if (!form._stowBound) {
+                    e.preventDefault();
+                    form._stowBound = true;
+                    form.dispatchEvent(new Event("submit", { cancelable: true, bubbles: true }));
+                }
+            }
+        }
+    });
+
     if (document.readyState === "loading") {
         document.addEventListener("DOMContentLoaded", initFavoritesStow);
     } else {
