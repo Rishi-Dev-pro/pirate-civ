@@ -2,6 +2,15 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-18] — Favorites "Stow in Hold" Cart Response Fix
+* **Favorites "Stow in Hold" Client Interaction & Cart Count Synchronization (`public/js/favorites.js`, `views/favorites.ejs`, `public/css/favorites.css`, `controller/favorites.js`):**
+  - **Eliminated Raw JSON Navigation:** Created dedicated modular client-side engine [`public/js/favorites.js`](file:///d:/projects%202.0/main/pirate-civ/public/js/favorites.js) intercepting `.favorite-stow-form` submit events via `e.preventDefault()`, sending an asynchronous `fetch("/cart/add")` with JSON payload `{ productId, quantity }` and `Accept: application/json`. The browser strictly remains on `/favorites` without navigating to raw JSON output.
+  - **Real-Time Dynamic Cargo Count Synchronization:** Updated `#navCargoCount` badge in the canonical top navbar upon receiving `cart.itemCount` from the server response, matching the exact format ` (N)`. Also updated `controller/favorites.js` to look up the buyer's persistent MongoDB cart (or session cart) and pass it on SSR so the initial navbar badge accurately reflects stowed cargo.
+  - **Pirate-Civ Themed Toast Notifications:** Integrated standard `.store-toast` feedback system notifying captains upon stow success (`⚓ "Vane's Astrolabe" stowed in Cargo Hold!`) or descriptive error handling (`⚠️ Cannot stow: vault reserve is exhausted`, out-of-stock, unauthenticated, or network errors).
+  - **Duplicate Click & In-Flight Protection:** Form is marked `data-submitting="true"` and the submit button is temporarily disabled with `⏳ STOWING...` text while the request is in flight. On success, transitions to `✓ STOWED` for 1.2s before re-enabling. Added `.btn-favorite-stow:disabled` CSS rules with `opacity: 0.65` and `cursor: not-allowed`.
+  - **Non-Negotiable Scope Protection:** Global navbar, Cart database models, routes, and checkout architectures preserved with 100% fidelity.
+  - **Verification:** 50/50 checks passing in `scratch/test_favorites_stow_cart_action.js`, 31/31 checks passing in `scratch/test_favorites_visual_fix.js`, 106/106 checks passing in `scratch/verify_global_navbar_unification.js`, 51/51 checks passing in `scratch/test_navigation_cleanup.js`, 70/70 checks passing in `scratch/test_milestone_6_3.js`, 38/38 EJS template syntax checks clean, and browser CDP verification confirming zero JSON dump and live navbar cargo count increment.
+
 ## [2026-10-18] — Favorites Page Visual Regression Fix
 * **Favorites Page Visual Hierarchy & Asset Repair (`views/favorites.ejs`, `public/css/favorites.css`, `public/images/items/default-relic.png`):**
   - **High-Contrast Hero Header Ledger:** Eliminated un-backed raw text over dark store background by introducing `.favorites-hero-card` with dark nautical surface (`rgba(14, 22, 32, 0.94)`), restrained brass border (`rgba(212, 147, 57, 0.45)`), gold hairline accent, and `backdrop-filter: blur(12px)`.

@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import User from "../models/user.js";
 import Product from "../models/product.js";
+import Cart from "../models/cart.js";
 
 /**
  * GET /favorites
@@ -26,9 +27,23 @@ export const getFavorites = async (req, res) => {
             ? user.favorites.filter(p => p && p._id && p.isAvailable !== false)
             : [];
 
+        // Retrieve persistent cart for navbar Cargo Hold badge
+        let cartData = null;
+        if (req.user && req.user._id) {
+            const userCart = await Cart.findOne({ user: req.user._id }).lean();
+            if (userCart) {
+                const itemCount = (userCart.items || []).reduce((sum, it) => sum + (it.quantity || 1), 0);
+                cartData = { ...userCart, itemCount };
+            }
+        } else if (req.session && req.session.cart) {
+            const itemCount = req.session.cart.reduce((sum, it) => sum + (it.quantity || it.qty || 1), 0);
+            cartData = { items: req.session.cart, itemCount };
+        }
+
         res.render("favorites", {
             page_title: "Captain's Favorites | Pirate-Civ",
             products: favoriteItems,
+            cart: cartData,
             user: req.user
         });
 

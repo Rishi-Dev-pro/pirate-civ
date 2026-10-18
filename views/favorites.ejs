@@ -128,15 +128,15 @@
                                 </p>
 
                                 <div class="favorite-card-actions">
-                                    <form action="/cart/add" method="POST" class="favorite-stow-form">
+                                    <form action="/cart/add" method="POST" class="favorite-stow-form" data-product-id="<%= product._id %>" data-product-name="<%= product.name || product.title %>">
                                         <input type="hidden" name="productId" value="<%= product._id %>">
                                         <input type="hidden" name="quantity" value="1">
-                                        <button type="submit" class="btn-favorite-stow">
+                                        <button type="submit" class="btn-favorite-stow" data-id="<%= product._id %>" data-name="<%= product.name || product.title %>">
                                             <span>🛒 STOW IN HOLD</span>
                                         </button>
                                     </form>
 
-                                    <a href="/product/<%= product.slug || product._id %>" class="btn-favorite-inspect" title="Inspect <%= product.name %>">
+                                    <a href="/product/<%= product.slug || product._id %>" class="btn-favorite-inspect" title="Inspect <%= product.name || product.title %>">
                                         <span>🔍 DETAILS</span>
                                     </a>
                                 </div>
@@ -149,5 +149,7 @@
 
     </main>
 
+    <!-- Favorites Client Engine -->
+    <script src="/js/favorites.js?v=fav_v2"></script>
 </body>
 </html>
