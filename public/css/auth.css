@@ -2458,13 +2458,28 @@ body {
 ========================================================= */
 
 .auth-back-container {
-    width: 100%;
-    max-width: 440px;
-    margin: 0 auto 16px auto;
+    position: absolute;
+    top: 32px;
+    left: 100px;
     display: flex;
-    justify-content: flex-start;
-    position: relative;
-    z-index: 10;
+    align-items: center;
+    gap: 14px;
+    z-index: 100;
+    max-width: none;
+    margin: 0;
+}
+
+@media (max-width: 950px) {
+    .auth-back-container {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: 100%;
+        max-width: 500px;
+        justify-content: center;
+        margin: 0 auto 16px auto;
+        flex-wrap: wrap;
+    }
 }
 
 .auth-back-link {

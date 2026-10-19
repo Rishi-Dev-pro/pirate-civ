@@ -14,11 +14,31 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Merchant Details Page Layering, Background & Captain Toggle Positioning Completed & Verified**
+* **Active Status:** **Iconic Pirate-Civ Map Environment Restored to Dedicated Auth Pages Completed & Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Iconic Pirate-Civ Map Environment Restored to Buyer / Seller Auth Pages (`views/buyer/login.ejs`, `views/buyer/register.ejs`, `views/seller/login.ejs`, `views/seller/register.ejs`, `views/register.ejs`, `public/css/auth.css`, `scratch/test_auth_map_environment.js`):**
+  - **Root Cause (Missing Map Section & Rogue Flex Positioning):**
+    - The dedicated authentication rebuild introduced separate `/buyer/*` and `/seller/*` views, but omitted the original `<section class="map-section">` containing `/images/map.png` and `.map-embers`.
+    - Furthermore, `.auth-back-container` was unpositioned in `.auth-container`'s horizontal flex flow (`display: flex; gap: 55px; justify-content: center;`), taking the left flex slot and pushing `.login-card` into the far-right corner, leaving a massive empty black area on the left.
+  - **Resolution (Map Restoration & Anchored Gateway Navigation):**
+    - Restored the authentic existing asset: `public/images/map.png` (557,987 bytes, Terra Incognita treasure map) inside `<section class="map-section" aria-hidden="true">` with `.map-container`, `.treasure-map`, and 8 floating `.map-embers` particle spans across all 4 dedicated pages:
+      - `/buyer/login`
+      - `/buyer/register`
+      - `/seller/login`
+      - `/seller/register`
+    - Positioned `.auth-back-container` with `position: absolute; top: 32px; left: 100px;` on desktop (vertically aligned with the decorative corner compass at `top: 28px; left: 32px;`), removing it from the horizontal flex layout so that the auth card and iconic map are centered side-by-side with balanced composition.
+    - Added responsive behavior for mobile/tablet (`<= 950px`): `.auth-back-container` cleanly switches to `position: relative; justify-content: center; margin: 0 auto 16px auto;` stacked neatly above the card.
+    - Maintained 100% of dedicated role-specific visual identity, headings, input labels, buttons, and cyan/gold accents.
+    - Preserved 100% of authentication logic (routes, controllers, OAuth HMAC tokens, session cookies, `returnTo` redirects, and cross-role 403 protection).
+  - **Verification & Regression Coverage:**
+    - 43/43 tests passing in `scratch/test_auth_map_environment.js`.
+    - 77/77 tests passing in `scratch/test_dedicated_auth_rebuild.js`.
+    - 48/48 tests passing in `scratch/verify_live_browser_auth.js`.
+    - 42/42 EJS templates syntax verified clean.
+
 * **Merchant Details Page Layering, Background & Captain Toggle Positioning (`views/seller-discovery.ejs`, `views/partials/header.ejs`, `public/css/island-store.css`, `public/images/merchant-guild-bg.jpg`, `scratch/test_merchant_details_layering.js`):**
   - **Root Cause 1 (Content & Background Under/Behind Navbar):**
     - The legacy island store had duplicate `.store-header-controls` containing modal cart/close buttons (`&times;`, `🛒 CART`, and a fake `1,240 Doubloons` pill). Because `.store-header-controls` used `position: absolute; top: 6px; right: 0;` and its parent `.detail-nav-bar` lacked `position: relative`, the controls positioned themselves relative to `.seller-discovery-wrapper` at `y = 6px` from the top of the viewport, colliding with and sliding behind the floating navbar's top-right corner.

@@ -2,6 +2,27 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-19] — Iconic Pirate-Civ Map Environment Restored to Dedicated Auth Pages
+* **Iconic Pirate-Civ Map Environment Restoration (`views/buyer/login.ejs`, `views/buyer/register.ejs`, `views/seller/login.ejs`, `views/seller/register.ejs`, `views/register.ejs`, `public/css/auth.css`, `scratch/test_auth_map_environment.js`):**
+  - **Identified Original Map Asset & Root Cause:**
+    - Located the authentic, original Pirate-Civ map asset: `public/images/map.png` (557,987 bytes, Terra Incognita nautical world map).
+    - `public/css/auth.css` already contained the complete, battle-tested CSS implementation (`.map-section`, `.map-container`, `.treasure-map`, `.map-embers`, atmospheric pulse glows, and responsive styling down to 360px).
+    - During the dedicated buyer/seller authentication rebuild, the `<section class="map-section">` block was omitted from the 4 dedicated view templates (`/buyer/login`, `/buyer/register`, `/seller/login`, `/seller/register`).
+    - Additionally, `.auth-back-container` was unpositioned in `.auth-container`'s horizontal flex flow, acting as a rogue flex item on the left that pushed the auth card to the far right and left a large, empty black void.
+  - **Restored Map Environment Across All Four Dedicated Auth Pages:**
+    - Re-introduced `<section class="map-section" aria-hidden="true">` with `.map-container`, `.treasure-map` (`src="/images/map.png"`), and floating `.map-embers` (8 animated fire/smoke particle spans) into all 4 views.
+    - Updated `.auth-back-container` in `public/css/auth.css`: on desktop, anchored cleanly to the top-left at `position: absolute; top: 32px; left: 100px;` (vertically aligned with the decorative corner compass), removing it from the flex calculation so the auth card and iconic map are centered side-by-side with balanced composition; on tablet/mobile (`<= 950px`), gracefully switches to `position: relative; justify-content: center; margin: 0 auto 16px auto;` stacked above the card.
+    - Preserved 100% of dedicated role-specific visual identity and branding:
+      - Buyer: Explorer / Captain identity, "CHART YOUR COURSE", "CLAIM YOUR TERRITORY", Captain Email, Secret Cipher, "ENTER THE REALM", and cyan nautical accents.
+      - Seller: Merchant / Armator identity, "ARMATOR COMMAND DECK", "CHARTER YOUR FLEET", Fleet Name, Merchant Email, Command Cipher, "COMMAND MERCHANT DECK", and gold/bronze heraldic emblem styling.
+  - **Zero Authentication Logic Alteration:**
+    - Dedicated routes, session regeneration, `returnTo` preservation, Google OAuth HMAC signing, cross-role protection (403), legacy forwarders, and cookie handling remain 100% untouched.
+  - **Verification & Regression Coverage:**
+    - 43/43 tests passing in `scratch/test_auth_map_environment.js`.
+    - 77/77 tests passing in `scratch/test_dedicated_auth_rebuild.js`.
+    - 48/48 tests passing in `scratch/verify_live_browser_auth.js`.
+    - 42/42 EJS templates syntax verified clean.
+
 ## [2026-10-19] — Merchant Details Page Layering, Background & Captain Toggle Positioning Fix
 * **Merchant Storefront UI Layering & Far-Left Captain Toggle Positioning (`views/seller-discovery.ejs`, `views/partials/header.ejs`, `public/css/island-store.css`, `public/images/merchant-guild-bg.jpg`, `scratch/test_merchant_details_layering.js`):**
   - **Repaired Content Behind Navbar & Layout Layering:**
