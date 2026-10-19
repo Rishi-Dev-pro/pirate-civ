@@ -14,11 +14,31 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Unified Premium Form System & Accessible Custom File Uploader Redesign Completed & Verified**
+* **Active Status:** **Gateway / Role Selection Cinematic Polish Completed & Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Final Pirate-Civ Gateway / Entry Map Visual Polish (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`):**
+  - **Preserved Existing Cinematic Map & Center Composition:** Sunset harbor scene (`/images/gateway/gateway-background.jpg`) and Pirate-Civ logo remain the central visual focus with open sky, sunset rays, and pirate galleons.
+  - **Eliminated Ugly Orange Vertical Rectangles:**
+    - Root cause: `.map-glow-edge.left-glow` and `.right-glow` generated 70px wide rectangular orange blocks (`rgba(255, 185, 50, 0.4)`) on inner edges, expanding on hover to 98px with neon orange glow (`rgba(255, 140, 20, 0.5)`).
+    - Solution: Completely removed all rectangular glow divs. Implemented pure alpha-channel silhouette paper drop shadows on `.map-torn-left` and `.map-torn-right` that organically hug every torn paper edge onto the water (`rgba(0, 0, 0, 0.88)` and `rgba(4, 7, 12, 0.7)`).
+  - **Eliminated Emoji UI:**
+    - Replaced raw emoji characters (`⚓`, `🛒`) with bespoke 17th-century engraved maritime crests inside dark obsidian medallions (`.portal-crest-disc`):
+      - Merchant: Majestic three-masted galleon with billowing sails and ocean waves.
+      - Buyer: Eight-point celestial astrolabe / navigational compass rose.
+  - **Elevated Typography & Hierarchy:**
+    - Standardized on classical Roman/imperial `Cinzel` font.
+    - Added imperial charter kickers: `SOVEREIGN GUILD` / `CHARTED REALM`.
+    - Dominant role titles (`MERCHANT` / `BUYER`) styled with luminous ivory-gold relief and deep cast shadows for maximum legibility over parchment.
+    - Hairline antique brass divider with a centered 8-point gold compass star SVG.
+    - Action invitations (`ENTER COMMAND DECK` / `ENTER THE SEA CHART`) with directional SVG arrows that glide on hover.
+  - **Organic Hover & Atmospheric Dimming:**
+    - Hovering Merchant gently illuminates left parchment and dims the right side; hovering Buyer illuminates right parchment and dims left side. Center harbor stays clear.
+  - **Responsive Verification:** Tested cleanly across 1440px, 1024px, 768px, 390px, 360px with zero horizontal scroll (`scratch/test_gateway_polish.js`). Mobile stacks role choices into floating antique parchment banners.
+  - **Business Logic Preserved:** Kept all semantic IDs (`#cardArmator`, `#cardExplorer`, `#btnEnterCommandDeck`, `#btnEnterSeaChart`), routes, and accessibility attributes.
+
 * **Unified Premium Form System & Accessible Custom File Uploader Redesign (`public/css/style.css`, `public/css/island-store.css`, `public/css/auth.css`, `public/css/contact.css`, `public/js/forms.js`, `views/seller/profile.ejs`, `views/seller/product-create.ejs`, `views/seller/product-edit.ejs`, `views/profile.ejs`, `views/checkout.ejs`, `views/seller/register.ejs`, `views/buyer/register.ejs`, `views/register.ejs`, `views/partials/header.ejs`):**
   - **Identified Deficiencies & Root Causes:**
     - On `/seller/profile`, native browser file input rendered raw `[Choose File] No file chosen`, leaking outside column boundaries.

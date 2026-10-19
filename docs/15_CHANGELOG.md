@@ -2,6 +2,34 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-20] — UI/UX: Final Pirate-Civ Gateway / Entry Map Visual Polish
+* **Complete Gateway / Role Selection Screen Polish (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`):**
+  - **Preserved Existing Cinematic Map & Center Composition:**
+    - Maintained the sunset harbor background image (`/images/gateway/gateway-background.jpg`), Pirate-Civ hero logo, and full view of the ocean, ships, islands, and sunset rays without obstructing center cards or opaque overlays.
+  - **Eliminated Ugly Orange Vertical Rectangles:**
+    - Root cause identified: `.map-glow-edge` with `.left-glow` and `.right-glow` placed rectangular divs of 70px width across the inner edges with radial orange gradients (`rgba(255, 185, 50, 0.4)`), expanding on hover to 98px and casting neon orange drop-shadows (`rgba(255, 140, 20, 0.5)`).
+    - Removed all rectangular glow divs.
+    - Replaced with pure alpha-edge organic drop shadows (`filter: drop-shadow(...)`) on `.map-torn-left` and `.map-torn-right` that strictly follow the frayed, natural silhouette of the torn paper fibers over the water (`rgba(0, 0, 0, 0.88)` and `rgba(4, 7, 12, 0.7)`).
+  - **Eliminated Emoji UI:**
+    - Removed raw Unicode emoji icons (`⚓` and `🛒`) from the gateway interface.
+    - Designed bespoke 17th-century engraved maritime crests framed in imperial obsidian-and-gold guild medallions (`.portal-crest-disc`):
+      - **Merchant**: Majestic three-masted galleon with billowing sails over ocean waves in radiant antique gold.
+      - **Buyer**: Eight-point celestial astrolabe / navigational compass rose with dual-shaded gold facets and graduation tick rings.
+  - **Elevated Typography & Visual Hierarchy:**
+    - Display font standardized on classical Roman/imperial `Cinzel`.
+    - Added imperial charter kickers: `SOVEREIGN GUILD` (Merchant) and `CHARTED REALM` (Buyer) in crisp gold.
+    - Dominant role titles (`MERCHANT` / `BUYER`) styled with high-contrast, luminous ivory-gold highlights (`#fffdf5`) and deep cast shadows for readability over the parchment map.
+    - Razor-thin 1px antique brass divider with a centered 8-point gold compass star SVG.
+    - Elevated action cues (`ENTER COMMAND DECK` / `ENTER THE SEA CHART`) with directional animated SVG arrows that glide on hover.
+  - **Organic Hover & Atmospheric Dimming:**
+    - Hovering Merchant softly warms the left parchment (`brightness(1.08)` and subtle antique gold ambient bloom) while gently dimming the right Buyer portal (`opacity: 0.58; brightness(0.78)`).
+    - Hovering Buyer softly warms the right parchment while gently dimming the left Merchant portal.
+    - Center ocean, sunset, ships, and Pirate-Civ logo remain permanently visible and breathing.
+  - **Responsive Layout Verification:**
+    - Verified on 1440px, 1024px, 768px, 390px, and 360px viewports with zero horizontal scroll (`scratch/test_gateway_polish.js`).
+    - Mobile cleanly stacks role choices into floating antique parchment banners with legible typography and generous touch targets.
+  - **Zero Business Logic Touched:** Retained semantic IDs (`#cardArmator`, `#cardExplorer`, `#btnEnterCommandDeck`, `#btnEnterSeaChart`), navigation routes (`/seller/dashboard`, `/home`), and accessibility metadata.
+
 ## [2026-10-20] — UI/UX: Unified Premium Form System & Accessible Custom File Uploader Redesign
 * **Complete Form System Visual Audit & Polish across Buyer + Seller Views (`public/css/style.css`, `public/css/island-store.css`, `public/css/auth.css`, `public/css/contact.css`, `public/js/forms.js`, `views/seller/profile.ejs`, `views/seller/product-create.ejs`, `views/seller/product-edit.ejs`, `views/profile.ejs`, `views/checkout.ejs`, `views/seller/register.ejs`, `views/buyer/register.ejs`, `views/register.ejs`, `views/partials/header.ejs`):**
   - **Identified Root Causes of Form Control Deficiencies & Layout Overflow:**
