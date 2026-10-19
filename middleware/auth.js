@@ -9,7 +9,7 @@ const redirectToLogin = (req, res) => {
         req.session.authIntent = intent;
         req.session.returnTo = req.originalUrl || req.path;
     }
-    return res.redirect("/login");
+    return res.redirect(isSeller ? "/seller/login" : "/buyer/login");
 };
 
 

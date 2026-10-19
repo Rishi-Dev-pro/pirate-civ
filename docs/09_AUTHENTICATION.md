@@ -106,15 +106,31 @@ export const requireBuyer = requireRole("buyer", "admin");
 
 ---
 
-## 5. Google OAuth 2.0 Integration Strategy
+## 5. Dedicated Buyer / Seller Authentication Architecture
 
-1. **Flow Initiation:** User clicks *"Sign in with Google"* at `/auth/google`.
-2. **Consent & Callback:** Google redirects to `/auth/google/callback` with authorization code.
-3. **Identity Resolution:**
-   - Check if a user with `googleId` exists.
-   - If found: generate new `authSecretHash`, establish session, set signed cookie.
-   - If not found: check if email exists. If so, link `googleId`. If not, create new user document with `role: 'buyer'`, random password, and `googleId`.
-4. **Redirection:** Direct buyer to `/home` or seller to `/seller/dashboard`.
+To ensure strict role separation, prevent role injection, and eliminate ambiguous shared flows:
+
+### 5.1 Dedicated Route Contracts
+
+| Flow | Method | Canonical Route | Views Rendered | Role Enforcement |
+|---|---|---|---|---|
+| **Buyer Sign-In** | `GET` / `POST` | `/buyer/login` | `views/buyer/login.ejs` | Accepts ONLY `role: 'buyer'`. Sellers receive 403 Forbidden with prompt to use Merchant Login. |
+| **Buyer Registration** | `GET` / `POST` | `/buyer/register` | `views/buyer/register.ejs` | Strictly forces `role: 'buyer'`. Ignores client `role` inputs. No `storeName` required. |
+| **Seller Sign-In** | `GET` / `POST` | `/seller/login` | `views/seller/login.ejs` | Accepts ONLY `role: 'seller'`. Buyers receive 403 Forbidden with prompt to use Explorer Login. |
+| **Seller Registration** | `GET` / `POST` | `/seller/register` | `views/seller/register.ejs` | Strictly forces `role: 'seller'`. Mandates `storeName`. Ignores client `role` inputs. |
+
+### 5.2 Deep Link Redirection Fix (F-01 Resolution)
+`req.session.returnTo` is captured into local variables **BEFORE** `req.session.regenerate()` is executed. Post-login redirection honors verified internal return destinations (rejecting open redirects, protocol-relative paths, and javascript URIs) while preventing buyers from inheriting seller destinations.
+
+### 5.3 Google OAuth 2.0 Integration Strategy
+
+1. **Flow Initiation:** User clicks *"Sign in with Google"* at `/auth/google?intent=buyer` or `/auth/google?intent=seller`.
+2. **Cryptographic State Signing:** Generates `stateToken = `${rand}.${roleIntent}.${hmacSignature}``, preventing intent drift across parallel tabs.
+3. **Consent & Callback:** Google redirects to `/auth/google/callback` with authorization code and signed state.
+4. **Identity Resolution:**
+   - Existing user: links `googleId` if missing; **MongoDB `role` is NEVER altered**.
+   - New user: assigns `role` from verified state (`buyer` or `seller`).
+5. **Redirection:** Honors verified deep link or falls back to `/home` (buyer) or `/seller/dashboard` (seller).
 
 ---
 
@@ -122,7 +138,8 @@ export const requireBuyer = requireRole("buyer", "admin");
 
 | Route Pattern | `authMiddleware` | Role Middleware | Permitted Users |
 |---|:---:|:---:|---|
-| `/login`, `/register`, `/buyer/*`, `/seller/login` | No (Guest) | N/A | Unauthenticated |
+| `/buyer/login`, `/buyer/register`, `/seller/login`, `/seller/register` | No (Guest) | N/A | Unauthenticated |
+| `/login`, `/register` (Compatibility Aliases) | Optional | N/A | Redirects to dedicated `/buyer/*` or `/seller/*` |
 | `/`, `/about`, `/contact` | Optional | None | All |
 | `/home`, `/islands`, `/island/*`, `/product/*` | **Required** | None | Authenticated (Buyers & Sellers) |
 | `/cart`, `/checkout`, `/orders`, `/profile` | **Required** | `requireBuyer` | Buyers & Admins |

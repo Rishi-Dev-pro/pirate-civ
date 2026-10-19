@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof page_title !== 'undefined' ? page_title : "Merchant Command Deck Login | Pirate-Civ" %></title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+
+<body>
+
+    <!-- Atmospheric Animated Background -->
+    <div class="page-background" aria-hidden="true">
+        <div class="smoke smoke-one"></div>
+        <div class="smoke smoke-two"></div>
+        <div class="embers">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+
+    <!-- Nautical Corner Decorations -->
+    <div class="corner-compass top-left" aria-hidden="true">✦</div>
+    <div class="corner-compass top-right" aria-hidden="true">⚓</div>
+
+    <!-- Main Authentication Container -->
+    <main class="auth-container" role="main">
+
+        <!-- Navigation Bar -->
+        <div class="auth-back-container">
+            <a href="/" class="auth-back-link" id="linkBackToGateway" title="Return to Pirate-Civ Gateway">
+                ← Back to Pirate-Civ
+            </a>
+            <a href="/buyer/login" class="auth-back-link auth-switch-link" id="linkSwitchToBuyer" title="Switch to Explorer Sea Chart Login">
+                Explorer Sea Chart Login &rarr;
+            </a>
+        </div>
+
+        <!-- Login Card -->
+        <section class="login-card" aria-label="Merchant Armator Login">
+            <div class="frame-corner frame-top-left" aria-hidden="true"></div>
+            <div class="frame-corner frame-top-right" aria-hidden="true"></div>
+            <div class="frame-corner frame-bottom-left" aria-hidden="true"></div>
+            <div class="frame-corner frame-bottom-right" aria-hidden="true"></div>
+
+            <!-- Merchant Armator Emblem -->
+            <div class="pirate-emblem seller-emblem" aria-hidden="true">
+                <div class="skull" style="color: #ffd57e;">⚓</div>
+                <div class="sword sword-one" style="border-color: rgba(255, 213, 126, 0.4);"></div>
+                <div class="sword sword-two" style="border-color: rgba(255, 213, 126, 0.4);"></div>
+            </div>
+
+            <!-- Coordinates Header -->
+            <div class="coordinates" aria-hidden="true">
+                <span class="line"></span>
+                <span>ADMIRALTY TRADING CHARTER</span>
+                <span class="line"></span>
+            </div>
+
+            <!-- Heading -->
+            <div class="heading-area">
+                <h1>ARMATOR COMMAND DECK</h1>
+                <p>Sign in to command your merchant fleet, manage cargo & review orders</p>
+            </div>
+
+            <!-- Ornamental Divider -->
+            <div class="ornament" aria-hidden="true">
+                <span></span><b>✦</b><span></span>
+            </div>
+
+            <!-- Registration Success Flash Banner -->
+            <% if (typeof registered !== 'undefined' && registered) { %>
+                <div class="auth-success-banner" role="status" style="background: rgba(30, 80, 40, 0.4); border: 1px solid rgba(80, 200, 100, 0.4); color: #a3e635; padding: 12px 16px; border-radius: 6px; margin-bottom: 20px; font-family: 'Cinzel', serif; font-size: 13px; text-align: center;">
+                    <span>⚓ Merchant fleet chartered! Sign in to command your deck.</span>
+                </div>
+            <% } %>
+
+            <!-- Error Banner -->
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="auth-error-banner" role="alert">
+                    <span class="error-icon">⚓</span>
+                    <span><%= error %></span>
+                    <% if (typeof roleMismatch !== 'undefined' && roleMismatch === 'buyer') { %>
+                        <div style="margin-top: 10px;">
+                            <a href="/buyer/login" class="auth-mismatch-action" style="color: #ffd57e; text-decoration: underline; font-weight: 600; font-size: 13px;">
+                                Go to Explorer Sea Chart Login &rarr;
+                            </a>
+                        </div>
+                    <% } %>
+                </div>
+            <% } %>
+
+            <!-- Form -->
+            <form class="auth-form" id="sellerLoginForm" action="/seller/login" method="POST">
+
+                <% if (typeof returnTo !== 'undefined' && returnTo) { %>
+                    <input type="hidden" name="returnTo" value="<%= returnTo %>">
+                <% } %>
+
+                <!-- Email Input -->
+                <div class="input-group">
+                    <label for="email">MERCHANT ACCOUNT EMAIL</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">✉</span>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="merchant@pirateciv.test"
+                            autocomplete="email"
+                            value="<%= typeof email !== 'undefined' && email ? email : '' %>"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Password Input -->
+                <div class="input-group">
+                    <label for="password">COMMAND CIPHER (PASSWORD)</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon lock-icon">🔒</span>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Enter command cipher"
+                            autocomplete="current-password"
+                            required
+                        >
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword('password', this)"
+                            aria-label="Toggle password visibility"
+                        >
+                            ◉
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Remember Me -->
+                <div class="auth-options">
+                    <label class="remember-label" for="rememberMe">
+                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <span>Remember Deck Station (30 Days)</span>
+                    </label>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="enter-button" id="btnSellerLoginSubmit" style="background: linear-gradient(135deg, rgba(212, 160, 23, 0.4), rgba(117, 39, 17, 0.6)); border-color: rgba(255, 213, 126, 0.6);">
+                    <span>COMMAND MERCHANT DECK</span>
+                    <strong>&rarr;</strong>
+                    <div class="button-shine"></div>
+                </button>
+
+                <!-- Google OAuth Option -->
+                <div class="auth-oauth-divider">
+                    <span>⚓ OR SAIL AS MERCHANT WITH GOOGLE ⚓</span>
+                </div>
+
+                <a href="/auth/google?intent=seller" class="btn-google-auth" id="btnGoogleLogin">
+                    <span class="google-icon">🌐</span>
+                    <span>CONTINUE WITH GOOGLE</span>
+                </a>
+            </form>
+
+            <!-- Registration Link -->
+            <div class="register-area">
+                <span>New merchant armator?</span>
+                <a href="/seller/register" id="linkSellerRegister">
+                    Charter your trading post & fleet
+                </a>
+            </div>
+
+            <!-- Bottom Ornament -->
+            <div class="ornament bottom-ornament" aria-hidden="true">
+                <span></span><b>⚓</b><span></span>
+            </div>
+        </section>
+    </main>
+
+    <script src="/js/auth.js"></script>
+</body>
+</html>

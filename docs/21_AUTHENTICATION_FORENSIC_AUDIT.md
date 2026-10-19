@@ -794,3 +794,18 @@ In accordance with the absolute constraints of this forensic audit task:
 - **NO REFACTORING HAS BEEN PERFORMED.**
 - **NO TESTS HAVE BEEN MODIFIED.**
 - This document serves strictly as an empirical, read-only architectural audit.
+
+---
+
+## 23. POST-AUDIT IMPLEMENTATION RESOLUTION
+
+Following this forensic audit, the user authorized the immediate execution of **Option A: Dedicated Buyer / Seller Authentication Rebuild**.
+
+All identified findings were systematically resolved:
+1. **F-01 Resolved:** `req.session.returnTo` is captured prior to `session.regenerate()` in `controller/auth.js:establishSessionAndCookie` and restored into destination redirection, fully resolving deep link return-to behavior.
+2. **F-02 Resolved:** Swallowed `<input type="hidden" name="intent">` comment closed; primary flow migrated away from hidden intent fields entirely.
+3. **F-03 Resolved:** Dedicated endpoints `/buyer/register` and `/seller/register` force `role: 'buyer'` and `role: 'seller'` server-side. `<select name="role">` removed completely.
+4. **F-04 Resolved:** Google OAuth state parameter now cryptographically signs `{ randomToken, roleIntent, hmacSignature }`, preventing parallel-tab intent drift.
+5. **F-05 Resolved:** Safe optional chaining applied on query parameters in controllers.
+6. **F-06 & F-07 Resolved:** Dedicated templates `views/buyer/login.ejs`, `views/buyer/register.ejs`, `views/seller/login.ejs`, `views/seller/register.ejs` eliminate all UI bleed and stale query string switching.
+7. **F-08 Resolved:** Documentation synchronized across `05_ROUTE_MAP.md` and `09_AUTHENTICATION.md`.

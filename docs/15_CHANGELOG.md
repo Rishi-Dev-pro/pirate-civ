@@ -2,6 +2,19 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-19] — Dedicated Buyer / Seller Authentication Rebuild (Option A Architecture)
+* **Dedicated Authentication Architecture Rebuild (`routes/web.js`, `controller/auth.js`, `controller/googleAuth.js`, `middleware/auth.js`, `middleware/roles.js`, `views/buyer/*.ejs`, `views/seller/*.ejs`):**
+  - **Dedicated Buyer & Seller Routes:** Replaced ambiguous merged query intent authentication with dedicated endpoints:
+    - Buyer: `GET /buyer/login`, `POST /buyer/login`, `GET /buyer/register`, `POST /buyer/register`
+    - Seller: `GET /seller/login`, `POST /seller/login`, `GET /seller/register`, `POST /seller/register`
+    - Legacy Aliases: `/login` and `/register` cleanly redirect to `/buyer/login` (or `/seller/login` if seller intent) and forward POST requests seamlessly.
+  - **Server-Forced Role Enforcement:** The route itself strictly dictates role assignment. `/buyer/register` permanently forces `role: 'buyer'`; `/seller/register` permanently forces `role: 'seller'` and mandates `storeName`. All client-side `<select name="role">` and role injections are completely eliminated.
+  - **Strict Portal Isolation & 403 Role Mismatch Messaging:** Buyers attempting to log in via `/seller/login` receive HTTP 403 Forbidden with a clear prompt: `"These credentials belong to an explorer account. Use Buyer Login."` and a direct link to `/buyer/login`. Sellers attempting to log in via `/buyer/login` receive HTTP 403 Forbidden with a prompt: `"These credentials belong to a merchant account. Use Merchant Login."` and a direct link to `/seller/login`.
+  - **Deep Link Return-To Redirection Fix (F-01):** `req.session.returnTo` is safely captured prior to `session.regenerate()` in `controller/auth.js::establishSessionAndCookie` and restored after new session creation. Validated internal application paths redirect accurately while strictly blocking open redirects, protocol-relative exploits, and javascript URIs.
+  - **Google OAuth Intent Signing & State Protection (F-04):** Cryptographically signs OAuth state as `{randomToken}.{roleIntent}.{hmacSignature}` using `SESSION_SECRET`, eliminating role intent drift across parallel tabs while preserving existing MongoDB user roles.
+  - **Dedicated Dark-Fantasy Templates:** Created semantic views `views/buyer/login.ejs`, `views/buyer/register.ejs`, `views/seller/login.ejs`, and `views/seller/register.ejs` sharing `/css/auth.css` low-level styling primitives with distinct Captain Explorer vs Merchant Armator identity, emblems, coordinates, and navigation links.
+  - **Comprehensive Verification:** 77/77 tests passing in `scratch/test_dedicated_auth_rebuild.js`, 48/48 live browser tests passing in `scratch/verify_live_browser_auth.js`, 42/42 clean EJS syntax compilations in `scratch/check_ejs_syntax.js`, 144/144 tests in `scratch/test_seller_navbar_unification.js`, 52/52 tests in `scratch/test_aud_6_3_f01_payment_fulfillment_separation.js`, 100/100 tests in `scratch/test_aud_001_multi_seller_fulfillment.js`, and 72/72 tests in `scratch/test_buyer_commerce_flow.js`.
+
 ## [2026-10-18] — Seller Navbar Unification & Crowding Fix
 * **Seller Navigation Unification & Responsive Architecture (`views/partials/header.ejs`, `scratch/test_seller_navbar_unification.js`, `scratch/browser_seller_navbar_test.js`):**
   - **Single Source of Truth Navbar Shell:** Aligned the seller navbar to use the exact same canonical navbar shell as the buyer navigation: fixed positioning (`top: 18px; left: 50%; transform: translateX(-50%)`), `width: min(1100px, calc(100% - 60px))`, `min-height: 62px`, dark translucent background with 14px backdrop blur, restrained brass border (`1px solid rgba(150, 94, 40, 0.45)`), rounded corners (`7px`), and gold edge hairline.

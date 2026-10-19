@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= typeof page_title !== 'undefined' ? page_title : "Join the Crew | Explorer Registration | Pirate-Civ" %></title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="/css/auth.css">
+</head>
+
+<body>
+
+    <!-- Atmospheric Background -->
+    <div class="page-background" aria-hidden="true">
+        <div class="smoke smoke-one"></div>
+        <div class="smoke smoke-two"></div>
+        <div class="embers">
+            <span></span><span></span><span></span><span></span><span></span>
+            <span></span><span></span><span></span><span></span><span></span>
+        </div>
+    </div>
+
+    <!-- Nautical Corner Decorations -->
+    <div class="corner-compass top-left" aria-hidden="true">✦</div>
+    <div class="corner-compass top-right" aria-hidden="true">⚓</div>
+
+    <!-- Main Container -->
+    <main class="auth-container" role="main">
+
+        <!-- Navigation Bar -->
+        <div class="auth-back-container">
+            <a href="/" class="auth-back-link" id="linkBackToGateway" title="Return to Pirate-Civ Gateway">
+                ← Back to Pirate-Civ
+            </a>
+            <a href="/seller/register" class="auth-back-link auth-switch-link" id="linkSwitchToSellerRegister" title="Charter Merchant Fleet Registration">
+                Charter Merchant Fleet &rarr;
+            </a>
+        </div>
+
+        <!-- Registration Card -->
+        <section class="login-card register-card" aria-label="Buyer Explorer Registration">
+            <div class="frame-corner frame-top-left" aria-hidden="true"></div>
+            <div class="frame-corner frame-top-right" aria-hidden="true"></div>
+            <div class="frame-corner frame-bottom-left" aria-hidden="true"></div>
+            <div class="frame-corner frame-bottom-right" aria-hidden="true"></div>
+
+            <!-- Pirate Emblem -->
+            <div class="pirate-emblem" aria-hidden="true">
+                <div class="skull">☠</div>
+                <div class="sword sword-one"></div>
+                <div class="sword sword-two"></div>
+            </div>
+
+            <!-- Coordinates Header -->
+            <div class="coordinates" aria-hidden="true">
+                <span class="line"></span>
+                <span>EXPLORER CHARTER: 41°N 74°W</span>
+                <span class="line"></span>
+            </div>
+
+            <!-- Heading -->
+            <div class="heading-area">
+                <h1>CLAIM YOUR TERRITORY</h1>
+                <p>Commission your Captain's Charter across the Archipelago</p>
+            </div>
+
+            <!-- Ornamental Divider -->
+            <div class="ornament" aria-hidden="true">
+                <span></span><b>✦</b><span></span>
+            </div>
+
+            <!-- Error Banner -->
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="auth-error-banner" role="alert">
+                    <span class="error-icon">☠</span>
+                    <span><%= error %></span>
+                </div>
+            <% } %>
+
+            <!-- Form -->
+            <form class="auth-form" id="buyerRegisterForm" action="/buyer/register" method="POST">
+
+                <!-- Captain Name -->
+                <div class="input-group">
+                    <label for="name">CAPTAIN NAME</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">⚓</span>
+                        <input
+                            type="text"
+                            id="name"
+                            name="name"
+                            placeholder="Captain Jack Hawkins"
+                            autocomplete="name"
+                            value="<%= typeof name !== 'undefined' && name ? name : '' %>"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Email -->
+                <div class="input-group">
+                    <label for="email">CAPTAIN EMAIL ADDRESS</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">✉</span>
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            placeholder="captain@pirateciv.test"
+                            autocomplete="email"
+                            value="<%= typeof email !== 'undefined' && email ? email : '' %>"
+                            required
+                        >
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="input-group">
+                    <label for="password">SECRET CIPHER (PASSWORD - MIN 6 CHARS)</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔒</span>
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            placeholder="Create secret cipher"
+                            autocomplete="new-password"
+                            minlength="6"
+                            required
+                        >
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword('password', this)"
+                            aria-label="Toggle password visibility"
+                        >
+                            ◉
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="input-group">
+                    <label for="confirmPassword">CONFIRM CIPHER</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🔐</span>
+                        <input
+                            type="password"
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            placeholder="Confirm secret cipher"
+                            autocomplete="new-password"
+                            minlength="6"
+                            required
+                        >
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            onclick="togglePassword('confirmPassword', this)"
+                            aria-label="Toggle password visibility"
+                        >
+                            ◉
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Home Island Selection -->
+                <div class="input-group">
+                    <label for="homeIsland">HOME HARBOR ISLAND</label>
+                    <div class="input-wrapper">
+                        <span class="input-icon">🏝️</span>
+                        <select
+                            id="homeIsland"
+                            name="homeIsland"
+                            class="auth-select"
+                            style="width: 100%; background: transparent; border: none; color: #ffd57e; font-family: 'Cinzel', serif; font-size: 14px; outline: none; padding: 12px 14px; cursor: pointer;"
+                        >
+                            <option value="Cutlass Cove" style="background: #120910; color: #ffd57e;">Cutlass Cove (Blacksmith & Smuggling Haven)</option>
+                            <option value="Booty Cay" style="background: #120910; color: #ffd57e;">Booty Cay (Tropical Trade & Pearls)</option>
+                            <option value="Velvet Isle" style="background: #120910; color: #ffd57e;">Velvet Isle (Fine Silks & Spices)</option>
+                            <option value="Kraken Vault" style="background: #120910; color: #ffd57e;">Kraken Vault (Abyssal Relics & Curiosities)</option>
+                            <option value="Chronos" style="background: #120910; color: #ffd57e;">Chronos (Navigational Instruments & Maps)</option>
+                            <option value="Astrolabe" style="background: #120910; color: #ffd57e;" selected>Astrolabe (Imperial Guild Capital)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="enter-button" id="btnBuyerRegisterSubmit">
+                    <span>COMMISSION CAPTAIN</span>
+                    <strong>&rarr;</strong>
+                    <div class="button-shine"></div>
+                </button>
+
+                <!-- Google OAuth -->
+                <div class="auth-oauth-divider">
+                    <span>⚓ OR SAIL WITH GOOGLE ⚓</span>
+                </div>
+
+                <a href="/auth/google?intent=buyer" class="btn-google-auth" id="btnGoogleRegister">
+                    <span class="google-icon">🌐</span>
+                    <span>COMMISSION WITH GOOGLE</span>
+                </a>
+            </form>
+
+            <!-- Login Link -->
+            <div class="register-area">
+                <span>Already commissioned?</span>
+                <a href="/buyer/login" id="linkBuyerLogin">
+                    Return to the realm (Sign In)
+                </a>
+            </div>
+
+            <!-- Bottom Ornament -->
+            <div class="ornament bottom-ornament" aria-hidden="true">
+                <span></span><b>⚓</b><span></span>
+            </div>
+        </section>
+    </main>
+
+    <script src="/js/auth.js"></script>
+</body>
+</html>

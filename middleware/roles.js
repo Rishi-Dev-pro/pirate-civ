@@ -13,7 +13,8 @@ export const requireRole = (...allowedRoles) => {
     return (req, res, next) => {
         // Defensive check: if unauthenticated, redirect to login
         if (!req.user) {
-            return res.redirect("/login");
+            const isSellerTarget = roles.includes("seller");
+            return res.redirect(isSellerTarget ? "/seller/login" : "/buyer/login");
         }
 
         // Verify role authorization

@@ -287,6 +287,8 @@
 
 
                 <!-- ==================================
+                     INTENT PRESERVATION
+                =================================== -->
                 <input type="hidden" name="intent" value="<%= typeof intent !== 'undefined' ? intent : 'buyer' %>">
 
                 <!-- ==================================
@@ -337,7 +339,7 @@
                     New to this realm?
                 </span>
 
-                <a href="/register?intent=<%= typeof intent !== 'undefined' ? intent : 'buyer' %>">
+                <a href="/buyer/register">
                     Claim your territory
                 </a>
 

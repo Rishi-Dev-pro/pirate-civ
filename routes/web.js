@@ -3,9 +3,17 @@ import express from "express";
 import { saveContactDetails } from "../controller/contact.js";
 
 import {
-    registerUser,
+    renderBuyerLogin,
+    renderBuyerRegister,
+    loginBuyer,
+    registerBuyer,
+    renderSellerLogin,
+    renderSellerRegister,
+    loginSeller,
+    registerSeller,
+    logoutUser,
     loginUser,
-    logoutUser
+    registerUser
 } from "../controller/auth.js";
 
 import {
@@ -30,30 +38,43 @@ router.use((req, res, next) => {
 import { initiateGoogleAuth, handleGoogleCallback } from "../controller/googleAuth.js";
 
 // =====================================================
-// LOGIN PAGE
+// DEDICATED BUYER AUTHENTICATION ROUTES
 // =====================================================
+router.get("/buyer/login", optionalAuth, renderBuyerLogin);
+router.post("/buyer/login", loginBuyer);
+router.get("/buyer/register", optionalAuth, renderBuyerRegister);
+router.post("/buyer/register", registerBuyer);
 
+// =====================================================
+// DEDICATED SELLER AUTHENTICATION ROUTES
+// =====================================================
+router.get("/seller/login", optionalAuth, renderSellerLogin);
+router.post("/seller/login", loginSeller);
+router.get("/seller/register", optionalAuth, renderSellerRegister);
+router.post("/seller/register", registerSeller);
+
+// =====================================================
+// GOOGLE OAUTH ROUTES
+// =====================================================
+router.get("/auth/google", initiateGoogleAuth);
+router.get("/auth/google/callback", handleGoogleCallback);
+
+// =====================================================
+// BACKWARD COMPATIBILITY / ALIAS AUTH ROUTES
+// =====================================================
 router.get("/login", optionalAuth, (req, res) => {
     if (req.user) {
         if (req.user.role === "seller") return res.redirect("/seller/dashboard");
         return res.redirect("/home");
     }
 
-    const intent = (req.query.intent || req.session?.authIntent || "buyer").toLowerCase().trim();
-    if (req.session) req.session.authIntent = intent;
-
-    res.render("login", {
-        page_title: "Login",
-        error: req.query.error || null,
-        email: "",
-        intent: intent
-    });
+    const rawIntent = (req.query.intent || req.session?.authIntent || "").toLowerCase().trim();
+    const queryStr = req.query.error ? `?error=${encodeURIComponent(req.query.error)}` : "";
+    if (rawIntent === "seller" || rawIntent === "merchant") {
+        return res.redirect(`/seller/login${queryStr}`);
+    }
+    return res.redirect(`/buyer/login${queryStr}`);
 });
-
-
-// =====================================================
-// REGISTER PAGE
-// =====================================================
 
 router.get("/register", optionalAuth, (req, res) => {
     if (req.user) {
@@ -61,55 +82,17 @@ router.get("/register", optionalAuth, (req, res) => {
         return res.redirect("/home");
     }
 
-    const intent = (req.query.intent || req.session?.authIntent || "buyer").toLowerCase().trim();
-    if (req.session) req.session.authIntent = intent;
-
-    res.render("register", {
-        page_title: "Register",
-        error: req.query.error || null,
-        name: "",
-        email: "",
-        intent: intent
-    });
+    const rawIntent = (req.query.intent || req.session?.authIntent || "").toLowerCase().trim();
+    const queryStr = req.query.error ? `?error=${encodeURIComponent(req.query.error)}` : "";
+    if (rawIntent === "seller" || rawIntent === "merchant") {
+        return res.redirect(`/seller/register${queryStr}`);
+    }
+    return res.redirect(`/buyer/register${queryStr}`);
 });
 
-
-// =====================================================
-// GOOGLE OAUTH ROUTES
-// =====================================================
-
-router.get("/auth/google", initiateGoogleAuth);
-router.get("/auth/google/callback", handleGoogleCallback);
-
-
-// =====================================================
-// REGISTER POST
-// =====================================================
-
-router.post(
-    "/register",
-    registerUser
-);
-
-
-// =====================================================
-// LOGIN POST
-// =====================================================
-
-router.post(
-    "/login",
-    loginUser
-);
-
-
-// =====================================================
-// LOGOUT
-// =====================================================
-
-router.get(
-    "/logout",
-    logoutUser
-);
+router.post("/register", registerUser);
+router.post("/login", loginUser);
+router.get("/logout", logoutUser);
 
 
 // =====================================================

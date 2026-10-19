@@ -22,8 +22,8 @@
         if (route.startsWith('/seller/profile')) return 'seller_profile';
         if (route.startsWith('/about')) return 'about';
         if (route.startsWith('/contact')) return 'contact';
-        if (route.startsWith('/login')) return 'login';
-        if (route.startsWith('/register')) return 'register';
+        if (route.startsWith('/login') || route.startsWith('/buyer/login') || route.startsWith('/seller/login')) return 'login';
+        if (route.startsWith('/register') || route.startsWith('/buyer/register') || route.startsWith('/seller/register')) return 'register';
         return '';
     }
 
@@ -60,11 +60,11 @@
                 Dispatch
             </a>
 
-            <a href="/login" class="nav-link nav-btn-signin <%= currentNavKey === 'login' ? 'active' : '' %>" id="navLogin" <%- currentNavKey === 'login' ? 'aria-current="page"' : '' %>>
+            <a href="/buyer/login" class="nav-link nav-btn-signin <%= currentNavKey === 'login' ? 'active' : '' %>" id="navLogin" <%- currentNavKey === 'login' ? 'aria-current="page"' : '' %>>
                 Sign In
             </a>
 
-            <a href="/register" class="nav-link nav-btn-register <%= currentNavKey === 'register' ? 'active' : '' %>" id="navRegister" <%- currentNavKey === 'register' ? 'aria-current="page"' : '' %>>
+            <a href="/buyer/register" class="nav-link nav-btn-register <%= currentNavKey === 'register' ? 'active' : '' %>" id="navRegister" <%- currentNavKey === 'register' ? 'aria-current="page"' : '' %>>
                 Join Crew
             </a>
 

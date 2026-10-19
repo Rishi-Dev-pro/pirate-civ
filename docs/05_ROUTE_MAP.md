@@ -19,11 +19,21 @@ This document catalogues every HTTP route within Pirate-Civ, defining its method
 
 | Method | Route | Controller | Middleware | Purpose | Auth Req? | Role Req? |
 |---|---|---|---|---|:---:|:---:|
-| `GET` | `/login` | Inline (`login.ejs`) | Guest-only | Standard Login Page | No | Guest |
-| `POST` | `/login` | `auth.js::loginUser` | Guest-only | Validates credentials, issues session & cookie | No | Guest |
-| `GET` | `/register` | Inline (`register.ejs`) | Guest-only | Standard Registration Page | No | Guest |
-| `POST` | `/register` | `auth.js::registerUser` | Guest-only | Creates new Explorer/Buyer account in MongoDB | No | Guest |
-| `GET` | `/logout` | `auth.js::logoutUser` | None | Destroys session, clears signed cookie | No | Any |
+| `GET` | `/buyer/login` | `auth.js::renderBuyerLogin` | `optionalAuth` | Dedicated Buyer Explorer Login Page | No | Guest |
+| `POST` | `/buyer/login` | `auth.js::loginBuyer` | None | Validates buyer credentials, issues session & cookie | No | Guest (Buyer role enforced) |
+| `GET` | `/buyer/register` | `auth.js::renderBuyerRegister` | `optionalAuth` | Dedicated Buyer Explorer Commission Page | No | Guest |
+| `POST` | `/buyer/register` | `auth.js::registerBuyer` | None | Creates new Explorer/Buyer account (forces `role: 'buyer'`) | No | Guest |
+| `GET` | `/seller/login` | `auth.js::renderSellerLogin` | `optionalAuth` | Dedicated Merchant Armator Command Deck Login Page | No | Guest |
+| `POST` | `/seller/login` | `auth.js::loginSeller` | None | Validates seller credentials, issues session & cookie | No | Guest (Seller role enforced) |
+| `GET` | `/seller/register` | `auth.js::renderSellerRegister`| `optionalAuth` | Dedicated Merchant Armator Fleet Charter Page | No | Guest |
+| `POST` | `/seller/register` | `auth.js::registerSeller` | None | Creates new Merchant account (forces `role: 'seller'`, mandates `storeName`) | No | Guest |
+| `GET` | `/auth/google` | `googleAuth.js::initiateGoogleAuth` | None | Initiates Google OAuth with cryptographically signed intent state | No | Any |
+| `GET` | `/auth/google/callback` | `googleAuth.js::handleGoogleCallback`| None | Validates Google OAuth callback & establishes session | No | Any |
+| `GET` | `/logout` | `auth.js::logoutUser` | None | Destroys session, clears signed cookie, redirects to `/buyer/login` | No | Any |
+| `GET` | `/login` | Inline redirect | `optionalAuth` | Compatibility Alias: Redirects to `/buyer/login` or `/seller/login` | No | Guest |
+| `GET` | `/register` | Inline redirect | `optionalAuth` | Compatibility Alias: Redirects to `/buyer/register` or `/seller/register` | No | Guest |
+| `POST` | `/login` | `auth.js::loginUser` | None | Compatibility forwarder | No | Guest |
+| `POST` | `/register` | `auth.js::registerUser` | None | Compatibility forwarder | No | Guest |
 
 ---
 

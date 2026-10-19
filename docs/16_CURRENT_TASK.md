@@ -14,11 +14,23 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Seller Navbar Unification & Crowding Fix Completed + Verified Across Desktop, Tablet, and Mobile**
+* **Active Status:** **Dedicated Buyer / Seller Authentication Rebuild Completed & Empirically Verified (Option A Architecture)**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Dedicated Buyer / Seller Authentication Rebuild (`routes/web.js`, `controller/auth.js`, `controller/googleAuth.js`, `middleware/auth.js`, `middleware/roles.js`, `views/buyer/*.ejs`, `views/seller/*.ejs`):**
+  - **Dedicated Buyer & Seller Routes:** Implemented distinct, role-enforced endpoints eliminating merged query-intent authentication:
+    - Buyer: `GET /buyer/login`, `POST /buyer/login`, `GET /buyer/register`, `POST /buyer/register`
+    - Seller: `GET /seller/login`, `POST /seller/login`, `GET /seller/register`, `POST /seller/register`
+    - Legacy Aliases: `/login` and `/register` cleanly redirect to `/buyer/login` (or `/seller/login` if seller intent) and forward POST requests seamlessly.
+  - **Server-Forced Role Enforcement:** Route itself determines identity. `/buyer/register` permanently forces `role: 'buyer'`; `/seller/register` permanently forces `role: 'seller'` and mandates `storeName`. Role injection via request body is completely ignored.
+  - **Strict Portal Isolation & 403 Role Mismatch Messaging:** Buyers attempting to authenticate via `/seller/login` receive HTTP 403 Forbidden with prompt: `"These credentials belong to an explorer account. Use Buyer Login."` and a direct link to `/buyer/login`. Sellers attempting to authenticate via `/buyer/login` receive HTTP 403 Forbidden with prompt: `"These credentials belong to a merchant account. Use Merchant Login."` and a direct link to `/seller/login`.
+  - **Deep Link Return-To Redirection Fix (F-01):** `req.session.returnTo` is safely captured prior to `session.regenerate()` in `controller/auth.js::establishSessionAndCookie` and restored after new session creation. Validated internal application paths redirect accurately while strictly blocking open redirects, protocol-relative exploits, and javascript URIs.
+  - **Google OAuth Intent Signing & State Protection (F-04):** Cryptographically signs OAuth state as `{randomToken}.{roleIntent}.{hmacSignature}` using `SESSION_SECRET`, eliminating role intent drift across parallel tabs while preserving existing MongoDB user roles.
+  - **Dedicated Dark-Fantasy Templates:** Created semantic views `views/buyer/login.ejs`, `views/buyer/register.ejs`, `views/seller/login.ejs`, and `views/seller/register.ejs` sharing `/css/auth.css` low-level styling primitives with distinct Captain Explorer vs Merchant Armator identity, emblems, coordinates, and navigation links.
+  - **Comprehensive Verification:** 77/77 tests passing in `scratch/test_dedicated_auth_rebuild.js`, 48/48 live browser tests passing in `scratch/verify_live_browser_auth.js`, 42/42 clean EJS syntax compilations in `scratch/check_ejs_syntax.js`, 144/144 tests in `scratch/test_seller_navbar_unification.js`, 52/52 tests in `scratch/test_aud_6_3_f01_payment_fulfillment_separation.js`, 100/100 tests in `scratch/test_aud_001_multi_seller_fulfillment.js`, and 72/72 tests in `scratch/test_buyer_commerce_flow.js`.
+
 * **Seller Navbar Unification & Crowding Fix (`views/partials/header.ejs`, `scratch/test_seller_navbar_unification.js`, `scratch/browser_seller_navbar_test.js`):**
   - **Identical Canonical Shell Baseline:** Standardized the seller navbar to use the exact same physical navbar shell as the canonical buyer navbar: `position: fixed !important; top: 18px !important; left: 50% !important; transform: translateX(-50%) !important; width: min(1100px, calc(100% - 60px)) !important; min-height: 62px !important;` with dark glassmorphic gradient (`rgba(9, 5, 13, 0.92)` to `rgba(22, 10, 15, 0.88)`), brass borders (`1px solid rgba(150, 94, 40, 0.45)`), rounded corners (`7px`), and inner gold hairline accent.
   - **Eliminated Horizontal Crowding:** Streamlined primary desktop seller navigation from 8 items down to the compact 5 canonical items:

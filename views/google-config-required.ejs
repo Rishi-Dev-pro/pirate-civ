@@ -113,10 +113,10 @@ GOOGLE_CALLBACK_URL=http://localhost:3000/auth/google/callback
         </div>
 
         <div class="config-actions">
-            <a href="/login?intent=<%= typeof intent !== 'undefined' ? intent : 'buyer' %>" class="btn-config-primary">
+            <a href="<%= (typeof intent !== 'undefined' && intent === 'seller') ? '/seller/login' : '/buyer/login' %>" class="btn-config-primary">
                 Return to Sovereign Sign-In
             </a>
-            <a href="/register?intent=<%= typeof intent !== 'undefined' ? intent : 'buyer' %>" class="btn-config-secondary">
+            <a href="<%= (typeof intent !== 'undefined' && intent === 'seller') ? '/seller/register' : '/buyer/register' %>" class="btn-config-secondary">
                 Register with Email
             </a>
         </div>

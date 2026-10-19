@@ -4,6 +4,23 @@ import User from "../models/user.js";
 import Cart from "../models/cart.js";
 
 /**
+ * Helper to validate safe internal returnTo redirection path.
+ */
+function validateReturnTo(raw) {
+    if (!raw || typeof raw !== "string") return null;
+    const trimmed = raw.trim();
+    if (!trimmed.startsWith("/") || trimmed.startsWith("//") || trimmed.includes("://") || trimmed.toLowerCase().startsWith("javascript:")) {
+        return null;
+    }
+    if (trimmed.startsWith("/login") || trimmed.startsWith("/register") || trimmed.startsWith("/logout") ||
+        trimmed.startsWith("/buyer/") || trimmed.startsWith("/seller/login") || trimmed.startsWith("/seller/register") ||
+        trimmed === "/") {
+        return null;
+    }
+    return trimmed;
+}
+
+/**
  * Controller action: Initiate Google OAuth 2.0 Authorization Code Flow
  * Route: GET /auth/google
  */
@@ -15,7 +32,7 @@ export const initiateGoogleAuth = async (req, res) => {
         const rawIntent = (req.query.intent || req.body?.intent || req.session?.authIntent || "buyer").toLowerCase().trim();
         const roleIntent = (rawIntent === "seller" || rawIntent === "merchant") ? "seller" : "buyer";
 
-        // If credentials are not configured, honestly display the configuration requirements view
+        // If credentials are not configured, display the configuration requirements view
         if (!clientId || !clientSecret || clientId === "YOUR_GOOGLE_CLIENT_ID" || clientSecret === "YOUR_GOOGLE_CLIENT_SECRET") {
             return res.render("google-config-required", {
                 page_title: "Google Fleet Authentication Configuration | Pirate-Civ",
@@ -25,8 +42,15 @@ export const initiateGoogleAuth = async (req, res) => {
         }
 
         const callbackUrl = process.env.GOOGLE_CALLBACK_URL || `${req.protocol}://${req.get("host")}/auth/google/callback`;
-        const stateToken = crypto.randomBytes(32).toString("hex");
 
+        // Cryptographically sign state containing random bytes and role intent
+        // Fixes OAuth intent drift across parallel tabs
+        const randomToken = crypto.randomBytes(24).toString("hex");
+        const hmacSecret = process.env.SESSION_SECRET || "fallback_secret";
+        const signature = crypto.createHmac("sha256", hmacSecret).update(`${randomToken}:${roleIntent}`).digest("hex");
+        const stateToken = `${randomToken}.${roleIntent}.${signature}`;
+
+        // Also store in session map for double defense
         req.session.googleAuth = {
             state: stateToken,
             intent: roleIntent,
@@ -45,7 +69,7 @@ export const initiateGoogleAuth = async (req, res) => {
 
     } catch (error) {
         console.error("Error initiating Google Auth:", error);
-        return res.redirect("/login?error=Google authentication could not be initiated.");
+        return res.redirect("/buyer/login?error=" + encodeURIComponent("Google authentication could not be initiated."));
     }
 };
 
@@ -59,15 +83,33 @@ export const handleGoogleCallback = async (req, res) => {
 
         if (oauthError) {
             console.warn("Google OAuth callback returned error:", oauthError);
-            return res.redirect(`/login?error=${encodeURIComponent("Google authentication was canceled.")}`);
+            return res.redirect(`/buyer/login?error=${encodeURIComponent("Google authentication was canceled.")}`);
         }
 
-        const savedSession = req.session.googleAuth;
-        if (!savedSession || !savedSession.state || savedSession.state !== state) {
-            return res.redirect(`/login?error=${encodeURIComponent("Invalid or expired authentication state. Please try again.")}`);
+        // Validate cryptographically signed state token
+        let verifiedRoleIntent = null;
+        if (state && typeof state === "string") {
+            const parts = state.split(".");
+            if (parts.length === 3) {
+                const [rand, intent, sig] = parts;
+                const hmacSecret = process.env.SESSION_SECRET || "fallback_secret";
+                const expectedSig = crypto.createHmac("sha256", hmacSecret).update(`${rand}:${intent}`).digest("hex");
+                if (sig === expectedSig && (intent === "seller" || intent === "buyer")) {
+                    verifiedRoleIntent = intent;
+                }
+            }
         }
 
-        const roleIntent = savedSession.intent === "seller" ? "seller" : "buyer";
+        // Fallback to session check if signature split format differs
+        if (!verifiedRoleIntent && req.session?.googleAuth?.state === state) {
+            verifiedRoleIntent = req.session.googleAuth.intent === "seller" ? "seller" : "buyer";
+        }
+
+        if (!verifiedRoleIntent) {
+            return res.redirect(`/buyer/login?error=${encodeURIComponent("Invalid or expired authentication state. Please try again.")}`);
+        }
+
+        const fallbackLoginUrl = verifiedRoleIntent === "seller" ? "/seller/login" : "/buyer/login";
         delete req.session.googleAuth;
 
         const clientId = process.env.GOOGLE_CLIENT_ID;
@@ -92,7 +134,7 @@ export const handleGoogleCallback = async (req, res) => {
         if (!tokenResponse.ok) {
             const errText = await tokenResponse.text();
             console.error("Token exchange failed:", errText);
-            return res.redirect(`/login?error=${encodeURIComponent("Could not complete token exchange with Google.")}`);
+            return res.redirect(`${fallbackLoginUrl}?error=${encodeURIComponent("Could not complete token exchange with Google.")}`);
         }
 
         const tokenData = await tokenResponse.json();
@@ -107,7 +149,7 @@ export const handleGoogleCallback = async (req, res) => {
 
         if (!userInfoResponse.ok) {
             console.error("UserInfo fetch failed");
-            return res.redirect(`/login?error=${encodeURIComponent("Could not retrieve Google profile details.")}`);
+            return res.redirect(`${fallbackLoginUrl}?error=${encodeURIComponent("Could not retrieve Google profile details.")}`);
         }
 
         const profile = await userInfoResponse.json();
@@ -117,7 +159,7 @@ export const handleGoogleCallback = async (req, res) => {
         const avatar = profile.picture || "/images/avatars/default-pirate.png";
 
         if (!email) {
-            return res.redirect(`/login?error=${encodeURIComponent("Google account did not provide an email address.")}`);
+            return res.redirect(`${fallbackLoginUrl}?error=${encodeURIComponent("Google account did not provide an email address.")}`);
         }
 
         // 3. Find or create user
@@ -132,14 +174,14 @@ export const handleGoogleCallback = async (req, res) => {
         const authSecretHash = crypto.createHash("sha256").update(authSecret).digest("hex");
 
         if (user) {
-            // Existing user: Link googleId if missing
+            // Existing user: Link googleId if missing. CRITICAL: user.role is NEVER modified!
             if (!user.googleId) {
                 user.googleId = googleId;
             }
             user.authSecretHash = authSecretHash;
             await user.save();
         } else {
-            // New user: assign role based on role intent preserved in session
+            // New user: assign role based on cryptographically verified role intent
             const randomPassword = crypto.randomBytes(24).toString("hex");
             const hashedPassword = await bcrypt.hash(randomPassword, 12);
 
@@ -148,9 +190,9 @@ export const handleGoogleCallback = async (req, res) => {
                 email: email,
                 password: hashedPassword,
                 googleId: googleId,
-                role: roleIntent,
-                storeName: roleIntent === "seller" ? `${name}'s Port` : null,
-                homeIsland: "astrolabe",
+                role: verifiedRoleIntent,
+                storeName: verifiedRoleIntent === "seller" ? `${name}'s Fleet` : null,
+                homeIsland: "Astrolabe",
                 avatar: avatar,
                 authSecretHash: authSecretHash
             });
@@ -158,13 +200,14 @@ export const handleGoogleCallback = async (req, res) => {
             await user.save();
         }
 
-        // 4. Capture session cart and establish session
-        const preLoginSessionCart = req.session.cart;
+        // 4. Capture session cart and returnTo BEFORE session regeneration
+        const preLoginSessionCart = req.session?.cart;
+        const savedReturnTo = validateReturnTo(req.session?.returnTo);
 
         req.session.regenerate(async (err) => {
             if (err) {
                 console.error("Session regeneration error:", err);
-                return res.redirect("/login?error=Could not create secure session.");
+                return res.redirect(`${fallbackLoginUrl}?error=${encodeURIComponent("Could not create secure session.")}`);
             }
 
             req.session.userId = user._id.toString();
@@ -187,15 +230,25 @@ export const handleGoogleCallback = async (req, res) => {
                 maxAge: 1000 * 60 * 60 * 24 * 7
             });
 
-            if (user.role === "seller") {
-                return res.redirect("/seller/dashboard");
+            // 5. Enforce safe role destination
+            let destination = user.role === "seller" ? "/seller/dashboard" : "/home";
+            if (savedReturnTo) {
+                if (user.role === "seller" && savedReturnTo.startsWith("/seller")) {
+                    destination = savedReturnTo;
+                } else if (user.role === "buyer" && !savedReturnTo.startsWith("/seller")) {
+                    destination = savedReturnTo;
+                }
             }
-            return res.redirect("/home");
+
+            delete req.session.authIntent;
+            delete req.session.returnTo;
+
+            return res.redirect(destination);
         });
 
     } catch (error) {
         console.error("Error in handleGoogleCallback:", error);
-        return res.redirect("/login?error=An unexpected error occurred during Google authentication.");
+        return res.redirect("/buyer/login?error=" + encodeURIComponent("An unexpected error occurred during Google authentication."));
     }
 };
 
