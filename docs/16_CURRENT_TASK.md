@@ -14,12 +14,50 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Dedicated Buyer / Seller Authentication Rebuild Completed & Empirically Verified (Option A Architecture)**
+* **Active Status:** **My Voyages / Captain's Ledger Card Containment & Stray Element Under Navbar Completed & Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
-* **Dedicated Buyer / Seller Authentication Rebuild (`routes/web.js`, `controller/auth.js`, `controller/googleAuth.js`, `middleware/auth.js`, `middleware/roles.js`, `views/buyer/*.ejs`, `views/seller/*.ejs`):**
+* **My Voyages / Captain's Ledger Card Containment & Stray Element Under Navbar (`views/orders.ejs`, `views/partials/header.ejs`, `scratch/test_voyage_card_containment.js`):**
+  - **Root Cause 1 (Stray / Floating UI Element Below Navbar):** The Captain side-panel `<aside class="captain-panel" id="captainSidePanel">` was positioned relative to the viewport at `left: 20px; top: 98px;`, while the canonical navbar was centered at `left: 50%; transform: translateX(-50%); width: min(1100px, calc(100% - 60px))`. On desktop displays (1440px/1280px), this left the collapsed Captain's Log toggle floating isolated in empty space underneath the left side of the navbar. Additionally, legacy duplicate `.store-header-controls` containing modal cart/close buttons (`🛒 HOLD` and `&times;`) was present under the navbar on `/orders`.
+  - **Fix 1 (Canonical Anchoring & Clean Navigation):** Anchored `.captain-panel` directly to the canonical navbar's left flank across all breakpoints:
+    - Desktop (> 1160px): `left: calc(50% - 550px); top: 86px;` (sitting directly 6px below the navbar's left corner).
+    - Tablet (901px - 1160px): `left: 30px; top: 86px;` (matching the centered navbar's 30px margin).
+    - Mobile (<= 900px): `left: 16px; top: 86px;` (matching mobile navbar's 16px margin).
+    - Removed duplicate `.store-header-controls` (`🛒 HOLD` and `&times;`) from `views/orders.ejs`, leaving clean breadcrumbs (`<nav class="detail-breadcrumbs" aria-label="Captain's Voyage Ledger Breadcrumbs">`).
+  - **Root Cause 2 (Card & Action Button Overflow):**
+    - Unbroken 24-character hexadecimal ObjectId in `h2.voyage-id` (`⚓ Voyage #<%= order._id %>`) lacked `overflow-wrap: break-word` and forced card header min-content width to expand.
+    - `.orders-grid` and `.voyage-card` lacked `min-width: 0` and `box-sizing: border-box`, allowing min-content to blow out the grid track.
+    - `.voyage-info-grid` used `grid-template-columns: 1fr 1fr;` instead of `repeat(2, minmax(0, 1fr))`, stretching columns on long destination ports.
+    - `.btn-view-manifest` had uppercase Cinzel bold text with letter-spacing (`📜 View Voyage Manifest & Tracking` ~370px) and lacked `width: 100%`, `box-sizing: border-box`, `white-space: normal`, and `line-height: 1.35`, overflowing the ~306px inner card boundary.
+  - **Fix 2 (Structural Card Containment):**
+    - Added `box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0;` across `.orders-grid`, `.voyage-card`, and child sections.
+    - Added `repeat(2, minmax(0, 1fr))` on `.voyage-info-grid` and wrapped `h2.voyage-id` with `overflow-wrap: break-word; word-break: break-word; min-width: 0; font-size: clamp(0.92rem, 2.5vw, 1.05rem);`.
+    - Modernized `.voyage-card-actions` and `.btn-view-manifest` with `width: 100%; max-width: 100%; box-sizing: border-box; display: flex; align-items: center; justify-content: center; text-align: center; white-space: normal; line-height: 1.35; padding: 10px 14px; font-size: clamp(0.78rem, 2vw, 0.88rem);`.
+    - Added `.btn-pay-action` class for the Complete Voyage Payment action.
+    - Structured multi-seller fulfillment breakdown with `.voyage-merchants-breakdown`, `.voyage-merchant-row`, and text ellipsis on `.voyage-merchant-name`.
+    - Added responsive media queries for 768px, 480px, and 360px ensuring safe padding and column stacking.
+  - **Audited Status Matrix (All 10 Supported Variants Verified):**
+    - `PENDING` (unpaid) -> renders `Complete Voyage Payment` (.btn-pay-action) + `View Voyage Manifest`
+    - `PENDING` (paid) -> renders `⚓ Awaiting Merchant Confirmation` + `View Voyage Manifest`
+    - `CONFIRMED` -> renders `✓ Cargo Confirmed` badge + callout
+    - `PROCESSING` -> renders `⚒ Cargo Processing` badge + callout
+    - `SHIPPED` -> renders `🚢 Fleet Underway` badge + callout
+    - `DELIVERED` -> renders `🏝️ Delivered to Harbor` badge + callout
+    - `CANCELLED` -> renders `☠ Voyage Cancelled` badge + callout
+    - `PARTIALLY_FULFILLED` -> renders `⚓ Partially Dispatched` badge + callout
+    - `PAYMENT_FAILED` -> renders payment status failed (#ff8585)
+    - `REFUNDED` -> renders payment status refunded
+  - **Verification Results:**
+    - 40/40 tests passing in `scratch/test_voyage_card_containment.js`
+    - 51/51 tests passing in `scratch/test_navigation_cleanup.js`
+    - 144/144 tests passing in `scratch/test_seller_navbar_unification.js`
+    - 72/72 tests passing in `scratch/test_buyer_commerce_flow.js`
+    - 92/92 tests passing in `scratch/test_milestone_5_4.js`
+    - 100/100 tests passing in `scratch/test_aud_001_multi_seller_fulfillment.js`
+    - 42/42 EJS templates syntax verified in `scratch/check_ejs_syntax.js`
+    - Live responsive verification passing across 1440px, 1280px, 1024px, 768px, 600px, 480px, 390px, and 360px viewports with zero horizontal overflow.
   - **Dedicated Buyer & Seller Routes:** Implemented distinct, role-enforced endpoints eliminating merged query-intent authentication:
     - Buyer: `GET /buyer/login`, `POST /buyer/login`, `GET /buyer/register`, `POST /buyer/register`
     - Seller: `GET /seller/login`, `POST /seller/login`, `GET /seller/register`, `POST /seller/register`

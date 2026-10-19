@@ -2,6 +2,24 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-19] — My Voyages / Order Card Overflow & Stray Element Under Navbar Fix
+* **Captain's Voyage Ledger UI Containment & Navbar Docking (`views/orders.ejs`, `views/partials/header.ejs`, `scratch/test_voyage_card_containment.js`):**
+  - **Repaired Stray / Floating Element Below Navbar:** Resolved the disconnected appearance of the Captain's Log side panel toggle by updating its fixed layout coordinates from hardcoded viewport coordinates (`left: 20px; top: 98px;`) to directly align with the canonical floating navbar's left flank across all breakpoints:
+    - Desktop (> 1160px): `left: calc(50% - 550px); top: 86px;` (anchored precisely 6px below the navbar's left edge).
+    - Tablet (901px - 1160px): `left: 30px; top: 86px;` (matching the centered navbar's 30px margin).
+    - Mobile (<= 900px): `left: 16px; top: 86px;` (matching mobile navbar's 16px margin).
+    - Removed duplicate legacy `.store-header-controls` containing modal store controls (`🛒 HOLD` and `&times;`) from `views/orders.ejs`, standardizing on clean semantic breadcrumbs (`<nav class="detail-breadcrumbs" aria-label="Captain's Voyage Ledger Breadcrumbs">`).
+  - **Voyage Card Structural Containment:**
+    - Fixed card boundary escapes without `overflow: hidden`, negative margins, or transforms.
+    - Implemented `box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0;` on `.orders-grid`, `.voyage-card`, `.voyage-card-actions`, and child blocks.
+    - Solved grid blowouts by updating `.voyage-info-grid` to `repeat(2, minmax(0, 1fr))` and wrapping long 24-character hexadecimal ObjectIds in `h2.voyage-id` with `overflow-wrap: break-word; word-break: break-word; min-width: 0; font-size: clamp(0.92rem, 2.5vw, 1.05rem);`.
+    - Modernized `.voyage-card-actions` and `.btn-view-manifest` to fit 100% of the available card content area with `white-space: normal; line-height: 1.35; padding: 10px 14px; font-size: clamp(0.78rem, 2vw, 0.88rem); display: flex; align-items: center; justify-content: center; text-align: center;`.
+    - Added `.btn-pay-action` styling for pending unpaid order payments.
+    - Standardized multi-seller fulfillment rows with `.voyage-merchants-breakdown` and text truncation on merchant store names.
+    - Added responsive media queries for 768px, 480px, and 360px ensuring safe column wrapping and comfortable card padding.
+  - **Audited Every Order / Payment Status:** Verified clean containment across all 10 supported states (`pending` unpaid, `pending` paid awaiting confirmation, `confirmed`, `processing`, `shipped`, `delivered`, `cancelled`, `partially_fulfilled`, `failed`, and `refunded`).
+  - **Regression Coverage:** 40/40 tests passing in `scratch/test_voyage_card_containment.js`, 51/51 in `scratch/test_navigation_cleanup.js`, 144/144 in `scratch/test_seller_navbar_unification.js`, 72/72 in `scratch/test_buyer_commerce_flow.js`, 92/92 in `scratch/test_milestone_5_4.js`, 100/100 in `scratch/test_aud_001_multi_seller_fulfillment.js`, 42/42 clean EJS syntax checks, and live audit across 1440px, 1280px, 1024px, 768px, 600px, 480px, 390px, and 360px.
+
 ## [2026-10-19] — Dedicated Buyer / Seller Authentication Rebuild (Option A Architecture)
 * **Dedicated Authentication Architecture Rebuild (`routes/web.js`, `controller/auth.js`, `controller/googleAuth.js`, `middleware/auth.js`, `middleware/roles.js`, `views/buyer/*.ejs`, `views/seller/*.ejs`):**
   - **Dedicated Buyer & Seller Routes:** Replaced ambiguous merged query intent authentication with dedicated endpoints:
