@@ -2,6 +2,27 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-19] — Premium Auth UI Polish: Integrated Charter & Iconic Map Composition
+* **Cohesive Pirate-Civ Authentication Experience Polish (`public/css/auth.css`, `views/buyer/*.ejs`, `views/seller/*.ejs`, `views/login.ejs`, `views/register.ejs`):**
+  - **Eliminated Floating Navigation Disconnection (Charter Tabs):**
+    - Repaired the two generic floating top buttons (`← Back to Pirate-Civ` and `Charter Fleet →` / `Merchant Deck →`).
+    - Moved `.auth-back-container` from loose viewport coordinates into `.login-card` directly at the top of the charter frame, giving the controls intentional ownership as authentic parchment/brass navigation tabs.
+    - Designed `.auth-back-link` with a compact footprint, refined brass border (`rgba(198, 159, 88, 0.28)`), translucent dark backing, elegant Cinzel serif typography, subtle `translateY(-1px)` hover lift with golden glow, and keyboard-accessible focus rings.
+  - **Unified "One World" Composition & Chart Table Atmosphere:**
+    - Reduced `.auth-container` gap to `clamp(24px, 3.2vw, 44px)` and added `max-width: 1540px; margin: 0 auto;`, creating a balanced, intentional side-by-side pairing between the Captain's Ledger and the Terra Incognita world map without dead black voids.
+    - Upgraded body background with layered radial depth: warm golden ember radiation behind the map on the right, deep moody navy/indigo oceanic abyss behind the charter on the left, and a soft outer vignette framing the entire viewport.
+    - Enhanced `.map-section` with an atmospheric parchment backlight (`.map-section::before`) and layered 3D drop-shadows with ember radiance in `.map-container`, making the burning edges of the map illuminate the surrounding desk surface.
+  - **Captain's Charter / Admiralty Ledger Styling (`.login-card`):**
+    - Replaced the heavy opaque black card with a translucent obsidian surface (`background: linear-gradient(165deg, rgba(16, 12, 22, 0.90) 0%, rgba(7, 5, 12, 0.94) 100%);`) featuring `backdrop-filter: blur(14px);`.
+    - Added double-line gold filigree inner borders and corner frame brackets.
+    - Applied dedicated role accents:
+      - Buyer (`.buyer-theme-card`): Subtle cyan nautical glow (`rgba(34, 211, 238, 0.07)`) and cyan-tinted coordinates.
+      - Seller (`.seller-theme-card`): Warm heraldic amber/bronze glow (`rgba(245, 158, 11, 0.09)`) and gold coordinates.
+  - **Optimized Vertical Footprint:**
+    - Replaced hardcoded `min-height: 790px` on `.register-card` with `min-height: auto` and tightened input margins, eliminating accidental vertical scrollbars on standard 1080p and 900p viewports.
+    - Full responsiveness verified across 1440px, 1280px, 1024px, 768px, 600px, 480px, 390px, and 360px with `overflow-x: hidden` and `prefers-reduced-motion` compliance.
+  - **Zero Authentication Logic Alteration:** All routes, controllers, middleware, Google OAuth, signed state, session handling, and security protections remain 100% untouched.
+
 ## [2026-10-19] — Iconic Pirate-Civ Map Environment Restored to Dedicated Auth Pages
 * **Iconic Pirate-Civ Map Environment Restoration (`views/buyer/login.ejs`, `views/buyer/register.ejs`, `views/seller/login.ejs`, `views/seller/register.ejs`, `views/register.ejs`, `public/css/auth.css`, `scratch/test_auth_map_environment.js`):**
   - **Identified Original Map Asset & Root Cause:**

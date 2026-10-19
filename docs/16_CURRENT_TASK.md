@@ -14,11 +14,25 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Iconic Pirate-Civ Map Environment Restored to Dedicated Auth Pages Completed & Verified**
+* **Active Status:** **Premium Auth UI Polish (Integrated Charter Tabs & Cinematic Map Composition) Completed & Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Premium Auth UI Polish: Integrated Charter Tabs & Cinematic Map World (`public/css/auth.css`, `views/buyer/*.ejs`, `views/seller/*.ejs`, `views/login.ejs`, `views/register.ejs`):**
+  - **Identified Deficiencies & Root Cause:**
+    - The restored map was visually disconnected from the auth card by an oversized 55px-65px gap and an unadorned pitch-black void.
+    - Two generic navigation buttons (`← Back to Pirate-Civ` and `Merchant Deck →`) were floating at loose absolute coordinates, visually unowned and awkward.
+    - The auth card was an opaque black block with excessive vertical stretch (`min-height: 790px`) forcing vertical scrollbars on registration forms.
+  - **Architectural & Aesthetic Polish:**
+    - **Charter Navigation Tabs:** Integrated `.auth-back-container` inside `.login-card` at the very top of the frame, styled as refined brass/parchment tabs with subtle borders, compact typography, golden hover glow, and accessible focus rings.
+    - **"One World" Composition:** Bound the card and map inside `.auth-container` with `clamp(24px, 3.2vw, 44px)` gap and `max-width: 1540px; margin: 0 auto;`, resting on an atmospheric ocean-abyss backdrop with warm parchment radiance behind the map, deep oceanic navy behind the charter, and a smooth viewport vignette.
+    - **Translucent Ledger Surface:** Gave `.login-card` a translucent obsidian surface (`rgba(16, 12, 22, 0.90)` to `rgba(7, 5, 12, 0.94)`) with `backdrop-filter: blur(14px)`, multi-layer filigree inner frames, and corner brackets.
+    - **Dedicated Role Accents:** Added `.buyer-theme-card` (cyan oceanic aura & coordinates) and `.seller-theme-card` (warm heraldic amber/bronze aura & coordinates).
+    - **Eliminated Unwanted Scrollbars:** Set `min-height: auto` on `.register-card` and tightened input padding so the card comfortably fits in desktop viewports.
+    - **Full Responsiveness & Accessibility:** Tested across 1440px down to 360px without horizontal overflow; added `@media (prefers-reduced-motion: reduce)`.
+  - **Zero Authentication Logic Alteration:** 100% untouched controllers, routes, middleware, and models. All 77 dedicated auth security tests, 48 live browser tests, 43 map tests, and 42 template checks pass.
+
 * **Iconic Pirate-Civ Map Environment Restored to Buyer / Seller Auth Pages (`views/buyer/login.ejs`, `views/buyer/register.ejs`, `views/seller/login.ejs`, `views/seller/register.ejs`, `views/register.ejs`, `public/css/auth.css`, `scratch/test_auth_map_environment.js`):**
   - **Root Cause (Missing Map Section & Rogue Flex Positioning):**
     - The dedicated authentication rebuild introduced separate `/buyer/*` and `/seller/*` views, but omitted the original `<section class="map-section">` containing `/images/map.png` and `.map-embers`.
