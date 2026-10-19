@@ -166,18 +166,34 @@
                 <!-- Row 5: Image & Rating -->
                 <div class="seller-form-row">
                     <div class="seller-form-group">
-                        <label for="inputImage">Image (Upload File or Asset Path)</label>
-                        <input type="file"
-                               id="inputFileImage"
-                               name="productImage"
-                               class="seller-form-input"
-                               accept="image/*">
-                        <input type="text"
-                               id="inputImage"
-                               name="image"
-                               class="seller-form-input"
-                               style="margin-top: 6px;"
-                               value="<%= product.image %>">
+                        <label for="inputFileImage" class="seller-form-label">
+                            🗺️ Artifact / Cargo Artwork
+                        </label>
+                        <div class="pirate-file-uploader" data-uploader="productImage">
+                            <input type="file"
+                                   id="inputFileImage"
+                                   name="productImage"
+                                   class="pirate-file-input visually-hidden-file"
+                                   accept="image/*"
+                                   aria-describedby="productImageChosen">
+                            <label for="inputFileImage" class="pirate-file-shell" tabindex="0">
+                                <div class="pirate-file-shell-inner">
+                                    <span class="pirate-file-icon" aria-hidden="true">🗺️</span>
+                                    <span class="pirate-file-btn">UPDATE CARGO ART</span>
+                                    <span class="pirate-file-chosen" id="productImageChosen">Current: <%= product.image ? product.image.split('/').pop() : 'default-relic.png' %></span>
+                                </div>
+                            </label>
+                        </div>
+                        <div style="margin-top: 8px;">
+                            <label for="inputImage" style="font-size: 0.72rem; color: #8b9bb4; letter-spacing: 0.05em; display: block; margin-bottom: 4px; text-transform: uppercase;">
+                                Or Specify Sovereign Asset Path:
+                            </label>
+                            <input type="text"
+                                   id="inputImage"
+                                   name="image"
+                                   class="seller-form-input pirate-input-boxed"
+                                   value="<%= product.image %>">
+                        </div>
                     </div>
 
                     <div class="seller-form-group">
@@ -194,13 +210,17 @@
 
                 <!-- Row 6: Availability Checkbox -->
                 <div class="seller-checkbox-group">
-                    <input type="checkbox"
-                           id="checkAvailable"
-                           name="isAvailable"
-                           value="true"
-                           <%= product.isAvailable ? 'checked' : '' %>>
-                    <label for="checkAvailable">
-                        <strong>Available in Archipelago Markets</strong> (Uncheck to hide from public storefront & island listings without deleting)
+                    <label class="pirate-checkbox-label" for="checkAvailable" style="width: 100%;">
+                        <input type="checkbox"
+                               id="checkAvailable"
+                               name="isAvailable"
+                               value="true"
+                               class="pirate-checkbox-input"
+                               <%= product.isAvailable ? 'checked' : '' %>>
+                        <span class="pirate-checkbox-custom" aria-hidden="true"></span>
+                        <span class="pirate-checkbox-text">
+                            <strong>Available in Archipelago Markets</strong> (Uncheck to hide from public storefront & island listings without deleting)
+                        </span>
                     </label>
                 </div>
 

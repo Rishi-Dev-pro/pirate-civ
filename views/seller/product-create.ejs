@@ -170,19 +170,35 @@
                 <!-- Row 5: Image & Rating -->
                 <div class="seller-form-row">
                     <div class="seller-form-group">
-                        <label for="inputImage">Image (Upload File or Asset Path)</label>
-                        <input type="file"
-                               id="inputFileImage"
-                               name="productImage"
-                               class="seller-form-input"
-                               accept="image/*">
-                        <input type="text"
-                               id="inputImage"
-                               name="image"
-                               class="seller-form-input"
-                               style="margin-top: 6px;"
-                               placeholder="Or enter path: /images/items/default-relic.png"
-                               value="<%= product && product.image ? product.image : '/images/items/default-relic.png' %>">
+                        <label for="inputFileImage" class="seller-form-label">
+                            🗺️ Artifact / Cargo Artwork
+                        </label>
+                        <div class="pirate-file-uploader" data-uploader="productImage">
+                            <input type="file"
+                                   id="inputFileImage"
+                                   name="productImage"
+                                   class="pirate-file-input visually-hidden-file"
+                                   accept="image/*"
+                                   aria-describedby="productImageChosen">
+                            <label for="inputFileImage" class="pirate-file-shell" tabindex="0">
+                                <div class="pirate-file-shell-inner">
+                                    <span class="pirate-file-icon" aria-hidden="true">🗺️</span>
+                                    <span class="pirate-file-btn">CHOOSE CARGO ART</span>
+                                    <span class="pirate-file-chosen" id="productImageChosen">No asset selected (PNG, JPG, WebP)</span>
+                                </div>
+                            </label>
+                        </div>
+                        <div style="margin-top: 8px;">
+                            <label for="inputImage" style="font-size: 0.72rem; color: #8b9bb4; letter-spacing: 0.05em; display: block; margin-bottom: 4px; text-transform: uppercase;">
+                                Or Specify Sovereign Asset Path:
+                            </label>
+                            <input type="text"
+                                   id="inputImage"
+                                   name="image"
+                                   class="seller-form-input pirate-input-boxed"
+                                   placeholder="Or enter path: /images/items/default-relic.png"
+                                   value="<%= product && product.image ? product.image : '/images/items/default-relic.png' %>">
+                        </div>
                     </div>
 
                     <div class="seller-form-group">
@@ -199,13 +215,17 @@
 
                 <!-- Row 6: Availability Checkbox -->
                 <div class="seller-checkbox-group">
-                    <input type="checkbox"
-                           id="checkAvailable"
-                           name="isAvailable"
-                           value="true"
-                           <%= (product && (product.isAvailable === false || product.isAvailable === 'false')) ? '' : 'checked' %>>
-                    <label for="checkAvailable">
-                        <strong>List as Active:</strong> Make immediately discoverable on public island bazaars and public merchant storefront.
+                    <label class="pirate-checkbox-label" for="checkAvailable" style="width: 100%;">
+                        <input type="checkbox"
+                               id="checkAvailable"
+                               name="isAvailable"
+                               value="true"
+                               class="pirate-checkbox-input"
+                               <%= (product && (product.isAvailable === false || product.isAvailable === 'false')) ? '' : 'checked' %>>
+                        <span class="pirate-checkbox-custom" aria-hidden="true"></span>
+                        <span class="pirate-checkbox-text">
+                            <strong>List as Active:</strong> Make immediately discoverable on public island bazaars and public merchant storefront.
+                        </span>
                     </label>
                 </div>
 

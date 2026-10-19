@@ -2,6 +2,42 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-20] — UI/UX: Unified Premium Form System & Accessible Custom File Uploader Redesign
+* **Complete Form System Visual Audit & Polish across Buyer + Seller Views (`public/css/style.css`, `public/css/island-store.css`, `public/css/auth.css`, `public/css/contact.css`, `public/js/forms.js`, `views/seller/profile.ejs`, `views/seller/product-create.ejs`, `views/seller/product-edit.ejs`, `views/profile.ejs`, `views/checkout.ejs`, `views/seller/register.ejs`, `views/buyer/register.ejs`, `views/register.ejs`, `views/partials/header.ejs`):**
+  - **Identified Root Causes of Form Control Deficiencies & Layout Overflow:**
+    - On `/seller/profile`, native browser `<input type="file">` displayed raw default `[Choose File] No file chosen`, which broke the Pirate-Civ visual language and leaked outside its column.
+    - Accompanying asset path input (`input#inputAvatar`) and `.seller-form-input` lacked `box-sizing: border-box;` and `width: 100%; max-width: 100%;`, extending beyond the right boundary of `.seller-edit-form-card`.
+    - In CSS Grid two-column layouts (`.seller-form-row`), children defaulted to `min-width: auto`, allowing large contents or intrinsic input widths to blow out columns.
+    - Checkboxes across buyer and seller forms rendered with unstyled raw browser defaults.
+    - Select controls in auth registration and contact pages lacked unified dark obsidian surfaces, gold borders, and custom nautical chevron arrows.
+  - **Created Shared Ancient Maritime Charter Form Design System:**
+    - Standardized dark obsidian input surfaces (`rgba(8, 14, 22, 0.9)`), subtle translucent glass depth (`backdrop-filter: blur(14px)`), thin antique brass/gold borders (`rgba(212, 147, 57, 0.35)`), and parchment cream text (`#fff4db`).
+    - Enforced universal `box-sizing: border-box !important; width: 100% !important; max-width: 100% !important;` across all inputs, selects, textareas, buttons, and uploader components.
+    - Added `min-width: 0 !important;` on all `.seller-form-row > *` grid children with clean 1-column responsive stacking at `@media (max-width: 768px)`.
+    - Custom `<select>` dropdowns with embedded SVG antique gold chevron arrow and styled dark options.
+    - Custom `<textarea>` styling with `resize: vertical; min-height: 110px; line-height: 1.6;`.
+    - Accessible custom checkbox system (`.pirate-checkbox-wrap`, `.pirate-checkbox-custom`) with obsidian background, gold border, and gold checkmark `✓`.
+    - Gold gradient action buttons (`.btn-form-submit`, `.tile-btn.btn-primary-action`, `.checkout-btn-submit`) with Cinzel font, hover lift, and focus indicators.
+  - **Replaced Raw Native File Inputs with Accessible Custom File Uploader (`.pirate-file-uploader`):**
+    - Visually hid native `<input type="file">` using standard accessible pattern (`.visually-hidden-file`) preserving keyboard focus, screen-reader accessibility, and native multipart/form-data upload functionality.
+    - Implemented `.pirate-file-shell` styled as a dark maritime charter parchment frame with dashed antique gold border, hover glow, and focus ring.
+    - Integrated role-appropriate action buttons and status labels:
+      - Seller Profile Avatar: `[ SELECT CAPTAIN'S SEAL ]`
+      - Forge New Cargo Art: `[ CHOOSE CARGO ART ]`
+      - Edit Cargo Art: `[ UPDATE CARGO ART ]`
+      - Buyer Profile Avatar: `[ SELECT CAPTAIN'S SEAL ]`
+    - Implemented universal client engine in `public/js/forms.js` (loaded globally via `views/partials/header.ejs`):
+      - Live file name and formatted size display (e.g. `⚓ avatar.png (142 KB)`).
+      - Live image preview updates with `FileReader` targeting `#avatarPreviewImg`, `#buyerAvatarPreview`, etc.
+      - Full keyboard accessibility (`Enter` / `Space` triggers file selection).
+      - Drag-and-drop support with `.is-dragover` and `.is-selected` feedback states.
+      - Restoring default seal seamlessly updates preview and label.
+  - **Empirically Verified Containment & Responsiveness:**
+    - Zero horizontal page scrolling and 100% card containment verified via automated Chrome CDP tests (`scratch/test_forms_visual_system.js`) across 8 viewport widths: 1440px, 1280px, 1024px, 768px, 600px, 480px, 390px, 360px.
+    - Verified real multipart/form-data upload submission on `/seller/profile` (`scratch/test_file_upload_submission.js`), confirming multer handles files, saves to `/uploads/avatars/`, and redirects with `?updated=1`.
+    - All 42 EJS templates pass compilation; 144/144 seller navbar checks pass; zero regressions.
+  - **Strict Business Logic Integrity:** Zero backend routes, controllers, models, authentication, or checkout logic modified.
+
 ## [2026-10-19] — Seller UI: Replaced Tropical Island Backdrop with Pirate Merchant Harbor World
 * **Comprehensive Seller Area Background Replacement (`public/css/island-store.css`, `views/seller/*.ejs`, `views/seller-discovery.ejs`, `scratch/test_seller_merchant_harbor_backdrop.js`, `scratch/audit_seller_responsive.js`):**
   - **Identified Root Cause of Ugly Tropical Vacation Background:**

@@ -14,11 +14,34 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Seller UI: Replaced Tropical Island Backdrop with Pirate Merchant Harbor World Completed & Verified**
+* **Active Status:** **Unified Premium Form System & Accessible Custom File Uploader Redesign Completed & Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Unified Premium Form System & Accessible Custom File Uploader Redesign (`public/css/style.css`, `public/css/island-store.css`, `public/css/auth.css`, `public/css/contact.css`, `public/js/forms.js`, `views/seller/profile.ejs`, `views/seller/product-create.ejs`, `views/seller/product-edit.ejs`, `views/profile.ejs`, `views/checkout.ejs`, `views/seller/register.ejs`, `views/buyer/register.ejs`, `views/register.ejs`, `views/partials/header.ejs`):**
+  - **Identified Deficiencies & Root Causes:**
+    - On `/seller/profile`, native browser file input rendered raw `[Choose File] No file chosen`, leaking outside column boundaries.
+    - Accompanying path input and `.seller-form-input` lacked `box-sizing: border-box; width: 100%; max-width: 100%;`, escaping `.seller-edit-form-card`.
+    - Grid children defaulted to `min-width: auto;`, allowing contents to widen columns beyond 1fr.
+    - Checkboxes, selects, and textareas across forms felt generic or used raw browser defaults.
+  - **Unified Maritime Charter Form Visual System:**
+    - Dark obsidian surfaces (`rgba(8, 14, 22, 0.9)`), antique brass/gold borders (`rgba(212, 147, 57, 0.35)`), parchment cream text (`#fff4db`), and gold focus glows.
+    - Universal `box-sizing: border-box !important; width: 100% !important; max-width: 100% !important;` on all form controls.
+    - Responsive 2-to-1 column collapse with `min-width: 0 !important;` on grid cells.
+    - Custom styled select with embedded antique gold SVG chevron.
+    - Custom styled textareas with vertical resize only.
+    - Accessible custom checkbox system with obsidian surface, gold border, and gold checkmark.
+    - Polished gold gradient action buttons with Cinzel typography and hover lift.
+  - **Custom Accessible File Uploader Component (`.pirate-file-uploader`):**
+    - Visually-hidden real `<input type="file">` retaining keyboard focus, screen-reader semantics, and multipart/form-data upload functionality.
+    - Styled maritime charter parchment frame (`.pirate-file-shell`) with gold anchor/map icon, custom action button (`SELECT CAPTAIN'S SEAL` / `CHOOSE CARGO ART`), and dynamic chosen filename/size display.
+    - Global engine in `public/js/forms.js` managing live file status, image preview updates (`#avatarPreviewImg`, `#buyerAvatarPreview`), drag-and-drop, and default seal restore.
+  - **Empirical Verification:**
+    - Full responsiveness tested with zero horizontal overflow across 1440, 1280, 1024, 768, 600, 480, 390, 360px (`scratch/test_forms_visual_system.js`).
+    - Verified real multipart/form-data file upload submission to `/seller/profile` (`scratch/test_file_upload_submission.js`).
+    - All 42 EJS templates compile cleanly; 144/144 seller navbar checks pass; 0 regressions.
+
 * **Seller UI: Pirate Merchant Harbor Backdrop Replacement (`public/css/island-store.css`, `views/seller/*.ejs`, `views/seller-discovery.ejs`, `scratch/test_seller_merchant_harbor_backdrop.js`, `scratch/audit_seller_responsive.js`):**
   - **Identified Deficiencies & Root Cause:**
     - All 7 core seller pages (`/seller/dashboard`, `/seller/products`, `/seller/products/new`, `/seller/products/:id/edit`, `/seller/orders`, `/seller/orders/:id`, `/seller/profile`) were rendering a bright, circular tropical vacation island with palm trees and beaches (`island-astrolabe-dusty.png`) or falling back to `astrolabe-bg.jpg`.

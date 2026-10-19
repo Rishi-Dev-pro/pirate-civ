@@ -157,24 +157,45 @@
                     </div>
 
                     <div class="seller-form-group">
-                        <label for="inputAvatar">Avatar (Upload Image or Asset Path)</label>
-                        <input type="file"
-                               id="inputFileAvatar"
-                               name="avatar"
-                               class="seller-form-input"
-                               accept="image/*">
-                        <input type="text"
-                               id="inputAvatar"
-                               name="avatarPath"
-                               class="seller-form-input"
-                               style="margin-top: 6px;"
-                               maxlength="500"
-                               placeholder="/images/avatars/default-pirate.png"
-                               value="<%= seller && seller.avatar ? seller.avatar : '/images/avatars/default-pirate.png' %>">
-                        <div style="margin-top: 6px;">
-                            <label style="font-size: 0.78rem; color: #94a3b8; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                                <input type="checkbox" name="removeAvatar" value="true">
-                                Restore Default Seal
+                        <label for="inputFileAvatar" class="seller-form-label">
+                            ⚓ Captain's Seal / Avatar
+                        </label>
+                        <div class="pirate-file-uploader" data-uploader="avatar" data-preview-target="avatarPreviewImg">
+                            <input type="file"
+                                   id="inputFileAvatar"
+                                   name="avatar"
+                                   class="pirate-file-input visually-hidden-file"
+                                   accept="image/*"
+                                   aria-describedby="avatarFileChosen">
+                            <label for="inputFileAvatar" class="pirate-file-shell" tabindex="0">
+                                <div class="pirate-file-shell-inner">
+                                    <span class="pirate-file-icon" aria-hidden="true">⚓</span>
+                                    <span class="pirate-file-btn">SELECT CAPTAIN'S SEAL</span>
+                                    <span class="pirate-file-chosen" id="avatarFileChosen">No image selected (PNG, JPG, WebP)</span>
+                                </div>
+                            </label>
+                        </div>
+
+                        <!-- Manual Sovereign Path Fallback -->
+                        <div style="margin-top: 8px;">
+                            <label for="inputAvatar" style="font-size: 0.72rem; color: #8b9bb4; letter-spacing: 0.05em; display: block; margin-bottom: 4px; text-transform: uppercase;">
+                                Or Specify Sovereign Asset Path:
+                            </label>
+                            <input type="text"
+                                   id="inputAvatar"
+                                   name="avatarPath"
+                                   class="seller-form-input pirate-input-boxed"
+                                   maxlength="500"
+                                   placeholder="/images/avatars/default-pirate.png"
+                                   value="<%= seller && seller.avatar ? seller.avatar : '/images/avatars/default-pirate.png' %>">
+                        </div>
+
+                        <!-- Styled Custom Checkbox -->
+                        <div class="pirate-checkbox-wrap" style="margin-top: 10px;">
+                            <label class="pirate-checkbox-label" for="chkRemoveAvatar">
+                                <input type="checkbox" id="chkRemoveAvatar" name="removeAvatar" value="true" class="pirate-checkbox-input">
+                                <span class="pirate-checkbox-custom" aria-hidden="true"></span>
+                                <span class="pirate-checkbox-text">Restore Default Admiralty Seal</span>
                             </label>
                         </div>
                     </div>

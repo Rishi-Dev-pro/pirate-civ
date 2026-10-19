@@ -342,7 +342,6 @@
                             id="regRole"
                             name="role"
                             class="auth-select"
-                            style="width: 100%; background: transparent; border: none; color: #ffd57e; font-family: 'Cinzel', serif; font-size: 14px; outline: none; padding: 12px 14px; cursor: pointer;"
                             onchange="const sg = document.getElementById('storeNameGroup'); if (sg) { sg.style.display = (this.value === 'seller' ? 'block' : 'none'); }"
                         >
                             <option value="buyer" style="background: #120910; color: #ffd57e;" <%= (typeof intent !== 'undefined' && intent === 'seller') ? '' : 'selected' %>>
