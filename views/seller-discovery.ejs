@@ -14,17 +14,113 @@
     <!-- Master & Dedicated Island Store Styles -->
     <link rel="stylesheet" href="/css/style.css?v=p3_corsair_v1">
     <link rel="stylesheet" href="/css/island-store.css?v=seller_store_v1">
+    <!-- Dedicated Merchant Storefront & Guild Harbor Styles -->
+    <style>
+        .merchant-details-page {
+            background: #020408 !important;
+        }
+
+        .merchant-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .merchant-bg-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 30%;
+            opacity: 0.62;
+            filter: contrast(1.10) brightness(0.78);
+            transform: scale(1.02);
+            transition: opacity 0.4s ease;
+        }
+
+        .merchant-vignette {
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(ellipse at 50% 35%, rgba(6, 11, 20, 0.35) 0%, rgba(4, 7, 13, 0.80) 65%, #020408 100%),
+                linear-gradient(180deg, rgba(2, 4, 8, 0.95) 0%, rgba(4, 8, 14, 0.45) 16%, rgba(3, 6, 12, 0.72) 70%, #020408 100%);
+        }
+
+        .merchant-details-page .seller-discovery-wrapper {
+            position: relative;
+            z-index: 10;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 108px 24px 60px 24px;
+            box-sizing: border-box;
+        }
+
+        .merchant-details-page .detail-breadcrumbs {
+            font-family: "Cinzel", serif;
+            font-size: 0.86rem;
+            color: #a89a84;
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            padding: 10px 0 18px 0;
+            margin-bottom: 24px;
+            border-bottom: 1px solid rgba(212, 147, 57, 0.25);
+        }
+
+        .merchant-details-page .seller-card-container {
+            background: linear-gradient(180deg, rgba(10, 16, 26, 0.92) 0%, rgba(6, 10, 18, 0.96) 100%);
+            border: 1px solid rgba(212, 147, 57, 0.32);
+            border-radius: 12px;
+            padding: 36px;
+            box-shadow: 0 16px 48px rgba(0, 0, 0, 0.8), inset 0 0 30px rgba(0, 0, 0, 0.45);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+        }
+
+        @media (max-width: 768px) {
+            .merchant-details-page .seller-discovery-wrapper {
+                padding: 96px 18px 50px 18px;
+            }
+            .merchant-details-page .seller-card-container {
+                padding: 24px 18px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .merchant-details-page .seller-discovery-wrapper {
+                padding: 90px 14px 40px 14px;
+            }
+            .merchant-details-page .seller-card-container {
+                padding: 18px 14px;
+            }
+            .merchant-details-page .seller-hero {
+                gap: 16px;
+            }
+            .merchant-details-page .seller-large-avatar {
+                width: 72px;
+                height: 72px;
+            }
+            .merchant-details-page .seller-display-name {
+                font-size: 1.45rem;
+            }
+        }
+    </style>
 </head>
 
-<body class="island-store-body seller-discovery-body seller-storefront-body">
+<body class="island-store-body seller-discovery-body seller-storefront-body merchant-details-page">
 
-    <!-- Fixed Atmospheric Backdrop -->
-    <div class="store-backdrop">
-        <img src="<%= (island && island.image) ? island.image : '/images/astrolabe-bg.jpg' %>"
-             alt="Archipelago Backdrop"
-             class="store-bg-img"
+    <!-- Dedicated Fixed Merchant Guild Atmospheric Backdrop -->
+    <div class="store-backdrop merchant-backdrop">
+        <img src="/images/merchant-guild-bg.jpg"
+             alt="Grand Admiralty Merchant Guild Harbor"
+             class="store-bg-img merchant-bg-img"
              onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
-        <div class="store-vignette"></div>
+        <div class="store-vignette merchant-vignette"></div>
     </div>
 
     <!-- Reusable Main Navigation Bar -->
@@ -33,31 +129,13 @@
     <!-- Master Seller Storefront Stage -->
     <main class="seller-discovery-wrapper seller-storefront-wrapper">
 
-        <!-- Top Navigation Bar: Breadcrumbs & Header Actions -->
-        <nav class="detail-nav-bar" aria-label="Breadcrumb Navigation">
-            <div class="detail-breadcrumbs">
-                <a href="/home" class="crumb-link">Sea Chart</a>
-                <span class="crumb-separator">›</span>
-                <span class="crumb-link">Merchant Guild</span>
-                <span class="crumb-separator">›</span>
-                <span class="crumb-current"><%= seller.storeName || seller.name %></span>
-            </div>
-
-            <div class="store-header-controls">
-                <div class="doubloons-pill">
-                    <span class="coin-icon">🪙</span>
-                    <span>1,240 Doubloons</span>
-                </div>
-
-                <button id="btnOpenCart" class="btn-store-cart" title="Open Cargo Hold">
-                    <span>🛒 CART</span>
-                    <span id="cartCountBadge">(0)</span>
-                </button>
-
-                <a href="/home" class="btn-store-close" title="Return to Sea Chart">
-                    &times;
-                </a>
-            </div>
+        <!-- Top Navigation Bar: Breadcrumbs (Clean, semantic, no duplicate controls) -->
+        <nav class="detail-breadcrumbs" aria-label="Merchant Storefront Breadcrumbs">
+            <a href="/home" class="crumb-link">Sea Chart</a>
+            <span class="crumb-separator">›</span>
+            <a href="/explorers" class="crumb-link">Merchant Guild</a>
+            <span class="crumb-separator">›</span>
+            <span class="crumb-current"><%= seller.storeName || seller.name %></span>
         </nav>
 
         <!-- Master Merchant Identity Card -->

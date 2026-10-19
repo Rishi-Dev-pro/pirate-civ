@@ -1835,11 +1835,12 @@ body.theme-velvet .btn-add-cart:hover {
     z-index: 10;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 96px 24px 60px 24px;
+    padding: 108px 24px 60px 24px;
 }
 
 /* Detail Navigation Bar & Breadcrumbs */
 .detail-nav-bar {
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -2299,7 +2300,7 @@ body.theme-velvet .btn-add-cart:hover {
     z-index: 10;
     max-width: 1100px;
     margin: 0 auto;
-    padding: 96px 24px 60px 24px;
+    padding: 108px 24px 60px 24px;
 }
 
 .seller-card-container {

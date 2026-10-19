@@ -2,6 +2,21 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-19] — Merchant Details Page Layering, Background & Captain Toggle Positioning Fix
+* **Merchant Storefront UI Layering & Far-Left Captain Toggle Positioning (`views/seller-discovery.ejs`, `views/partials/header.ejs`, `public/css/island-store.css`, `public/images/merchant-guild-bg.jpg`, `scratch/test_merchant_details_layering.js`):**
+  - **Repaired Content Behind Navbar & Layout Layering:**
+    - Eliminated duplicate legacy `.store-header-controls` containing modal cart/close buttons (`&times;`, `🛒 CART`, and hardcoded doubloons pill) that had `position: absolute; top: 6px; right: 0;`, which caused controls to jump to `y = 6px` at the very top of the viewport underneath and behind the fixed navbar.
+    - Added `position: relative;` to `.detail-nav-bar` in `public/css/island-store.css` to contain any internal absolute controls, and updated `.product-detail-wrapper` and `.seller-discovery-wrapper` top padding from `96px` to `108px` ensuring an intentional 24px clearance beneath the canonical floating navbar.
+    - Standardized on semantic breadcrumbs (`<nav class="detail-breadcrumbs" aria-label="Merchant Storefront Breadcrumbs">`) with links to `Sea Chart` and `Merchant Guild` directory.
+  - **Restored Far-Left Viewport Positioning for Captain's Log Toggle:**
+    - Restored `.captain-panel` coordinates to the far-left edge of the viewport (`left: 20px; top: 96px;` on desktop; `left: 14px; top: 92px;` on medium screens `901px - 1260px`; `left: 14px; top: 88px;` on mobile `<= 900px`).
+    - Decoupled toggle positioning completely from centered page containers (`left: calc(50% - 550px)` removed), ensuring the toggle remains close to the left viewport edge regardless of screen resolution or container max-width.
+  - **Dedicated Bespoke Merchant Guild Background & Atmospheric Vignette:**
+    - Replaced the generic tropical island backdrop (`/images/astrolabe-bg.jpg`) on the Merchant Details storefront with a bespoke, atmospheric dark nautical fantasy asset (`/images/merchant-guild-bg.jpg`), featuring a twilight grand admiralty harbor with fortified stone docks, warm glowing lanterns, moored merchant galleons, and subtle cartographic constellation aesthetics.
+    - Implemented `.merchant-vignette` with a deep obsidian gradient at the top (`linear-gradient(180deg, rgba(2, 4, 8, 0.95) 0%, ...)`) ensuring the floating navbar has clean contrast and no background bleed.
+    - Scoped strictly via `.merchant-details-page` to prevent affecting Product Details, Island maps, or other buyer routes.
+  - **Verification & Regression Coverage:** All 20 assertions passed in `scratch/test_merchant_details_layering.js`, 39/39 passed in `scratch/test_voyage_card_containment.js`, 51/51 in `scratch/test_navigation_cleanup.js`, 144/144 in `scratch/test_seller_navbar_unification.js`, 72/72 in `scratch/test_buyer_commerce_flow.js`, 92/92 in `scratch/test_milestone_5_4.js`, 100/100 in `scratch/test_aud_001_multi_seller_fulfillment.js`, and 42/42 clean EJS syntax checks.
+
 ## [2026-10-19] — My Voyages / Order Card Overflow & Stray Element Under Navbar Fix
 * **Captain's Voyage Ledger UI Containment & Navbar Docking (`views/orders.ejs`, `views/partials/header.ejs`, `scratch/test_voyage_card_containment.js`):**
   - **Repaired Stray / Floating Element Below Navbar:** Resolved the disconnected appearance of the Captain's Log side panel toggle by updating its fixed layout coordinates from hardcoded viewport coordinates (`left: 20px; top: 98px;`) to directly align with the canonical floating navbar's left flank across all breakpoints:

@@ -14,11 +14,40 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **My Voyages / Captain's Ledger Card Containment & Stray Element Under Navbar Completed & Verified**
+* **Active Status:** **Merchant Details Page Layering, Background & Captain Toggle Positioning Completed & Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Merchant Details Page Layering, Background & Captain Toggle Positioning (`views/seller-discovery.ejs`, `views/partials/header.ejs`, `public/css/island-store.css`, `public/images/merchant-guild-bg.jpg`, `scratch/test_merchant_details_layering.js`):**
+  - **Root Cause 1 (Content & Background Under/Behind Navbar):**
+    - The legacy island store had duplicate `.store-header-controls` containing modal cart/close buttons (`&times;`, `🛒 CART`, and a fake `1,240 Doubloons` pill). Because `.store-header-controls` used `position: absolute; top: 6px; right: 0;` and its parent `.detail-nav-bar` lacked `position: relative`, the controls positioned themselves relative to `.seller-discovery-wrapper` at `y = 6px` from the top of the viewport, colliding with and sliding behind the floating navbar's top-right corner.
+    - `.seller-discovery-wrapper` used `padding: 96px 24px 60px 24px;`. With the floating navbar extending to ~`84px`, the breadcrumbs and card header lacked adequate breathing room below the navbar's shadow.
+    - The background was hardcoded to the generic island globe asset (`/images/astrolabe-bg.jpg`), showing a bright tropical beach and sky directly behind the navbar.
+  - **Fix 1 (Layering, Spacing & Clean Semantic Breadcrumbs):**
+    - Removed duplicate `.store-header-controls` from `views/seller-discovery.ejs`, eliminating the rogue `&times;` and duplicate `🛒 CART` buttons.
+    - Standardized on semantic breadcrumbs `<nav class="detail-breadcrumbs" aria-label="Merchant Storefront Breadcrumbs">`.
+    - Added `position: relative;` to `.detail-nav-bar` in `public/css/island-store.css` to contain any internal absolute elements across all detail views.
+    - Increased `.seller-discovery-wrapper` top padding to `108px` (desktop), `96px` (tablet), `90px` (mobile), providing clean 24px clearance beneath the floating navbar.
+  - **Root Cause 2 (Captain Toggle Moving Towards Center):**
+    - In the previous task, `.captain-panel` was set to `left: calc(50% - 550px)`. On wide viewports (1440px / 1920px), this pulled the toggle 410px inward away from the viewport edge to the left flank of the centered 1100px navbar.
+  - **Fix 2 (Far-Left Viewport Docking):**
+    - Restored `.captain-panel` to `position: fixed; left: 20px; top: 96px;` on desktop (`> 1260px`), `left: 14px; top: 92px;` on medium screens (`901px - 1260px`), and `left: 14px; top: 88px;` on mobile (`<= 900px`).
+    - Anchored firmly to the FAR-LEFT SIDE OF THE VIEWPORT, completely independent of any centered max-width container.
+  - **Fix 3 (Dedicated Merchant Guild Background & Atmospheric Vignette):**
+    - Generated and integrated a dedicated, bespoke dark nautical fantasy asset (`/images/merchant-guild-bg.jpg`) featuring an old-world grand admiralty harbor at twilight, fortified stone docks, glowing amber lanterns, moored galleons, and misty waters.
+    - Added `.merchant-vignette` with a deep obsidian gradient at the top (`linear-gradient(180deg, rgba(2, 4, 8, 0.95) 0%, ...)`) providing rich, intentional contrast behind the floating navbar.
+    - Scoped strictly via `.merchant-details-page` on `<body>` to prevent any side effects on Product Details, Island pages, or other routes.
+  - **Verification & Regression Coverage:**
+    - 20/20 checks passed in `scratch/test_merchant_details_layering.js`.
+    - 39/39 checks passed in `scratch/test_voyage_card_containment.js`.
+    - 51/51 checks passed in `scratch/test_navigation_cleanup.js`.
+    - 144/144 checks passed in `scratch/test_seller_navbar_unification.js`.
+    - 72/72 checks passed in `scratch/test_buyer_commerce_flow.js`.
+    - 92/92 checks passed in `scratch/test_milestone_5_4.js`.
+    - 100/100 checks passed in `scratch/test_aud_001_multi_seller_fulfillment.js`.
+    - 42/42 EJS templates syntax verified clean.
+
 * **My Voyages / Captain's Ledger Card Containment & Stray Element Under Navbar (`views/orders.ejs`, `views/partials/header.ejs`, `scratch/test_voyage_card_containment.js`):**
   - **Root Cause 1 (Stray / Floating UI Element Below Navbar):** The Captain side-panel `<aside class="captain-panel" id="captainSidePanel">` was positioned relative to the viewport at `left: 20px; top: 98px;`, while the canonical navbar was centered at `left: 50%; transform: translateX(-50%); width: min(1100px, calc(100% - 60px))`. On desktop displays (1440px/1280px), this left the collapsed Captain's Log toggle floating isolated in empty space underneath the left side of the navbar. Additionally, legacy duplicate `.store-header-controls` containing modal cart/close buttons (`🛒 HOLD` and `&times;`) was present under the navbar on `/orders`.
   - **Fix 1 (Canonical Anchoring & Clean Navigation):** Anchored `.captain-panel` directly to the canonical navbar's left flank across all breakpoints:
