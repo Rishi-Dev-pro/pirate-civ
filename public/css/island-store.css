@@ -77,6 +77,86 @@ body.island-store-body {
 }
 
 /* =========================================================
+   2B. SELLER REALM — PIRATE MERCHANT HARBOR BACKDROP SYSTEM
+   Cohesive full-width night ocean, galleons, trading docks, and
+   lantern-lit port city for all seller merchant pages.
+========================================================= */
+
+body.seller-realm-body,
+body.seller-dashboard-body,
+body.seller-products-body,
+body.seller-edit-body,
+body.seller-orders-body,
+body.seller-profile-body,
+body.seller-discovery-body,
+body.seller-storefront-body,
+body.merchant-details-page {
+    background-color: #020408 !important;
+}
+
+/* Seller backdrop container */
+.seller-realm-backdrop,
+body.seller-realm-body .store-backdrop,
+body.seller-dashboard-body .store-backdrop,
+body.seller-products-body .store-backdrop,
+body.seller-edit-body .store-backdrop,
+body.seller-orders-body .store-backdrop,
+body.seller-profile-body .store-backdrop,
+body.seller-discovery-body .store-backdrop,
+body.seller-storefront-body .store-backdrop,
+body.merchant-details-page .store-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    background: #020408;
+}
+
+/* Seller background image */
+.seller-realm-bg-img,
+body.seller-realm-body .store-bg-img,
+body.seller-dashboard-body .store-bg-img,
+body.seller-products-body .store-bg-img,
+body.seller-edit-body .store-bg-img,
+body.seller-orders-body .store-bg-img,
+body.seller-profile-body .store-bg-img,
+body.seller-discovery-body .store-bg-img,
+body.seller-storefront-body .store-bg-img,
+body.merchant-details-page .store-bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+    opacity: 0.65;
+    filter: contrast(1.10) brightness(0.82) saturate(1.05);
+    transform: scale(1.02);
+    transition: opacity 0.4s ease;
+}
+
+/* Seller atmospheric vignette & overlay */
+.seller-realm-vignette,
+body.seller-realm-body .store-vignette,
+body.seller-dashboard-body .store-vignette,
+body.seller-products-body .store-vignette,
+body.seller-edit-body .store-vignette,
+body.seller-orders-body .store-vignette,
+body.seller-profile-body .store-vignette,
+body.seller-discovery-body .store-vignette,
+body.seller-storefront-body .store-vignette,
+body.merchant-details-page .store-vignette {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(ellipse at 50% 35%, rgba(6, 11, 20, 0.30) 0%, rgba(4, 7, 13, 0.78) 65%, #020408 100%),
+        linear-gradient(180deg, rgba(2, 4, 8, 0.92) 0%, rgba(4, 8, 14, 0.40) 18%, rgba(3, 6, 12, 0.70) 72%, #020408 100%);
+    pointer-events: none;
+}
+
+/* =========================================================
    3. MASTER STORE STAGE & TOP BAR (MATCHES MOCKUP)
 ========================================================= */
 
@@ -4121,6 +4201,33 @@ body.theme-velvet .btn-add-cart:hover {
     color: #fca5a5;
     border: 1px solid rgba(239, 68, 68, 0.4);
 }
+
+/* =========================================================
+   SELLER REALM RESPONSIVE REFINEMENTS
+   Ensures seamless scaling on mobile (480px, 390px, 360px)
+   with zero horizontal overflow and readable panels.
+========================================================= */
+
+@media (max-width: 480px) {
+    .seller-dashboard-wrapper {
+        padding: 86px 14px 40px 14px;
+    }
+    .seller-dashboard-card,
+    .seller-edit-form-card {
+        padding: 22px 16px;
+    }
+}
+
+@media (max-width: 380px) {
+    .seller-dashboard-wrapper {
+        padding: 82px 10px 32px 10px;
+    }
+    .seller-dashboard-card,
+    .seller-edit-form-card {
+        padding: 18px 12px;
+    }
+}
+
 
 
 

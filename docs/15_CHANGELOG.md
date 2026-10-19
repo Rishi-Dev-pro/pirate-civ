@@ -2,6 +2,31 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-19] — Seller UI: Replaced Tropical Island Backdrop with Pirate Merchant Harbor World
+* **Comprehensive Seller Area Background Replacement (`public/css/island-store.css`, `views/seller/*.ejs`, `views/seller-discovery.ejs`, `scratch/test_seller_merchant_harbor_backdrop.js`, `scratch/audit_seller_responsive.js`):**
+  - **Identified Root Cause of Ugly Tropical Vacation Background:**
+    - Traced the origin of the tropical island backdrop to `controller/sellers.js` passing `island: islandMeta` (where `islandMeta = ISLANDS_DATA[sellerUser.homeIsland]`) into all seller templates.
+    - Seller views (`dashboard.ejs`, `products.ejs`, `product-create.ejs`, `product-edit.ejs`, `orders.ejs`, `order-detail.ejs`, `profile.ejs`) previously referenced `<img src="<%= (island && island.image) ? island.image : '/images/astrolabe-bg.jpg' %>">`, which rendered `island-astrolabe-dusty.png` (a bright, circular tropical vacation island with palm trees and beaches).
+  - **Replaced with Cinematic Pirate Merchant Harbor Environment (`/images/merchant-guild-bg.jpg`):**
+    - Removed all tropical island image references and fallback dependencies across all 8 seller pages:
+      1. `/seller/dashboard` (Seller Deck / Command Center)
+      2. `/seller/products` (Vault Products)
+      3. `/seller/products/new` (Forge New Cargo)
+      4. `/seller/products/:id/edit` (Edit Cargo / Product)
+      5. `/seller/orders` (Seller Orders)
+      6. `/seller/orders/:id` (Seller Order Details)
+      7. `/seller/profile` (Seller Profile)
+      8. `/seller/:id` (Merchant Storefront / Details)
+    - Applied the canonical full-width pirate merchant harbor artwork (`/images/merchant-guild-bg.jpg`, 805 KB) depicting tall merchant/pirate galleons anchored on the left, moonlit night sea and water reflections in the center, and lantern-lit port city docks and fortified guildhall towers on the right.
+  - **Centralized Seller Realm Backdrop Architecture in `public/css/island-store.css`:**
+    - Defined canonical rules for `.seller-realm-backdrop`, `.seller-realm-bg-img`, and `.seller-realm-vignette` scoped to `body.seller-realm-body` and all seller page body classes.
+    - Applied deep oceanic vignette (`radial-gradient(ellipse at 50% 35%, ...)`) and top navbar shadow shield (`linear-gradient(180deg, rgba(2, 4, 8, 0.92) ...)`) guaranteeing high contrast and readability for all forms, tables, and navbar elements.
+    - Added responsive mobile breakpoints (`@media (max-width: 480px)` and `@media (max-width: 380px)`) ensuring zero horizontal overflow and proper card padding across small screens.
+  - **Buyer World Strict Isolation:**
+    - Buyer pages (`/astrolabe`, `/kraken-vault`, `/cart`, `/orders`, `/home`, etc.) were left completely untouched with their unique explorer island identities preserved.
+  - **Zero Backend Logic Alterations:**
+    - Controllers, routes, auth, models, and fulfillment logic remain 100% untouched.
+
 ## [2026-10-19] — Premium Auth UI Polish: Integrated Charter & Iconic Map Composition
 * **Cohesive Pirate-Civ Authentication Experience Polish (`public/css/auth.css`, `views/buyer/*.ejs`, `views/seller/*.ejs`, `views/login.ejs`, `views/register.ejs`):**
   - **Eliminated Floating Navigation Disconnection (Charter Tabs):**

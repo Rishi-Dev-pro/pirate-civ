@@ -16,15 +16,15 @@
     <link rel="stylesheet" href="/css/island-store.css?v=p4_orders_v1">
 </head>
 
-<body class="island-store-body seller-orders-body">
+<body class="island-store-body seller-orders-body seller-realm-body">
 
-    <!-- Fixed Atmospheric Backdrop -->
-    <div class="store-backdrop">
-        <img src="<%= (island && island.image) ? island.image : '/images/astrolabe-bg.jpg' %>"
-             alt="Archipelago Backdrop"
-             class="store-bg-img"
-             onerror="this.onerror=null; this.src='/images/astrolabe-bg.jpg';">
-        <div class="store-vignette"></div>
+    <!-- Canonical Pirate Merchant Harbor Atmospheric Backdrop -->
+    <div class="store-backdrop seller-realm-backdrop">
+        <img src="/images/merchant-guild-bg.jpg"
+             alt="Pirate Merchant Fleet & Trading Harbor"
+             class="store-bg-img seller-realm-bg-img"
+             onerror="this.onerror=null; this.src='/images/merchant-guild-bg.jpg';">
+        <div class="store-vignette seller-realm-vignette"></div>
     </div>
 
     <!-- Reusable Main Navigation Bar -->

@@ -14,11 +14,34 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Premium Auth UI Polish (Integrated Charter Tabs & Cinematic Map Composition) Completed & Verified**
+* **Active Status:** **Seller UI: Replaced Tropical Island Backdrop with Pirate Merchant Harbor World Completed & Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Seller UI: Pirate Merchant Harbor Backdrop Replacement (`public/css/island-store.css`, `views/seller/*.ejs`, `views/seller-discovery.ejs`, `scratch/test_seller_merchant_harbor_backdrop.js`, `scratch/audit_seller_responsive.js`):**
+  - **Identified Deficiencies & Root Cause:**
+    - All 7 core seller pages (`/seller/dashboard`, `/seller/products`, `/seller/products/new`, `/seller/products/:id/edit`, `/seller/orders`, `/seller/orders/:id`, `/seller/profile`) were rendering a bright, circular tropical vacation island with palm trees and beaches (`island-astrolabe-dusty.png`) or falling back to `astrolabe-bg.jpg`.
+    - This tropical resort visual conflicted directly with the serious merchant civilization aesthetic of Pirate-Civ.
+  - **Replaced at the Source Across All 8 Seller Pages:**
+    - Standardized on the canonical, atmospheric night pirate harbor artwork: `/images/merchant-guild-bg.jpg` (805 KB, 1920x1080).
+    - Features large merchant/pirate galleons anchored on the left, moonlit night sea and reflections in the center, and lantern-lit port city docks, warehouse quays, and fortified guildhall towers on the right.
+    - Updated all 8 seller views:
+      1. `/seller/dashboard` (Seller Deck)
+      2. `/seller/products` (Vault Products)
+      3. `/seller/products/new` (Forge New Cargo)
+      4. `/seller/products/:id/edit` (Edit Cargo / Product)
+      5. `/seller/orders` (Seller Orders)
+      6. `/seller/orders/:id` (Seller Order Details)
+      7. `/seller/profile` (Seller Profile)
+      8. `/seller/:id` (Merchant Storefront / Details)
+  - **Centralized CSS System in `public/css/island-store.css`:**
+    - Defined `.seller-realm-backdrop`, `.seller-realm-bg-img`, and `.seller-realm-vignette` scoped to `body.seller-realm-body` and all seller body classes (`.seller-dashboard-body`, `.seller-products-body`, `.seller-edit-body`, `.seller-orders-body`, `.seller-profile-body`, `.seller-storefront-body`, `.merchant-details-page`).
+    - Integrated deep oceanic vignette and dark obsidian top shadow guaranteeing crystal-clear readability for all forms, tables, and navbar components.
+    - Added responsive mobile breakpoints (`@media (max-width: 480px)` and `@media (max-width: 380px)`) ensuring zero horizontal overflow and tight card padding across phones.
+  - **Strict Buyer Isolation:** Buyer island stores (`/astrolabe`, `/kraken-vault`, etc.) and cart/orders remain completely untouched with their unique explorer themes.
+  - **Zero Backend Logic Alterations:** No routes, controllers, middleware, or database models were modified.
+  - **Test Coverage:** All 8 seller pages verified in `scratch/test_seller_merchant_harbor_backdrop.js`, 144/144 passed in `scratch/test_seller_navbar_unification.js`, 20/20 in `scratch/test_merchant_details_layering.js`, 77/77 in `scratch/test_dedicated_auth_rebuild.js`, 100/100 in `scratch/test_aud_001_multi_seller_fulfillment.js`, and 42/42 clean EJS syntax checks.
 * **Premium Auth UI Polish: Integrated Charter Tabs & Cinematic Map World (`public/css/auth.css`, `views/buyer/*.ejs`, `views/seller/*.ejs`, `views/login.ejs`, `views/register.ejs`):**
   - **Identified Deficiencies & Root Cause:**
     - The restored map was visually disconnected from the auth card by an oversized 55px-65px gap and an unadorned pitch-black void.
