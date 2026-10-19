@@ -19,6 +19,7 @@ All notable changes, milestones, bug fixes, and architectural adjustments to Pir
     - Display font standardized on classical Roman/imperial `Cinzel`.
     - Added imperial charter kickers: `SOVEREIGN GUILD` (Merchant) and `CHARTED REALM` (Buyer) in crisp gold.
     - Dominant role titles (`MERCHANT` / `BUYER`) styled with high-contrast, luminous ivory-gold highlights (`#fffdf5`) and deep cast shadows for readability over the parchment map.
+    - Adjusted horizontal padding and typography scaling (`font-size: clamp(1.85rem, 2.3vw, 2.5rem); letter-spacing: 0.11em`) shifting the entire written portion inward on both portals, ensuring `MERCHANT`'s "NT" and `BUYER`'s "B" sit 100% inside the solid parchment map with generous margins from the torn edges.
     - Razor-thin 1px antique brass divider with a centered 8-point gold compass star SVG.
     - Elevated action cues (`ENTER COMMAND DECK` / `ENTER THE SEA CHART`) with directional animated SVG arrows that glide on hover.
   - **Organic Hover & Atmospheric Dimming:**

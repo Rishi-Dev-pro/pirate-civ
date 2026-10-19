@@ -32,6 +32,7 @@
     - Standardized on classical Roman/imperial `Cinzel` font.
     - Added imperial charter kickers: `SOVEREIGN GUILD` / `CHARTED REALM`.
     - Dominant role titles (`MERCHANT` / `BUYER`) styled with luminous ivory-gold relief and deep cast shadows for maximum legibility over parchment.
+    - Adjusted horizontal padding and typography scaling (`font-size: clamp(1.85rem, 2.3vw, 2.5rem); letter-spacing: 0.11em`) shifting the entire written portion inward on both portals, ensuring `MERCHANT`'s "NT" and `BUYER`'s "B" sit 100% inside the solid parchment map with generous margins from the torn edges.
     - Hairline antique brass divider with a centered 8-point gold compass star SVG.
     - Action invitations (`ENTER COMMAND DECK` / `ENTER THE SEA CHART`) with directional SVG arrows that glide on hover.
   - **Organic Hover & Atmospheric Dimming:**
