@@ -14,11 +14,18 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Gateway / Role Selection Cinematic Polish Completed & Verified**
+* **Active Status:** **Secret Admin Entrance (Triple Logo Click → Blackout → Skull Reveal → Admin Dashboard) Completed & Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Secret Admin Entrance Easter Egg (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`, `routes/web.js`):**
+  - **Interaction Sequence:** Triple click on Pirate-Civ logo (`#gatewayHeroLogo`) → 1.5s blackout transition → 600ms deliberate black hold → 1.5s slow skull reveal → subtle 3.8s breathing glow atmosphere → skull click dissolves to `/admin/dashboard`.
+  - **Asset:** Used uploaded transparent Pirate-Civ skull image (`public/images/gateway/pirate-civ-skull.png`). Preloaded on click 1.
+  - **Escape & Reset:** `Escape` key and 3.5s inactivity timeout safely reset the sequence.
+  - **Security:** Canonical `/admin/dashboard` protected by `[authMiddleware, requireAdmin]`. Guests redirect to `/buyer/login`, non-admins receive HTTP 403 Forbidden.
+  - **Verification:** 100% passed on `scratch/test_secret_admin_entrance.js` + browser testing.
+
 * **Final Pirate-Civ Gateway / Entry Map Visual Polish (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`):**
   - **Preserved Existing Cinematic Map & Center Composition:** Sunset harbor scene (`/images/gateway/gateway-background.jpg`) and Pirate-Civ logo remain the central visual focus with open sky, sunset rays, and pirate galleons.
   - **Eliminated Ugly Orange Vertical Rectangles:**

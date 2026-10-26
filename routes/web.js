@@ -152,6 +152,34 @@ router.get(
 
 
 // =====================================================
+// ADMIRALTY COMMAND DECK / CANONICAL ADMIN DASHBOARD
+// =====================================================
+
+import { requireAdmin } from "../middleware/roles.js";
+
+router.get(
+    "/admin/dashboard",
+    authMiddleware,
+    requireAdmin,
+    (req, res) => {
+        res.render("home", {
+            page_title: "Admiralty Command Deck | Pirate-Civ",
+            user: req.user
+        });
+    }
+);
+
+router.get(
+    "/admin",
+    authMiddleware,
+    requireAdmin,
+    (req, res) => {
+        res.redirect("/admin/dashboard");
+    }
+);
+
+
+// =====================================================
 // ABOUT
 // =====================================================
 

@@ -2,6 +2,39 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-27] — Feature: Secret Admin Entrance (Triple Logo Click → Cinematic Blackout → Skull Reveal → Admin Dashboard)
+* **Secret Admiralty Entrance Easter Egg Implementation (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`, `routes/web.js`):**
+  - **Triple Logo Click State Machine:**
+    - Attached click detection specifically to the Pirate-Civ hero logo (`#gatewayHeroLogo`).
+    - Configured a dedicated `0 → 1 → 2 → 3` state machine. Clicks elsewhere (Buyer/Merchant maps, background) do not increment counter.
+    - Added subtle, discreet visual pulse and brightness feedback (`.logo-click-pulse`) on click 1 and 2 to confirm intentional interaction without spoiling the Easter egg.
+    - Implemented a 3.5s forgiving inactivity reset timer and global `Escape` key cancellation that instantly aborts the sequence and restores the gateway.
+    - Silently preloads the uploaded skull asset on the first click for zero-latency reveal.
+  - **Cinematic Blackout & Hold Transition:**
+    - On the 3rd logo click, normal gateway interactions are immediately locked.
+    - Initiates a smooth 1.5s cinematic fade-to-black (`.secret-admin-entrance.secret-entrance-blackout`) over an isolated `#000000` fixed overlay (`z-index: 99999`) while preserving the underlying gateway intact beneath.
+    - Holds in pure silence and complete darkness for 600ms before initiating the skull reveal.
+  - **Centered Transparent Skull Reveal & Atmosphere:**
+    - Sourced the uploaded transparent Pirate-Civ skull image (`/images/gateway/pirate-civ-skull.png`).
+    - Animate smoothly into view over 1.5s ease-out from `opacity: 0, scale: 0.94, brightness: 0.7` to `opacity: 1, scale: 1, brightness: 1` with a soft golden-crimson drop shadow.
+    - Sized responsively (`width: min(42vw, 420px); max-width: 80vw; max-height: 70vh`).
+    - After reveal completion, activates a slow 3.8s cyclical breathing animation (`@keyframes secretSkullBreathe`) with subtle atmospheric glow fluctuations.
+  - **Interactive Skull & Admin Navigation:**
+    - Skull remains non-interactive and disabled until reveal completes, preventing premature clicks.
+    - Upon reveal, enables accessible button interaction (`tabindex="0"`, `aria-label="Enter Sovereign Admiralty Command"`, pointer cursor, keyboard Enter/Space activation).
+    - On hover, gently increases gold drop-shadow glow and applies a subtle `1.025` scale lift.
+    - Clicking the skull locks repeat clicks, triggers a 650ms cinematic dissolve, and navigates to the canonical admin dashboard URL (`/admin/dashboard`).
+  - **Security & Authorization Model:**
+    - Bound `/admin/dashboard` (and `/admin` alias) in `routes/web.js` strictly to `[authMiddleware, requireAdmin]`.
+    - Unauthenticated users are redirected to login (`/buyer/login`) via existing session guards.
+    - Authenticated buyers and sellers attempting direct access receive HTTP 403 Forbidden (`Access denied: insufficient permissions.`).
+    - Authorized admin users render the Admiralty Command Deck (`views/home.ejs` with full Admiralty navigation and badge).
+    - Reduced motion media query (`prefers-reduced-motion`) implemented for instantaneous accessibility transitions.
+  - **Testing & Verification:**
+    - Created and executed `scratch/test_secret_admin_entrance.js` (initial markup, asset delivery, RBAC enforcement, guest redirection, JS/CSS contracts: 100% passed).
+    - Executed live browser session verification confirming full visual sequence and redirection.
+    - Verified zero regressions on existing suites (`test_aud_6_3_f01_payment_fulfillment_separation.js`: 52/52 passed).
+
 ## [2026-10-20] — UI/UX: Final Pirate-Civ Gateway / Entry Map Visual Polish
 * **Complete Gateway / Role Selection Screen Polish (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`):**
   - **Preserved Existing Cinematic Map & Center Composition:**

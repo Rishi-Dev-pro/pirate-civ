@@ -111,7 +111,19 @@ body.gateway-body {
     object-fit: contain;
     filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.95))
             drop-shadow(0 0 24px rgba(212, 175, 55, 0.3));
-    transition: transform 0.4s ease;
+    transition: transform 0.25s ease, filter 0.25s ease;
+    pointer-events: auto;
+    cursor: default;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+}
+
+.gateway-hero-logo.logo-click-pulse {
+    transform: scale(0.975);
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.95))
+            drop-shadow(0 0 32px rgba(255, 215, 0, 0.5))
+            brightness(1.08);
 }
 
 .gateway-tagline {
@@ -653,5 +665,166 @@ body.gateway-body {
     .stage-focus-left .portal-buyer,
     .stage-focus-right .portal-merchant {
         opacity: 0.75;
+    }
+}
+
+/* ==========================================================================
+   8. SECRET ADMIN ENTRANCE — EASTER EGG (TRIPLE LOGO CLICK)
+   Cinematic blackout, hold, slow skull reveal, breathing atmosphere, dissolve.
+   ========================================================================== */
+
+.secret-admin-entrance {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    z-index: 99999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000000;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 1.5s cubic-bezier(0.22, 1, 0.36, 1),
+                visibility 1.5s ease;
+    overflow: hidden;
+}
+
+.secret-admin-entrance.secret-entrance-blackout {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+.secret-admin-entrance.secret-entrance-dissolve {
+    opacity: 0;
+    transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.secret-admin-backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    background: #000000;
+    pointer-events: none;
+}
+
+.secret-admin-chamber {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100%;
+    padding: 24px;
+}
+
+.secret-admin-skull-btn {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    cursor: default;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.secret-admin-skull-btn:focus-visible {
+    outline: 2px solid rgba(212, 175, 55, 0.6);
+    outline-offset: 12px;
+    border-radius: 8px;
+}
+
+.secret-admin-skull-img {
+    width: min(42vw, 420px);
+    max-width: 80vw;
+    max-height: 70vh;
+    height: auto;
+    object-fit: contain;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+
+    /* Initial state before reveal: scale(0.94), brightness(0.7) */
+    opacity: 0;
+    transform: scale(0.94);
+    filter: brightness(0.7) drop-shadow(0 0 15px rgba(0, 0, 0, 0.9));
+    transition: opacity 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 1.5s cubic-bezier(0.16, 1, 0.3, 1),
+                filter 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Reveal transition */
+.secret-admin-skull-img.skull-revealed {
+    opacity: 1;
+    transform: scale(1);
+    filter: brightness(1) drop-shadow(0 0 25px rgba(212, 175, 55, 0.32)) drop-shadow(0 0 50px rgba(184, 28, 28, 0.18));
+}
+
+/* Breathing animation once revealed */
+.secret-admin-skull-img.skull-breathing {
+    animation: secretSkullBreathe 3.8s ease-in-out infinite;
+}
+
+@keyframes secretSkullBreathe {
+    0% {
+        transform: scale(1);
+        filter: brightness(0.95) drop-shadow(0 0 22px rgba(212, 175, 55, 0.28)) drop-shadow(0 0 45px rgba(184, 28, 28, 0.18));
+    }
+    50% {
+        transform: scale(1.015);
+        filter: brightness(1.08) drop-shadow(0 0 32px rgba(212, 175, 55, 0.48)) drop-shadow(0 0 60px rgba(184, 28, 28, 0.3));
+    }
+    100% {
+        transform: scale(1);
+        filter: brightness(0.95) drop-shadow(0 0 22px rgba(212, 175, 55, 0.28)) drop-shadow(0 0 45px rgba(184, 28, 28, 0.18));
+    }
+}
+
+/* Interactive state when button enabled */
+.secret-admin-skull-btn:not([disabled]) {
+    cursor: pointer;
+}
+
+.secret-admin-skull-btn:not([disabled]) .secret-admin-skull-img {
+    pointer-events: auto;
+}
+
+.secret-admin-skull-btn:not([disabled]):hover .secret-admin-skull-img {
+    transform: scale(1.025);
+    filter: brightness(1.15) drop-shadow(0 0 38px rgba(255, 215, 0, 0.55)) drop-shadow(0 0 70px rgba(212, 147, 57, 0.35));
+    transition: transform 0.4s ease, filter 0.4s ease;
+}
+
+/* Dissolve animation when clicked */
+.secret-admin-skull-img.skull-dissolve {
+    opacity: 0;
+    transform: scale(0.92);
+    filter: brightness(0.2) drop-shadow(0 0 10px rgba(0, 0, 0, 1));
+    transition: opacity 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.65s cubic-bezier(0.4, 0, 0.2, 1),
+                filter 0.65s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Accessibility: Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .secret-admin-entrance {
+        transition-duration: 0.2s !important;
+    }
+    .secret-admin-skull-img {
+        transition-duration: 0.2s !important;
+        animation: none !important;
+    }
+    .secret-admin-skull-btn:not([disabled]):hover .secret-admin-skull-img {
+        transform: none !important;
     }
 }

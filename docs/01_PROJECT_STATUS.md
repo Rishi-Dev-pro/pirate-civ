@@ -11,6 +11,12 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ## 1. System Status by Category
 
 ### 🟢 COMPLETE
+* **Secret Admin Entrance (Triple Logo Click → Cinematic Blackout → Skull Reveal → Admin Dashboard):** Hidden Easter Egg providing access to the canonical Admiralty Command Deck (`/admin/dashboard`):
+  - **Triple Logo Click Trigger:** Dedicated state machine listening on `#gatewayHeroLogo` with discrete scale/glow feedback (`.logo-click-pulse`) on early clicks, 3.5s inactivity timeout, and `Escape` reset behavior.
+  - **Cinematic Blackout:** 1.5s fade-to-black over `#000000` overlay followed by 600ms hold.
+  - **Atmospheric Transparent Skull Reveal:** Slow 1.5s fade-in of the uploaded transparent skull asset (`/images/gateway/pirate-civ-skull.png`), followed by 3.8s cyclical breathing animation (`@keyframes secretSkullBreathe`), accessible hover lift, and keyboard Enter/Space activation.
+  - **Strict Server RBAC:** `/admin/dashboard` and `/admin` guarded by `[authMiddleware, requireAdmin]`. Unauthenticated users redirect to login, non-admins receive HTTP 403.
+  - **Verification:** 100% test pass on `scratch/test_secret_admin_entrance.js` and zero regressions across existing test suites.
 * **Dedicated Buyer / Seller Authentication Rebuild (Option A Architecture):** Complete architectural separation of Buyer and Seller authentication at the route, view, controller, UI, and authorization levels:
   - **Dedicated Routes (`routes/web.js`):** Implemented `/buyer/login`, `/buyer/register`, `/seller/login`, `/seller/register` with clean backward compatibility aliases (`/login` and `/register`).
   - **Server-Forced Role Enforcement (`controller/auth.js`):** The endpoint itself dictates role assignment. `/buyer/register` forces `role: 'buyer'`; `/seller/register` forces `role: 'seller'` and mandates `storeName`. Client role manipulation via request body is completely ignored.
