@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "PIRATE-CIV // DEVELOPER GATE" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Developer Realm Stylesheet -->
+    <link rel="stylesheet" href="/css/developer.css?v=dev_realm_v1">
+</head>
+
+<body class="dev-body">
+
+    <div class="dev-login-wrap">
+
+        <div class="dev-login-box">
+
+            <div class="dev-login-header">
+                <span class="dev-login-kicker">SOVEREIGN CIPHER</span>
+                <h1 class="dev-login-title">DEVELOPER GATE</h1>
+                <p class="dev-login-subtitle">Authenticate with developer credentials to enter the chamber.</p>
+            </div>
+
+            <% if (typeof error !== 'undefined' && error) { %>
+                <div class="dev-login-error" role="alert">
+                    <%= error %>
+                </div>
+            <% } %>
+
+            <form action="/admin/login" method="POST" class="dev-login-form" novalidate>
+
+                <input type="hidden" name="returnTo" value="<%= (typeof returnTo !== 'undefined' && returnTo) ? returnTo : '/admin/dashboard' %>">
+
+                <div class="dev-form-group">
+                    <label for="devEmailInput" class="dev-form-label">Developer Email</label>
+                    <input type="email"
+                           id="devEmailInput"
+                           name="email"
+                           class="dev-form-input"
+                           placeholder="developer@pirate-civ.internal"
+                           value="<%= (typeof email !== 'undefined' && email) ? email : '' %>"
+                           required
+                           autocomplete="username"
+                           autofocus>
+                </div>
+
+                <div class="dev-form-group">
+                    <label for="devPasswordInput" class="dev-form-label">Sovereign Cipher</label>
+                    <input type="password"
+                           id="devPasswordInput"
+                           name="password"
+                           class="dev-form-input"
+                           placeholder="••••••••••••"
+                           required
+                           autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="dev-login-submit" id="btnDevSubmit">
+                    Enter Developer Realm
+                </button>
+
+            </form>
+
+            <div class="dev-login-footer">
+                <a href="/">← Return to Gateway</a>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

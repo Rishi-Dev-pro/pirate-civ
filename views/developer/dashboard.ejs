@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "PIRATE-CIV // DEVELOPER REALM" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Developer Realm Stylesheet -->
+    <link rel="stylesheet" href="/css/developer.css?v=dev_realm_v1">
+</head>
+
+<body class="dev-body">
+
+    <div class="dev-container">
+
+        <!-- ===================================================================
+             TOP COMMAND BAR
+             =================================================================== -->
+        <header class="dev-topbar" role="banner">
+            <div class="dev-branding">
+                <span class="dev-realm-tag">PIRATE-CIV // SOVEREIGN ARCHITECT</span>
+                <h1 class="dev-title-main">DEVELOPER REALM</h1>
+            </div>
+
+            <div class="dev-actions">
+                <div class="dev-status-pill" title="Security Perimeter Active">
+                    <span class="dev-status-indicator"></span>
+                    <span>REALM SECURED // AUTHENTICATED</span>
+                </div>
+
+                <a href="/home" class="dev-btn" id="btnReturnSeaChart">
+                    <span>RETURN TO SEA CHART</span>
+                </a>
+
+                <a href="/logout" class="dev-btn dev-btn-disconnect" id="btnDevDisconnect">
+                    <span>DISCONNECT</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- ===================================================================
+             DEVELOPER HERO BANNER
+             =================================================================== -->
+        <section class="dev-hero-section" aria-labelledby="devHeroHeading">
+            <span class="dev-hero-kicker">THE DEVELOPER'S CHAMBER</span>
+            <h2 class="dev-hero-heading" id="devHeroHeading">The Command Chamber Behind the Realm</h2>
+            <p class="dev-hero-desc">
+                Welcome, Architect. You stand in the subterranean control chamber of Pirate-Civ.
+                Every sea chart, cargo ledger, merchant charter, and cipher engine in the archipelago originates here.
+                This is your sovereign workspace.
+            </p>
+        </section>
+
+        <!-- ===================================================================
+             MODULAR FOUNDATION GRID (FUTURE DEVELOPER TOOLS)
+             =================================================================== -->
+        <h3 class="dev-grid-title">SOVEREIGN ARCHITECTURE FOUNDATION</h3>
+
+        <div class="dev-modules-grid">
+
+            <!-- MODULE 1: SYSTEM CORE -->
+            <div class="dev-card" id="cardSystemCore">
+                <div class="dev-card-header">
+                    <span class="dev-card-tag">[ SYSTEM ]</span>
+                    <span class="dev-card-badge badge-active">Active</span>
+                </div>
+                <p class="dev-card-desc">Runtime environment, kernel state, and host orchestration.</p>
+                <ul class="dev-card-kv-list">
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Runtime Engine</span>
+                        <span class="dev-kv-val">Node.js <%= (typeof systemStats !== 'undefined' && systemStats.nodeVersion) || process.version %></span>
+                    </li>
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Environment Mode</span>
+                        <span class="dev-kv-val"><%= (typeof systemStats !== 'undefined' && systemStats.envMode) || "development" %></span>
+                    </li>
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Host Platform</span>
+                        <span class="dev-kv-val"><%= (typeof systemStats !== 'undefined' && systemStats.platform) || process.platform %></span>
+                    </li>
+                </ul>
+                <div class="dev-foundation-notice">Foundation Established // Diagnostics Ready</div>
+            </div>
+
+            <!-- MODULE 2: SECURITY & PERIMETER -->
+            <div class="dev-card" id="cardSecurityPerimeter">
+                <div class="dev-card-header">
+                    <span class="dev-card-tag">[ SECURITY ]</span>
+                    <span class="dev-card-badge badge-secure">Secured</span>
+                </div>
+                <p class="dev-card-desc">Cryptographic token vaults, signed cookies, and RBAC gatekeeper.</p>
+                <ul class="dev-card-kv-list">
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Token Vault</span>
+                        <span class="dev-kv-val">HMAC-SHA256 Signed</span>
+                    </li>
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Session Cookie</span>
+                        <span class="dev-kv-val">HttpOnly + Signed</span>
+                    </li>
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Active Identity</span>
+                        <span class="dev-kv-val"><%= (typeof user !== 'undefined' && user.name) || "Developer" %></span>
+                    </li>
+                </ul>
+                <div class="dev-foundation-notice">Foundation Established // Security Gatekeeper Online</div>
+            </div>
+
+            <!-- MODULE 3: DATABASE & REGISTRY -->
+            <div class="dev-card" id="cardDatabaseRegistry">
+                <div class="dev-card-header">
+                    <span class="dev-card-tag">[ DATABASE ]</span>
+                    <span class="dev-card-badge badge-active">Connected</span>
+                </div>
+                <p class="dev-card-desc">Persistent document store housing users, islands, orders, and products.</p>
+                <ul class="dev-card-kv-list">
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Document Engine</span>
+                        <span class="dev-kv-val">MongoDB / Mongoose</span>
+                    </li>
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">State</span>
+                        <span class="dev-kv-val"><%= (typeof systemStats !== 'undefined' && systemStats.databaseStatus) || "Connected" %></span>
+                    </li>
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Schema Models</span>
+                        <span class="dev-kv-val">User, Product, Order, Contact</span>
+                    </li>
+                </ul>
+                <div class="dev-foundation-notice">Foundation Established // Storage Tier Operational</div>
+            </div>
+
+            <!-- MODULE 4: NAVIGATION ARCHITECTURE -->
+            <div class="dev-card" id="cardNavigationArchitecture">
+                <div class="dev-card-header">
+                    <span class="dev-card-tag">[ ROUTES ]</span>
+                    <span class="dev-card-badge">Mapped</span>
+                </div>
+                <p class="dev-card-desc">Application endpoint registry, role boundaries, and redirection maps.</p>
+                <ul class="dev-card-kv-list">
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Gateway Route</span>
+                        <span class="dev-kv-val">GET /</span>
+                    </li>
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Sea Chart</span>
+                        <span class="dev-kv-val">GET /home</span>
+                    </li>
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Developer Deck</span>
+                        <span class="dev-kv-val">GET /admin/dashboard</span>
+                    </li>
+                </ul>
+                <div class="dev-foundation-notice">Foundation Established // Routing Engine Calibrated</div>
+            </div>
+
+            <!-- MODULE 5: VERIFICATION MATRIX -->
+            <div class="dev-card" id="cardVerificationMatrix">
+                <div class="dev-card-header">
+                    <span class="dev-card-tag">[ TESTS ]</span>
+                    <span class="dev-card-badge badge-active">Verified</span>
+                </div>
+                <p class="dev-card-desc">Automated test suites, assertions, regression locks, and validation.</p>
+                <ul class="dev-card-kv-list">
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Gateway Tests</span>
+                        <span class="dev-kv-val">100% Passed</span>
+                    </li>
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Secret Entrance</span>
+                        <span class="dev-kv-val">Verified Clean</span>
+                    </li>
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">RBAC Isolation</span>
+                        <span class="dev-kv-val">Strict 403 Enforced</span>
+                    </li>
+                </ul>
+                <div class="dev-foundation-notice">Foundation Established // Test Engine Ready</div>
+            </div>
+
+            <!-- MODULE 6: SERVICES & IMAGING -->
+            <div class="dev-card" id="cardServicesImaging">
+                <div class="dev-card-header">
+                    <span class="dev-card-tag">[ SERVICES ]</span>
+                    <span class="dev-card-badge">Ready</span>
+                </div>
+                <p class="dev-card-desc">Image optimization, file upload pipeline, and external APIs.</p>
+                <ul class="dev-card-kv-list">
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">Image Pipeline</span>
+                        <span class="dev-kv-val">Sharp WebP Processing</span>
+                    </li>
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">OAuth Service</span>
+                        <span class="dev-kv-val">Google HMAC Verified</span>
+                    </li>
+                    <li class="dev-card-kv-item">
+                        <span class="dev-kv-key">File Transport</span>
+                        <span class="dev-kv-val">Multipart / Multer</span>
+                    </li>
+                </ul>
+                <div class="dev-foundation-notice">Foundation Established // Service Bus Mounted</div>
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>

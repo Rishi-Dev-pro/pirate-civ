@@ -255,7 +255,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 secretSkullBtn.disabled = false;
                 secretSkullBtn.setAttribute("tabindex", "0");
                 isSkullInteractive = true;
-                secretSkullBtn.focus();
             }, revealDuration);
 
         }, blackoutDuration + blackHoldDuration);

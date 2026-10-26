@@ -14,17 +14,18 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Secret Admin Entrance (Triple Logo Click → Blackout → Skull Reveal → Admin Dashboard) Completed & Verified**
+* **Active Status:** **Secret Developer Realm (Boxless Skull → Dedicated Developer Gate → Developer Realm Foundation) Completed & Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
-* **Secret Admin Entrance Easter Egg (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`, `routes/web.js`):**
-  - **Interaction Sequence:** Triple click on Pirate-Civ logo (`#gatewayHeroLogo`) → 1.5s blackout transition → 600ms deliberate black hold → 1.5s slow skull reveal → subtle 3.8s breathing glow atmosphere → skull click dissolves to `/admin/dashboard`.
-  - **Asset:** Used uploaded transparent Pirate-Civ skull image (`public/images/gateway/pirate-civ-skull.png`). Preloaded on click 1.
-  - **Escape & Reset:** `Escape` key and 3.5s inactivity timeout safely reset the sequence.
-  - **Security:** Canonical `/admin/dashboard` protected by `[authMiddleware, requireAdmin]`. Guests redirect to `/buyer/login`, non-admins receive HTTP 403 Forbidden.
-  - **Verification:** 100% passed on `scratch/test_secret_admin_entrance.js` + browser testing.
+* **Secret Developer Realm Foundation (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`, `public/images/gateway/pirate-civ-skull.png`, `middleware/auth.js`, `middleware/roles.js`, `controller/auth.js`, `routes/web.js`, `views/developer/dashboard.ejs`, `views/developer/login.ejs`, `public/css/developer.css`):**
+  - **Skull Box Elimination:** Replaced bounded image edges with 40px padded alpha buffer in `pirate-civ-skull.png` to avoid rectangular `filter: drop-shadow` clipping. Stripped all `.secret-admin-skull-btn:focus-visible` gold border/outline and button backgrounds. The skull floats organically in pitch blackness with smooth breathing glow.
+  - **Corrected Destination Route Chain:** Fixed `authMiddleware` and `requireRole` redirect fallthrough. Unauthenticated skull clicks now redirect specifically to `/admin/login` (Developer Gate) with `intent: 'admin'`, instead of falling through to `/buyer/login`.
+  - **Developer Realm Visual Terminology:** The UI prominently displays `PIRATE-CIV // DEVELOPER REALM` and `THE DEVELOPER'S CHAMBER` (never "Admin" in UI). The backend securely preserves the canonical `admin` role in database schemas and middleware.
+  - **Modular Developer Tools Foundation:** Created dashboard chamber with modular foundation cards (`[ SYSTEM ]`, `[ SECURITY ]`, `[ DATABASE ]`, `[ ROUTES ]`, `[ TESTS ]`, `[ SERVICES ]`) displaying authentic server diagnostics (uptime, memory, DB status, environment). Future features intentionally left unbuilt until requested.
+  - **Security Boundary:** Retained strict RBAC. Skull remains a hidden entrance, not an authentication bypass. Non-admin roles receive HTTP 403. Seeded developer account: `developer@pirate-civ.internal`.
+  - **Verification:** 100% test pass on `scratch/test_developer_realm.js` and 52/52 pass on `scratch/test_aud_6_3_f01_payment_fulfillment_separation.js`.
 
 * **Final Pirate-Civ Gateway / Entry Map Visual Polish (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`):**
   - **Preserved Existing Cinematic Map & Center Composition:** Sunset harbor scene (`/images/gateway/gateway-background.jpg`) and Pirate-Civ logo remain the central visual focus with open sky, sunset rays, and pirate galleons.

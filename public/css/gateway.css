@@ -720,27 +720,31 @@ body.gateway-body {
     justify-content: center;
     width: 100%;
     height: 100%;
-    padding: 24px;
-}
-
-.secret-admin-skull-btn {
-    background: transparent;
-    border: none;
     padding: 0;
     margin: 0;
-    outline: none;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+}
+
+.secret-admin-skull-btn,
+.secret-admin-skull-btn:focus,
+.secret-admin-skull-btn:focus-visible {
+    background: transparent !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    outline: none !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
     cursor: default;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     position: relative;
     -webkit-tap-highlight-color: transparent;
-}
-
-.secret-admin-skull-btn:focus-visible {
-    outline: 2px solid rgba(212, 175, 55, 0.6);
-    outline-offset: 12px;
-    border-radius: 8px;
+    -webkit-appearance: none;
+    appearance: none;
 }
 
 .secret-admin-skull-img {

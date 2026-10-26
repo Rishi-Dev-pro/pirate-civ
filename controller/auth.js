@@ -123,12 +123,19 @@ export const establishSessionAndCookie = async (req, res, user, options = {}) =>
         });
 
         // 6. Safe, role-enforced redirection
-        let destination = user.role === "seller" ? "/seller/dashboard" : "/home";
+        let destination = "/home";
+        if (user.role === "seller") {
+            destination = "/seller/dashboard";
+        } else if (user.role === "admin") {
+            destination = "/admin/dashboard";
+        }
 
         if (savedReturnTo) {
             if (user.role === "seller" && savedReturnTo.startsWith("/seller")) {
                 destination = savedReturnTo;
-            } else if (user.role === "buyer" && !savedReturnTo.startsWith("/seller")) {
+            } else if (user.role === "admin" && (savedReturnTo.startsWith("/admin") || savedReturnTo.startsWith("/developer"))) {
+                destination = savedReturnTo;
+            } else if (user.role === "buyer" && !savedReturnTo.startsWith("/seller") && !savedReturnTo.startsWith("/admin") && !savedReturnTo.startsWith("/developer")) {
                 destination = savedReturnTo;
             }
         }
@@ -668,6 +675,95 @@ export const registerUser = async (req, res) => {
     return registerBuyer(req, res);
 };
 
+/* =========================================================
+   DEVELOPER / ADMIN AUTHENTICATION CONTROLLERS
+========================================================= */
+
+/**
+ * GET /admin/login (also /developer/login)
+ */
+export const renderDeveloperLogin = (req, res) => {
+    if (req.user) {
+        if (req.user.role === "admin") return res.redirect("/admin/dashboard");
+        if (req.user.role === "seller") return res.redirect("/seller/dashboard");
+        return res.redirect("/home");
+    }
+
+    const returnTo = validateReturnTo(req.query.returnTo || req.session?.returnTo);
+
+    return res.render("developer/login", {
+        page_title: "PIRATE-CIV // DEVELOPER GATE",
+        error: req.query.error || null,
+        email: "",
+        returnTo: returnTo || "/admin/dashboard"
+    });
+};
+
+/**
+ * POST /admin/login (also /developer/login)
+ * Authenticates developers/admins only.
+ */
+export const loginDeveloper = async (req, res) => {
+    try {
+        const { email, password } = req.body || {};
+        const normalizedEmail = normalizeEmail(email);
+
+        if (!normalizedEmail || !password || typeof password !== "string") {
+            return res.status(400).render("developer/login", {
+                page_title: "PIRATE-CIV // DEVELOPER GATE",
+                error: "Developer email and sovereign cipher are required.",
+                email: normalizedEmail,
+                returnTo: validateReturnTo(req.body?.returnTo || req.query?.returnTo) || "/admin/dashboard"
+            });
+        }
+
+        const user = await User.findOne({ email: normalizedEmail });
+
+        if (!user) {
+            return res.status(401).render("developer/login", {
+                page_title: "PIRATE-CIV // DEVELOPER GATE",
+                error: "Invalid developer credentials.",
+                email: normalizedEmail,
+                returnTo: validateReturnTo(req.body?.returnTo || req.query?.returnTo) || "/admin/dashboard"
+            });
+        }
+
+        const passwordMatch = await bcrypt.compare(password, user.password || "");
+        if (!passwordMatch) {
+            return res.status(401).render("developer/login", {
+                page_title: "PIRATE-CIV // DEVELOPER GATE",
+                error: "Invalid developer credentials.",
+                email: normalizedEmail,
+                returnTo: validateReturnTo(req.body?.returnTo || req.query?.returnTo) || "/admin/dashboard"
+            });
+        }
+
+        // STRICT ROLE ENFORCEMENT: Developer portal requires admin role
+        if (user.role !== "admin") {
+            return res.status(403).render("developer/login", {
+                page_title: "PIRATE-CIV // DEVELOPER GATE",
+                error: "Access denied: Insufficient privileges for Developer Realm.",
+                email: normalizedEmail,
+                returnTo: ""
+            });
+        }
+
+        // Success: Establish session and redirect
+        return await establishSessionAndCookie(req, res, user, {
+            returnTo: req.body?.returnTo || req.query?.returnTo || "/admin/dashboard",
+            errorView: "developer/login"
+        });
+
+    } catch (error) {
+        console.error("Developer Login Error:", error);
+        return res.status(500).render("developer/login", {
+            page_title: "PIRATE-CIV // DEVELOPER GATE",
+            error: "An unexpected error occurred in the Developer Gate. Please try again.",
+            email: normalizeEmail(req.body?.email)
+        });
+    }
+};
+
 export default {
     normalizeEmail,
     validateEmail,
@@ -681,6 +777,8 @@ export default {
     renderSellerRegister,
     loginSeller,
     registerSeller,
+    renderDeveloperLogin,
+    loginDeveloper,
     logoutUser,
     loginUser,
     registerUser

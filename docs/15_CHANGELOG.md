@@ -2,6 +2,37 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-27] — Feature: Secret Developer Realm (Boxless Skull → Dedicated Developer Gate → Developer Realm Foundation)
+* **Secret Developer Entrance & Realm Foundation (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`, `public/images/gateway/pirate-civ-skull.png`, `middleware/auth.js`, `middleware/roles.js`, `controller/auth.js`, `routes/web.js`, `views/developer/dashboard.ejs`, `views/developer/login.ejs`, `public/css/developer.css`):**
+  - **Skull Box & Rectangular Constraint Elimination:**
+    - Root cause analysis: `.secret-admin-skull-btn:focus-visible` in `gateway.css` had `outline: 2px solid rgba(212, 175, 55, 0.6); outline-offset: 12px; border-radius: 8px;`, which immediately manifested as a gold box when `gateway.js` programmatically called `secretSkullBtn.focus()`. Additionally, the source PNG asset had raw non-zero alpha pixels touching the canvas boundary, causing CSS `filter: drop-shadow()` to render rectangular cutoffs.
+    - Reprocessed `pirate-civ-skull.png` via Sharp to add 40px of clean transparent boundary padding and subtle edge alpha smoothing, ensuring 0 edge pixels carry non-zero alpha.
+    - Stripped all container and button styling: `border: none !important; outline: none !important; box-shadow: none !important; background: transparent !important; padding: 0 !important; margin: 0 !important;` on `.secret-admin-chamber` and `.secret-admin-skull-btn`.
+    - Removed programmatic `.focus()` call in `gateway.js` so the skull renders purely as a floating transparent object in pitch blackness with organic breathing glow (`@keyframes secretSkullBreathe`) and restrained hover aura.
+  - **Corrected Destination & Authentication Route Chain:**
+    - Root cause analysis: When an unauthenticated visitor clicked the skull, navigation proceeded to `/admin/dashboard`. The route was protected by `authMiddleware`, which executed `redirectToLogin`. Previously, `redirectToLogin` only checked `if (isSeller)` and defaulted all other unauthenticated requests to `/buyer/login`. Similarly, `middleware/roles.js` fell through to `/buyer/login`.
+    - Fixed `redirectToLogin` in `middleware/auth.js` to inspect `req.originalUrl` / `req.path`. If the target starts with `/admin` or `/developer`, unauthenticated visitors are redirected to `/admin/login` with `intent: 'admin'`.
+    - Fixed `middleware/roles.js` `requireRole` to redirect to `/admin/login` when `roles.includes('admin')`.
+    - Added dedicated Developer Gate login views and handlers: `views/developer/login.ejs`, `renderDeveloperLogin`, and `loginDeveloper` at `/admin/login` (aliased to `/developer/login`).
+    - Updated `controller/auth.js` general session routing to direct users with `user.role === 'admin'` to `/admin/dashboard` while respecting sanitized `returnTo` URLs.
+  - **Strict Security Boundary Preservation:**
+    - The skull remains strictly a secret discovery mechanism, NEVER an authentication bypass.
+    - Non-admin authenticated accounts attempting direct access receive HTTP 403 Forbidden.
+    - Unauthenticated visitors are securely held at `/admin/login`.
+    - Seeded canonical developer credential: `developer@pirate-civ.internal` with `role: 'admin'` (`scripts/seedDeveloper.js`).
+  - **Product UI Terminology & Atmosphere (Developer vs Admin):**
+    - Transitioned all front-facing visuals from "Admin" to "DEVELOPER" (`PIRATE-CIV // DEVELOPER REALM`, `THE DEVELOPER'S CHAMBER`).
+    - Retained `admin` as the underlying technical database role and in authorization middleware without unnecessary schema churn.
+    - Atmospheric palette: obsidian black (`#070a0f`), aged brass (`#d4af37`), deep crimson (`#8b1515`), and muted sea teal (`#15323a`).
+  - **Modular Foundation for Future Developer Tooling:**
+    - Established clean, modular dashboard foundation cards: `[ SYSTEM ]`, `[ SECURITY ]`, `[ DATABASE ]`, `[ ROUTES ]`, `[ TESTS ]`, `[ SERVICES ]`.
+    - Populated with authentic runtime diagnostics (Node version, platform, memory usage, uptime, DB state, connection ping, session security status).
+    - Intentionally omitted speculative future controls, fake statistics, or dummy telemetry until explicitly requested.
+  - **Empirical Validation:**
+    - Verified via automated suite `scratch/test_developer_realm.js` (CSS box elimination, guest redirect to `/admin/login`, developer authentication, authorized dashboard access, and non-admin 403 enforcement: 100% pass).
+    - Verified payment/fulfillment separation regression suite `scratch/test_aud_6_3_f01_payment_fulfillment_separation.js` (52/52 passed, 0 failures).
+
+
 ## [2026-10-27] — Feature: Secret Admin Entrance (Triple Logo Click → Cinematic Blackout → Skull Reveal → Admin Dashboard)
 * **Secret Admiralty Entrance Easter Egg Implementation (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`, `routes/web.js`):**
   - **Triple Logo Click State Machine:**

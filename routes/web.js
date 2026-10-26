@@ -11,6 +11,8 @@ import {
     renderSellerRegister,
     loginSeller,
     registerSeller,
+    renderDeveloperLogin,
+    loginDeveloper,
     logoutUser,
     loginUser,
     registerUser
@@ -54,6 +56,14 @@ router.get("/seller/register", optionalAuth, renderSellerRegister);
 router.post("/seller/register", registerSeller);
 
 // =====================================================
+// DEDICATED DEVELOPER AUTHENTICATION ROUTES
+// =====================================================
+router.get("/admin/login", optionalAuth, renderDeveloperLogin);
+router.post("/admin/login", loginDeveloper);
+router.get("/developer/login", optionalAuth, renderDeveloperLogin);
+router.post("/developer/login", loginDeveloper);
+
+// =====================================================
 // GOOGLE OAUTH ROUTES
 // =====================================================
 router.get("/auth/google", initiateGoogleAuth);
@@ -64,6 +74,7 @@ router.get("/auth/google/callback", handleGoogleCallback);
 // =====================================================
 router.get("/login", optionalAuth, (req, res) => {
     if (req.user) {
+        if (req.user.role === "admin") return res.redirect("/admin/dashboard");
         if (req.user.role === "seller") return res.redirect("/seller/dashboard");
         return res.redirect("/home");
     }
@@ -72,6 +83,9 @@ router.get("/login", optionalAuth, (req, res) => {
     const queryStr = req.query.error ? `?error=${encodeURIComponent(req.query.error)}` : "";
     if (rawIntent === "seller" || rawIntent === "merchant") {
         return res.redirect(`/seller/login${queryStr}`);
+    }
+    if (rawIntent === "admin" || rawIntent === "developer") {
+        return res.redirect(`/admin/login${queryStr}`);
     }
     return res.redirect(`/buyer/login${queryStr}`);
 });
@@ -152,7 +166,7 @@ router.get(
 
 
 // =====================================================
-// ADMIRALTY COMMAND DECK / CANONICAL ADMIN DASHBOARD
+// DEVELOPER REALM / CANONICAL DEVELOPER DASHBOARD
 // =====================================================
 
 import { requireAdmin } from "../middleware/roles.js";
@@ -162,15 +176,42 @@ router.get(
     authMiddleware,
     requireAdmin,
     (req, res) => {
-        res.render("home", {
-            page_title: "Admiralty Command Deck | Pirate-Civ",
-            user: req.user
+        res.render("developer/dashboard", {
+            page_title: "PIRATE-CIV // DEVELOPER REALM",
+            user: req.user,
+            systemStats: {
+                nodeVersion: process.version,
+                envMode: process.env.NODE_ENV || "development",
+                platform: process.platform,
+                uptimeSeconds: Math.floor(process.uptime()),
+                databaseStatus: "Connected",
+                authEngine: "HMAC-SHA256 Token Vault",
+                activeRole: req.user.role
+            }
         });
     }
 );
 
 router.get(
     "/admin",
+    authMiddleware,
+    requireAdmin,
+    (req, res) => {
+        res.redirect("/admin/dashboard");
+    }
+);
+
+router.get(
+    "/developer",
+    authMiddleware,
+    requireAdmin,
+    (req, res) => {
+        res.redirect("/admin/dashboard");
+    }
+);
+
+router.get(
+    "/developer/dashboard",
     authMiddleware,
     requireAdmin,
     (req, res) => {

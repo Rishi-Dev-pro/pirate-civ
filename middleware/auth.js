@@ -4,12 +4,24 @@ import User from "../models/user.js";
 const redirectToLogin = (req, res) => {
     const isSeller = (req.originalUrl && req.originalUrl.startsWith("/seller")) ||
                      (req.path && req.path.startsWith("/seller"));
-    const intent = isSeller ? "seller" : "buyer";
+    const isAdmin = (req.originalUrl && (req.originalUrl.startsWith("/admin") || req.originalUrl.startsWith("/developer"))) ||
+                    (req.path && (req.path.startsWith("/admin") || req.path.startsWith("/developer")));
+
+    let intent = "buyer";
+    let targetLogin = "/buyer/login";
+    if (isSeller) {
+        intent = "seller";
+        targetLogin = "/seller/login";
+    } else if (isAdmin) {
+        intent = "admin";
+        targetLogin = "/admin/login";
+    }
+
     if (req.session) {
         req.session.authIntent = intent;
         req.session.returnTo = req.originalUrl || req.path;
     }
-    return res.redirect(isSeller ? "/seller/login" : "/buyer/login");
+    return res.redirect(targetLogin);
 };
 
 

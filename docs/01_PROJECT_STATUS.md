@@ -11,12 +11,13 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ## 1. System Status by Category
 
 ### 🟢 COMPLETE
-* **Secret Admin Entrance (Triple Logo Click → Cinematic Blackout → Skull Reveal → Admin Dashboard):** Hidden Easter Egg providing access to the canonical Admiralty Command Deck (`/admin/dashboard`):
-  - **Triple Logo Click Trigger:** Dedicated state machine listening on `#gatewayHeroLogo` with discrete scale/glow feedback (`.logo-click-pulse`) on early clicks, 3.5s inactivity timeout, and `Escape` reset behavior.
-  - **Cinematic Blackout:** 1.5s fade-to-black over `#000000` overlay followed by 600ms hold.
-  - **Atmospheric Transparent Skull Reveal:** Slow 1.5s fade-in of the uploaded transparent skull asset (`/images/gateway/pirate-civ-skull.png`), followed by 3.8s cyclical breathing animation (`@keyframes secretSkullBreathe`), accessible hover lift, and keyboard Enter/Space activation.
-  - **Strict Server RBAC:** `/admin/dashboard` and `/admin` guarded by `[authMiddleware, requireAdmin]`. Unauthenticated users redirect to login, non-admins receive HTTP 403.
-  - **Verification:** 100% test pass on `scratch/test_secret_admin_entrance.js` and zero regressions across existing test suites.
+* **Secret Developer Realm (Boxless Skull → Dedicated Developer Gate → Developer Realm Foundation):** Hidden developer entrance and sovereign command chamber:
+  - **Floating Transparent Skull (No Box):** Reprocessed `pirate-civ-skull.png` with a 40px zero-alpha padding border to prevent rectangular edge clipping by drop-shadow filters. Stripped container borders, backgrounds, and `:focus-visible` outlines. The skull floats organically in pure darkness.
+  - **Dedicated Developer Gate (`/admin/login` & `/developer/login`):** Resolved the redirect bug where unauthenticated visitors clicking the skull fell through to `/buyer/login`. Updated `authMiddleware` and `requireRole` to route unauthenticated admin requests strictly to the Developer Gate.
+  - **Developer Realm Visual Identity:** Front-facing UI uses "DEVELOPER" (`PIRATE-CIV // DEVELOPER REALM`, `THE DEVELOPER'S CHAMBER`), preserving `admin` strictly as the internal security role.
+  - **Modular Foundation for Developer Tools:** Created dashboard chamber with modular foundation cards (`[ SYSTEM ]`, `[ SECURITY ]`, `[ DATABASE ]`, `[ ROUTES ]`, `[ TESTS ]`, `[ SERVICES ]`) showing genuine system statistics without fictitious data or unfinished controls.
+  - **Strict Security Preservation:** Skull click remains a discovery entrance, not an auth bypass. Canonical developer credentials: `developer@pirate-civ.internal`.
+  - **Verification:** 100% pass on `scratch/test_developer_realm.js` and 52/52 pass on `scratch/test_aud_6_3_f01_payment_fulfillment_separation.js`.
 * **Dedicated Buyer / Seller Authentication Rebuild (Option A Architecture):** Complete architectural separation of Buyer and Seller authentication at the route, view, controller, UI, and authorization levels:
   - **Dedicated Routes (`routes/web.js`):** Implemented `/buyer/login`, `/buyer/register`, `/seller/login`, `/seller/register` with clean backward compatibility aliases (`/login` and `/register`).
   - **Server-Forced Role Enforcement (`controller/auth.js`):** The endpoint itself dictates role assignment. `/buyer/register` forces `role: 'buyer'`; `/seller/register` forces `role: 'seller'` and mandates `storeName`. Client role manipulation via request body is completely ignored.
