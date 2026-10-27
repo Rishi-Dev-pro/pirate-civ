@@ -146,15 +146,19 @@ To prevent unvetted merchants from trading or listing cargo, all newly registere
 
 ---
 
-## 6. Developer Realm Security (V1 Authorities)
+## 6. Developer Realm Security (V1 & V2 Authorities)
 
-* **Identity & Canonical Role:** The Developer UI uses `"DEVELOPER"` terminology (`PIRATE-CIV // DEVELOPER REALM`, `THE DEVELOPER'S CHAMBER`). Internally, the database security role strictly remains `role: 'admin'`.
-* **Perimeter Defense:** The triple-click logo easter egg is a hidden entrance, not an authentication bypass. All Developer Realm routes require `[authMiddleware, requireAdmin]`.
+* **Identity & Canonical Role:** The Developer UI uses `"DEVELOPER"` terminology (`PIRATE-CIV // DEVELOPER REALM`, `THE SOVEREIGN CIPHER VAULT`). Internally, the database security role strictly remains `role: 'admin'`. Never rename the database role to developer.
+* **Perimeter Defense:** The secret skull click entrance is a discovery gateway, not an authentication bypass. All protected Developer Realm routes require `[authMiddleware, requireAdmin]`.
 * **RBAC Isolation:** Buyers and sellers attempting to navigate to Developer Realm endpoints receive strict HTTP 403 Forbidden.
+* **Disconnect Behavior (V2):**
+  - Clicking `DISCONNECT` destroys the developer/admin session and clears authentication cookies.
+  - The developer is redirected strictly to `/` (the Pirate-Civ Gateway / character-selection starting page) to choose between Merchant / Buyer again.
+  - Developers are never redirected to `/buyer/login`, `/seller/login`, or `/admin/login`.
 * **Authority Scope:**
   - **Seller Charters:** View pending/approved/rejected applications; approve or reject sellers server-side with strict validation.
-  - **People Registry:** Read-only view of buyers and sellers.
-  - **Marketplace Oversight:** Read-only view of seller products and buyer purchase history.
+  - **People Registry:** Read-only census of buyers and sellers.
+  - **Marketplace Oversight:** Read-only master cargo & trade manifest of listed products and customer orders with doubloon volume metrics.
 
 ---
 

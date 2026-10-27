@@ -71,6 +71,186 @@ body.dev-body {
     background-attachment: fixed;
 }
 
+/* Custom Brass & Dark Timber Nautical Scrollbars */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: #090604;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #573e20 0%, #2a1c0d 100%);
+    border: 1px solid var(--dev-brass-dim);
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(180deg, #7c582d 0%, #3f2b15 100%);
+    border-color: var(--dev-brass-bright);
+}
+
+/* Internal panel scroll regions preserving outer page flow */
+.dev-table-scroll-region {
+    max-height: 520px;
+    overflow-y: auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.dev-charters-scroll-deck,
+.dev-census-deck,
+.dev-cargo-deck {
+    max-height: 400px;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+/* ==========================================================================
+   DEVELOPER GATE // THE SOVEREIGN CIPHER VAULT
+   Physical Obsidian & Oxidized Brass Cipher Safe
+   ========================================================================== */
+.dev-login-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 20px;
+    position: relative;
+    z-index: 10;
+}
+
+.dev-login-box {
+    width: 100%;
+    max-width: 480px;
+    background: linear-gradient(180deg, #18120b 0%, #0d0905 100%);
+    border: 2px solid var(--dev-brass-base);
+    box-shadow: 
+        0 24px 70px rgba(0, 0, 0, 0.98),
+        inset 0 0 40px rgba(0, 0, 0, 0.95),
+        0 0 25px rgba(184, 151, 66, 0.18);
+    border-radius: 6px;
+    padding: 40px 36px 32px 36px;
+    position: relative;
+}
+
+.dev-login-box::before {
+    content: "";
+    position: absolute;
+    inset: 4px;
+    border: 1px solid rgba(184, 151, 66, 0.25);
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+.dev-login-header {
+    text-align: center;
+    margin-bottom: 28px;
+}
+
+.dev-login-kicker {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.28em;
+    color: var(--dev-crimson-bright);
+    text-transform: uppercase;
+    text-shadow: 0 0 10px rgba(207, 45, 45, 0.45);
+    margin-bottom: 6px;
+}
+
+.dev-login-title {
+    margin: 0 0 8px 0;
+    font-family: var(--font-decorative);
+    font-size: 2.1rem;
+    font-weight: 900;
+    letter-spacing: 0.14em;
+    background: linear-gradient(180deg, #ffffff 0%, #fae6b2 45%, #d8af47 75%, #94711f 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 12px rgba(200, 168, 78, 0.25));
+}
+
+.dev-login-subtitle {
+    margin: 0;
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: #a8947b;
+}
+
+.dev-login-error {
+    background: rgba(68, 18, 20, 0.92);
+    border: 1px solid #cf2d2d;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.7), inset 0 0 10px rgba(207, 45, 45, 0.2);
+    border-radius: 4px;
+    padding: 11px 14px;
+    margin-bottom: 20px;
+    color: #ffdada;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.dev-login-form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.dev-login-submit {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 12px 20px;
+    background: linear-gradient(180deg, #3d2b16 0%, #1a1208 100%);
+    border: 1px solid var(--dev-brass-bright);
+    box-shadow: 
+        0 6px 18px rgba(0, 0, 0, 0.85),
+        inset 0 1px 0 var(--dev-brass-highlight),
+        0 0 14px rgba(184, 151, 66, 0.2);
+    border-radius: 4px;
+    color: #fff;
+    font-family: var(--font-heading);
+    font-size: 0.84rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.dev-login-submit:hover {
+    background: linear-gradient(180deg, #573e20 0%, #291c0e 100%);
+    border-color: #fff;
+    box-shadow: 
+        0 6px 22px rgba(0, 0, 0, 0.9),
+        0 0 20px rgba(229, 196, 107, 0.45);
+    transform: translateY(-1px);
+}
+
+.dev-login-footer {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(184, 151, 66, 0.2);
+    text-align: center;
+}
+
+.dev-login-footer a {
+    color: var(--dev-brass-dim);
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-size: 0.74rem;
+    letter-spacing: 0.1em;
+    transition: color 0.2s ease;
+}
+
+.dev-login-footer a:hover {
+    color: var(--dev-brass-bright);
+    text-decoration: underline;
+}
+
 /* Screen reader utility strictly preserving test assertions */
 .dev-sr-only {
     position: absolute;
@@ -700,18 +880,19 @@ body.dev-body {
 
 /* ==========================================================================
    5. PINNED REALM OVERVIEW PARCHMENT SCROLL
+   Aged captain's log of the archipelago with oxidized brass borders
    ========================================================================== */
 .dev-realm-overview-parchment {
     background: 
-        radial-gradient(ellipse at 50% 10%, #faecd7 0%, #ecd6b2 60%, #c9ab81 100%);
-    border: 2px solid var(--dev-parchment-border);
+        radial-gradient(ellipse at 50% 10%, #22170e 0%, #170f09 60%, #0d0805 100%);
+    border: 1px solid rgba(184, 151, 66, 0.45);
     box-shadow: 
         0 14px 40px rgba(0, 0, 0, 0.95),
-        inset 0 0 20px rgba(90, 60, 20, 0.25),
-        inset 0 0 40px rgba(60, 40, 15, 0.15);
+        inset 0 1px 0 rgba(229, 196, 107, 0.15),
+        inset 0 0 24px rgba(0, 0, 0, 0.75);
     border-radius: 5px;
     padding: 18px 20px;
-    color: var(--dev-ink-primary);
+    color: #dedede;
     position: relative;
     display: flex;
     flex-direction: column;
@@ -728,7 +909,7 @@ body.dev-body {
     align-items: center;
     gap: 10px;
     padding-bottom: 12px;
-    border-bottom: 1px solid var(--dev-parchment-border);
+    border-bottom: 1px solid rgba(184, 151, 66, 0.25);
     margin-bottom: 14px;
 }
 
@@ -745,7 +926,7 @@ body.dev-body {
     font-size: 1.05rem;
     font-weight: 800;
     letter-spacing: 0.14em;
-    color: var(--dev-ink-primary);
+    color: var(--dev-brass-bright);
     text-transform: uppercase;
 }
 
@@ -764,20 +945,27 @@ body.dev-body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 6px 8px;
+    padding: 7px 10px;
     border-radius: 3px;
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(145, 117, 79, 0.35);
+    background: rgba(0, 0, 0, 0.45);
+    border: 1px solid rgba(184, 151, 66, 0.2);
 }
 
 .dev-overview-stat-row.stat-pending-row {
-    background: rgba(168, 36, 36, 0.08);
-    border-color: rgba(168, 36, 36, 0.4);
+    background: rgba(168, 36, 36, 0.12);
+    border-color: rgba(207, 45, 45, 0.45);
 }
 
 .dev-overview-stat-label {
     display: flex;
     align-items: center;
+    gap: 8px;
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #d6c6ad;
+    letter-spacing: 0.04em;
+}
     gap: 8px;
     font-family: var(--font-heading);
     font-size: 0.8rem;
@@ -809,27 +997,29 @@ body.dev-body {
     font-family: var(--font-mono);
     font-size: 1.05rem;
     font-weight: 800;
-    color: var(--dev-ink-primary);
+    color: var(--dev-brass-highlight);
 }
 
 .dev-stat-value.val-alert {
-    color: var(--dev-crimson-seal);
+    color: var(--dev-crimson-bright);
     font-size: 1.25rem;
     font-weight: 900;
+    text-shadow: 0 0 10px rgba(207, 45, 45, 0.35);
 }
 
 .dev-overview-footer-text {
     font-size: 0.76rem;
     line-height: 1.45;
-    color: var(--dev-ink-secondary);
+    color: #a38f75;
     font-style: italic;
-    border-top: 1px solid var(--dev-parchment-border);
+    border-top: 1px solid rgba(184, 151, 66, 0.2);
     padding-top: 12px;
     margin-top: 14px;
 }
 
 /* ==========================================================================
-   6. LOWER DECK: THREE PHYSICAL PARCHMENT MANIFESTS
+   6. LOWER DECK: THREE PHYSICAL WEATHERED PARCHMENT MANIFESTS
+   Dark aged nautical manifests with oxidized brass rivets and borders
    ========================================================================== */
 .dev-manifests-trio {
     display: grid;
@@ -840,14 +1030,15 @@ body.dev-body {
 
 .dev-parchment-manifest-panel {
     background: 
-        radial-gradient(ellipse at 50% 10%, #faecd7 0%, #ece0ca 50%, #d8be94 100%);
-    border: 2px solid var(--dev-parchment-border);
+        radial-gradient(ellipse at 50% 10%, #1e150d 0%, #140d08 60%, #0b0704 100%);
+    border: 1px solid rgba(184, 151, 66, 0.4);
     box-shadow: 
         0 14px 40px rgba(0, 0, 0, 0.95),
-        inset 0 0 18px rgba(90, 60, 20, 0.25);
+        inset 0 1px 0 rgba(229, 196, 107, 0.12),
+        inset 0 0 20px rgba(0, 0, 0, 0.75);
     border-radius: 6px;
     padding: 16px 18px;
-    color: var(--dev-ink-primary);
+    color: #dedede;
     display: flex;
     flex-direction: column;
 }
@@ -857,7 +1048,7 @@ body.dev-body {
     align-items: flex-start;
     justify-content: space-between;
     gap: 10px;
-    border-bottom: 2px solid var(--dev-parchment-border);
+    border-bottom: 1px solid rgba(184, 151, 66, 0.3);
     padding-bottom: 10px;
     margin-bottom: 14px;
 }
@@ -873,7 +1064,7 @@ body.dev-body {
     font-size: 0.98rem;
     font-weight: 800;
     letter-spacing: 0.12em;
-    color: var(--dev-ink-primary);
+    color: var(--dev-brass-bright);
     text-transform: uppercase;
 }
 
@@ -882,7 +1073,7 @@ body.dev-body {
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.18em;
-    color: var(--dev-ink-secondary);
+    color: #a8947b;
     text-transform: uppercase;
     margin-top: 2px;
 }
@@ -905,15 +1096,15 @@ body.dev-body {
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.08em;
-    color: var(--dev-ink-primary);
+    color: var(--dev-brass-dim);
     text-decoration: none;
-    border-bottom: 1px solid var(--dev-ink-secondary);
+    border-bottom: 1px solid rgba(184, 151, 66, 0.3);
     transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .dev-manifest-view-all:hover {
-    color: var(--dev-crimson-seal);
-    border-color: var(--dev-crimson-seal);
+    color: var(--dev-brass-bright);
+    border-color: var(--dev-brass-bright);
 }
 
 .dev-manifest-body {
@@ -930,9 +1121,9 @@ body.dev-body {
 }
 
 .dev-charter-document {
-    background: rgba(255, 255, 255, 0.45);
-    border: 1px solid rgba(145, 117, 79, 0.45);
-    box-shadow: 0 4px 10px rgba(90, 60, 20, 0.12);
+    background: rgba(18, 12, 7, 0.85);
+    border: 1px solid rgba(184, 151, 66, 0.25);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
     border-radius: 4px;
     padding: 12px;
     display: flex;
@@ -964,7 +1155,7 @@ body.dev-body {
     font-family: var(--font-heading);
     font-size: 0.92rem;
     font-weight: 800;
-    color: var(--dev-ink-primary);
+    color: var(--dev-brass-highlight);
     letter-spacing: 0.05em;
 }
 
@@ -977,12 +1168,12 @@ body.dev-body {
 }
 
 .meta-label {
-    color: var(--dev-ink-muted);
+    color: #a38f75;
     font-weight: 600;
 }
 
 .meta-val {
-    color: var(--dev-ink-primary);
+    color: #dedede;
     font-weight: 600;
     white-space: nowrap;
     overflow: hidden;
@@ -992,6 +1183,7 @@ body.dev-body {
 .meta-val-mono {
     font-family: var(--font-mono);
     font-size: 0.7rem;
+    color: var(--dev-brass-bright);
 }
 
 /* Action Buttons inside Parchment Manifests */
@@ -1057,14 +1249,14 @@ body.dev-body {
 .dev-charter-empty-slate {
     text-align: center;
     padding: 30px 14px;
-    color: var(--dev-ink-secondary);
+    color: #a8947b;
 }
 
 .slate-icon {
     font-size: 1.8rem;
     display: block;
     margin-bottom: 8px;
-    color: var(--dev-ink-muted);
+    color: var(--dev-brass-dim);
 }
 
 .slate-title {
@@ -1072,25 +1264,25 @@ body.dev-body {
     font-family: var(--font-heading);
     font-size: 0.95rem;
     font-weight: 800;
-    color: var(--dev-ink-primary);
+    color: var(--dev-brass-bright);
 }
 
 .slate-desc {
     font-size: 0.78rem;
     margin: 0;
     line-height: 1.4;
-    color: var(--dev-ink-muted);
+    color: #a8947b;
 }
 
 /* Manifests 2 & 3: Ledger Tabs */
 .dev-ledger-tabs {
     display: flex;
     gap: 6px;
-    background: rgba(90, 60, 20, 0.12);
-    padding: 3px;
+    background: rgba(0, 0, 0, 0.4);
+    padding: 4px;
     border-radius: 4px;
     margin-bottom: 12px;
-    border: 1px solid rgba(145, 117, 79, 0.35);
+    border: 1px solid rgba(184, 151, 66, 0.25);
 }
 
 .dev-tab-btn {
@@ -1101,39 +1293,41 @@ body.dev-body {
     gap: 6px;
     background: transparent;
     border: none;
-    padding: 6px 8px;
+    padding: 7px 10px;
     font-family: var(--font-heading);
     font-size: 0.7rem;
     font-weight: 700;
     letter-spacing: 0.08em;
-    color: var(--dev-ink-secondary);
+    color: #a8947b;
     border-radius: 3px;
     cursor: pointer;
     transition: all 0.2s ease;
 }
 
 .dev-tab-btn:hover {
-    color: var(--dev-ink-primary);
+    color: #fff;
 }
 
 .dev-tab-btn.active {
-    background: #fff;
-    color: var(--dev-ink-primary);
-    box-shadow: 0 2px 4px rgba(90, 60, 20, 0.18);
+    background: linear-gradient(180deg, #382617 0%, #20150c 100%);
+    color: var(--dev-brass-highlight);
+    border: 1px solid rgba(184, 151, 66, 0.4);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.6);
     font-weight: 800;
 }
 
 .dev-tab-count {
     font-family: var(--font-mono);
     font-size: 0.75rem;
-    background: rgba(90, 60, 20, 0.15);
-    padding: 1px 5px;
+    background: rgba(0, 0, 0, 0.5);
+    color: var(--dev-brass-dim);
+    padding: 1px 6px;
     border-radius: 8px;
 }
 
 .dev-tab-btn.active .dev-tab-count {
-    background: var(--dev-ink-primary);
-    color: #fff;
+    background: var(--dev-brass-bright);
+    color: #0b0704;
 }
 
 /* Census Tables inside Manifests */
@@ -1152,21 +1346,22 @@ body.dev-body {
 .dev-census-table th,
 .dev-cargo-table th {
     text-align: left;
-    padding: 6px 8px;
+    padding: 7px 10px;
     font-family: var(--font-heading);
     font-size: 0.68rem;
     font-weight: 800;
-    color: var(--dev-ink-muted);
+    color: var(--dev-brass-dim);
     letter-spacing: 0.08em;
-    border-bottom: 1px solid var(--dev-parchment-border);
+    border-bottom: 1px solid rgba(184, 151, 66, 0.3);
     text-transform: uppercase;
+    background: rgba(12, 8, 4, 0.6);
 }
 
 .dev-census-table td,
 .dev-cargo-table td {
-    padding: 7px 8px;
-    border-bottom: 1px solid rgba(145, 117, 79, 0.2);
-    color: var(--dev-ink-primary);
+    padding: 8px 10px;
+    border-bottom: 1px solid rgba(184, 151, 66, 0.12);
+    color: #dedede;
     vertical-align: middle;
 }
 
@@ -1182,33 +1377,33 @@ body.dev-body {
 
 .dev-citizen-name {
     font-weight: 700;
-    color: var(--dev-ink-primary);
+    color: var(--dev-brass-bright);
     text-decoration: none;
 }
 
 .dev-citizen-name:hover {
     text-decoration: underline;
-    color: var(--dev-crimson-seal);
+    color: #fff;
 }
 
 .dev-citizen-island {
-    color: var(--dev-ink-secondary);
+    color: #a8947b;
 }
 
 .dev-citizen-date {
     font-family: var(--font-mono);
     font-size: 0.7rem;
-    color: var(--dev-ink-muted);
+    color: #8b7965;
 }
 
 .status-dot-active {
-    color: #1a7a3e;
+    color: #4ade80;
     font-weight: 700;
     font-size: 0.72rem;
 }
 
 .status-dot-depleted {
-    color: var(--dev-crimson-seal);
+    color: var(--dev-crimson-bright);
     font-weight: 700;
     font-size: 0.72rem;
 }
@@ -1225,25 +1420,27 @@ body.dev-body {
     overflow: hidden;
     text-overflow: ellipsis;
     max-width: 130px;
+    color: #dedede;
 }
 
 .dev-cargo-price,
 .dev-cargo-stock {
     font-family: var(--font-mono);
     font-weight: 700;
+    color: var(--dev-brass-highlight);
 }
 
 .dev-empty-ledger-row {
     text-align: center;
     padding: 18px 8px !important;
-    color: var(--dev-ink-muted);
+    color: #8b7965;
     font-style: italic;
 }
 
 .dev-manifest-footer-action {
     margin-top: 10px;
     padding-top: 10px;
-    border-top: 1px solid rgba(145, 117, 79, 0.3);
+    border-top: 1px solid rgba(184, 151, 66, 0.2);
     text-align: right;
 }
 
@@ -1251,12 +1448,14 @@ body.dev-body {
     font-family: var(--font-heading);
     font-size: 0.72rem;
     font-weight: 800;
-    color: var(--dev-ink-primary);
+    color: var(--dev-brass-dim);
     text-decoration: none;
+    letter-spacing: 0.06em;
 }
 
 .dev-footer-link:hover {
-    color: var(--dev-crimson-seal);
+    color: var(--dev-brass-bright);
+    text-decoration: underline;
 }
 
 /* ==========================================================================
@@ -1397,14 +1596,15 @@ body.dev-body {
 
 .dev-parchment-title-card {
     background: 
-        radial-gradient(ellipse at 50% 10%, #faecd7 0%, #ecd6b2 60%, #c9ab81 100%);
-    border: 2px solid var(--dev-parchment-border);
+        radial-gradient(ellipse at 50% 10%, #22170e 0%, #150e09 60%, #0d0805 100%);
+    border: 1px solid rgba(184, 151, 66, 0.4);
     box-shadow: 
-        0 8px 24px rgba(0, 0, 0, 0.8),
-        inset 0 0 16px rgba(90, 60, 20, 0.2);
+        0 10px 30px rgba(0, 0, 0, 0.9),
+        inset 0 1px 0 rgba(229, 196, 107, 0.15),
+        inset 0 0 20px rgba(0, 0, 0, 0.7);
     border-radius: 5px;
     padding: 18px 24px;
-    color: var(--dev-ink-primary);
+    color: #dedede;
 }
 
 .dev-title-crest-row {
@@ -1426,7 +1626,7 @@ body.dev-body {
     font-size: 0.72rem;
     font-weight: 800;
     letter-spacing: 0.22em;
-    color: var(--dev-crimson-seal);
+    color: var(--dev-crimson-bright);
     text-transform: uppercase;
 }
 
@@ -1436,14 +1636,14 @@ body.dev-body {
     font-size: 1.45rem;
     font-weight: 800;
     letter-spacing: 0.06em;
-    color: var(--dev-ink-primary);
+    color: var(--dev-brass-bright);
 }
 
 .dev-section-desc {
     margin: 0;
     font-size: 0.84rem;
     line-height: 1.45;
-    color: var(--dev-ink-secondary);
+    color: #a8947b;
 }
 
 /* Flash Notices */
@@ -1511,11 +1711,11 @@ body.dev-body {
 /* Parchment Tables */
 .dev-table-parchment-wrapper {
     background: 
-        radial-gradient(ellipse at 50% 10%, #faecd7 0%, #ece0ca 60%, #dbc39b 100%);
-    border: 2px solid var(--dev-parchment-border);
+        linear-gradient(180deg, #18110b 0%, #0e0905 100%);
+    border: 1px solid rgba(184, 151, 66, 0.35);
     box-shadow: 
         0 10px 30px rgba(0, 0, 0, 0.9),
-        inset 0 0 16px rgba(90, 60, 20, 0.2);
+        inset 0 0 20px rgba(0, 0, 0, 0.7);
     border-radius: 5px;
     overflow-x: auto;
 }
@@ -1524,51 +1724,52 @@ body.dev-body {
     width: 100%;
     border-collapse: collapse;
     font-size: 0.82rem;
-    color: var(--dev-ink-primary);
+    color: #dedede;
 }
 
 .dev-parchment-table th {
     text-align: left;
     padding: 10px 14px;
-    background: rgba(90, 60, 20, 0.15);
-    border-bottom: 2px solid var(--dev-parchment-border);
+    background: rgba(12, 8, 4, 0.75);
+    border-bottom: 1px solid rgba(184, 151, 66, 0.35);
     font-family: var(--font-heading);
     font-size: 0.74rem;
     font-weight: 800;
     letter-spacing: 0.1em;
-    color: var(--dev-ink-muted);
+    color: var(--dev-brass-dim);
 }
 
 .dev-parchment-table td {
     padding: 12px 14px;
-    border-bottom: 1px solid rgba(145, 117, 79, 0.25);
+    border-bottom: 1px solid rgba(184, 151, 66, 0.12);
     vertical-align: middle;
 }
 
 .dev-parchment-table tr:hover {
-    background: rgba(255, 255, 255, 0.35);
+    background: rgba(184, 151, 66, 0.08);
 }
 
 .dev-table-cell-bold {
     font-weight: 700;
+    color: var(--dev-brass-bright);
 }
 
 .dev-table-cell-mono {
     font-family: var(--font-mono);
     font-size: 0.78rem;
-    color: var(--dev-ink-secondary);
+    color: #b09e86;
 }
 
 .dev-table-cell-brass {
     font-family: var(--font-heading);
     font-weight: 700;
-    color: #684812;
+    color: var(--dev-brass-highlight);
 }
 
 .dev-doubloon-val {
     font-family: var(--font-mono);
     font-weight: 700;
-    color: #684812;
+    color: var(--dev-brass-highlight);
 }
 
 /* Status Tags */
@@ -1680,16 +1881,16 @@ body.dev-body {
 
 .dev-modal-card {
     background: 
-        radial-gradient(ellipse at 50% 10%, #faecd7 0%, #ece0ca 60%, #c9ab81 100%);
-    border: 2px solid var(--dev-parchment-border);
+        radial-gradient(ellipse at 50% 10%, #22170e 0%, #140d08 60%, #0b0704 100%);
+    border: 1px solid var(--dev-brass-base);
     box-shadow: 
-        0 20px 60px rgba(0, 0, 0, 0.95),
-        inset 0 0 20px rgba(90, 60, 20, 0.3);
+        0 20px 60px rgba(0, 0, 0, 0.98),
+        inset 0 0 25px rgba(0, 0, 0, 0.85);
     border-radius: 6px;
     padding: 24px;
     max-width: 480px;
     width: 90%;
-    color: var(--dev-ink-primary);
+    color: #dedede;
 }
 
 .dev-modal-title {
@@ -1697,14 +1898,14 @@ body.dev-body {
     font-family: var(--font-heading);
     font-size: 1.25rem;
     font-weight: 800;
-    color: var(--dev-crimson-seal);
+    color: var(--dev-crimson-bright);
 }
 
 .dev-modal-desc {
     margin: 0 0 16px 0;
     font-size: 0.82rem;
     line-height: 1.45;
-    color: var(--dev-ink-secondary);
+    color: #b09e86;
 }
 
 .dev-form-group {
@@ -1716,7 +1917,7 @@ body.dev-body {
     font-family: var(--font-heading);
     font-size: 0.72rem;
     font-weight: 800;
-    color: var(--dev-ink-muted);
+    color: var(--dev-brass-dim);
     letter-spacing: 0.08em;
     margin-bottom: 6px;
     text-transform: uppercase;
@@ -1725,18 +1926,84 @@ body.dev-body {
 .dev-form-input {
     width: 100%;
     padding: 10px 12px;
-    background: #fff;
-    border: 1px solid var(--dev-parchment-border);
+    background: #090604;
+    border: 1px solid rgba(184, 151, 66, 0.4);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8);
     border-radius: 3px;
     font-family: var(--font-body);
     font-size: 0.85rem;
-    color: var(--dev-ink-primary);
+    color: var(--dev-brass-highlight);
 }
 
 .dev-modal-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+}
+
+/* ==========================================================================
+   MARKETPLACE METRICS STRIP
+   ========================================================================== */
+.dev-marketplace-metrics-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.dev-market-tile {
+    background: linear-gradient(180deg, #1c140c 0%, #0e0905 100%);
+    border: 1px solid rgba(184, 151, 66, 0.35);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(229, 196, 107, 0.12);
+    border-radius: 4px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.tile-icon {
+    font-size: 1.7rem;
+    color: var(--dev-brass-bright);
+    flex-shrink: 0;
+}
+
+.tile-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.tile-label {
+    font-family: var(--font-heading);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    color: #a8947b;
+    text-transform: uppercase;
+}
+
+.tile-val {
+    font-family: var(--font-mono);
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--dev-brass-highlight);
+}
+
+.tile-val-alert {
+    color: var(--dev-crimson-bright);
+}
+
+@media (max-width: 992px) {
+    .dev-marketplace-metrics-strip {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .dev-marketplace-metrics-strip {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ==========================================================================

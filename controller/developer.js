@@ -32,7 +32,7 @@ export const renderDeveloperDashboard = async (req, res) => {
             Order.countDocuments({}),
             User.find({ role: "seller", sellerStatus: "pending" }).sort({ createdAt: -1 }).limit(3).lean(),
             User.find({ role: "buyer" }).sort({ createdAt: -1 }).limit(5).lean(),
-            User.find({ role: "seller", sellerStatus: "approved" }).sort({ createdAt: -1 }).limit(5).lean(),
+            User.find({ role: "seller" }).sort({ createdAt: -1 }).limit(5).lean(),
             Product.find({}).sort({ createdAt: -1 }).limit(5).lean(),
             Order.find({}).populate("buyer", "name").sort({ createdAt: -1 }).limit(5).lean()
         ]);
@@ -216,6 +216,7 @@ export const renderPeople = async (req, res) => {
             page_title: "PIRATE-CIV // PEOPLE REGISTRY",
             user: req.user,
             activeNav: "people",
+            activeTab: req.query.tab === "sellers" ? "sellers" : "buyers",
             pendingSellersCount,
             buyers,
             sellers
@@ -252,7 +253,7 @@ export const renderDeveloperSellerProducts = async (req, res) => {
         return res.render("developer/seller-products", {
             page_title: `PIRATE-CIV // ${seller.storeName || seller.name} WAREHOUSE`,
             user: req.user,
-            activeNav: "people",
+            activeNav: "marketplace",
             pendingSellersCount,
             seller,
             products
@@ -289,7 +290,7 @@ export const renderBuyerPurchases = async (req, res) => {
         return res.render("developer/buyer-orders", {
             page_title: `PIRATE-CIV // ${buyer.name} VOYAGE LEDGER`,
             user: req.user,
-            activeNav: "people",
+            activeNav: "marketplace",
             pendingSellersCount,
             buyer,
             orders
@@ -297,5 +298,49 @@ export const renderBuyerPurchases = async (req, res) => {
     } catch (error) {
         console.error("Developer Buyer Purchases Oversight Error:", error);
         return res.status(500).send("Error retrieving buyer purchases.");
+    }
+};
+
+/**
+ * GET /developer/marketplace (and /admin/marketplace)
+ * Comprehensive trade cargo & commerce voyages oversight ledger.
+ */
+export const renderMarketplace = async (req, res) => {
+    try {
+        const [products, orders, pendingSellersCount, totalProductsCount, totalOrdersCount] = await Promise.all([
+            Product.find({})
+                .populate("seller", "name email storeName homeIsland")
+                .sort({ createdAt: -1 })
+                .lean(),
+            Order.find({})
+                .populate("buyer", "name email homeIsland")
+                .populate("items.seller", "name storeName")
+                .sort({ createdAt: -1 })
+                .lean(),
+            User.countDocuments({ role: "seller", sellerStatus: "pending" }),
+            Product.countDocuments({}),
+            Order.countDocuments({})
+        ]);
+
+        // Aggregate genuine doubloons volume across all orders
+        const totalDoubloonsVolume = orders.reduce((sum, ord) => sum + (ord.totalDoubloons || 0), 0);
+        const outOfStockCount = products.filter(p => !p.stock || p.stock <= 0).length;
+
+        return res.render("developer/marketplace", {
+            page_title: "PIRATE-CIV // MASTER CARGO & TRADE MANIFEST",
+            user: req.user,
+            activeNav: "marketplace",
+            activeTab: req.query.tab === "orders" ? "orders" : "products",
+            pendingSellersCount,
+            products: products || [],
+            orders: orders || [],
+            totalProductsCount,
+            totalOrdersCount,
+            totalDoubloonsVolume,
+            outOfStockCount
+        });
+    } catch (error) {
+        console.error("Developer Marketplace Oversight Error:", error);
+        return res.status(500).send("Error loading Developer Realm Marketplace manifest.");
     }
 };

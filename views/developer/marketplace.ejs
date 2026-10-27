@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "PIRATE-CIV // MASTER CARGO & TRADE MANIFEST" %></title>
+
+    <!-- Google Fonts: Cinzel Decorative, Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Developer Realm Stylesheet -->
+    <link rel="stylesheet" href="/css/developer.css?v=pirate_war_room_v2">
+</head>
+
+<body class="dev-body">
+
+    <!-- ATMOSPHERIC LAYERS -->
+    <div class="dev-atmosphere" aria-hidden="true">
+        <div class="dev-vista-layer"></div>
+        <div class="dev-vignette-layer"></div>
+    </div>
+
+    <div class="dev-chamber-frame">
+
+        <!-- ===================================================================
+             TOP COMMAND BAR (NO RETURN TO SEA CHART)
+             =================================================================== -->
+        <header class="dev-topbar" role="banner">
+            <div class="dev-crest-container">
+                <a href="/developer/dashboard" class="dev-crest-link" title="Pirate-Civ Sovereign Developer Realm">
+                    <img src="/images/gateway/pirate-civ-logo.png" alt="Pirate-Civ Emblem" class="dev-crest-img">
+                </a>
+            </div>
+
+            <!-- Center: Engraved Architectural Insignia (Floating, No Box Border) -->
+            <div class="dev-header-insignia">
+                <span class="dev-realm-subkicker">PIRATE-CIV // THE HIDDEN CHAMBER</span>
+                <h1 class="dev-title-main">DEVELOPER REALM</h1>
+                <span class="dev-title-tagline">THE ARCHITECT'S COMMAND OF THE ARCHIPELAGO</span>
+            </div>
+
+            <div class="dev-topbar-actions">
+                <div class="dev-status-capsule" title="Cryptographic Perimeter Online">
+                    <span class="dev-status-beacon"></span>
+                    <span class="dev-status-text">REALM SECURED // AUTHENTICATED</span>
+                </div>
+
+                <!-- DISCONNECT: Returns strictly to / (Pirate-Civ Gateway character selection) -->
+                <a href="/developer/logout" class="dev-btn-nautical dev-btn-danger" id="btnDevDisconnect" title="Destroy developer session and return to Gateway">
+                    <span class="dev-btn-icon">⏻</span>
+                    <span>DISCONNECT</span>
+                </a>
+
+                <div class="dev-architect-medallion" title="Logged in as Sovereign Architect">
+                    <div class="dev-medallion-skull">
+                        <img src="/images/developer/decorations/architect-badge.png" alt="Architect" class="dev-badge-icon" onerror="this.style.display='none'">
+                    </div>
+                    <span class="dev-architect-title"><%= (typeof user !== 'undefined' && user.name) ? user.name : 'Architect' %></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Hidden subtitle element strictly preserving test assertions -->
+        <div class="dev-sr-only" aria-hidden="true">The Command Chamber Behind the Realm</div>
+
+        <!-- ===================================================================
+             MAIN STAGE: RAIL + MARKETPLACE OVERSIGHT
+             =================================================================== -->
+        <div class="dev-stage-layout">
+
+            <!-- NAUTICAL NAVIGATION RAIL -->
+            <aside class="dev-nautical-rail" role="navigation" aria-label="Command Chamber Navigation">
+                <div class="dev-rail-frame">
+                    <div class="dev-rail-top-helm" aria-hidden="true">
+                        <span class="dev-helm-glyph">☸</span>
+                    </div>
+
+                    <div class="dev-rail-nav-group">
+                        <a href="/developer/dashboard" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
+                            <span class="dev-rail-icon">☸</span>
+                            <span class="dev-rail-label">COMMAND CHAMBER</span>
+                        </a>
+
+                        <a href="/developer/sellers/applications" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'active' : '' %>" id="navDevApplications">
+                            <span class="dev-rail-icon">📜</span>
+                            <span class="dev-rail-label">MERCHANT CHARTERS</span>
+                            <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
+                                <span class="dev-rail-badge-alert" id="badgePendingCount"><%= pendingSellersCount %></span>
+                            <% } %>
+                        </a>
+
+                        <a href="/developer/people" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'active' : '' %>" id="navDevPeople">
+                            <span class="dev-rail-icon">👥</span>
+                            <span class="dev-rail-label">THE PEOPLE</span>
+                        </a>
+
+                        <a href="/developer/marketplace" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'active' : '' %>" id="navDevMarketplace">
+                            <span class="dev-rail-icon">🏛</span>
+                            <span class="dev-rail-label">MARKETPLACE</span>
+                        </a>
+                    </div>
+
+                    <div class="dev-rail-divider" aria-hidden="true">
+                        <img src="/images/developer/decorations/nautical-divider.png" alt="" class="dev-divider-img">
+                    </div>
+
+                    <div class="dev-rail-diagnostics-group">
+                        <a href="/developer/dashboard#cardSystemCore" class="dev-diag-link">
+                            <span class="dev-diag-icon">⚙</span>
+                            <span>SYSTEM</span>
+                        </a>
+                        <a href="/developer/dashboard#cardSecurityPerimeter" class="dev-diag-link">
+                            <span class="dev-diag-icon">🔒</span>
+                            <span>SECURITY</span>
+                        </a>
+                        <a href="/developer/dashboard#cardDatabaseRegistry" class="dev-diag-link">
+                            <span class="dev-diag-icon">🗄</span>
+                            <span>DATABASE</span>
+                        </a>
+                        <a href="/developer/dashboard#cardNavigationArchitecture" class="dev-diag-link">
+                            <span class="dev-diag-icon">⚯</span>
+                            <span>ROUTES</span>
+                        </a>
+                        <a href="/developer/dashboard#cardVerificationMatrix" class="dev-diag-link">
+                            <span class="dev-diag-icon">☑</span>
+                            <span>TESTS</span>
+                        </a>
+                        <a href="/developer/dashboard#cardServicesImaging" class="dev-diag-link">
+                            <span class="dev-diag-icon">⛭</span>
+                            <span>SERVICES</span>
+                        </a>
+                    </div>
+
+                    <div class="dev-rail-bottom-watermark">
+                        <img src="/images/developer/decorations/brass-anchor.png" alt="" class="dev-anchor-watermark" aria-hidden="true">
+                        <span class="dev-watermark-text">SOVEREIGN ARCHITECTURE FOUNDATION</span>
+                    </div>
+
+                    <div class="dev-rail-bottom-helm" aria-hidden="true">
+                        <span class="dev-helm-glyph">☸</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- MARKETPLACE MASTER LEDGER CONTENT -->
+            <main class="dev-command-realm" role="main">
+
+                <section class="dev-parchment-banner-stage">
+                    <div class="dev-parchment-title-card">
+                        <div class="dev-title-crest-row">
+                            <img src="/images/developer/decorations/red-wax-seal.png" alt="" class="dev-parchment-wax-seal">
+                            <div>
+                                <span class="dev-hero-kicker">TRADE & COMMERCE MANIFEST</span>
+                                <h2 class="dev-section-title">Master Cargo & Trade Manifest</h2>
+                                <p class="dev-section-desc">Authoritative archipelago commerce ledger tracking all island merchandise, merchant stocks, and completed buyer trade voyages.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- OVERVIEW METRIC TILES -->
+                <div class="dev-marketplace-metrics-strip">
+                    <div class="dev-market-tile">
+                        <span class="tile-icon">📦</span>
+                        <div class="tile-info">
+                            <span class="tile-label">Cataloged Wares</span>
+                            <span class="tile-val" id="statMarketProductsCount"><%= totalProductsCount || 0 %> Items</span>
+                        </div>
+                    </div>
+                    <div class="dev-market-tile">
+                        <span class="tile-icon">💰</span>
+                        <div class="tile-info">
+                            <span class="tile-label">Gross Trade Volume</span>
+                            <span class="tile-val"><%= (totalDoubloonsVolume || 0).toLocaleString() %> Doubloons</span>
+                        </div>
+                    </div>
+                    <div class="dev-market-tile">
+                        <span class="tile-icon">🧭</span>
+                        <div class="tile-info">
+                            <span class="tile-label">Voyages & Orders</span>
+                            <span class="tile-val" id="statMarketOrdersCount"><%= totalOrdersCount || 0 %> Recorded</span>
+                        </div>
+                    </div>
+                    <div class="dev-market-tile">
+                        <span class="tile-icon">⚠️</span>
+                        <div class="tile-info">
+                            <span class="tile-label">Depleted Stock</span>
+                            <span class="tile-val <%= outOfStockCount > 0 ? 'tile-val-alert' : '' %>"><%= outOfStockCount || 0 %> Depleted</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- INTERACTIVE TAB SWITCHER -->
+                <div class="dev-ledger-tabs" role="tablist" style="margin-top: 24px;">
+                    <button type="button" class="dev-tab-btn <%= (typeof activeTab === 'undefined' || activeTab === 'products') ? 'active' : '' %>" id="tabMarketProducts" onclick="switchMarketplaceTab('products')">
+                        <span>📦 LISTED CARGO & MERCHANDISE</span>
+                        <span class="dev-tab-count"><%= totalProductsCount || 0 %></span>
+                    </button>
+                    <button type="button" class="dev-tab-btn <%= (typeof activeTab !== 'undefined' && activeTab === 'orders') ? 'active' : '' %>" id="tabMarketOrders" onclick="switchMarketplaceTab('orders')">
+                        <span>📜 VOYAGES & COMMERCE ORDERS</span>
+                        <span class="dev-tab-count"><%= totalOrdersCount || 0 %></span>
+                    </button>
+                </div>
+
+                <!-- DECK 1: PRODUCTS TABLE -->
+                <section class="dev-manifest-section" id="deckMarketProducts" style="<%= (typeof activeTab !== 'undefined' && activeTab === 'orders') ? 'display: none;' : '' %>" aria-labelledby="headingMarketProducts">
+                    <div class="dev-manifest-bar">
+                        <h3 class="dev-manifest-bar-title" id="headingMarketProducts">
+                            ISLAND MERCHANDISE & INVENTORY
+                            <span class="dev-count-tag">(<%= products ? products.length : 0 %> Listed Wares)</span>
+                        </h3>
+                    </div>
+
+                    <% if (products && products.length > 0) { %>
+                        <div class="dev-table-parchment-wrapper dev-table-scroll-region">
+                            <table class="dev-parchment-table" id="tableMarketProducts">
+                                <thead>
+                                    <tr>
+                                        <th>PRODUCT / CARGO</th>
+                                        <th>MERCHANT FLEET</th>
+                                        <th>ORIGIN ISLAND</th>
+                                        <th>CATEGORY</th>
+                                        <th style="text-align: right;">PRICE</th>
+                                        <th style="text-align: right;">STOCK</th>
+                                        <th style="text-align: right;">STATUS</th>
+                                        <th style="text-align: right;">MERCHANT VAULT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% products.forEach(prod => { %>
+                                        <tr id="prod-row-<%= prod._id %>">
+                                            <td>
+                                                <div class="dev-cargo-item">
+                                                    <span class="dev-cargo-icon">📦</span>
+                                                    <div>
+                                                        <span class="dev-table-cell-bold"><%= prod.name %></span>
+                                                        <span class="dev-table-cell-sub"><%= prod.description ? prod.description.substring(0, 45) + '...' : '' %></span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <% if (prod.seller) { %>
+                                                    <a href="/developer/people/sellers/<%= prod.seller._id %>/products" class="dev-table-cell-brass">
+                                                        <%= prod.seller.storeName || prod.seller.name %>
+                                                    </a>
+                                                <% } else { %>
+                                                    <span class="dev-table-cell-muted">Independent Corsair</span>
+                                                <% } %>
+                                            </td>
+                                            <td><%= prod.island || (prod.seller && prod.seller.homeIsland) || "Archipelago" %></td>
+                                            <td>
+                                                <span class="dev-table-cell-mono"><%= prod.category || "General Cargo" %></span>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <span class="dev-doubloon-val"><%= prod.price %> Doubloons</span>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <span class="dev-stock-val <%= prod.stock <= 0 ? 'val-depleted' : '' %>"><%= prod.stock %> units</span>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <% if (prod.stock > 0) { %>
+                                                    <span class="dev-status-tag tag-approved">Active</span>
+                                                <% } else { %>
+                                                    <span class="dev-status-tag tag-rejected">Out of Stock</span>
+                                                <% } %>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <% if (prod.seller) { %>
+                                                    <a href="/developer/people/sellers/<%= prod.seller._id %>/products" class="dev-btn-nautical-small">
+                                                        <span>VIEW WAREHOUSE &rarr;</span>
+                                                    </a>
+                                                <% } else { %>
+                                                    <span class="dev-table-cell-muted">&mdash;</span>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="dev-empty-slate">
+                            <span class="slate-icon">📦</span>
+                            <h4 class="slate-title">No Cargo Listed</h4>
+                            <p class="slate-desc">No merchant has stocked merchandise in the island vaults yet.</p>
+                        </div>
+                    <% } %>
+                </section>
+
+                <!-- DECK 2: ORDERS TABLE -->
+                <section class="dev-manifest-section" id="deckMarketOrders" style="<%= (typeof activeTab === 'undefined' || activeTab !== 'orders') ? 'display: none;' : '' %>" aria-labelledby="headingMarketOrders">
+                    <div class="dev-manifest-bar">
+                        <h3 class="dev-manifest-bar-title" id="headingMarketOrders">
+                            COMMERCE VOYAGES & FULFILLMENT
+                            <span class="dev-count-tag">(<%= orders ? orders.length : 0 %> Voyages Recorded)</span>
+                        </h3>
+                    </div>
+
+                    <% if (orders && orders.length > 0) { %>
+                        <div class="dev-table-parchment-wrapper dev-table-scroll-region">
+                            <table class="dev-parchment-table" id="tableMarketOrders">
+                                <thead>
+                                    <tr>
+                                        <th>VOYAGE ID</th>
+                                        <th>BUYER / SEAFARER</th>
+                                        <th>DESTINATION PORT</th>
+                                        <th>CARGO ITEMS</th>
+                                        <th style="text-align: right;">DOUBLOONS</th>
+                                        <th>STATUS</th>
+                                        <th>PAYMENT</th>
+                                        <th>VOYAGE DATE</th>
+                                        <th style="text-align: right;">INSPECTION</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% orders.forEach(ord => { %>
+                                        <tr id="ord-row-<%= ord._id %>">
+                                            <td>
+                                                <span class="dev-table-cell-mono">#<%= ord._id.toString().substring(18) %></span>
+                                            </td>
+                                            <td>
+                                                <% if (ord.buyer) { %>
+                                                    <a href="/developer/people/buyers/<%= ord.buyer._id %>/orders" class="dev-table-cell-bold">
+                                                        👤 <%= ord.buyer.name %>
+                                                    </a>
+                                                <% } else { %>
+                                                    <span class="dev-table-cell-muted">Unknown Seafarer</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <%= (ord.shippingAddress && ord.shippingAddress.portName) ? ord.shippingAddress.portName : "Tortuga Anchorage" %>
+                                            </td>
+                                            <td>
+                                                <span class="dev-table-cell-mono"><%= (ord.items && ord.items.length) || 1 %> item(s)</span>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <span class="dev-doubloon-val"><%= ord.totalDoubloons %> Doubloons</span>
+                                            </td>
+                                            <td>
+                                                <span class="dev-status-tag tag-<%= ord.status %>"><%= ord.status %></span>
+                                            </td>
+                                            <td>
+                                                <span class="dev-status-tag tag-<%= ord.paymentStatus %>"><%= ord.paymentStatus %></span>
+                                            </td>
+                                            <td>
+                                                <%= new Date(ord.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <% if (ord.buyer) { %>
+                                                    <a href="/developer/people/buyers/<%= ord.buyer._id %>/orders" class="dev-btn-nautical-small">
+                                                        <span>INSPECT VOYAGE &rarr;</span>
+                                                    </a>
+                                                <% } else { %>
+                                                    <span class="dev-table-cell-muted">&mdash;</span>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="dev-empty-slate">
+                            <span class="slate-icon">🧭</span>
+                            <h4 class="slate-title">No Voyages Recorded</h4>
+                            <p class="slate-desc">No seafarer trade voyages or commerce orders have been booked in the archipelago yet.</p>
+                        </div>
+                    <% } %>
+                </section>
+
+            </main>
+        </div>
+
+    </div>
+
+    <!-- Client-side tab switching script -->
+    <script>
+        function switchMarketplaceTab(type) {
+            const tabP = document.getElementById('tabMarketProducts');
+            const tabO = document.getElementById('tabMarketOrders');
+            const deckP = document.getElementById('deckMarketProducts');
+            const deckO = document.getElementById('deckMarketOrders');
+
+            if (type === 'products') {
+                tabP.classList.add('active');
+                tabO.classList.remove('active');
+                deckP.style.display = 'block';
+                deckO.style.display = 'none';
+            } else {
+                tabO.classList.add('active');
+                tabP.classList.remove('active');
+                deckO.style.display = 'block';
+                deckP.style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+
+</html>

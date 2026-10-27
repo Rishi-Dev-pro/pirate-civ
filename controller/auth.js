@@ -616,7 +616,21 @@ export const registerSeller = async (req, res) => {
 /**
  * GET /logout
  */
-export const logoutUser = (req, res) => {
+export const logoutUser = async (req, res) => {
+    let isDeveloper = (req.user && req.user.role === "admin") || 
+                      req.query.from === "developer" || 
+                      req.query.returnTo === "/" ||
+                      (req.headers.referer && (req.headers.referer.includes("/developer") || req.headers.referer.includes("/admin")));
+
+    if (!isDeveloper && req.session?.userId) {
+        try {
+            const u = await User.findById(req.session.userId).select("role");
+            if (u && u.role === "admin") {
+                isDeveloper = true;
+            }
+        } catch (_) {}
+    }
+
     req.session.destroy((error) => {
         if (error) {
             console.error("Logout Error:", error.message);
@@ -631,7 +645,35 @@ export const logoutUser = (req, res) => {
 
         res.clearCookie("connect.sid");
 
+        // Developer/Admin disconnects directly back to the Gateway character selection
+        if (isDeveloper) {
+            return res.redirect("/");
+        }
+
         return res.redirect("/buyer/login");
+    });
+};
+
+/**
+ * GET /developer/logout (and /admin/logout)
+ * Dedicated developer disconnect handler that destroys session and returns to Gateway (/)
+ */
+export const logoutDeveloper = (req, res) => {
+    req.session.destroy((error) => {
+        if (error) {
+            console.error("Developer Logout Error:", error.message);
+            return res.status(500).send("Could not disconnect from Developer Realm");
+        }
+
+        res.clearCookie("auth_token", {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "lax"
+        });
+
+        res.clearCookie("connect.sid");
+
+        return res.redirect("/");
     });
 };
 

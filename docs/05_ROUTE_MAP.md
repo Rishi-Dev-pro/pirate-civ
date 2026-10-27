@@ -90,6 +90,8 @@ This document catalogues every HTTP route within Pirate-Civ, defining its method
 | `POST` | `/developer/sellers/:id/approve`, `/admin/sellers/:id/approve` | `developer.js::approveSeller` | `authMiddleware`, `requireAdmin` | Approves seller charter; sets `sellerStatus = 'approved'` | Yes | Admin |
 | `POST` | `/developer/sellers/:id/reject`, `/admin/sellers/:id/reject` | `developer.js::rejectSeller` | `authMiddleware`, `requireAdmin` | Rejects seller charter with reason; sets `sellerStatus = 'rejected'` | Yes | Admin |
 | `GET` | `/developer/people`, `/admin/people` | `developer.js::renderPeople` | `authMiddleware`, `requireAdmin` | Census view of all Buyers and Sellers | Yes | Admin |
+| `GET` | `/developer/marketplace`, `/admin/marketplace` | `developer.js::renderMarketplace` | `authMiddleware`, `requireAdmin` | Master Cargo & Trade Manifest (real products and orders oversight) | Yes | Admin |
+| `GET` | `/developer/logout`, `/admin/logout` | `auth.js::logoutDeveloper` | None | Destroys developer session/cookie and redirects strictly to Gateway (`/`) | No | None |
 | `GET` | `/developer/people/sellers/:id/products`, `/admin/people/sellers/:id/products` | `developer.js::renderDeveloperSellerProducts` | `authMiddleware`, `requireAdmin` | Read-only marketplace oversight of products listed by seller | Yes | Admin |
 | `GET` | `/developer/people/buyers/:id/orders`, `/admin/people/buyers/:id/orders` | `developer.js::renderBuyerPurchases` | `authMiddleware`, `requireAdmin` | Read-only marketplace oversight of orders placed by buyer | Yes | Admin |
 

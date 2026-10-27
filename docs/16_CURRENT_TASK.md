@@ -14,26 +14,40 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Developer Realm Visual Reconstruction (Physical Pirate Admiralty Command Chamber) Completed & Verified**
+* **Active Status:** **Developer Realm V2 (Surgical Functional Repair + Authentic Pirate-Civ Visual Overhaul) Completed & Fully Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
-* **Developer Realm Complete Visual Reconstruction (`public/css/developer.css`, `views/developer/*.ejs`, `controller/developer.js`, `public/images/developer/*`):**
-  - Completely redesigned the Developer Realm into an authentic physical maritime command room hidden beneath Pirate-Civ, strictly following the provided reference image (`media_1793097862843.jpg`) and asset sheets (`media_1793097879947.jpg`, `media_1793097915565.jpg`).
-  - Banished all generic SaaS/AI-generated dashboard patterns (no card-in-card grids, no boxy rectangular borders, no clunky SaaS widgets).
-  - Deployed transparent nautical assets and physical room composition:
-    - **Atmospheric Backdrop:** Gothic stone citadel arches looking out onto moonlit ocean with pirate ships (`chamber-arches-vista.webp`) and dark wood table foundation.
-    - **Top Command Deck:** Clean, floating engraved architectural insignia (Cinzel Decorative gold-embossed typography without box borders), Pirate-Civ skull logo, subtle cryptographic status capsule, return/disconnect buttons, and round gold Architect medallion.
-    - **Left Nautical Rail:** Antique carved timber navigation frame with top helm wheel, navigation links (`COMMAND CHAMBER`, `MERCHANT CHARTERS` with red wax badge, `THE PEOPLE`, `MARKETPLACE`), brass divider, secondary diagnostic links, and bottom anchor watermark with "SOVEREIGN ARCHITECTURE FOUNDATION".
-    - **Upper War Table Deck:** Natural unfurled archipelago sea chart (`archipelago-parchment-map.png`) lying on dark polished timber with realistic drop shadows, overlaid with 3 brass nautical pins (`MERCHANTS`, `PRODUCTS`, `ORDERS`), accompanied by brass lantern, books with candle, mariner compass, and spyglass. Flanked on the right by the weathered "REALM OVERVIEW" parchment scroll with authentic red wax seal.
-    - **Lower Deck (Three Physical Manifests):**
-      1. `MERCHANT CHARTERS`: Physical parchment document ledger with red wax seal, heraldic cloth banners (Galleon and Kraken), merchant credentials, and styled teal/crimson approval and rejection buttons.
-      2. `THE PEOPLE`: Admiralty census ledger with interactive switcher tabs (`BUYERS [count]` / `SELLERS [count]`) and seafarer records.
-      3. `MARKETPLACE`: Cargo & trade oversight manifest with interactive switcher tabs (`RECENT PRODUCTS [count]` / `RECENT ORDERS [count]`) and live stock/status tracking.
-    - **Architect's Command Telemetry:** Recessed antique brass telemetry plate strip embedded into chamber wainscoting for `[ SYSTEM ]`, `[ SECURITY ]`, `[ DATABASE ]`, `[ ROUTES ]`, `[ TESTS ]`, and `[ SERVICES ]`.
-  - 100% preservation of all routes, controllers, middleware, security boundaries, and element IDs.
-  - Verified with 20/20 in `test_developer_realm_v1.js`, 7/7 (100%) in `test_developer_realm.js`, 72/72 in `test_buyer_commerce_flow.js`, and all 48 EJS templates compiled cleanly.
+* **Developer Realm V2 — Surgical Functional Repair + Authentic Visual Overhaul (`public/css/developer.css`, `controller/auth.js`, `controller/developer.js`, `routes/web.js`, `views/developer/*.ejs`, `scratch/test_developer_realm_v2.js`):**
+  - **Marketplace Section Operational (`views/developer/marketplace.ejs`, `controller/developer.js`, `routes/web.js`):**
+    - Created dedicated `/developer/marketplace` and `/admin/marketplace` routes with `renderMarketplace` controller.
+    - Queries real MongoDB collections: `Product.find({}).populate("seller")` and `Order.find({}).populate("buyer")`.
+    - Computes real aggregate metrics (cataloged wares, gross trade doubloon volume, recorded voyages/orders, depleted stocks) without mock data.
+    - Wired active navigation link `#navDevMarketplace` across all Developer Realm views.
+  - **Removed "RETURN TO SEA CHART":**
+    - Completely removed visible `#btnReturnSeaChart` and "RETURN TO SEA CHART" escape buttons from all Developer Realm interfaces (`dashboard.ejs`, `people.ejs`, `marketplace.ejs`, `seller-applications.ejs`, `seller-products.ejs`, `buyer-orders.ejs`). Developer Realm now functions as an autonomous sovereign command chamber.
+  - **Fixed Disconnect Bug (`controller/auth.js`, `routes/web.js`):**
+    - Corrected disconnect action: clicking `#btnDevDisconnect` destroys the developer/admin session and cookie, and redirects strictly to `/` (the Pirate-Civ Gateway character selection with Merchant/Buyer choice).
+    - Added dedicated `/developer/logout` and `/admin/logout` routes invoking `logoutDeveloper`.
+    - Updated general `/logout` in `logoutUser` to inspect `req.session.userId` role and referer, redirecting developers back to `/` instead of `/buyer/login`.
+  - **Restored Developer Login ("THE SOVEREIGN CIPHER VAULT") (`public/css/developer.css`, `views/developer/login.ejs`):**
+    - Reconstructed `.dev-login-wrap`, `.dev-login-box`, `.dev-login-kicker`, `.dev-login-title`, `.dev-form-input`, and `.dev-login-submit`.
+    - Styled as an obsidian and oxidized-brass cipher safe with glowing teal/crimson focus states, Cinzel Decorative gold gradient title, and no exposed credentials.
+  - **Banished White/Cream Dashboard Cards:**
+    - Replaced all `#faecd7`, `#ece0ca`, `#ffffff` light cards with authentic weathered maritime surfaces: dark aged timber framing (`#18120b`), oxidized brass borders (`rgba(184, 151, 66, 0.45)`), antique darkened parchment inlays (`#22170e`), and warm gold/parchment typography.
+  - **Fixed Scrolling & Sizing:**
+    - Added custom brass & dark timber scrollbars (`::-webkit-scrollbar`).
+    - Added `.dev-table-scroll-region`, `.dev-charters-scroll-deck`, `.dev-census-deck`, and `.dev-cargo-deck` scroll containers with `overflow-y: auto`, preserving natural outer page scrolling.
+  - **Fixed "Sellers Loading Forever" & Filter Bugs (`controller/developer.js`, `views/developer/people.ejs`):**
+    - Corrected `renderDeveloperDashboard` query to load all sellers (`User.find({ role: "seller" })`), eliminating false empty states.
+    - Updated `views/developer/people.ejs` with tab switcher (`#tabPeopleBuyers`, `#tabPeopleSellers`) and decks (`#deckPeopleBuyers`, `#deckPeopleSellers`), supporting instant client switching and URL query `?tab=sellers`.
+  - **Automated Verification:**
+    - 13/13 passed in new comprehensive test suite `scratch/test_developer_realm_v2.js`.
+    - 20/20 passed in `scratch/test_developer_realm_v1.js`.
+    - 7/7 passed in `scratch/test_developer_realm.js`.
+    - 72/72 passed in `scratch/test_buyer_commerce_flow.js`.
+    - 49/49 EJS templates and 31/31 JS files passed syntax validation cleanly.
 
 * **Developer Realm V1 Authorities (`controller/developer.js`, `routes/web.js`, `views/developer/*.ejs`, `public/css/developer.css`, `models/user.js`, `middleware/roles.js`):**
   - **Seller Charter Approval Lifecycle (`models/user.js`, `controller/auth.js`, `controller/googleAuth.js`, `middleware/roles.js`):**

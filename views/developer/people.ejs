@@ -48,12 +48,8 @@
                     <span class="dev-status-text">REALM SECURED // AUTHENTICATED</span>
                 </div>
 
-                <a href="/home" class="dev-btn-nautical" id="btnReturnSeaChart">
-                    <span class="dev-btn-icon">⚓</span>
-                    <span>RETURN TO SEA CHART</span>
-                </a>
-
-                <a href="/logout" class="dev-btn-nautical dev-btn-danger" id="btnDevDisconnect">
+                <!-- DISCONNECT: Returns strictly to / (Pirate-Civ Gateway character selection) -->
+                <a href="/developer/logout" class="dev-btn-nautical dev-btn-danger" id="btnDevDisconnect" title="Destroy developer session and return to Gateway">
                     <span class="dev-btn-icon">⏻</span>
                     <span>DISCONNECT</span>
                 </a>
@@ -99,7 +95,7 @@
                             <span class="dev-rail-label">THE PEOPLE</span>
                         </a>
 
-                        <a href="/developer/people" class="dev-rail-link">
+                        <a href="/developer/marketplace" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'active' : '' %>" id="navDevMarketplace">
                             <span class="dev-rail-icon">🏛</span>
                             <span class="dev-rail-label">MARKETPLACE</span>
                         </a>
@@ -161,8 +157,20 @@
                     </div>
                 </section>
 
+                <!-- INTERACTIVE TAB SWITCHER -->
+                <div class="dev-ledger-tabs" role="tablist" style="margin-bottom: 24px;">
+                    <button type="button" class="dev-tab-btn <%= (typeof activeTab === 'undefined' || activeTab === 'buyers') ? 'active' : '' %>" id="tabPeopleBuyers" onclick="switchPeopleTab('buyers')">
+                        <span>👤 BUYERS / EXPLORERS</span>
+                        <span class="dev-tab-count"><%= buyers ? buyers.length : 0 %></span>
+                    </button>
+                    <button type="button" class="dev-tab-btn <%= (typeof activeTab !== 'undefined' && activeTab === 'sellers') ? 'active' : '' %>" id="tabPeopleSellers" onclick="switchPeopleTab('sellers')">
+                        <span>⚓ SELLERS / MERCHANTS</span>
+                        <span class="dev-tab-count"><%= sellers ? sellers.length : 0 %></span>
+                    </button>
+                </div>
+
                 <!-- BUYERS (EXPLORERS) SECTION -->
-                <section class="dev-manifest-section" aria-labelledby="headingBuyers">
+                <section class="dev-manifest-section" id="deckPeopleBuyers" style="<%= (typeof activeTab !== 'undefined' && activeTab === 'sellers') ? 'display: none;' : '' %>" aria-labelledby="headingBuyers">
                     <div class="dev-manifest-bar">
                         <h3 class="dev-manifest-bar-title" id="headingBuyers">
                             BUYERS (EXPLORERS)
@@ -171,7 +179,7 @@
                     </div>
 
                     <% if (buyers && buyers.length > 0) { %>
-                        <div class="dev-table-parchment-wrapper">
+                        <div class="dev-table-parchment-wrapper dev-table-scroll-region">
                             <table class="dev-parchment-table" id="tableBuyers">
                                 <thead>
                                     <tr>
@@ -218,7 +226,7 @@
                 </section>
 
                 <!-- SELLERS (MERCHANTS) SECTION -->
-                <section class="dev-manifest-section" style="margin-top: 48px;" aria-labelledby="headingSellers">
+                <section class="dev-manifest-section" id="deckPeopleSellers" style="<%= (typeof activeTab === 'undefined' || activeTab !== 'sellers') ? 'display: none;' : '' %>" aria-labelledby="headingSellers">
                     <div class="dev-manifest-bar">
                         <h3 class="dev-manifest-bar-title" id="headingSellers">
                             SELLERS (MERCHANTS)
@@ -227,7 +235,7 @@
                     </div>
 
                     <% if (sellers && sellers.length > 0) { %>
-                        <div class="dev-table-parchment-wrapper">
+                        <div class="dev-table-parchment-wrapper dev-table-scroll-region">
                             <table class="dev-parchment-table" id="tableSellers">
                                 <thead>
                                     <tr>
@@ -289,6 +297,28 @@
         </div>
 
     </div>
+
+    <!-- Client-side tab switching script -->
+    <script>
+        function switchPeopleTab(type) {
+            const tabB = document.getElementById('tabPeopleBuyers');
+            const tabS = document.getElementById('tabPeopleSellers');
+            const deckB = document.getElementById('deckPeopleBuyers');
+            const deckS = document.getElementById('deckPeopleSellers');
+
+            if (type === 'buyers') {
+                tabB.classList.add('active');
+                tabS.classList.remove('active');
+                deckB.style.display = 'block';
+                deckS.style.display = 'none';
+            } else {
+                tabS.classList.add('active');
+                tabB.classList.remove('active');
+                deckS.style.display = 'block';
+                deckB.style.display = 'none';
+            }
+        }
+    </script>
 
 </body>
 

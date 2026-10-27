@@ -11,6 +11,15 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ## 1. System Status by Category
 
 ### 🟢 COMPLETE
+* **Developer Realm V2 — Surgical Functional Repair + Authentic Pirate Visual Overhaul (`public/css/developer.css`, `controller/auth.js`, `controller/developer.js`, `routes/web.js`, `views/developer/*.ejs`, `scratch/test_developer_realm_v2.js`):**
+  - **Marketplace Fully Operational:** Added `/developer/marketplace` and `/admin/marketplace` querying real MongoDB `Product` and `Order` collections with seller/buyer population, real trade volumes, and empty/depleted states.
+  - **Removed "RETURN TO SEA CHART":** Completely eliminated visible escape button `#btnReturnSeaChart` from Developer Realm UI.
+  - **Fixed Disconnect Bug:** Disconnect destroys the session and redirects strictly to `/` (Gateway with character selection). Added `/developer/logout` and `/admin/logout`, and made `/logout` redirect developers to `/`.
+  - **Restored Developer Login ("THE SOVEREIGN CIPHER VAULT"):** Rebuilt unstyled login into an authentic obsidian and oxidized brass cipher vault with Cinzel Decorative gold gradient header, glowing inputs, and no exposed credentials.
+  - **Banished White/Cream Dashboard Cards:** Replaced all bright cards with dark weathered captain's ledgers, aged timber framing, antique parchment inlays, and oxidized brass borders.
+  - **Fixed Scrolling & Sizing:** Added custom nautical brass/timber scrollbars and explicit internal scroll containers (`.dev-table-scroll-region`, `.dev-census-deck`, `.dev-cargo-deck`) preserving outer page scrolling.
+  - **Fixed Seller Infinite Loading & Filtering:** Resolved filtering in `renderDeveloperDashboard` to fetch all sellers (`role: "seller"`), and added interactive switcher tabs (`BUYERS` / `SELLERS`) on the People page.
+  - **Empirical Validation:** 13/13 passed in `test_developer_realm_v2.js`, 20/20 in `test_developer_realm_v1.js`, 7/7 in `test_developer_realm.js`, 72/72 in `test_buyer_commerce_flow.js`, and all 49 EJS templates compiled cleanly.
 * **Developer Realm V1 — Cinematic Visual Overhaul (`public/css/developer.css`, `views/developer/*.ejs`, `public/images/developer-chamber-bg.jpg`):** Visual overhaul transforming the Developer Realm from a flat utility dashboard into an atmospheric, sovereign command chamber beneath the Pirate-Civ citadel:
   - **Cinematic Sovereign Chamber Backdrop:** Implemented full-screen fixed midnight fortress command chamber background (`/images/developer-chamber-bg.jpg`) with arched stone embrasures overlooking stormy night ocean, silhouette galleons, and glowing celestial sea charts, framed by layered obsidian/navy radial vignettes for high-contrast legibility.
   - **Command Deck Header & Controls:** Styled top bar with aged brass corner brackets, sovereign architect typography (`PIRATE-CIV // THE HIDDEN CHAMBER`, `THE DEVELOPER'S REALM`), active security beacon, and physical-styled nautical controls (`[ ⚓ RETURN TO SEA CHART ]`, `[ ⏻ DISCONNECT ]`).

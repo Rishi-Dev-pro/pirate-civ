@@ -2,6 +2,37 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-27] — Feature & Visual Overhaul: Developer Realm V2 — Surgical Functional Repair + Authentic Pirate Visual System
+* **Developer Realm V2 Repairs & Visual Reconstruction (`public/css/developer.css`, `controller/auth.js`, `controller/developer.js`, `routes/web.js`, `views/developer/*.ejs`, `scratch/test_developer_realm_v2.js`):**
+  - **Marketplace Fully Operational (`/developer/marketplace` & `/admin/marketplace`):**
+    - Implemented dedicated route, controller `renderMarketplace`, and view `views/developer/marketplace.ejs`.
+    - Real-time MongoDB queries against `Product` (populated with seller) and `Order` (populated with buyer).
+    - Added 4-tile overview metric strip (Cataloged Wares, Gross Trade Volume in Doubloons, Voyages & Orders, and Depleted Stock) with zero fake data.
+    - Added interactive tab decks (`#tabMarketProducts`, `#tabMarketOrders`) with cargo item details and voyage order summaries.
+  - **Removed "RETURN TO SEA CHART":**
+    - Stripped `#btnReturnSeaChart` and "RETURN TO SEA CHART" navigation escapes from all Developer Realm interfaces. Developer Realm now operates with its own sovereign command chamber navigation rail.
+  - **Fixed Disconnect Bug (`/developer/logout` & `/logout`):**
+    - Corrected disconnect action: destroying developer session now reliably redirects strictly to `/` (the Pirate-Civ Gateway character selection with Merchant/Buyer choice) instead of `/buyer/login`.
+    - Added dedicated `/developer/logout` and `/admin/logout` routes.
+    - Updated `logoutUser` in `controller/auth.js` to inspect `req.session.userId` role and referer to route developers back to `/`.
+  - **Restored Developer Login ("THE SOVEREIGN CIPHER VAULT"):**
+    - Restored CSS for `.dev-login-wrap`, `.dev-login-box`, `.dev-login-kicker`, `.dev-login-title`, `.dev-form-input`, and `.dev-login-submit`.
+    - Visual aesthetic communicates a subterranean forbidden vault with obsidian safe plates, double oxidized-brass borders, glowing teal/crimson focus states, and zero credential leaks.
+  - **Banished White/Cream Dashboard Cards:**
+    - Replaced all `#faecd7`, `#ece0ca`, `#ffffff` light cards with weathered dark maritime captain's ledgers (`#18120b`), oxidized brass rivets/borders (`rgba(184, 151, 66, 0.45)`), antique parchment inlays (`#22170e`), and warm gold/parchment typography.
+  - **Fixed Panel Scrolling:**
+    - Added custom brass & dark timber scrollbars (`::-webkit-scrollbar`).
+    - Added explicit internal scroll regions (`.dev-table-scroll-region`, `.dev-charters-scroll-deck`, `.dev-census-deck`, `.dev-cargo-deck`) with `overflow-y: auto`, preserving natural outer page scrolling.
+  - **Fixed "Sellers Loading Forever" & Filtering:**
+    - Corrected dashboard seller query to fetch all sellers (`role: "seller"`), preventing false empty states.
+    - Implemented interactive switcher tabs on `views/developer/people.ejs` (`#tabPeopleBuyers`, `#tabPeopleSellers`) with URL query support (`?tab=sellers`) and instant client deck switching.
+  - **Empirical Validation:**
+    - 13/13 passed in new `scratch/test_developer_realm_v2.js`.
+    - 20/20 passed in `scratch/test_developer_realm_v1.js`.
+    - 7/7 passed in `scratch/test_developer_realm.js`.
+    - 72/72 passed in `scratch/test_buyer_commerce_flow.js`.
+    - 49/49 EJS templates and 31/31 JS files passed syntax validation cleanly.
+
 ## [2026-10-27] — Complete Visual Reconstruction: Developer Realm — Physical Pirate Admiralty Command Chamber
 * **Authentic Physical Command Chamber Reconstruction (`public/css/developer.css`, `views/developer/*.ejs`, `controller/developer.js`, `public/images/developer/*`):**
   - **Complete Elimination of Generic SaaS Patterns:** Banished card-in-card grids, boxy rectangular borders, and SaaS dashboard styling. Transformed the Developer Realm into an authentic physical maritime command room hidden beneath Pirate-Civ, adhering strictly to the user-supplied reference (`media_1793097862843.jpg`) and asset sheets (`media_1793097879947.jpg`, `media_1793097915565.jpg`).

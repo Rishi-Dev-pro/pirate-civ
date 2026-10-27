@@ -53,12 +53,8 @@
                     <span class="dev-status-text">REALM SECURED // AUTHENTICATED</span>
                 </div>
 
-                <a href="/home" class="dev-btn-nautical" id="btnReturnSeaChart">
-                    <span class="dev-btn-icon">⚓</span>
-                    <span>RETURN TO SEA CHART</span>
-                </a>
-
-                <a href="/logout" class="dev-btn-nautical dev-btn-danger" id="btnDevDisconnect">
+                <!-- DISCONNECT: Returns strictly to / (Pirate-Civ Gateway character selection) -->
+                <a href="/developer/logout" class="dev-btn-nautical dev-btn-danger" id="btnDevDisconnect" title="Destroy developer session and return to Gateway">
                     <span class="dev-btn-icon">⏻</span>
                     <span>DISCONNECT</span>
                 </a>
@@ -109,7 +105,7 @@
                             <span class="dev-rail-label">THE PEOPLE</span>
                         </a>
 
-                        <a href="/developer/people" class="dev-rail-link">
+                        <a href="/developer/marketplace" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'active' : '' %>" id="navDevMarketplace">
                             <span class="dev-rail-icon">🏛</span>
                             <span class="dev-rail-label">MARKETPLACE</span>
                         </a>
@@ -466,7 +462,7 @@
                                 <span class="dev-manifest-subtitle">CARGO & TRADE OVERSIGHT</span>
                             </div>
                             <div class="dev-manifest-header-right">
-                                <a href="/developer/people" class="dev-manifest-view-all">VIEW ALL &rarr;</a>
+                                <a href="/developer/marketplace" class="dev-manifest-view-all">VIEW ALL &rarr;</a>
                             </div>
                         </div>
 

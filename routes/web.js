@@ -13,6 +13,7 @@ import {
     registerSeller,
     renderDeveloperLogin,
     loginDeveloper,
+    logoutDeveloper,
     logoutUser,
     loginUser,
     registerUser
@@ -179,7 +180,8 @@ import {
     rejectSeller,
     renderPeople,
     renderDeveloperSellerProducts,
-    renderBuyerPurchases
+    renderBuyerPurchases,
+    renderMarketplace
 } from "../controller/developer.js";
 
 // Canonical Dashboard & Aliases
@@ -187,6 +189,10 @@ router.get("/developer/dashboard", authMiddleware, requireAdmin, renderDeveloper
 router.get("/admin/dashboard", authMiddleware, requireAdmin, renderDeveloperDashboard);
 router.get("/developer", authMiddleware, requireAdmin, (req, res) => res.redirect("/developer/dashboard"));
 router.get("/admin", authMiddleware, requireAdmin, (req, res) => res.redirect("/developer/dashboard"));
+
+// Developer Disconnect (Destroys developer session and returns to Gateway /)
+router.get("/developer/logout", logoutDeveloper);
+router.get("/admin/logout", logoutDeveloper);
 
 // Seller Applications & Charter Approvals
 router.get("/developer/sellers/applications", authMiddleware, requireAdmin, renderSellerApplications);
@@ -199,6 +205,10 @@ router.post("/admin/sellers/:id/reject", authMiddleware, requireAdmin, rejectSel
 // People: Buyers & Sellers
 router.get("/developer/people", authMiddleware, requireAdmin, renderPeople);
 router.get("/admin/people", authMiddleware, requireAdmin, renderPeople);
+
+// Marketplace Oversight: Master Cargo & Trade Manifest
+router.get("/developer/marketplace", authMiddleware, requireAdmin, renderMarketplace);
+router.get("/admin/marketplace", authMiddleware, requireAdmin, renderMarketplace);
 
 // Marketplace Oversight: Seller Products
 router.get("/developer/people/sellers/:id/products", authMiddleware, requireAdmin, renderDeveloperSellerProducts);
