@@ -14,16 +14,25 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Developer Realm V1 (Seller Approval + Buyer/Seller Marketplace Oversight) Completed & Verified**
+* **Active Status:** **Developer Realm Visual Reconstruction (Physical Pirate Admiralty Command Chamber) Completed & Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
-* **Developer Realm V1 — Cinematic Sovereign Chamber Overhaul (`public/css/developer.css`, `views/developer/*.ejs`, `public/images/developer-chamber-bg.jpg`):**
-  - Completed visual redesign transforming the Developer Realm into the sovereign command chamber beneath the Pirate-Civ citadel.
-  - Implemented bespoke 16:9 night fortress chamber background (`/images/developer-chamber-bg.jpg`), multi-layer obsidian/navy vignettes, brass corner brackets, chart navigation rail (`◆ COMMAND CHAMBER`, `◆ MERCHANT CHARTERS`, `◆ THE PEOPLE`), ancient command instruments, and Admiralty manifests.
+* **Developer Realm Visual Reconstruction (`public/css/developer.css`, `views/developer/*.ejs`, `controller/developer.js`, `public/images/developer/*`):**
+  - Completely redesigned the Developer Realm based on the user-uploaded references and isolated asset sheets, transforming it from a generic AI/SaaS dashboard into an authentic, physical pirate admiralty command chamber hidden beneath Pirate-Civ.
+  - Extracted and deployed clean transparent assets: unfurled parchment sea chart, heraldic banners (Galleon, Kraken, Skull), red wax seals, mariner's compass, breathing lantern, brass anchors, and carved nautical timber navigation frame.
+  - Composed the layout around physical naval artifacts:
+    - **Top Command Deck:** Official Pirate-Civ crest, engraved brass header plaque, status capsule with cyan beacon, physical return/disconnect controls, and Architect medallion.
+    - **Left Nautical Rail:** Carved dark wood & brass frame with helm navigation links, nautical divider, diagnostic anchors, and Sovereign Architecture Foundation insignia.
+    - **Upper War Table Deck:** Physical unfurled parchment sea chart with live floating metric plaques (`MERCHANTS`, `PRODUCTS`, `ORDERS`) flanked by compass and lantern, paired with a pinned "REALM OVERVIEW" parchment scroll with red wax seal.
+    - **Lower Deck (Three Physical Manifests):**
+      1. `MERCHANT CHARTERS`: Physical parchment documents with heraldic banners, merchant metadata, and dual brass buttons (`[ ✓ APPROVE CHARTER ]` & `[ ✕ REJECT ]`).
+      2. `THE PEOPLE`: Admiralty census ledger with interactive tabs (BUYERS / SELLERS) and seafarer records.
+      3. `MARKETPLACE`: Cargo & trade ledger with interactive tabs (RECENT PRODUCTS / RECENT ORDERS) and live stock/status tracking.
+    - **Foundation Diagnostics:** Embedded ship command instruments for `[ SYSTEM ]`, `[ SECURITY ]`, `[ DATABASE ]`, `[ ROUTES ]`, `[ TESTS ]`, and `[ SERVICES ]`.
   - 100% preservation of all routes, controllers, middleware, security boundaries, and element IDs.
-  - Verification: 20/20 in `test_developer_realm_v1.js`, 100% in `test_developer_realm.js`, 72/72 in `test_buyer_commerce_flow.js`, and verified live in browser via CDP subagent.
+  - Verified with 20/20 in `test_developer_realm_v1.js`, 100% in `test_developer_realm.js`, 72/72 in `test_buyer_commerce_flow.js`, and live browser CDP verification.
 
 * **Developer Realm V1 Authorities (`controller/developer.js`, `routes/web.js`, `views/developer/*.ejs`, `public/css/developer.css`, `models/user.js`, `middleware/roles.js`):**
   - **Seller Charter Approval Lifecycle (`models/user.js`, `controller/auth.js`, `controller/googleAuth.js`, `middleware/roles.js`):**

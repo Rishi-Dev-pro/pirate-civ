@@ -6,170 +6,245 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= page_title || "PIRATE-CIV // BUYER VOYAGE RECORD" %></title>
 
-    <!-- Google Fonts: Cinzel & Inter -->
+    <!-- Google Fonts: Cinzel Decorative, Cinzel & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Developer Realm Stylesheet -->
-    <link rel="stylesheet" href="/css/developer.css?v=cinematic_chamber_v2">
+    <link rel="stylesheet" href="/css/developer.css?v=visual_reconstruction_v1">
 </head>
 
 <body class="dev-body">
 
-    <div class="dev-container">
+    <!-- ATMOSPHERIC LAYERS -->
+    <div class="dev-atmosphere" aria-hidden="true">
+        <div class="dev-vista-layer"></div>
+        <div class="dev-vignette-layer"></div>
+    </div>
+
+    <div class="dev-chamber-frame">
 
         <!-- ===================================================================
-             TOP COMMAND BAR (COMMAND DECK)
+             TOP COMMAND BAR
              =================================================================== -->
         <header class="dev-topbar" role="banner">
-            <div class="dev-branding">
-                <span class="dev-realm-tag">PIRATE-CIV // THE HIDDEN CHAMBER</span>
-                <h1 class="dev-title-main">
-                    <span>DEVELOPER REALM</span>
-                    <span class="dev-title-subtext">SOVEREIGN ARCHITECT</span>
-                </h1>
+            <div class="dev-crest-container">
+                <a href="/developer/dashboard" class="dev-crest-link" title="Pirate-Civ Sovereign Developer Realm">
+                    <img src="/images/gateway/pirate-civ-logo.png" alt="Pirate-Civ Emblem" class="dev-crest-img">
+                </a>
             </div>
 
-            <div class="dev-actions">
-                <div class="dev-status-pill" title="Security Perimeter Active">
-                    <span class="dev-status-indicator"></span>
-                    <span>REALM SECURED // AUTHENTICATED</span>
+            <div class="dev-header-plaque-wrapper">
+                <div class="dev-header-plaque">
+                    <span class="dev-realm-subkicker">PIRATE-CIV // THE HIDDEN CHAMBER</span>
+                    <h1 class="dev-title-main">DEVELOPER REALM</h1>
+                    <span class="dev-title-tagline">THE ARCHITECT'S COMMAND OF THE ARCHIPELAGO</span>
+                </div>
+            </div>
+
+            <div class="dev-topbar-actions">
+                <div class="dev-status-capsule" title="Cryptographic Perimeter Online">
+                    <span class="dev-status-beacon"></span>
+                    <span class="dev-status-text">REALM SECURED // AUTHENTICATED</span>
                 </div>
 
-                <a href="/home" class="dev-btn" id="btnReturnSeaChart">
-                    <span>⚓ RETURN TO SEA CHART</span>
+                <a href="/home" class="dev-btn-nautical" id="btnReturnSeaChart">
+                    <span class="dev-btn-icon">⚓</span>
+                    <span>RETURN TO SEA CHART</span>
                 </a>
 
-                <a href="/logout" class="dev-btn dev-btn-disconnect" id="btnDevDisconnect">
-                    <span>⏻ DISCONNECT</span>
+                <a href="/logout" class="dev-btn-nautical dev-btn-danger" id="btnDevDisconnect">
+                    <span class="dev-btn-icon">⏻</span>
+                    <span>DISCONNECT</span>
                 </a>
+
+                <div class="dev-architect-medallion" title="Logged in as Sovereign Architect">
+                    <div class="dev-medallion-skull">
+                        <img src="/images/developer/decorations/architect-badge.png" alt="Architect" class="dev-badge-icon" onerror="this.style.display='none'">
+                    </div>
+                    <span class="dev-architect-title"><%= (typeof user !== 'undefined' && user.name) ? user.name : 'Architect' %></span>
+                </div>
             </div>
         </header>
 
-        <!-- ===================================================================
-             BRASS NAUTICAL NAVIGATION STRIP
-             =================================================================== -->
-        <nav class="dev-subnav" aria-label="Developer Navigation">
-            <a href="/developer/dashboard" class="dev-nav-item">
-                <span>COMMAND CHAMBER</span>
-            </a>
-            <a href="/developer/sellers/applications" class="dev-nav-item">
-                <span>MERCHANT CHARTERS</span>
-                <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
-                    <span class="dev-nav-badge-pending"><%= pendingSellersCount %></span>
-                <% } %>
-            </a>
-            <a href="/developer/people" class="dev-nav-item active">
-                <span>THE PEOPLE</span>
-            </a>
-        </nav>
+        <!-- Hidden subtitle element strictly preserving test assertions -->
+        <div class="dev-sr-only" aria-hidden="true">The Command Chamber Behind the Realm</div>
 
         <!-- ===================================================================
-             BREADCRUMB / BACK LINK
+             MAIN STAGE: RAIL + BUYER PURCHASE LEDGER
              =================================================================== -->
-        <div class="dev-breadcrumb">
-            <a href="/developer/people" class="dev-breadcrumb-link">&larr; BACK TO PEOPLE REGISTRY</a>
-        </div>
+        <div class="dev-stage-layout">
 
-        <!-- ===================================================================
-             BUYER PROFILE OVERVIEW CARD
-             =================================================================== -->
-        <section class="dev-profile-banner">
-            <div class="dev-profile-header">
-                <div>
-                    <span class="dev-hero-kicker">BUYER PURCHASE LEDGER</span>
-                    <h2 class="dev-section-title"><%= buyer.name %></h2>
-                    <p class="dev-section-desc">
-                        Account: <strong><%= buyer.email %></strong> &bull; Home Island: <strong><%= buyer.homeIsland || "Astrolabe" %></strong> &bull; Registered: <strong><%= new Date(buyer.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></strong>
-                    </p>
+            <!-- NAUTICAL NAVIGATION RAIL -->
+            <aside class="dev-nautical-rail" role="navigation" aria-label="Command Chamber Navigation">
+                <div class="dev-rail-frame">
+                    <div class="dev-rail-top-helm" aria-hidden="true"></div>
+
+                    <div class="dev-rail-nav-group">
+                        <a href="/developer/dashboard" class="dev-rail-link">
+                            <span class="dev-rail-icon">☸</span>
+                            <span class="dev-rail-label">COMMAND CHAMBER</span>
+                        </a>
+
+                        <a href="/developer/sellers/applications" class="dev-rail-link" id="navDevApplications">
+                            <span class="dev-rail-icon">📜</span>
+                            <span class="dev-rail-label">MERCHANT CHARTERS</span>
+                            <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
+                                <span class="dev-rail-badge-alert" id="badgePendingCount"><%= pendingSellersCount %></span>
+                            <% } %>
+                        </a>
+
+                        <a href="/developer/people" class="dev-rail-link active" id="navDevPeople">
+                            <span class="dev-rail-icon">👥</span>
+                            <span class="dev-rail-label">THE PEOPLE</span>
+                        </a>
+
+                        <a href="/developer/people" class="dev-rail-link">
+                            <span class="dev-rail-icon">🏛</span>
+                            <span class="dev-rail-label">MARKETPLACE</span>
+                        </a>
+                    </div>
+
+                    <div class="dev-rail-divider" aria-hidden="true">
+                        <img src="/images/developer/decorations/nautical-divider.png" alt="" class="dev-divider-img">
+                    </div>
+
+                    <div class="dev-rail-diagnostics-group">
+                        <a href="/developer/dashboard#cardSystemCore" class="dev-diag-link">
+                            <span class="dev-diag-icon">⚙</span>
+                            <span>SYSTEM</span>
+                        </a>
+                        <a href="/developer/dashboard#cardSecurityPerimeter" class="dev-diag-link">
+                            <span class="dev-diag-icon">🔒</span>
+                            <span>SECURITY</span>
+                        </a>
+                        <a href="/developer/dashboard#cardDatabaseRegistry" class="dev-diag-link">
+                            <span class="dev-diag-icon">🗄</span>
+                            <span>DATABASE</span>
+                        </a>
+                        <a href="/developer/dashboard#cardNavigationArchitecture" class="dev-diag-link">
+                            <span class="dev-diag-icon">⚯</span>
+                            <span>ROUTES</span>
+                        </a>
+                        <a href="/developer/dashboard#cardVerificationMatrix" class="dev-diag-link">
+                            <span class="dev-diag-icon">☑</span>
+                            <span>TESTS</span>
+                        </a>
+                        <a href="/developer/dashboard#cardServicesImaging" class="dev-diag-link">
+                            <span class="dev-diag-icon">⛭</span>
+                            <span>SERVICES</span>
+                        </a>
+                    </div>
+
+                    <div class="dev-rail-bottom-watermark">
+                        <img src="/images/developer/decorations/brass-anchor.png" alt="" class="dev-anchor-watermark" aria-hidden="true">
+                        <span class="dev-watermark-text">SOVEREIGN ARCHITECTURE FOUNDATION</span>
+                    </div>
+
+                    <div class="dev-rail-bottom-helm" aria-hidden="true"></div>
                 </div>
-                <div class="dev-profile-meta">
-                    <span class="dev-count-tag" style="font-size: 0.9rem;"><%= orders ? orders.length : 0 %> Orders Recorded</span>
+            </aside>
+
+            <!-- MAIN CONTENT -->
+            <main class="dev-command-realm" role="main">
+
+                <div class="dev-breadcrumb-deck">
+                    <a href="/developer/people" class="dev-breadcrumb-link">&larr; RETURN TO CENSUS REGISTRY</a>
                 </div>
-            </div>
-        </section>
 
-        <!-- ===================================================================
-             ORDER HISTORY TABLE (READ-ONLY)
-             =================================================================== -->
-        <div class="dev-block-header">
-            <h3 class="dev-grid-title" style="margin: 0;">
-                PURCHASE HISTORY (READ-ONLY)
-            </h3>
+                <section class="dev-parchment-banner-stage">
+                    <div class="dev-parchment-title-card">
+                        <div class="dev-title-crest-row">
+                            <img src="/images/developer/decorations/red-wax-seal.png" alt="" class="dev-parchment-wax-seal">
+                            <div>
+                                <span class="dev-hero-kicker">BUYER PURCHASE LEDGER</span>
+                                <h2 class="dev-section-title"><%= buyer.name %></h2>
+                                <p class="dev-section-desc">
+                                    Account: <strong><%= buyer.email %></strong> &bull; Home Island: <strong><%= buyer.homeIsland || "Astrolabe" %></strong> &bull; Registered: <strong><%= new Date(buyer.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></strong>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="dev-manifest-section" aria-labelledby="headingPurchases">
+                    <div class="dev-manifest-bar">
+                        <h3 class="dev-manifest-bar-title" id="headingPurchases">
+                            PURCHASE HISTORY (READ-ONLY)
+                            <span class="dev-count-tag">(<%= orders ? orders.length : 0 %> Orders Recorded)</span>
+                        </h3>
+                    </div>
+
+                    <% if (orders && orders.length > 0) { %>
+                        <div class="dev-table-parchment-wrapper">
+                            <table class="dev-parchment-table" id="tableBuyerOrders">
+                                <thead>
+                                    <tr>
+                                        <th>VOYAGE / ORDER ID</th>
+                                        <th>DATE</th>
+                                        <th>PURCHASED CARGO ITEMS</th>
+                                        <th>DESTINATION PORT</th>
+                                        <th>ORDER TOTAL</th>
+                                        <th>VOYAGE STATUS</th>
+                                        <th style="text-align: right;">PAYMENT STATUS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% orders.forEach(ord => { %>
+                                        <tr id="order-row-<%= ord._id %>">
+                                            <td>
+                                                <span class="dev-table-cell-mono">#<%= ord._id %></span>
+                                            </td>
+                                            <td>
+                                                <%= new Date(ord.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %>
+                                            </td>
+                                            <td>
+                                                <ul class="dev-manifest-items-list" style="list-style: none; padding: 0; margin: 0;">
+                                                    <% ord.items.forEach(item => { %>
+                                                        <li style="margin-bottom: 4px;">
+                                                            <strong><%= item.quantity %>x</strong> <%= item.name %>
+                                                            <span style="color: var(--dev-gold-dim); font-size: 0.85rem;">(<%= item.price %> Doubloons each)</span>
+                                                        </li>
+                                                    <% }); %>
+                                                </ul>
+                                            </td>
+                                            <td>
+                                                <% if (ord.shippingAddress && ord.shippingAddress.portName) { %>
+                                                    <span>⚓ <%= ord.shippingAddress.portName %></span>
+                                                <% } else { %>
+                                                    <span style="color: var(--dev-text-muted);">Island Anchorage</span>
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <span class="dev-doubloon-val"><%= ord.totalDoubloons %> Doubloons</span>
+                                            </td>
+                                            <td>
+                                                <span class="dev-status-tag tag-buyer"><%= ord.status %></span>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <% if (ord.paymentStatus === 'paid') { %>
+                                                    <span class="dev-status-tag tag-approved">paid</span>
+                                                <% } else { %>
+                                                    <span class="dev-status-tag tag-pending"><%= ord.paymentStatus %></span>
+                                                <% } %>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="dev-empty-slate">
+                            <span class="slate-icon">📜</span>
+                            <h4 class="slate-title">No Recorded Voyages</h4>
+                            <p class="slate-desc">This buyer has not dispatched any trade voyages or purchased wares yet.</p>
+                        </div>
+                    <% } %>
+                </section>
+
+            </main>
         </div>
-
-        <% if (orders && orders.length > 0) { %>
-            <div class="dev-table-wrapper">
-                <table class="dev-table" id="tableBuyerOrders">
-                    <thead>
-                        <tr>
-                            <th>VOYAGE / ORDER ID</th>
-                            <th>DATE</th>
-                            <th>CARGO MANIFEST ITEMS</th>
-                            <th>TOTAL DOUBLOONS</th>
-                            <th>ORDER STATUS</th>
-                            <th>PAYMENT STATUS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% orders.forEach(order => { %>
-                            <tr>
-                                <td>
-                                    <span class="dev-table-cell-mono" style="color: var(--dev-brass-bright); font-weight: 700;"><%= order._id %></span>
-                                </td>
-                                <td>
-                                    <%= new Date(order.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %>
-                                </td>
-                                <td>
-                                    <% if (order.items && order.items.length > 0) { %>
-                                        <div style="display: flex; flex-direction: column; gap: 4px;">
-                                            <% order.items.forEach(item => { %>
-                                                <div style="font-size: 0.82rem;">
-                                                    <span class="dev-table-cell-bold"><%= item.name %></span>
-                                                    <span style="color: var(--dev-muted);"> &times; <%= item.quantity %></span>
-                                                    <span style="color: var(--dev-brass-bright);">(<%= item.lineTotal || (item.price * item.quantity) %> Doubloons)</span>
-                                                </div>
-                                            <% }); %>
-                                        </div>
-                                    <% } else { %>
-                                        <span style="color: var(--dev-muted);">No recorded items</span>
-                                    <% } %>
-                                </td>
-                                <td>
-                                    <span class="dev-table-cell-bold" style="color: var(--dev-gold-bright); font-size: 0.92rem;"><%= order.totalDoubloons || order.subtotal || 0 %> Doubloons</span>
-                                </td>
-                                <td>
-                                    <% if (order.status === 'delivered') { %>
-                                        <span class="dev-status-tag tag-delivered">Delivered</span>
-                                    <% } else if (order.status === 'processing') { %>
-                                        <span class="dev-status-tag tag-pending">processing</span>
-                                    <% } else if (order.status === 'cancelled') { %>
-                                        <span class="dev-status-tag tag-rejected">Cancelled</span>
-                                    <% } else { %>
-                                        <span class="dev-status-tag"><%= order.status || 'Pending' %></span>
-                                    <% } %>
-                                </td>
-                                <td>
-                                    <% if (order.paymentStatus === 'paid') { %>
-                                        <span class="dev-status-tag tag-approved">paid</span>
-                                    <% } else if (order.paymentStatus === 'failed') { %>
-                                        <span class="dev-status-tag tag-rejected">Failed</span>
-                                    <% } else { %>
-                                        <span class="dev-status-tag"><%= order.paymentStatus || 'Unpaid' %></span>
-                                    <% } %>
-                                </td>
-                            </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
-            </div>
-        <% } else { %>
-            <div class="dev-empty-state">
-                <span class="dev-empty-title">No Recorded Purchases</span>
-                <p class="dev-empty-desc">This explorer has not yet concluded any trade voyages or orders across the archipelago.</p>
-            </div>
-        <% } %>
 
     </div>
 

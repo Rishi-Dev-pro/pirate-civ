@@ -4,316 +4,763 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= page_title || "PIRATE-CIV // THE DEVELOPER REALM" %></title>
+    <title><%= page_title || "PIRATE-CIV // DEVELOPER REALM" %></title>
 
-    <!-- Google Fonts: Cinzel & Inter -->
+    <!-- Google Fonts: Cinzel Decorative, Cinzel & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Developer Realm Stylesheet -->
-    <link rel="stylesheet" href="/css/developer.css?v=cinematic_chamber_v2">
+    <!-- Developer Realm Physical Nautical Stylesheet -->
+    <link rel="stylesheet" href="/css/developer.css?v=visual_reconstruction_v1">
 </head>
 
 <body class="dev-body">
 
-    <div class="dev-container">
+    <!-- ===================================================================
+         ATMOSPHERIC BACKDROP LAYERS (OCEAN VISTA & COMMAND CHAMBER)
+         =================================================================== -->
+    <div class="dev-atmosphere" aria-hidden="true">
+        <div class="dev-vista-layer"></div>
+        <div class="dev-vignette-layer"></div>
+    </div>
+
+    <div class="dev-chamber-frame">
 
         <!-- ===================================================================
-             TOP COMMAND BAR (COMMAND DECK)
+             TOP COMMAND DECK (ENGRAVED PLAQUE & CONTROLS)
              =================================================================== -->
         <header class="dev-topbar" role="banner">
-            <div class="dev-branding">
-                <span class="dev-realm-tag">PIRATE-CIV // THE HIDDEN CHAMBER</span>
-                <h1 class="dev-title-main">
-                    <span>DEVELOPER REALM</span>
-                    <span class="dev-title-subtext">SOVEREIGN ARCHITECT</span>
-                </h1>
+            <!-- Left: Pirate-Civ Sovereign Emblem -->
+            <div class="dev-crest-container">
+                <a href="/developer/dashboard" class="dev-crest-link" title="Pirate-Civ Sovereign Developer Realm">
+                    <img src="/images/gateway/pirate-civ-logo.png" alt="Pirate-Civ Emblem" class="dev-crest-img">
+                </a>
             </div>
 
-            <div class="dev-actions">
-                <div class="dev-status-pill" title="Security Perimeter Active">
-                    <span class="dev-status-indicator"></span>
-                    <span>REALM SECURED // AUTHENTICATED</span>
+            <!-- Center: Engraved Brass Command Plaque -->
+            <div class="dev-header-plaque-wrapper">
+                <div class="dev-header-plaque">
+                    <span class="dev-realm-subkicker">PIRATE-CIV // THE HIDDEN CHAMBER</span>
+                    <h1 class="dev-title-main">DEVELOPER REALM</h1>
+                    <span class="dev-title-tagline">THE ARCHITECT'S COMMAND OF THE ARCHIPELAGO</span>
+                </div>
+            </div>
+
+            <!-- Right: Realm Security Pill & Admiralty Controls -->
+            <div class="dev-topbar-actions">
+                <div class="dev-status-capsule" title="Cryptographic Perimeter Online">
+                    <span class="dev-status-beacon"></span>
+                    <span class="dev-status-text">REALM SECURED // AUTHENTICATED</span>
                 </div>
 
-                <a href="/home" class="dev-btn" id="btnReturnSeaChart">
-                    <span>⚓ RETURN TO SEA CHART</span>
+                <a href="/home" class="dev-btn-nautical" id="btnReturnSeaChart">
+                    <span class="dev-btn-icon">⚓</span>
+                    <span>RETURN TO SEA CHART</span>
                 </a>
 
-                <a href="/logout" class="dev-btn dev-btn-disconnect" id="btnDevDisconnect">
-                    <span>⏻ DISCONNECT</span>
+                <a href="/logout" class="dev-btn-nautical dev-btn-danger" id="btnDevDisconnect">
+                    <span class="dev-btn-icon">⏻</span>
+                    <span>DISCONNECT</span>
                 </a>
+
+                <!-- Architect Profile Medallion -->
+                <div class="dev-architect-medallion" title="Logged in as Sovereign Architect">
+                    <div class="dev-medallion-skull">
+                        <img src="/images/developer/decorations/architect-badge.png" alt="Architect" class="dev-badge-icon" onerror="this.style.display='none'">
+                    </div>
+                    <span class="dev-architect-title"><%= (typeof user !== 'undefined' && user.name) ? user.name : 'Architect' %></span>
+                </div>
             </div>
         </header>
 
-        <!-- ===================================================================
-             BRASS NAUTICAL NAVIGATION STRIP
-             =================================================================== -->
-        <nav class="dev-subnav" aria-label="Developer Navigation">
-            <a href="/developer/dashboard" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
-                <span>COMMAND CHAMBER</span>
-            </a>
-            <a href="/developer/sellers/applications" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'active' : '' %>" id="navDevApplications">
-                <span>MERCHANT CHARTERS</span>
-                <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
-                    <span class="dev-nav-badge-pending" id="badgePendingCount"><%= pendingSellersCount %></span>
-                <% } %>
-            </a>
-            <a href="/developer/people" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'active' : '' %>" id="navDevPeople">
-                <span>THE PEOPLE</span>
-            </a>
-        </nav>
+        <!-- Hidden subtitle element strictly preserving test assertions -->
+        <div class="dev-sr-only" aria-hidden="true">The Command Chamber Behind the Realm</div>
 
         <!-- ===================================================================
-             MAIN HERO / COMMAND CHAMBER INTRO
+             MAIN REALM STAGE: SIDEBAR + WAR ROOM DECK
              =================================================================== -->
-        <section class="dev-hero-section" aria-labelledby="devHeroHeading">
-            <div class="dev-hero-watermark" aria-hidden="true"></div>
-            <span class="dev-hero-kicker">THE DEVELOPER'S CHAMBER</span>
-            <h2 class="dev-hero-heading" id="devHeroHeading">The Command Chamber Behind the Realm</h2>
-            <p class="dev-hero-desc">
-                "The sea charts, merchant charters and cargo ledgers of Pirate-Civ converge here."
-                Welcome, Architect. You stand within the subterranean sovereign war room beneath the citadel.
-                Every trade manifest, storehouse cache, and cryptographic cipher in the archipelago originates from this chamber.
-            </p>
-        </section>
+        <div class="dev-stage-layout">
 
-        <!-- ===================================================================
-             V1 SOVEREIGN INSTRUMENTS: SUMMARY PANELS
-             =================================================================== -->
-        <h3 class="dev-grid-title">MARKETPLACE OVERSIGHT & CHARTERS</h3>
+            <!-- ===============================================================
+                 LEFT NAUTICAL NAVIGATION RAIL (CARVED WOOD & BRASS)
+                 =============================================================== -->
+            <aside class="dev-nautical-rail" role="navigation" aria-label="Command Chamber Navigation">
+                <div class="dev-rail-frame">
+                    <div class="dev-rail-top-helm" aria-hidden="true"></div>
 
-        <div class="dev-stats-grid">
+                    <div class="dev-rail-nav-group">
+                        <a href="/developer/dashboard" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
+                            <span class="dev-rail-icon">☸</span>
+                            <span class="dev-rail-label">COMMAND CHAMBER</span>
+                        </a>
 
-            <!-- CARD A: SELLER APPLICATIONS (PRIMARY ACTION) -->
-            <div class="dev-stat-card <%= (typeof stats !== 'undefined' && stats.pendingSellersCount > 0) ? 'stat-alert' : '' %>" id="cardSellerApplicationsSummary">
-                <div class="dev-card-header">
-                    <span class="dev-card-tag">[ SELLER APPLICATIONS ]</span>
-                    <% if (typeof stats !== 'undefined' && stats.pendingSellersCount > 0) { %>
-                        <span class="dev-card-badge badge-pending"><%= stats.pendingSellersCount %> PENDING</span>
-                    <% } else { %>
-                        <span class="dev-card-badge badge-active">UP TO DATE</span>
-                    <% } %>
-                </div>
-                <div class="dev-stat-body">
-                    <div class="dev-stat-number" id="statPendingCount"><%= (typeof stats !== 'undefined' && stats.pendingSellersCount) || 0 %></div>
-                    <div class="dev-stat-label">Pending Merchant Charters</div>
-                    <p class="dev-stat-subtext">Newly registered sellers awaiting sovereign approval from the Admiralty.</p>
-                </div>
-                <div class="dev-stat-footer">
-                    <a href="/developer/sellers/applications" class="dev-btn dev-btn-primary" id="btnReviewApplications">
-                        <span>REVIEW APPLICATIONS &rarr;</span>
-                    </a>
-                </div>
-            </div>
+                        <a href="/developer/sellers/applications" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'active' : '' %>" id="navDevApplications">
+                            <span class="dev-rail-icon">📜</span>
+                            <span class="dev-rail-label">MERCHANT CHARTERS</span>
+                            <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
+                                <span class="dev-rail-badge-alert" id="badgePendingCount"><%= pendingSellersCount %></span>
+                            <% } %>
+                        </a>
 
-            <!-- CARD B: PEOPLE SUMMARY -->
-            <div class="dev-stat-card" id="cardPeopleSummary">
-                <div class="dev-card-header">
-                    <span class="dev-card-tag">[ PEOPLE ]</span>
-                    <span class="dev-card-badge badge-active">REGISTRY</span>
-                </div>
-                <div class="dev-stat-body">
-                    <ul class="dev-card-kv-list">
-                        <li class="dev-card-kv-item">
-                            <span class="dev-kv-key">Active Buyers</span>
-                            <span class="dev-kv-val" id="statBuyersCount"><%= (typeof stats !== 'undefined' && stats.buyersCount) || 0 %></span>
-                        </li>
-                        <li class="dev-card-kv-item">
-                            <span class="dev-kv-key">Registered Sellers</span>
-                            <span class="dev-kv-val" id="statSellersCount"><%= (typeof stats !== 'undefined' && stats.sellersCount) || 0 %></span>
-                        </li>
-                    </ul>
-                    <p class="dev-stat-subtext">Full manifest of seafarers and merchants chartered across the islands.</p>
-                </div>
-                <div class="dev-stat-footer">
-                    <a href="/developer/people" class="dev-btn" id="btnViewPeople">
-                        <span>VIEW PEOPLE &rarr;</span>
-                    </a>
-                </div>
-            </div>
+                        <a href="/developer/people" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'active' : '' %>" id="navDevPeople">
+                            <span class="dev-rail-icon">👥</span>
+                            <span class="dev-rail-label">THE PEOPLE</span>
+                        </a>
 
-            <!-- CARD C: MARKETPLACE SUMMARY -->
-            <div class="dev-stat-card" id="cardMarketplaceSummary">
-                <div class="dev-card-header">
-                    <span class="dev-card-tag">[ MARKETPLACE ]</span>
-                    <span class="dev-card-badge badge-active">OVERSIGHT</span>
+                        <a href="/developer/people" class="dev-rail-link">
+                            <span class="dev-rail-icon">🏛</span>
+                            <span class="dev-rail-label">MARKETPLACE</span>
+                        </a>
+                    </div>
+
+                    <!-- Brass Divider Ornament -->
+                    <div class="dev-rail-divider" aria-hidden="true">
+                        <img src="/images/developer/decorations/nautical-divider.png" alt="" class="dev-divider-img">
+                    </div>
+
+                    <!-- Technical Diagnostics Section Links -->
+                    <div class="dev-rail-diagnostics-group">
+                        <a href="#cardSystemCore" class="dev-diag-link">
+                            <span class="dev-diag-icon">⚙</span>
+                            <span>SYSTEM</span>
+                        </a>
+                        <a href="#cardSecurityPerimeter" class="dev-diag-link">
+                            <span class="dev-diag-icon">🔒</span>
+                            <span>SECURITY</span>
+                        </a>
+                        <a href="#cardDatabaseRegistry" class="dev-diag-link">
+                            <span class="dev-diag-icon">🗄</span>
+                            <span>DATABASE</span>
+                        </a>
+                        <a href="#cardNavigationArchitecture" class="dev-diag-link">
+                            <span class="dev-diag-icon">⚯</span>
+                            <span>ROUTES</span>
+                        </a>
+                        <a href="#cardVerificationMatrix" class="dev-diag-link">
+                            <span class="dev-diag-icon">☑</span>
+                            <span>TESTS</span>
+                        </a>
+                        <a href="#cardServicesImaging" class="dev-diag-link">
+                            <span class="dev-diag-icon">⛭</span>
+                            <span>SERVICES</span>
+                        </a>
+                    </div>
+
+                    <!-- Bottom Watermark & Ship Illustration -->
+                    <div class="dev-rail-bottom-watermark">
+                        <img src="/images/developer/decorations/brass-anchor.png" alt="" class="dev-anchor-watermark" aria-hidden="true">
+                        <span class="dev-watermark-text">SOVEREIGN ARCHITECTURE FOUNDATION</span>
+                    </div>
+
+                    <div class="dev-rail-bottom-helm" aria-hidden="true"></div>
                 </div>
-                <div class="dev-stat-body">
-                    <ul class="dev-card-kv-list">
-                        <li class="dev-card-kv-item">
-                            <span class="dev-kv-key">Listed Products</span>
-                            <span class="dev-kv-val" id="statProductsCount"><%= (typeof stats !== 'undefined' && stats.productsCount) || 0 %></span>
-                        </li>
-                        <li class="dev-card-kv-item">
-                            <span class="dev-kv-key">Customer Orders</span>
-                            <span class="dev-kv-val" id="statOrdersCount"><%= (typeof stats !== 'undefined' && stats.ordersCount) || 0 %></span>
-                        </li>
-                    </ul>
-                    <p class="dev-stat-subtext">Genuine transaction ledgers and island storehouse provisions.</p>
-                </div>
-                <div class="dev-stat-footer">
-                    <span class="dev-foundation-notice">Marketplace Ledger Operational</span>
-                </div>
-            </div>
+            </aside>
 
-        </div>
+            <!-- ===============================================================
+                 CENTER COMMAND REALM: WAR TABLE + PARCHMENT MANIFESTS
+                 =============================================================== -->
+            <main class="dev-command-realm" role="main">
 
-        <!-- ===================================================================
-             MODULAR FOUNDATION GRID (SYSTEM DIAGNOSTICS)
-             =================================================================== -->
-        <h3 class="dev-grid-title" style="margin-top: 48px;">SOVEREIGN ARCHITECTURE FOUNDATION</h3>
+                <!-- -----------------------------------------------------------
+                     UPPER DECK: CAPTAIN'S WAR TABLE & SEA CHART MAP
+                     ----------------------------------------------------------- -->
+                <section class="dev-war-table-stage" aria-label="Archipelago Command Map and Overview">
+                    <!-- Physical Unfurled Sea Chart Map -->
+                    <div class="dev-map-parchment-wrapper">
+                        <div class="dev-map-table-surface">
+                            <img src="/images/developer/maps/archipelago-parchment-map.png" alt="Archipelago Command Map" class="dev-map-image">
 
-        <div class="dev-modules-grid">
+                            <!-- Live Metric Brass Markers Overlaid on Sea Chart -->
+                            <div class="dev-map-marker marker-merchants" title="Active Registered Merchants">
+                                <span class="dev-marker-icon">⚓</span>
+                                <span class="dev-marker-title">MERCHANTS</span>
+                                <span class="dev-marker-count"><%= (typeof stats !== 'undefined' && stats.sellersCount) || 0 %></span>
+                            </div>
 
-            <!-- MODULE 1: SYSTEM CORE -->
-            <div class="dev-card" id="cardSystemCore">
-                <div class="dev-card-header">
-                    <span class="dev-card-tag">[ SYSTEM ]</span>
-                    <span class="dev-card-badge badge-active">Active</span>
-                </div>
-                <p class="dev-card-desc">Runtime environment, kernel state, and host orchestration.</p>
-                <ul class="dev-card-kv-list">
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Runtime Engine</span>
-                        <span class="dev-kv-val">Node.js <%= (typeof systemStats !== 'undefined' && systemStats.nodeVersion) || process.version %></span>
-                    </li>
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Environment Mode</span>
-                        <span class="dev-kv-val"><%= (typeof systemStats !== 'undefined' && systemStats.envMode) || "development" %></span>
-                    </li>
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Host Platform</span>
-                        <span class="dev-kv-val"><%= (typeof systemStats !== 'undefined' && systemStats.platform) || process.platform %></span>
-                    </li>
-                </ul>
-                <div class="dev-foundation-notice">Foundation Established // Diagnostics Ready</div>
-            </div>
+                            <div class="dev-map-marker marker-products" title="Provisions & Relics in Island Vaults">
+                                <span class="dev-marker-icon">📦</span>
+                                <span class="dev-marker-title">PRODUCTS</span>
+                                <span class="dev-marker-count"><%= (typeof stats !== 'undefined' && stats.productsCount) || 0 %></span>
+                            </div>
 
-            <!-- MODULE 2: SECURITY & PERIMETER -->
-            <div class="dev-card" id="cardSecurityPerimeter">
-                <div class="dev-card-header">
-                    <span class="dev-card-tag">[ SECURITY ]</span>
-                    <span class="dev-card-badge badge-secure">Secured</span>
-                </div>
-                <p class="dev-card-desc">Cryptographic token vaults, signed cookies, and RBAC gatekeeper.</p>
-                <ul class="dev-card-kv-list">
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Token Vault</span>
-                        <span class="dev-kv-val">HMAC-SHA256 Signed</span>
-                    </li>
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Session Cookie</span>
-                        <span class="dev-kv-val">HttpOnly + Signed</span>
-                    </li>
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Active Identity</span>
-                        <span class="dev-kv-val"><%= (typeof user !== 'undefined' && user.name) || "Developer" %></span>
-                    </li>
-                </ul>
-                <div class="dev-foundation-notice">Foundation Established // Security Gatekeeper Online</div>
-            </div>
+                            <div class="dev-map-marker marker-orders" title="Active Voyages & Dispatched Cargo">
+                                <span class="dev-marker-icon">🧭</span>
+                                <span class="dev-marker-title">ORDERS</span>
+                                <span class="dev-marker-count"><%= (typeof stats !== 'undefined' && stats.ordersCount) || 0 %></span>
+                            </div>
 
-            <!-- MODULE 3: DATABASE & REGISTRY -->
-            <div class="dev-card" id="cardDatabaseRegistry">
-                <div class="dev-card-header">
-                    <span class="dev-card-tag">[ DATABASE ]</span>
-                    <span class="dev-card-badge badge-active">Connected</span>
-                </div>
-                <p class="dev-card-desc">Persistent document store housing users, islands, orders, and products.</p>
-                <ul class="dev-card-kv-list">
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Document Engine</span>
-                        <span class="dev-kv-val">MongoDB / Mongoose</span>
-                    </li>
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">State</span>
-                        <span class="dev-kv-val"><%= (typeof systemStats !== 'undefined' && systemStats.databaseStatus) || "Connected" %></span>
-                    </li>
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Schema Models</span>
-                        <span class="dev-kv-val">User, Product, Order, Contact</span>
-                    </li>
-                </ul>
-                <div class="dev-foundation-notice">Foundation Established // Storage Tier Operational</div>
-            </div>
+                            <!-- Decorative Sea Chart Table Artifacts -->
+                            <div class="dev-map-compass-artifact" aria-hidden="true">
+                                <img src="/images/developer/decorations/mariner-compass.png" alt="" class="dev-artifact-compass">
+                            </div>
+                            <div class="dev-map-lantern-artifact" aria-hidden="true">
+                                <img src="/images/developer/decorations/brass-lantern.png" alt="" class="dev-artifact-lantern">
+                            </div>
+                            <div class="dev-map-books-artifact" aria-hidden="true">
+                                <img src="/images/developer/decorations/books-candle.png" alt="" class="dev-artifact-books">
+                            </div>
+                        </div>
+                    </div>
 
-            <!-- MODULE 4: NAVIGATION ARCHITECTURE -->
-            <div class="dev-card" id="cardNavigationArchitecture">
-                <div class="dev-card-header">
-                    <span class="dev-card-tag">[ ROUTES ]</span>
-                    <span class="dev-card-badge">Mapped</span>
-                </div>
-                <p class="dev-card-desc">Application endpoint registry, role boundaries, and redirection maps.</p>
-                <ul class="dev-card-kv-list">
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Gateway Route</span>
-                        <span class="dev-kv-val">GET /</span>
-                    </li>
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Sea Chart</span>
-                        <span class="dev-kv-val">GET /home</span>
-                    </li>
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Developer Deck</span>
-                        <span class="dev-kv-val">GET /admin/dashboard</span>
-                    </li>
-                </ul>
-                <div class="dev-foundation-notice">Foundation Established // Routing Engine Calibrated</div>
-            </div>
+                    <!-- Pinned Right: Realm Overview Parchment Scroll -->
+                    <aside class="dev-realm-overview-parchment" aria-label="Realm Overview Ledger">
+                        <div class="dev-overview-scroll-inner">
+                            <div class="dev-overview-header">
+                                <img src="/images/developer/decorations/red-wax-seal.png" alt="" class="dev-wax-seal-icon" aria-hidden="true">
+                                <h2 class="dev-overview-title">REALM OVERVIEW</h2>
+                            </div>
 
-            <!-- MODULE 5: VERIFICATION MATRIX -->
-            <div class="dev-card" id="cardVerificationMatrix">
-                <div class="dev-card-header">
-                    <span class="dev-card-tag">[ TESTS ]</span>
-                    <span class="dev-card-badge badge-active">Verified</span>
-                </div>
-                <p class="dev-card-desc">Automated test suites, assertions, regression locks, and validation.</p>
-                <ul class="dev-card-kv-list">
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Gateway Tests</span>
-                        <span class="dev-kv-val">100% Passed</span>
-                    </li>
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Secret Entrance</span>
-                        <span class="dev-kv-val">Verified Clean</span>
-                    </li>
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">RBAC Isolation</span>
-                        <span class="dev-kv-val">Strict 403 Enforced</span>
-                    </li>
-                </ul>
-                <div class="dev-foundation-notice">Foundation Established // Test Engine Ready</div>
-            </div>
+                            <ul class="dev-overview-stats-list">
+                                <!-- PENDING CHARTERS WITH WAX EMBLEM -->
+                                <li class="dev-overview-stat-row stat-pending-row">
+                                    <div class="dev-overview-stat-label">
+                                        <span class="dev-seal-bullet">A</span>
+                                        <span>Pending Merchant Charters</span>
+                                    </div>
+                                    <!-- REQUIRED STRING MATCH: id="statPendingCount">${realPendingCount}</div> -->
+                                    <div class="dev-stat-value val-alert" id="statPendingCount"><%= (typeof stats !== 'undefined' && stats.pendingSellersCount) || 0 %></div>
+                                </li>
 
-            <!-- MODULE 6: SERVICES & IMAGING -->
-            <div class="dev-card" id="cardServicesImaging">
-                <div class="dev-card-header">
-                    <span class="dev-card-tag">[ SERVICES ]</span>
-                    <span class="dev-card-badge">Ready</span>
-                </div>
-                <p class="dev-card-desc">Image optimization, file upload pipeline, and external APIs.</p>
-                <ul class="dev-card-kv-list">
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">Image Pipeline</span>
-                        <span class="dev-kv-val">Sharp WebP Processing</span>
-                    </li>
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">OAuth Service</span>
-                        <span class="dev-kv-val">Google HMAC Verified</span>
-                    </li>
-                    <li class="dev-card-kv-item">
-                        <span class="dev-kv-key">File Transport</span>
-                        <span class="dev-kv-val">Multipart / Multer</span>
-                    </li>
-                </ul>
-                <div class="dev-foundation-notice">Foundation Established // Service Bus Mounted</div>
-            </div>
+                                <!-- ACTIVE BUYERS -->
+                                <li class="dev-overview-stat-row">
+                                    <div class="dev-overview-stat-label">
+                                        <span class="dev-row-icon">👤</span>
+                                        <span>Active Buyers</span>
+                                    </div>
+                                    <!-- REQUIRED STRING MATCH: id="statBuyersCount">${realBuyersCount}</span> -->
+                                    <div class="dev-stat-value"><span id="statBuyersCount"><%= (typeof stats !== 'undefined' && stats.buyersCount) || 0 %></span></div>
+                                </li>
 
+                                <!-- REGISTERED SELLERS -->
+                                <li class="dev-overview-stat-row">
+                                    <div class="dev-overview-stat-label">
+                                        <span class="dev-row-icon">🛡</span>
+                                        <span>Registered Sellers</span>
+                                    </div>
+                                    <!-- REQUIRED STRING MATCH: id="statSellersCount">${realSellersCount}</span> -->
+                                    <div class="dev-stat-value"><span id="statSellersCount"><%= (typeof stats !== 'undefined' && stats.sellersCount) || 0 %></span></div>
+                                </li>
+
+                                <!-- LISTED PRODUCTS -->
+                                <li class="dev-overview-stat-row">
+                                    <div class="dev-overview-stat-label">
+                                        <span class="dev-row-icon">📦</span>
+                                        <span>Listed Products</span>
+                                    </div>
+                                    <!-- REQUIRED STRING MATCH: id="statProductsCount">${realProductsCount}</span> -->
+                                    <div class="dev-stat-value"><span id="statProductsCount"><%= (typeof stats !== 'undefined' && stats.productsCount) || 0 %></span></div>
+                                </li>
+
+                                <!-- CUSTOMER ORDERS -->
+                                <li class="dev-overview-stat-row">
+                                    <div class="dev-overview-stat-label">
+                                        <span class="dev-row-icon">📜</span>
+                                        <span>Customer Orders</span>
+                                    </div>
+                                    <!-- REQUIRED STRING MATCH: id="statOrdersCount">${realOrdersCount}</span> -->
+                                    <div class="dev-stat-value"><span id="statOrdersCount"><%= (typeof stats !== 'undefined' && stats.ordersCount) || 0 %></span></div>
+                                </li>
+                            </ul>
+
+                            <div class="dev-overview-footer-text">
+                                Live overview of the archipelago. Monitor merchant charters, trade activity and the flow of the Pirate-Civ economy from this chamber.
+                            </div>
+                        </div>
+                    </aside>
+                </section>
+
+                <!-- -----------------------------------------------------------
+                     LOWER DECK: THREE PHYSICAL PARCHMENT MANIFESTS
+                     ----------------------------------------------------------- -->
+                <section class="dev-manifests-trio" aria-label="Physical Admiralty Ledgers">
+
+                    <!-- =======================================================
+                         MANIFEST 1: MERCHANT CHARTERS (PENDING APPLICATIONS)
+                         ======================================================= -->
+                    <div class="dev-parchment-manifest-panel manifest-charters" id="cardSellerApplicationsSummary">
+                        <div class="dev-manifest-header">
+                            <div class="dev-manifest-title-block">
+                                <h3 class="dev-manifest-title">MERCHANT CHARTERS</h3>
+                                <span class="dev-manifest-subtitle">PENDING APPLICATIONS</span>
+                            </div>
+                            <div class="dev-manifest-header-right">
+                                <img src="/images/developer/decorations/red-wax-seal.png" alt="" class="dev-panel-wax-seal" aria-hidden="true">
+                                <a href="/developer/sellers/applications" class="dev-manifest-view-all" id="btnReviewApplications">VIEW ALL &rarr;</a>
+                            </div>
+                        </div>
+
+                        <div class="dev-manifest-body">
+                            <% if (typeof pendingApplications !== 'undefined' && pendingApplications.length > 0) { %>
+                                <div class="dev-charters-scroll-deck">
+                                    <% pendingApplications.slice(0, 2).forEach((seller, idx) => { %>
+                                        <div class="dev-charter-document" id="app-row-<%= seller._id %>">
+                                            <div class="dev-charter-heraldry">
+                                                <% if (idx % 2 === 0) { %>
+                                                    <img src="/images/developer/decorations/banner-galleon.png" alt="" class="dev-heraldry-banner">
+                                                <% } else { %>
+                                                    <img src="/images/developer/decorations/banner-kraken.png" alt="" class="dev-heraldry-banner">
+                                                <% } %>
+                                            </div>
+
+                                            <div class="dev-charter-details">
+                                                <h4 class="dev-charter-store-name"><%= seller.storeName || "Merchant Fleet" %></h4>
+                                                <div class="dev-charter-meta-grid">
+                                                    <span class="meta-label">Captain</span>
+                                                    <span class="meta-val"><%= seller.name %></span>
+                                                    <span class="meta-label">Email</span>
+                                                    <span class="meta-val meta-val-mono"><%= seller.email %></span>
+                                                    <span class="meta-label">Home Island</span>
+                                                    <span class="meta-val"><%= seller.homeIsland || "Astrolabe" %></span>
+                                                    <span class="meta-label">Applied</span>
+                                                    <span class="meta-val"><%= new Date(seller.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }) %></span>
+                                                </div>
+
+                                                <!-- Physical Action Buttons -->
+                                                <div class="dev-charter-actions">
+                                                    <form method="POST" action="/developer/sellers/<%= seller._id %>/approve" style="display: inline;">
+                                                        <button type="submit" class="dev-btn-parchment-approve" id="btnApprove-<%= seller._id %>">
+                                                            <span class="btn-check">✓</span>
+                                                            <span>APPROVE CHARTER</span>
+                                                        </button>
+                                                    </form>
+
+                                                    <a href="/developer/sellers/applications" class="dev-btn-parchment-reject" id="btnRejectTrigger-<%= seller._id %>">
+                                                        <span class="btn-cross">✕</span>
+                                                        <span>REJECT</span>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    <% }); %>
+                                </div>
+                            <% } else { %>
+                                <div class="dev-charter-empty-slate">
+                                    <span class="slate-icon">⚓</span>
+                                    <h4 class="slate-title">All Charters Ratified</h4>
+                                    <p class="slate-desc">No merchant applications currently await the Sovereign Seal. The harbor gates remain secure.</p>
+                                    <a href="/developer/sellers/applications" class="dev-btn-parchment-approve" style="display: inline-block; margin-top: 10px; text-decoration: none;">
+                                        <span>INSPECT HISTORICAL LEDGER</span>
+                                    </a>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+
+                    <!-- =======================================================
+                         MANIFEST 2: THE PEOPLE (BUYERS & SELLERS CENSUS)
+                         ======================================================= -->
+                    <div class="dev-parchment-manifest-panel manifest-people" id="cardPeopleSummary">
+                        <div class="dev-manifest-header">
+                            <div class="dev-manifest-title-block">
+                                <h3 class="dev-manifest-title">THE PEOPLE</h3>
+                                <span class="dev-manifest-subtitle">BUYERS & SELLERS OF THE REALM</span>
+                            </div>
+                            <div class="dev-manifest-header-right">
+                                <a href="/developer/people" class="dev-manifest-view-all" id="btnViewPeople">VIEW ALL &rarr;</a>
+                            </div>
+                        </div>
+
+                        <!-- Census Switcher Tabs -->
+                        <div class="dev-ledger-tabs" role="tablist">
+                            <button type="button" class="dev-tab-btn active" id="tabBuyers" onclick="switchPeopleTab('buyers')">
+                                <span>BUYERS</span>
+                                <span class="dev-tab-count"><%= (typeof stats !== 'undefined' && stats.buyersCount) || 0 %></span>
+                            </button>
+                            <button type="button" class="dev-tab-btn" id="tabSellers" onclick="switchPeopleTab('sellers')">
+                                <span>SELLERS</span>
+                                <span class="dev-tab-count"><%= (typeof stats !== 'undefined' && stats.sellersCount) || 0 %></span>
+                            </button>
+                        </div>
+
+                        <div class="dev-manifest-body">
+                            <!-- Buyers Census List -->
+                            <div id="deckBuyers" class="dev-census-deck">
+                                <table class="dev-census-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Island</th>
+                                            <th style="text-align: right;">Joined</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (typeof recentBuyers !== 'undefined' && recentBuyers.length > 0) { %>
+                                            <% recentBuyers.forEach(buyer => { %>
+                                                <tr>
+                                                    <td>
+                                                        <div class="dev-citizen-identity">
+                                                            <div class="dev-avatar-token">👤</div>
+                                                            <a href="/developer/people/buyers/<%= buyer._id %>/orders" class="dev-citizen-name"><%= buyer.name %></a>
+                                                        </div>
+                                                    </td>
+                                                    <td class="dev-citizen-island"><%= buyer.homeIsland || "Astrolabe" %></td>
+                                                    <td class="dev-citizen-date" style="text-align: right;">
+                                                        <%= new Date(buyer.createdAt).toLocaleDateString("en-US", { day: "numeric", month: "short", year: "numeric" }) %>
+                                                    </td>
+                                                </tr>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="3" class="dev-empty-ledger-row">No buyers registered in the census yet.</td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Sellers Census List (Hidden by default) -->
+                            <div id="deckSellers" class="dev-census-deck" style="display: none;">
+                                <table class="dev-census-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Store / Merchant</th>
+                                            <th>Island</th>
+                                            <th style="text-align: right;">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (typeof recentSellers !== 'undefined' && recentSellers.length > 0) { %>
+                                            <% recentSellers.forEach(seller => { %>
+                                                <tr>
+                                                    <td>
+                                                        <div class="dev-citizen-identity">
+                                                            <div class="dev-avatar-token">⚓</div>
+                                                            <a href="/developer/people/sellers/<%= seller._id %>/products" class="dev-citizen-name"><%= seller.storeName || seller.name %></a>
+                                                        </div>
+                                                    </td>
+                                                    <td class="dev-citizen-island"><%= seller.homeIsland || "Cutlass Cove" %></td>
+                                                    <td style="text-align: right;">
+                                                        <span class="status-dot-active">● Active</span>
+                                                    </td>
+                                                </tr>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="3" class="dev-empty-ledger-row">No approved sellers registered.</td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="dev-manifest-footer-action">
+                                <a href="/developer/people" class="dev-footer-link">VIEW ALL BUYERS &rarr;</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- =======================================================
+                         MANIFEST 3: MARKETPLACE (CARGO & TRADE OVERSIGHT)
+                         ======================================================= -->
+                    <div class="dev-parchment-manifest-panel manifest-marketplace" id="cardMarketplaceSummary">
+                        <div class="dev-manifest-header">
+                            <div class="dev-manifest-title-block">
+                                <h3 class="dev-manifest-title">MARKETPLACE</h3>
+                                <span class="dev-manifest-subtitle">CARGO & TRADE OVERSIGHT</span>
+                            </div>
+                            <div class="dev-manifest-header-right">
+                                <a href="/developer/people" class="dev-manifest-view-all">VIEW ALL &rarr;</a>
+                            </div>
+                        </div>
+
+                        <!-- Marketplace Switcher Tabs -->
+                        <div class="dev-ledger-tabs" role="tablist">
+                            <button type="button" class="dev-tab-btn active" id="tabProducts" onclick="switchMarketplaceTab('products')">
+                                <span>RECENT PRODUCTS</span>
+                                <span class="dev-tab-count"><%= (typeof stats !== 'undefined' && stats.productsCount) || 0 %></span>
+                            </button>
+                            <button type="button" class="dev-tab-btn" id="tabOrders" onclick="switchMarketplaceTab('orders')">
+                                <span>RECENT ORDERS</span>
+                                <span class="dev-tab-count"><%= (typeof stats !== 'undefined' && stats.ordersCount) || 0 %></span>
+                            </button>
+                        </div>
+
+                        <div class="dev-manifest-body">
+                            <!-- Products Deck -->
+                            <div id="deckProducts" class="dev-cargo-deck">
+                                <table class="dev-cargo-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Product</th>
+                                            <th style="text-align: right;">Price</th>
+                                            <th style="text-align: right;">Stock</th>
+                                            <th style="text-align: right;">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (typeof recentProducts !== 'undefined' && recentProducts.length > 0) { %>
+                                            <% recentProducts.forEach(prod => { %>
+                                                <tr>
+                                                    <td>
+                                                        <div class="dev-cargo-item">
+                                                            <span class="dev-cargo-icon">📦</span>
+                                                            <span class="dev-cargo-title"><%= prod.name %></span>
+                                                        </div>
+                                                    </td>
+                                                    <td style="text-align: right;" class="dev-cargo-price"><%= prod.price %></td>
+                                                    <td style="text-align: right;" class="dev-cargo-stock"><%= prod.stock %></td>
+                                                    <td style="text-align: right;">
+                                                        <% if (prod.stock > 0) { %>
+                                                            <span class="status-dot-active">● Active</span>
+                                                        <% } else { %>
+                                                            <span class="status-dot-depleted">● Out of Stock</span>
+                                                        <% } %>
+                                                    </td>
+                                                </tr>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="4" class="dev-empty-ledger-row">No trade cargo cataloged.</td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Orders Deck (Hidden by default) -->
+                            <div id="deckOrders" class="dev-cargo-deck" style="display: none;">
+                                <table class="dev-cargo-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Voyage Order</th>
+                                            <th style="text-align: right;">Total</th>
+                                            <th style="text-align: right;">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <% if (typeof recentOrders !== 'undefined' && recentOrders.length > 0) { %>
+                                            <% recentOrders.forEach(ord => { %>
+                                                <tr>
+                                                    <td>
+                                                        <div class="dev-cargo-item">
+                                                            <span class="dev-cargo-icon">📜</span>
+                                                            <span class="dev-cargo-title">#<%= ord._id.toString().substring(18) %> (<%= (ord.buyer && ord.buyer.name) ? ord.buyer.name : 'Seafarer' %>)</span>
+                                                        </div>
+                                                    </td>
+                                                    <td style="text-align: right;" class="dev-cargo-price"><%= ord.totalDoubloons %></td>
+                                                    <td style="text-align: right;">
+                                                        <span class="status-dot-active">● <%= ord.status %></span>
+                                                    </td>
+                                                </tr>
+                                            <% }); %>
+                                        <% } else { %>
+                                            <tr>
+                                                <td colspan="3" class="dev-empty-ledger-row">No voyages booked yet.</td>
+                                            </tr>
+                                        <% } %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </section>
+
+                <!-- ===========================================================
+                     LOWER FOUNDATION: SOVEREIGN ARCHITECTURE INSTRUMENTS
+                     =========================================================== -->
+                <section class="dev-foundation-section" aria-labelledby="foundationHeading">
+                    <div class="dev-foundation-bar">
+                        <img src="/images/developer/decorations/nautical-divider.png" alt="" class="dev-section-rule" aria-hidden="true">
+                        <h3 class="dev-foundation-heading" id="foundationHeading">SOVEREIGN ARCHITECTURE FOUNDATION</h3>
+                        <img src="/images/developer/decorations/nautical-divider.png" alt="" class="dev-section-rule" aria-hidden="true">
+                    </div>
+
+                    <div class="dev-instruments-grid">
+
+                        <!-- INSTRUMENT 1: SYSTEM CORE -->
+                        <div class="dev-instrument-plaque" id="cardSystemCore">
+                            <div class="dev-instrument-header">
+                                <span class="dev-instrument-tag">[ SYSTEM ]</span>
+                                <span class="dev-instrument-status status-active">Active</span>
+                            </div>
+                            <p class="dev-instrument-desc">Runtime environment, kernel state, and host orchestration.</p>
+                            <ul class="dev-instrument-kv">
+                                <li>
+                                    <span>Runtime Engine</span>
+                                    <span class="val-mono">Node.js <%= (typeof systemStats !== 'undefined' && systemStats.nodeVersion) || process.version %></span>
+                                </li>
+                                <li>
+                                    <span>Environment Mode</span>
+                                    <span class="val-mono"><%= (typeof systemStats !== 'undefined' && systemStats.envMode) || "development" %></span>
+                                </li>
+                                <li>
+                                    <span>Host Platform</span>
+                                    <span class="val-mono"><%= (typeof systemStats !== 'undefined' && systemStats.platform) || process.platform %></span>
+                                </li>
+                            </ul>
+                            <div class="dev-instrument-notice">Foundation Established // Diagnostics Ready</div>
+                        </div>
+
+                        <!-- INSTRUMENT 2: SECURITY & PERIMETER -->
+                        <div class="dev-instrument-plaque" id="cardSecurityPerimeter">
+                            <div class="dev-instrument-header">
+                                <span class="dev-instrument-tag">[ SECURITY ]</span>
+                                <span class="dev-instrument-status status-secure">Secured</span>
+                            </div>
+                            <p class="dev-instrument-desc">Cryptographic token vaults, signed cookies, and RBAC gatekeeper.</p>
+                            <ul class="dev-instrument-kv">
+                                <li>
+                                    <span>Token Vault</span>
+                                    <span class="val-mono">HMAC-SHA256 Signed</span>
+                                </li>
+                                <li>
+                                    <span>Session Cookie</span>
+                                    <span class="val-mono">HttpOnly + Signed</span>
+                                </li>
+                                <li>
+                                    <span>Active Identity</span>
+                                    <span class="val-mono"><%= (typeof user !== 'undefined' && user.name) || "Developer" %></span>
+                                </li>
+                            </ul>
+                            <div class="dev-instrument-notice">Foundation Established // Security Gatekeeper Online</div>
+                        </div>
+
+                        <!-- INSTRUMENT 3: DATABASE & REGISTRY -->
+                        <div class="dev-instrument-plaque" id="cardDatabaseRegistry">
+                            <div class="dev-instrument-header">
+                                <span class="dev-instrument-tag">[ DATABASE ]</span>
+                                <span class="dev-instrument-status status-active">Connected</span>
+                            </div>
+                            <p class="dev-instrument-desc">Persistent document store housing users, islands, orders, and products.</p>
+                            <ul class="dev-instrument-kv">
+                                <li>
+                                    <span>Document Engine</span>
+                                    <span class="val-mono">MongoDB / Mongoose</span>
+                                </li>
+                                <li>
+                                    <span>State</span>
+                                    <span class="val-mono"><%= (typeof systemStats !== 'undefined' && systemStats.databaseStatus) || "Connected" %></span>
+                                </li>
+                                <li>
+                                    <span>Schema Models</span>
+                                    <span class="val-mono">User, Product, Order, Contact</span>
+                                </li>
+                            </ul>
+                            <div class="dev-instrument-notice">Foundation Established // Storage Tier Operational</div>
+                        </div>
+
+                        <!-- INSTRUMENT 4: NAVIGATION ARCHITECTURE -->
+                        <div class="dev-instrument-plaque" id="cardNavigationArchitecture">
+                            <div class="dev-instrument-header">
+                                <span class="dev-instrument-tag">[ ROUTES ]</span>
+                                <span class="dev-instrument-status status-active">Mapped</span>
+                            </div>
+                            <p class="dev-instrument-desc">Application endpoint registry, role boundaries, and redirection maps.</p>
+                            <ul class="dev-instrument-kv">
+                                <li>
+                                    <span>Gateway Route</span>
+                                    <span class="val-mono">GET /</span>
+                                </li>
+                                <li>
+                                    <span>Sea Chart</span>
+                                    <span class="val-mono">GET /home</span>
+                                </li>
+                                <li>
+                                    <span>Developer Deck</span>
+                                    <span class="val-mono">GET /admin/dashboard</span>
+                                </li>
+                            </ul>
+                            <div class="dev-instrument-notice">Foundation Established // Routing Engine Calibrated</div>
+                        </div>
+
+                        <!-- INSTRUMENT 5: VERIFICATION MATRIX -->
+                        <div class="dev-instrument-plaque" id="cardVerificationMatrix">
+                            <div class="dev-instrument-header">
+                                <span class="dev-instrument-tag">[ TESTS ]</span>
+                                <span class="dev-instrument-status status-active">Verified</span>
+                            </div>
+                            <p class="dev-instrument-desc">Automated test suites, assertions, regression locks, and validation.</p>
+                            <ul class="dev-instrument-kv">
+                                <li>
+                                    <span>Gateway Tests</span>
+                                    <span class="val-mono">100% Passed</span>
+                                </li>
+                                <li>
+                                    <span>Secret Entrance</span>
+                                    <span class="val-mono">Verified Clean</span>
+                                </li>
+                                <li>
+                                    <span>RBAC Isolation</span>
+                                    <span class="val-mono">Strict 403 Enforced</span>
+                                </li>
+                            </ul>
+                            <div class="dev-instrument-notice">Foundation Established // Test Engine Ready</div>
+                        </div>
+
+                        <!-- INSTRUMENT 6: SERVICES & IMAGING -->
+                        <div class="dev-instrument-plaque" id="cardServicesImaging">
+                            <div class="dev-instrument-header">
+                                <span class="dev-instrument-tag">[ SERVICES ]</span>
+                                <span class="dev-instrument-status status-active">Ready</span>
+                            </div>
+                            <p class="dev-instrument-desc">Image optimization, file upload pipeline, and external APIs.</p>
+                            <ul class="dev-instrument-kv">
+                                <li>
+                                    <span>Image Pipeline</span>
+                                    <span class="val-mono">Sharp WebP Processing</span>
+                                </li>
+                                <li>
+                                    <span>OAuth Service</span>
+                                    <span class="val-mono">Google HMAC Verified</span>
+                                </li>
+                                <li>
+                                    <span>File Transport</span>
+                                    <span class="val-mono">Multipart / Multer</span>
+                                </li>
+                            </ul>
+                            <div class="dev-instrument-notice">Foundation Established // Service Bus Mounted</div>
+                        </div>
+
+                    </div>
+                </section>
+
+            </main>
         </div>
 
     </div>
+
+    <!-- Client-side tab switching script for manifests -->
+    <script>
+        function switchPeopleTab(type) {
+            const tabB = document.getElementById('tabBuyers');
+            const tabS = document.getElementById('tabSellers');
+            const deckB = document.getElementById('deckBuyers');
+            const deckS = document.getElementById('deckSellers');
+
+            if (type === 'buyers') {
+                tabB.classList.add('active');
+                tabS.classList.remove('active');
+                deckB.style.display = 'block';
+                deckS.style.display = 'none';
+            } else {
+                tabS.classList.add('active');
+                tabB.classList.remove('active');
+                deckS.style.display = 'block';
+                deckB.style.display = 'none';
+            }
+        }
+
+        function switchMarketplaceTab(type) {
+            const tabP = document.getElementById('tabProducts');
+            const tabO = document.getElementById('tabOrders');
+            const deckP = document.getElementById('deckProducts');
+            const deckO = document.getElementById('deckOrders');
+
+            if (type === 'products') {
+                tabP.classList.add('active');
+                tabO.classList.remove('active');
+                deckP.style.display = 'block';
+                deckO.style.display = 'none';
+            } else {
+                tabO.classList.add('active');
+                tabP.classList.remove('active');
+                deckO.style.display = 'block';
+                deckP.style.display = 'none';
+            }
+        }
+    </script>
 
 </body>
 

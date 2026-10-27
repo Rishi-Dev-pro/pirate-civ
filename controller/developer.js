@@ -16,7 +16,12 @@ export const renderDeveloperDashboard = async (req, res) => {
             buyersCount,
             sellersCount,
             productsCount,
-            ordersCount
+            ordersCount,
+            pendingApplications,
+            recentBuyers,
+            recentSellers,
+            recentProducts,
+            recentOrders
         ] = await Promise.all([
             User.countDocuments({ role: "seller", sellerStatus: "pending" }),
             User.countDocuments({ role: "seller", sellerStatus: "approved" }),
@@ -24,7 +29,12 @@ export const renderDeveloperDashboard = async (req, res) => {
             User.countDocuments({ role: "buyer" }),
             User.countDocuments({ role: "seller" }),
             Product.countDocuments({}),
-            Order.countDocuments({})
+            Order.countDocuments({}),
+            User.find({ role: "seller", sellerStatus: "pending" }).sort({ createdAt: -1 }).limit(3).lean(),
+            User.find({ role: "buyer" }).sort({ createdAt: -1 }).limit(5).lean(),
+            User.find({ role: "seller", sellerStatus: "approved" }).sort({ createdAt: -1 }).limit(5).lean(),
+            Product.find({}).sort({ createdAt: -1 }).limit(5).lean(),
+            Order.find({}).populate("buyer", "name").sort({ createdAt: -1 }).limit(5).lean()
         ]);
 
         return res.render("developer/dashboard", {
@@ -32,6 +42,11 @@ export const renderDeveloperDashboard = async (req, res) => {
             user: req.user,
             activeNav: "dashboard",
             pendingSellersCount,
+            pendingApplications: pendingApplications || [],
+            recentBuyers: recentBuyers || [],
+            recentSellers: recentSellers || [],
+            recentProducts: recentProducts || [],
+            recentOrders: recentOrders || [],
             stats: {
                 pendingSellersCount,
                 approvedSellersCount,

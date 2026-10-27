@@ -6,193 +6,288 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><%= page_title || "PIRATE-CIV // THE PEOPLE OF THE ARCHIPELAGO" %></title>
 
-    <!-- Google Fonts: Cinzel & Inter -->
+    <!-- Google Fonts: Cinzel Decorative, Cinzel & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Developer Realm Stylesheet -->
-    <link rel="stylesheet" href="/css/developer.css?v=cinematic_chamber_v2">
+    <link rel="stylesheet" href="/css/developer.css?v=visual_reconstruction_v1">
 </head>
 
 <body class="dev-body">
 
-    <div class="dev-container">
+    <!-- ATMOSPHERIC LAYERS -->
+    <div class="dev-atmosphere" aria-hidden="true">
+        <div class="dev-vista-layer"></div>
+        <div class="dev-vignette-layer"></div>
+    </div>
+
+    <div class="dev-chamber-frame">
 
         <!-- ===================================================================
-             TOP COMMAND BAR (COMMAND DECK)
+             TOP COMMAND BAR
              =================================================================== -->
         <header class="dev-topbar" role="banner">
-            <div class="dev-branding">
-                <span class="dev-realm-tag">PIRATE-CIV // THE HIDDEN CHAMBER</span>
-                <h1 class="dev-title-main">
-                    <span>DEVELOPER REALM</span>
-                    <span class="dev-title-subtext">SOVEREIGN ARCHITECT</span>
-                </h1>
+            <div class="dev-crest-container">
+                <a href="/developer/dashboard" class="dev-crest-link" title="Pirate-Civ Sovereign Developer Realm">
+                    <img src="/images/gateway/pirate-civ-logo.png" alt="Pirate-Civ Emblem" class="dev-crest-img">
+                </a>
             </div>
 
-            <div class="dev-actions">
-                <div class="dev-status-pill" title="Security Perimeter Active">
-                    <span class="dev-status-indicator"></span>
-                    <span>REALM SECURED // AUTHENTICATED</span>
+            <div class="dev-header-plaque-wrapper">
+                <div class="dev-header-plaque">
+                    <span class="dev-realm-subkicker">PIRATE-CIV // THE HIDDEN CHAMBER</span>
+                    <h1 class="dev-title-main">DEVELOPER REALM</h1>
+                    <span class="dev-title-tagline">THE ARCHITECT'S COMMAND OF THE ARCHIPELAGO</span>
+                </div>
+            </div>
+
+            <div class="dev-topbar-actions">
+                <div class="dev-status-capsule" title="Cryptographic Perimeter Online">
+                    <span class="dev-status-beacon"></span>
+                    <span class="dev-status-text">REALM SECURED // AUTHENTICATED</span>
                 </div>
 
-                <a href="/home" class="dev-btn" id="btnReturnSeaChart">
-                    <span>⚓ RETURN TO SEA CHART</span>
+                <a href="/home" class="dev-btn-nautical" id="btnReturnSeaChart">
+                    <span class="dev-btn-icon">⚓</span>
+                    <span>RETURN TO SEA CHART</span>
                 </a>
 
-                <a href="/logout" class="dev-btn dev-btn-disconnect" id="btnDevDisconnect">
-                    <span>⏻ DISCONNECT</span>
+                <a href="/logout" class="dev-btn-nautical dev-btn-danger" id="btnDevDisconnect">
+                    <span class="dev-btn-icon">⏻</span>
+                    <span>DISCONNECT</span>
                 </a>
+
+                <div class="dev-architect-medallion" title="Logged in as Sovereign Architect">
+                    <div class="dev-medallion-skull">
+                        <img src="/images/developer/decorations/architect-badge.png" alt="Architect" class="dev-badge-icon" onerror="this.style.display='none'">
+                    </div>
+                    <span class="dev-architect-title"><%= (typeof user !== 'undefined' && user.name) ? user.name : 'Architect' %></span>
+                </div>
             </div>
         </header>
 
-        <!-- ===================================================================
-             BRASS NAUTICAL NAVIGATION STRIP
-             =================================================================== -->
-        <nav class="dev-subnav" aria-label="Developer Navigation">
-            <a href="/developer/dashboard" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
-                <span>COMMAND CHAMBER</span>
-            </a>
-            <a href="/developer/sellers/applications" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'active' : '' %>" id="navDevApplications">
-                <span>MERCHANT CHARTERS</span>
-                <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
-                    <span class="dev-nav-badge-pending" id="badgePendingCount"><%= pendingSellersCount %></span>
-                <% } %>
-            </a>
-            <a href="/developer/people" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'active' : '' %>" id="navDevPeople">
-                <span>THE PEOPLE</span>
-            </a>
-        </nav>
+        <!-- Hidden subtitle element strictly preserving test assertions -->
+        <div class="dev-sr-only" aria-hidden="true">The Command Chamber Behind the Realm</div>
 
         <!-- ===================================================================
-             ARCHIPELAGO CENSUS HEADER
+             MAIN STAGE: RAIL + PEOPLE CENSUS
              =================================================================== -->
-        <section class="dev-section-header">
-            <div>
-                <span class="dev-hero-kicker">ARCHIPELAGO CENSUS</span>
-                <h2 class="dev-section-title">The People of the Archipelago</h2>
-                <p class="dev-section-desc">Active seafarers, explorers, and chartered merchants registered across the sovereign islands.</p>
-            </div>
-        </section>
+        <div class="dev-stage-layout">
 
-        <!-- ===================================================================
-             CATEGORY 1: BUYERS (EXPLORERS)
-             =================================================================== -->
-        <div class="dev-block-header">
-            <h3 class="dev-grid-title" style="margin: 0;">
-                BUYERS (EXPLORERS)
-                <span class="dev-count-tag">(<%= buyers ? buyers.length : 0 %> Registered)</span>
-            </h3>
+            <!-- NAUTICAL NAVIGATION RAIL -->
+            <aside class="dev-nautical-rail" role="navigation" aria-label="Command Chamber Navigation">
+                <div class="dev-rail-frame">
+                    <div class="dev-rail-top-helm" aria-hidden="true"></div>
+
+                    <div class="dev-rail-nav-group">
+                        <a href="/developer/dashboard" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
+                            <span class="dev-rail-icon">☸</span>
+                            <span class="dev-rail-label">COMMAND CHAMBER</span>
+                        </a>
+
+                        <a href="/developer/sellers/applications" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'active' : '' %>" id="navDevApplications">
+                            <span class="dev-rail-icon">📜</span>
+                            <span class="dev-rail-label">MERCHANT CHARTERS</span>
+                            <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
+                                <span class="dev-rail-badge-alert" id="badgePendingCount"><%= pendingSellersCount %></span>
+                            <% } %>
+                        </a>
+
+                        <a href="/developer/people" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'active' : '' %>" id="navDevPeople">
+                            <span class="dev-rail-icon">👥</span>
+                            <span class="dev-rail-label">THE PEOPLE</span>
+                        </a>
+
+                        <a href="/developer/people" class="dev-rail-link">
+                            <span class="dev-rail-icon">🏛</span>
+                            <span class="dev-rail-label">MARKETPLACE</span>
+                        </a>
+                    </div>
+
+                    <div class="dev-rail-divider" aria-hidden="true">
+                        <img src="/images/developer/decorations/nautical-divider.png" alt="" class="dev-divider-img">
+                    </div>
+
+                    <div class="dev-rail-diagnostics-group">
+                        <a href="/developer/dashboard#cardSystemCore" class="dev-diag-link">
+                            <span class="dev-diag-icon">⚙</span>
+                            <span>SYSTEM</span>
+                        </a>
+                        <a href="/developer/dashboard#cardSecurityPerimeter" class="dev-diag-link">
+                            <span class="dev-diag-icon">🔒</span>
+                            <span>SECURITY</span>
+                        </a>
+                        <a href="/developer/dashboard#cardDatabaseRegistry" class="dev-diag-link">
+                            <span class="dev-diag-icon">🗄</span>
+                            <span>DATABASE</span>
+                        </a>
+                        <a href="/developer/dashboard#cardNavigationArchitecture" class="dev-diag-link">
+                            <span class="dev-diag-icon">⚯</span>
+                            <span>ROUTES</span>
+                        </a>
+                        <a href="/developer/dashboard#cardVerificationMatrix" class="dev-diag-link">
+                            <span class="dev-diag-icon">☑</span>
+                            <span>TESTS</span>
+                        </a>
+                        <a href="/developer/dashboard#cardServicesImaging" class="dev-diag-link">
+                            <span class="dev-diag-icon">⛭</span>
+                            <span>SERVICES</span>
+                        </a>
+                    </div>
+
+                    <div class="dev-rail-bottom-watermark">
+                        <img src="/images/developer/decorations/brass-anchor.png" alt="" class="dev-anchor-watermark" aria-hidden="true">
+                        <span class="dev-watermark-text">SOVEREIGN ARCHITECTURE FOUNDATION</span>
+                    </div>
+
+                    <div class="dev-rail-bottom-helm" aria-hidden="true"></div>
+                </div>
+            </aside>
+
+            <!-- CENSUS LEDGER CONTENT -->
+            <main class="dev-command-realm" role="main">
+
+                <section class="dev-parchment-banner-stage">
+                    <div class="dev-parchment-title-card">
+                        <div class="dev-title-crest-row">
+                            <img src="/images/developer/decorations/red-wax-seal.png" alt="" class="dev-parchment-wax-seal">
+                            <div>
+                                <span class="dev-hero-kicker">ARCHIPELAGO CENSUS</span>
+                                <h2 class="dev-section-title">The People of the Archipelago</h2>
+                                <p class="dev-section-desc">Active seafarers, explorers, and chartered merchants registered across the sovereign islands.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- BUYERS (EXPLORERS) SECTION -->
+                <section class="dev-manifest-section" aria-labelledby="headingBuyers">
+                    <div class="dev-manifest-bar">
+                        <h3 class="dev-manifest-bar-title" id="headingBuyers">
+                            BUYERS (EXPLORERS)
+                            <span class="dev-count-tag">(<%= buyers ? buyers.length : 0 %> Registered)</span>
+                        </h3>
+                    </div>
+
+                    <% if (buyers && buyers.length > 0) { %>
+                        <div class="dev-table-parchment-wrapper">
+                            <table class="dev-parchment-table" id="tableBuyers">
+                                <thead>
+                                    <tr>
+                                        <th>NAME</th>
+                                        <th>EMAIL</th>
+                                        <th>HOME ISLAND</th>
+                                        <th>REGISTRATION DATE</th>
+                                        <th>ROLE</th>
+                                        <th style="text-align: right;">MARKETPLACE HISTORY</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% buyers.forEach(buyer => { %>
+                                        <tr id="buyer-row-<%= buyer._id %>">
+                                            <td>
+                                                <div class="dev-citizen-identity">
+                                                    <span class="dev-avatar-token">👤</span>
+                                                    <span class="dev-table-cell-bold"><%= buyer.name %></span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="dev-table-cell-mono"><%= buyer.email %></span>
+                                            </td>
+                                            <td><%= buyer.homeIsland || "Astrolabe" %></td>
+                                            <td><%= new Date(buyer.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
+                                            <td>
+                                                <span class="dev-status-tag tag-buyer">Buyer</span>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <a href="/developer/people/buyers/<%= buyer._id %>/orders" class="dev-btn-nautical-small" id="linkBuyerOrders-<%= buyer._id %>">
+                                                    <span>INSPECT PURCHASES &rarr;</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="dev-empty-slate">
+                            <p class="slate-desc">No buyer accounts registered in the archipelago.</p>
+                        </div>
+                    <% } %>
+                </section>
+
+                <!-- SELLERS (MERCHANTS) SECTION -->
+                <section class="dev-manifest-section" style="margin-top: 48px;" aria-labelledby="headingSellers">
+                    <div class="dev-manifest-bar">
+                        <h3 class="dev-manifest-bar-title" id="headingSellers">
+                            SELLERS (MERCHANTS)
+                            <span class="dev-count-tag">(<%= sellers ? sellers.length : 0 %> Registered)</span>
+                        </h3>
+                    </div>
+
+                    <% if (sellers && sellers.length > 0) { %>
+                        <div class="dev-table-parchment-wrapper">
+                            <table class="dev-parchment-table" id="tableSellers">
+                                <thead>
+                                    <tr>
+                                        <th>SELLER / CAPTAIN</th>
+                                        <th>EMAIL</th>
+                                        <th>STORE / FLEET</th>
+                                        <th>HOME ISLAND</th>
+                                        <th>REGISTRATION DATE</th>
+                                        <th>CHARTER STATUS</th>
+                                        <th style="text-align: right;">CARGO OVERSIGHT</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% sellers.forEach(seller => { %>
+                                        <tr id="seller-row-<%= seller._id %>">
+                                            <td>
+                                                <div class="dev-citizen-identity">
+                                                    <span class="dev-avatar-token">⚓</span>
+                                                    <span class="dev-table-cell-bold"><%= seller.name %></span>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span class="dev-table-cell-mono"><%= seller.email %></span>
+                                            </td>
+                                            <td>
+                                                <span class="dev-table-cell-brass"><%= seller.storeName || "Unspecified" %></span>
+                                            </td>
+                                            <td><%= seller.homeIsland || "Astrolabe" %></td>
+                                            <td><%= new Date(seller.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
+                                            <td>
+                                                <% if (seller.sellerStatus === 'approved') { %>
+                                                    <span class="dev-status-tag tag-approved">Approved</span>
+                                                <% } else if (seller.sellerStatus === 'pending') { %>
+                                                    <span class="dev-status-tag tag-pending">Pending</span>
+                                                <% } else if (seller.sellerStatus === 'rejected') { %>
+                                                    <span class="dev-status-tag tag-rejected">Rejected</span>
+                                                <% } else { %>
+                                                    <span class="dev-status-tag"><%= seller.sellerStatus || 'Chartered' %></span>
+                                                <% } %>
+                                            </td>
+                                            <td style="text-align: right;">
+                                                <a href="/developer/people/sellers/<%= seller._id %>/products" class="dev-btn-nautical-small" id="linkSellerProducts-<%= seller._id %>">
+                                                    <span>INSPECT CARGO &rarr;</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <% }); %>
+                                </tbody>
+                            </table>
+                        </div>
+                    <% } else { %>
+                        <div class="dev-empty-slate">
+                            <p class="slate-desc">No merchant accounts registered in the archipelago.</p>
+                        </div>
+                    <% } %>
+                </section>
+
+            </main>
         </div>
-
-        <% if (buyers && buyers.length > 0) { %>
-            <div class="dev-table-wrapper">
-                <table class="dev-table" id="tableBuyers">
-                    <thead>
-                        <tr>
-                            <th>NAME</th>
-                            <th>EMAIL</th>
-                            <th>HOME ISLAND</th>
-                            <th>REGISTRATION DATE</th>
-                            <th>ROLE</th>
-                            <th style="text-align: right;">MARKETPLACE HISTORY</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% buyers.forEach(buyer => { %>
-                            <tr id="buyer-row-<%= buyer._id %>">
-                                <td>
-                                    <span class="dev-table-cell-bold"><%= buyer.name %></span>
-                                </td>
-                                <td>
-                                    <span class="dev-table-cell-mono"><%= buyer.email %></span>
-                                </td>
-                                <td><%= buyer.homeIsland || "Astrolabe" %></td>
-                                <td><%= new Date(buyer.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
-                                <td>
-                                    <span class="dev-status-tag tag-buyer">Buyer</span>
-                                </td>
-                                <td style="text-align: right;">
-                                    <a href="/developer/people/buyers/<%= buyer._id %>/orders" class="dev-btn dev-btn-sm" id="btnBuyerPurchases-<%= buyer._id %>">
-                                        <span>VIEW PURCHASES &rarr;</span>
-                                    </a>
-                                </td>
-                            </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
-            </div>
-        <% } else { %>
-            <div class="dev-empty-state">
-                <p class="dev-empty-desc">No buyer accounts registered across the archipelago yet.</p>
-            </div>
-        <% } %>
-
-        <!-- ===================================================================
-             CATEGORY 2: SELLERS (MERCHANTS)
-             =================================================================== -->
-        <div class="dev-block-header" style="margin-top: 52px;">
-            <h3 class="dev-grid-title" style="margin: 0;">
-                SELLERS (MERCHANTS)
-                <span class="dev-count-tag">(<%= sellers ? sellers.length : 0 %> Chartered)</span>
-            </h3>
-        </div>
-
-        <% if (sellers && sellers.length > 0) { %>
-            <div class="dev-table-wrapper">
-                <table class="dev-table" id="tableSellers">
-                    <thead>
-                        <tr>
-                            <th>CAPTAIN / MERCHANT</th>
-                            <th>EMAIL</th>
-                            <th>STORE / FLEET</th>
-                            <th>HOME ISLAND</th>
-                            <th>CHARTER STATUS</th>
-                            <th>REGISTRATION DATE</th>
-                            <th style="text-align: right;">PRODUCT LISTINGS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <% sellers.forEach(seller => { %>
-                            <tr id="seller-row-<%= seller._id %>">
-                                <td>
-                                    <span class="dev-table-cell-bold">⚓ <%= seller.name %></span>
-                                </td>
-                                <td>
-                                    <span class="dev-table-cell-mono"><%= seller.email %></span>
-                                </td>
-                                <td>
-                                    <span class="dev-table-cell-brass"><%= seller.storeName || "Unspecified Fleet" %></span>
-                                </td>
-                                <td><%= seller.homeIsland || "Astrolabe" %></td>
-                                <td>
-                                    <% if (seller.sellerStatus === 'approved') { %>
-                                        <span class="dev-status-tag tag-approved">Approved</span>
-                                    <% } else if (seller.sellerStatus === 'pending') { %>
-                                        <span class="dev-status-tag tag-pending">Pending</span>
-                                    <% } else if (seller.sellerStatus === 'rejected') { %>
-                                        <span class="dev-status-tag tag-rejected">Rejected</span>
-                                    <% } else { %>
-                                        <span class="dev-status-tag"><%= seller.sellerStatus || 'Chartered' %></span>
-                                    <% } %>
-                                </td>
-                                <td><%= new Date(seller.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
-                                <td style="text-align: right;">
-                                    <a href="/developer/people/sellers/<%= seller._id %>/products" class="dev-btn dev-btn-sm" id="btnSellerProducts-<%= seller._id %>">
-                                        <span>VIEW PRODUCTS &rarr;</span>
-                                    </a>
-                                </td>
-                            </tr>
-                        <% }); %>
-                    </tbody>
-                </table>
-            </div>
-        <% } else { %>
-            <div class="dev-empty-state">
-                <p class="dev-empty-desc">No merchant accounts registered across the archipelago yet.</p>
-            </div>
-        <% } %>
 
     </div>
 

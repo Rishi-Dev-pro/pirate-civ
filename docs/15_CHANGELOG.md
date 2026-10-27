@@ -2,6 +2,29 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-27] — Visual Reconstruction: Developer Realm — Physical Pirate Admiralty Command Chamber
+* **Authentic Pirate Command Chamber Reconstruction (`public/css/developer.css`, `views/developer/*.ejs`, `controller/developer.js`, `public/images/developer/*`):**
+  - **Replaced AI Dashboard Paradigm:** Completely eliminated generic cards, uniform rectangles, flat dark boxes, and SaaS admin dashboard aesthetics in favor of an authentic physical pirate admiralty command chamber hidden beneath Pirate-Civ.
+  - **Asset Extraction & Design System Integration:**
+    - Cropped and integrated high-fidelity isolated assets from user-uploaded references into `public/images/developer/` (`maps/`, `panels/`, `decorations/`, `backgrounds/`, `navigation/`).
+    - Integrated unfurled archipelago sea chart map, heraldic merchant banners (Galleon, Kraken, Skull), red wax seals, mariner's compass, breathing brass lantern, leather books, and brass anchors.
+  - **Physical War Room Layout:**
+    - **Top Command Deck:** Official Pirate-Civ crest, engraved brass header plaque (`PIRATE-CIV // THE HIDDEN CHAMBER`, `DEVELOPER REALM`), status capsule with glowing cyan beacon, physical return/disconnect controls, and Architect medallion.
+    - **Left Nautical Rail:** Carved timber and aged brass frame with helm navigation links, nautical divider, diagnostic anchors, and Sovereign Architecture Foundation insignia.
+    - **Upper War Table Deck:** Physical unfurled parchment sea chart with live floating metric plaques (`MERCHANTS`, `PRODUCTS`, `ORDERS`) flanked by compass and lantern, paired with a pinned "REALM OVERVIEW" parchment scroll with red wax seal.
+    - **Lower Deck (Three Physical Manifests):**
+      1. `MERCHANT CHARTERS`: Physical parchment documents with heraldic banners, merchant metadata, and dual brass buttons (`[ ✓ APPROVE CHARTER ]` & `[ ✕ REJECT ]`).
+      2. `THE PEOPLE`: Admiralty census ledger with interactive tabs (BUYERS / SELLERS) and seafarer records.
+      3. `MARKETPLACE`: Cargo & trade ledger with interactive tabs (RECENT PRODUCTS / RECENT ORDERS) and live stock/status tracking.
+    - **Foundation Diagnostics:** Embedded ship command instruments for `[ SYSTEM ]`, `[ SECURITY ]`, `[ DATABASE ]`, `[ ROUTES ]`, `[ TESTS ]`, and `[ SERVICES ]`.
+  - **Comprehensive Verification:**
+    - 20/20 in `test_developer_realm_v1.js`.
+    - 100% in `test_developer_realm.js`.
+    - 72/72 in `test_buyer_commerce_flow.js`.
+    - 48/48 EJS templates syntax verified clean.
+    - 31/31 JS files verified clean.
+    - Visual inspection and verification completed via browser CDP subagent.
+
 ## [2026-10-27] — Visual Redesign: Developer Realm V1 — Cinematic Sovereign Chamber Overhaul
 * **Cinematic Sovereign Chamber Visual Redesign (`public/css/developer.css`, `views/developer/*.ejs`, `public/images/developer-chamber-bg.jpg`):**
   - **Sovereign Command Atmosphere:** Replaced plain black/grid background with a full-screen, atmospheric midnight fortress chamber asset (`/images/developer-chamber-bg.jpg`) featuring grand stone arches overlooking a stormy ocean, silhouette galleons, warm lanterns, and glowing constellation charts.
