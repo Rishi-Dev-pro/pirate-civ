@@ -80,12 +80,28 @@ This document catalogues every HTTP route within Pirate-Civ, defining its method
 
 ---
 
-## 5. Backward Compatibility & Alias Routes
+## 5. Developer Realm Routes (V1 Authorities)
+
+| Method | Route | Controller | Middleware | Purpose | Auth Req? | Role Req? |
+|---|---|---|---|---|:---:|:---:|
+| `GET` | `/developer/dashboard`, `/admin/dashboard` | `developer.js::renderDeveloperDashboard` | `authMiddleware`, `requireAdmin` | Developer Realm Overview with real stats (Pending Sellers, People, Marketplace) | Yes | Admin |
+| `GET` | `/developer`, `/admin` | Inline redirect | `authMiddleware`, `requireAdmin` | Redirects to `/developer/dashboard` | Yes | Admin |
+| `GET` | `/developer/sellers/applications`, `/admin/sellers/applications` | `developer.js::renderSellerApplications` | `authMiddleware`, `requireAdmin` | View pending and resolved merchant charter applications | Yes | Admin |
+| `POST` | `/developer/sellers/:id/approve`, `/admin/sellers/:id/approve` | `developer.js::approveSeller` | `authMiddleware`, `requireAdmin` | Approves seller charter; sets `sellerStatus = 'approved'` | Yes | Admin |
+| `POST` | `/developer/sellers/:id/reject`, `/admin/sellers/:id/reject` | `developer.js::rejectSeller` | `authMiddleware`, `requireAdmin` | Rejects seller charter with reason; sets `sellerStatus = 'rejected'` | Yes | Admin |
+| `GET` | `/developer/people`, `/admin/people` | `developer.js::renderPeople` | `authMiddleware`, `requireAdmin` | Census view of all Buyers and Sellers | Yes | Admin |
+| `GET` | `/developer/people/sellers/:id/products`, `/admin/people/sellers/:id/products` | `developer.js::renderDeveloperSellerProducts` | `authMiddleware`, `requireAdmin` | Read-only marketplace oversight of products listed by seller | Yes | Admin |
+| `GET` | `/developer/people/buyers/:id/orders`, `/admin/people/buyers/:id/orders` | `developer.js::renderBuyerPurchases` | `authMiddleware`, `requireAdmin` | Read-only marketplace oversight of orders placed by buyer | Yes | Admin |
+
+---
+
+## 6. Backward Compatibility & Alias Routes
 
 To preserve existing bookmarks and frontend links during the phased transition:
 
 | Legacy Route | Redirects / Resolves To | Status |
 |---|---|---|
+| `/admin`, `/developer` | `/developer/dashboard` | Redirects to Developer Realm Dashboard |
 | `/seller`, `/seller/portal` | `/seller/dashboard` | Redirects to Seller Command Deck |
 | `/islands` | `/#sea-chart-section` | Overview redirect to home sea chart grid |
 | `/astrolabe` | `/island/astrolabe` | Canonical alias retained |

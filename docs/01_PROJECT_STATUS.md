@@ -11,7 +11,19 @@ This document reflects the **unvarnished, ground-truth reality** of the Pirate-C
 ## 1. System Status by Category
 
 ### 🟢 COMPLETE
-* **Secret Developer Realm (Boxless Skull → Dedicated Developer Gate → Developer Realm Foundation):** Hidden developer entrance and sovereign command chamber:
+* **Developer Realm V1 — Seller Approval & Marketplace Oversight (`controller/developer.js`, `routes/web.js`, `views/developer/*.ejs`, `public/css/developer.css`, `models/user.js`, `middleware/roles.js`):** First minimal functional version of the Developer Realm:
+  - **Seller Charter Approval Lifecycle (`models/user.js`, `controller/auth.js`, `controller/googleAuth.js`, `middleware/roles.js`):** Added `sellerStatus` enum (`pending`, `approved`, `rejected`, `null`) and `rejectionReason`. New seller registrations automatically assign `sellerStatus = "pending"`. Buyers remain unaffected.
+  - **Seller Access Gatekeeper (`middleware/roles.js`):** Enforces that pending merchants cannot access normal seller functionality, receiving HTTP 403 with Pirate-Civ themed message: *"Your Merchant Charter is awaiting approval from the Admiralty."* Rejected merchants receive HTTP 403 with reason: *"Your Merchant Charter application was rejected."* Approved merchants retain normal seller portal access.
+  - **Seller Applications Command Page (`views/developer/seller-applications.ejs`):** Developer view listing pending and resolved charter applications with merchant name, email, fleet store name, home island, registration date, and status. Features server-side `[ APPROVE ]` and `[ REJECT ]` with controlled reason modal dialog.
+  - **People Registry (`views/developer/people.ejs`):** Census of all registered Buyers and Sellers across the archipelago. Provides direct navigation to view purchase history for buyers and warehouse listings for sellers.
+  - **Marketplace Oversight (Read-Only) (`views/developer/seller-products.ejs`, `views/developer/buyer-orders.ejs`):**
+    - Seller Products: Displays product name, price in Doubloons, stock, island, category, availability, and listed date.
+    - Buyer Purchases: Displays order identifier, date, item snapshots, quantities, Doubloon total, order status, and payment status.
+    - Zero administrative mutators: No product editing/deletion, no arbitrary database editing, no order tampering, no refunds or payment administration. Strictly read-only oversight.
+  - **Real Database Telemetry (`views/developer/dashboard.ejs`):** Dashboard displays real MongoDB counts for pending seller charters, active buyers, chartered sellers, listed products, and customer orders. Includes prominent glowing indicator for pending charter actions.
+  - **Security & Authorization (`routes/web.js`, `middleware/roles.js`):** Strictly guarded with `[authMiddleware, requireAdmin]`. Canonical security role remains `role: 'admin'`. Buyers and sellers receive HTTP 403 when attempting to access Developer Realm endpoints.
+  - **Automated Validation:** 100% pass on all 20 requirements in `scratch/test_developer_realm_v1.js`, 100% on `scratch/test_developer_realm.js`, 72/72 on `scratch/test_buyer_commerce_flow.js`, and clean syntax across all 48 EJS templates and 31 JS files.
+* **Secret Developer Realm Foundation (Boxless Skull → Dedicated Developer Gate → Developer Realm Foundation):** Hidden developer entrance and sovereign command chamber:
   - **Floating Transparent Skull (No Box):** Reprocessed `pirate-civ-skull.png` with a 40px zero-alpha padding border to prevent rectangular edge clipping by drop-shadow filters. Stripped container borders, backgrounds, and `:focus-visible` outlines. The skull floats organically in pure darkness.
   - **Dedicated Developer Gate (`/admin/login` & `/developer/login`):** Resolved the redirect bug where unauthenticated visitors clicking the skull fell through to `/buyer/login`. Updated `authMiddleware` and `requireRole` to route unauthenticated admin requests strictly to the Developer Gate.
   - **Developer Realm Visual Identity:** Front-facing UI uses "DEVELOPER" (`PIRATE-CIV // DEVELOPER REALM`, `THE DEVELOPER'S CHAMBER`), preserving `admin` strictly as the internal security role.

@@ -191,6 +191,7 @@ export const handleGoogleCallback = async (req, res) => {
                 password: hashedPassword,
                 googleId: googleId,
                 role: verifiedRoleIntent,
+                sellerStatus: verifiedRoleIntent === "seller" ? "pending" : null,
                 storeName: verifiedRoleIntent === "seller" ? `${name}'s Fleet` : null,
                 homeIsland: "Astrolabe",
                 avatar: avatar,

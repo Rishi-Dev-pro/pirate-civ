@@ -49,6 +49,28 @@ const userSchema = new mongoose.Schema({
     },
 
 
+    sellerStatus: {
+
+        type: String,
+
+        enum: ["pending", "approved", "rejected", null],
+
+        default: null
+
+    },
+
+
+    rejectionReason: {
+
+        type: String,
+
+        trim: true,
+
+        default: null
+
+    },
+
+
     storeName: {
 
         type: String,

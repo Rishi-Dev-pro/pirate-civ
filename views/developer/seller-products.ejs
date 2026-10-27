@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "PIRATE-CIV // SELLER PRODUCTS" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Developer Realm Stylesheet -->
+    <link rel="stylesheet" href="/css/developer.css?v=dev_realm_v1">
+</head>
+
+<body class="dev-body">
+
+    <div class="dev-container">
+
+        <!-- ===================================================================
+             TOP COMMAND BAR
+             =================================================================== -->
+        <header class="dev-topbar" role="banner">
+            <div class="dev-branding">
+                <span class="dev-realm-tag">PIRATE-CIV // SOVEREIGN ARCHITECT</span>
+                <h1 class="dev-title-main">DEVELOPER REALM</h1>
+            </div>
+
+            <div class="dev-actions">
+                <div class="dev-status-pill" title="Security Perimeter Active">
+                    <span class="dev-status-indicator"></span>
+                    <span>REALM SECURED // AUTHENTICATED</span>
+                </div>
+
+                <a href="/home" class="dev-btn" id="btnReturnSeaChart">
+                    <span>RETURN TO SEA CHART</span>
+                </a>
+
+                <a href="/logout" class="dev-btn dev-btn-disconnect" id="btnDevDisconnect">
+                    <span>DISCONNECT</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- ===================================================================
+             REALM NAVIGATION
+             =================================================================== -->
+        <nav class="dev-subnav" aria-label="Developer Navigation">
+            <a href="/developer/dashboard" class="dev-nav-item">
+                <span>OVERVIEW</span>
+            </a>
+            <a href="/developer/sellers/applications" class="dev-nav-item">
+                <span>SELLER APPLICATIONS</span>
+                <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
+                    <span class="dev-nav-badge-pending"><%= pendingSellersCount %></span>
+                <% } %>
+            </a>
+            <a href="/developer/people" class="dev-nav-item active">
+                <span>PEOPLE</span>
+            </a>
+        </nav>
+
+        <!-- ===================================================================
+             BREADCRUMB / BACK LINK
+             =================================================================== -->
+        <div class="dev-breadcrumb">
+            <a href="/developer/people" class="dev-breadcrumb-link">&larr; BACK TO PEOPLE REGISTRY</a>
+        </div>
+
+        <!-- ===================================================================
+             SELLER PROFILE OVERVIEW CARD
+             =================================================================== -->
+        <section class="dev-profile-banner">
+            <div class="dev-profile-header">
+                <div>
+                    <span class="dev-hero-kicker">MERCHANT WAREHOUSE OVERSIGHT</span>
+                    <h2 class="dev-section-title"><%= seller.storeName || seller.name %></h2>
+                    <p class="dev-section-desc">
+                        Proprietor: <strong><%= seller.name %></strong> (<%= seller.email %>) &bull; Home Island: <strong><%= seller.homeIsland || "Astrolabe" %></strong> &bull; Charter: <strong><%= seller.sellerStatus || "approved" %></strong>
+                    </p>
+                </div>
+                <div class="dev-profile-meta">
+                    <span class="dev-count-tag" style="font-size: 0.9rem;"><%= products ? products.length : 0 %> Listed Wares</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===================================================================
+             PRODUCT LISTINGS TABLE (READ-ONLY)
+             =================================================================== -->
+        <div class="dev-block-header">
+            <h3 class="dev-grid-title" style="margin: 0;">
+                ACTIVE & LISTED INVENTORY (READ-ONLY)
+            </h3>
+        </div>
+
+        <% if (products && products.length > 0) { %>
+            <div class="dev-table-wrapper">
+                <table class="dev-table" id="tableSellerProducts">
+                    <thead>
+                        <tr>
+                            <th>PRODUCT</th>
+                            <th>PRICE</th>
+                            <th>STOCK</th>
+                            <th>ISLAND</th>
+                            <th>CATEGORY</th>
+                            <th>AVAILABILITY</th>
+                            <th>LISTED DATE</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% products.forEach(prod => { %>
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center; gap: 12px;">
+                                        <% if (prod.image) { %>
+                                            <img src="<%= prod.image %>" alt="<%= prod.name %>" style="width: 36px; height: 36px; object-fit: contain; border-radius: 3px; background: rgba(0,0,0,0.5); border: 1px solid var(--dev-border-subtle);">
+                                        <% } %>
+                                        <div>
+                                            <span class="dev-table-cell-bold"><%= prod.name %></span>
+                                            <div style="font-size: 0.72rem; color: var(--dev-muted); font-family: monospace;"><%= prod.slug %></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="dev-table-cell-brass"><%= prod.price %> Doubloons</span>
+                                </td>
+                                <td>
+                                    <span class="dev-table-cell-mono <%= prod.stock <= 0 ? 'text-danger' : '' %>"><%= prod.stock %> units</span>
+                                </td>
+                                <td><%= prod.island %></td>
+                                <td><%= prod.category %></td>
+                                <td>
+                                    <% if (prod.isAvailable) { %>
+                                        <span class="dev-status-tag tag-approved">Available</span>
+                                    <% } else { %>
+                                        <span class="dev-status-tag tag-rejected">Unlisted</span>
+                                    <% } %>
+                                </td>
+                                <td><%= new Date(prod.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <div class="dev-empty-state">
+                <span class="dev-empty-title">No Products Listed</span>
+                <p class="dev-empty-desc">This merchant currently has no wares in their warehouse inventory.</p>
+            </div>
+        <% } %>
+
+    </div>
+
+</body>
+
+</html>

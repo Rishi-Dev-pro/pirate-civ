@@ -168,56 +168,45 @@ router.get(
 // =====================================================
 // DEVELOPER REALM / CANONICAL DEVELOPER DASHBOARD
 // =====================================================
+// DEVELOPER REALM / CANONICAL DEVELOPER DASHBOARD
+// =====================================================
 
 import { requireAdmin } from "../middleware/roles.js";
+import {
+    renderDeveloperDashboard,
+    renderSellerApplications,
+    approveSeller,
+    rejectSeller,
+    renderPeople,
+    renderDeveloperSellerProducts,
+    renderBuyerPurchases
+} from "../controller/developer.js";
 
-router.get(
-    "/admin/dashboard",
-    authMiddleware,
-    requireAdmin,
-    (req, res) => {
-        res.render("developer/dashboard", {
-            page_title: "PIRATE-CIV // DEVELOPER REALM",
-            user: req.user,
-            systemStats: {
-                nodeVersion: process.version,
-                envMode: process.env.NODE_ENV || "development",
-                platform: process.platform,
-                uptimeSeconds: Math.floor(process.uptime()),
-                databaseStatus: "Connected",
-                authEngine: "HMAC-SHA256 Token Vault",
-                activeRole: req.user.role
-            }
-        });
-    }
-);
+// Canonical Dashboard & Aliases
+router.get("/developer/dashboard", authMiddleware, requireAdmin, renderDeveloperDashboard);
+router.get("/admin/dashboard", authMiddleware, requireAdmin, renderDeveloperDashboard);
+router.get("/developer", authMiddleware, requireAdmin, (req, res) => res.redirect("/developer/dashboard"));
+router.get("/admin", authMiddleware, requireAdmin, (req, res) => res.redirect("/developer/dashboard"));
 
-router.get(
-    "/admin",
-    authMiddleware,
-    requireAdmin,
-    (req, res) => {
-        res.redirect("/admin/dashboard");
-    }
-);
+// Seller Applications & Charter Approvals
+router.get("/developer/sellers/applications", authMiddleware, requireAdmin, renderSellerApplications);
+router.get("/admin/sellers/applications", authMiddleware, requireAdmin, renderSellerApplications);
+router.post("/developer/sellers/:id/approve", authMiddleware, requireAdmin, approveSeller);
+router.post("/admin/sellers/:id/approve", authMiddleware, requireAdmin, approveSeller);
+router.post("/developer/sellers/:id/reject", authMiddleware, requireAdmin, rejectSeller);
+router.post("/admin/sellers/:id/reject", authMiddleware, requireAdmin, rejectSeller);
 
-router.get(
-    "/developer",
-    authMiddleware,
-    requireAdmin,
-    (req, res) => {
-        res.redirect("/admin/dashboard");
-    }
-);
+// People: Buyers & Sellers
+router.get("/developer/people", authMiddleware, requireAdmin, renderPeople);
+router.get("/admin/people", authMiddleware, requireAdmin, renderPeople);
 
-router.get(
-    "/developer/dashboard",
-    authMiddleware,
-    requireAdmin,
-    (req, res) => {
-        res.redirect("/admin/dashboard");
-    }
-);
+// Marketplace Oversight: Seller Products
+router.get("/developer/people/sellers/:id/products", authMiddleware, requireAdmin, renderDeveloperSellerProducts);
+router.get("/admin/people/sellers/:id/products", authMiddleware, requireAdmin, renderDeveloperSellerProducts);
+
+// Marketplace Oversight: Buyer Purchases
+router.get("/developer/people/buyers/:id/orders", authMiddleware, requireAdmin, renderBuyerPurchases);
+router.get("/admin/people/buyers/:id/orders", authMiddleware, requireAdmin, renderBuyerPurchases);
 
 
 // =====================================================

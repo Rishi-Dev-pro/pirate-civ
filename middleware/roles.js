@@ -27,6 +27,26 @@ export const requireRole = (...allowedRoles) => {
             return res.status(403).send("Access denied: insufficient permissions.");
         }
 
+        // Seller approval check: if accessing seller-protected routes, verify seller charter status
+        if (req.user.role === "seller" && roles.includes("seller")) {
+            if (req.user.sellerStatus === "pending") {
+                const message = "Your Merchant Charter is awaiting approval from the Admiralty.";
+                if (req.xhr || (req.headers.accept && req.headers.accept.includes("application/json"))) {
+                    return res.status(403).json({ success: false, error: message });
+                }
+                return res.status(403).send(message);
+            }
+
+            if (req.user.sellerStatus === "rejected") {
+                const reason = req.user.rejectionReason ? ` Reason: ${req.user.rejectionReason}` : "";
+                const message = `Your Merchant Charter application was rejected.${reason}`;
+                if (req.xhr || (req.headers.accept && req.headers.accept.includes("application/json"))) {
+                    return res.status(403).json({ success: false, error: message, reason: req.user.rejectionReason || null });
+                }
+                return res.status(403).send(message);
+            }
+        }
+
         next();
     };
 };

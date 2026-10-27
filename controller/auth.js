@@ -573,13 +573,14 @@ export const registerSeller = async (req, res) => {
         const allowedIslands = ["Cutlass Cove", "Booty Cay", "Velvet Isle", "Kraken Vault", "Chronos", "Astrolabe"];
         const selectedIsland = allowedIslands.includes(homeIsland) ? homeIsland : "Astrolabe";
 
-        // FORCED ROLE: ALWAYS 'seller'
+        // FORCED ROLE: ALWAYS 'seller', INITIAL STATUS: 'pending'
         const user = new User({
             name: name.trim(),
             email: normalizedEmail,
             password: hashedPassword,
             authSecretHash: authSecretHash,
             role: "seller",
+            sellerStatus: "pending",
             storeName: storeName.trim(),
             homeIsland: selectedIsland
         });

@@ -45,6 +45,24 @@
         </header>
 
         <!-- ===================================================================
+             REALM NAVIGATION
+             =================================================================== -->
+        <nav class="dev-subnav" aria-label="Developer Navigation">
+            <a href="/developer/dashboard" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
+                <span>OVERVIEW</span>
+            </a>
+            <a href="/developer/sellers/applications" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'active' : '' %>" id="navDevApplications">
+                <span>SELLER APPLICATIONS</span>
+                <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
+                    <span class="dev-nav-badge-pending" id="badgePendingCount"><%= pendingSellersCount %></span>
+                <% } %>
+            </a>
+            <a href="/developer/people" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'active' : '' %>" id="navDevPeople">
+                <span>PEOPLE</span>
+            </a>
+        </nav>
+
+        <!-- ===================================================================
              DEVELOPER HERO BANNER
              =================================================================== -->
         <section class="dev-hero-section" aria-labelledby="devHeroHeading">
@@ -58,9 +76,90 @@
         </section>
 
         <!-- ===================================================================
-             MODULAR FOUNDATION GRID (FUTURE DEVELOPER TOOLS)
+             V1 SOVEREIGN AUTHORITIES: SUMMARY PANELS
              =================================================================== -->
-        <h3 class="dev-grid-title">SOVEREIGN ARCHITECTURE FOUNDATION</h3>
+        <h3 class="dev-grid-title">MARKETPLACE OVERSIGHT & CHARTERS</h3>
+
+        <div class="dev-stats-grid">
+
+            <!-- CARD A: SELLER APPLICATIONS (PRIMARY ACTION) -->
+            <div class="dev-stat-card <%= (typeof stats !== 'undefined' && stats.pendingSellersCount > 0) ? 'stat-alert' : '' %>" id="cardSellerApplicationsSummary">
+                <div class="dev-card-header">
+                    <span class="dev-card-tag">[ SELLER APPLICATIONS ]</span>
+                    <% if (typeof stats !== 'undefined' && stats.pendingSellersCount > 0) { %>
+                        <span class="dev-card-badge badge-pending"><%= stats.pendingSellersCount %> PENDING</span>
+                    <% } else { %>
+                        <span class="dev-card-badge badge-active">UP TO DATE</span>
+                    <% } %>
+                </div>
+                <div class="dev-stat-body">
+                    <div class="dev-stat-number" id="statPendingCount"><%= (typeof stats !== 'undefined' && stats.pendingSellersCount) || 0 %></div>
+                    <div class="dev-stat-label">Pending Merchant Charters</div>
+                    <p class="dev-stat-subtext">Newly registered sellers awaiting sovereign approval from the Admiralty.</p>
+                </div>
+                <div class="dev-stat-footer">
+                    <a href="/developer/sellers/applications" class="dev-btn dev-btn-primary" id="btnReviewApplications">
+                        <span>REVIEW APPLICATIONS &rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- CARD B: PEOPLE SUMMARY -->
+            <div class="dev-stat-card" id="cardPeopleSummary">
+                <div class="dev-card-header">
+                    <span class="dev-card-tag">[ PEOPLE ]</span>
+                    <span class="dev-card-badge badge-active">REGISTRY</span>
+                </div>
+                <div class="dev-stat-body">
+                    <ul class="dev-card-kv-list">
+                        <li class="dev-card-kv-item">
+                            <span class="dev-kv-key">Active Buyers</span>
+                            <span class="dev-kv-val" id="statBuyersCount"><%= (typeof stats !== 'undefined' && stats.buyersCount) || 0 %></span>
+                        </li>
+                        <li class="dev-card-kv-item">
+                            <span class="dev-kv-key">Registered Sellers</span>
+                            <span class="dev-kv-val" id="statSellersCount"><%= (typeof stats !== 'undefined' && stats.sellersCount) || 0 %></span>
+                        </li>
+                    </ul>
+                    <p class="dev-stat-subtext">Full manifest of seafarers and merchants chartered across the islands.</p>
+                </div>
+                <div class="dev-stat-footer">
+                    <a href="/developer/people" class="dev-btn" id="btnViewPeople">
+                        <span>VIEW PEOPLE &rarr;</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- CARD C: MARKETPLACE SUMMARY -->
+            <div class="dev-stat-card" id="cardMarketplaceSummary">
+                <div class="dev-card-header">
+                    <span class="dev-card-tag">[ MARKETPLACE ]</span>
+                    <span class="dev-card-badge badge-active">OVERSIGHT</span>
+                </div>
+                <div class="dev-stat-body">
+                    <ul class="dev-card-kv-list">
+                        <li class="dev-card-kv-item">
+                            <span class="dev-kv-key">Listed Products</span>
+                            <span class="dev-kv-val" id="statProductsCount"><%= (typeof stats !== 'undefined' && stats.productsCount) || 0 %></span>
+                        </li>
+                        <li class="dev-card-kv-item">
+                            <span class="dev-kv-key">Customer Orders</span>
+                            <span class="dev-kv-val" id="statOrdersCount"><%= (typeof stats !== 'undefined' && stats.ordersCount) || 0 %></span>
+                        </li>
+                    </ul>
+                    <p class="dev-stat-subtext">Genuine transaction ledgers and island storehouse provisions.</p>
+                </div>
+                <div class="dev-stat-footer">
+                    <span class="dev-foundation-notice">Marketplace Ledger Operational</span>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ===================================================================
+             MODULAR FOUNDATION GRID (SYSTEM DIAGNOSTICS)
+             =================================================================== -->
+        <h3 class="dev-grid-title" style="margin-top: 48px;">SOVEREIGN ARCHITECTURE FOUNDATION</h3>
 
         <div class="dev-modules-grid">
 

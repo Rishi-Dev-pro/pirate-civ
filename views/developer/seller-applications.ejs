@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "PIRATE-CIV // SELLER CHARTERS" %></title>
+
+    <!-- Google Fonts: Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Developer Realm Stylesheet -->
+    <link rel="stylesheet" href="/css/developer.css?v=dev_realm_v1">
+</head>
+
+<body class="dev-body">
+
+    <div class="dev-container">
+
+        <!-- ===================================================================
+             TOP COMMAND BAR
+             =================================================================== -->
+        <header class="dev-topbar" role="banner">
+            <div class="dev-branding">
+                <span class="dev-realm-tag">PIRATE-CIV // SOVEREIGN ARCHITECT</span>
+                <h1 class="dev-title-main">DEVELOPER REALM</h1>
+            </div>
+
+            <div class="dev-actions">
+                <div class="dev-status-pill" title="Security Perimeter Active">
+                    <span class="dev-status-indicator"></span>
+                    <span>REALM SECURED // AUTHENTICATED</span>
+                </div>
+
+                <a href="/home" class="dev-btn" id="btnReturnSeaChart">
+                    <span>RETURN TO SEA CHART</span>
+                </a>
+
+                <a href="/logout" class="dev-btn dev-btn-disconnect" id="btnDevDisconnect">
+                    <span>DISCONNECT</span>
+                </a>
+            </div>
+        </header>
+
+        <!-- ===================================================================
+             REALM NAVIGATION
+             =================================================================== -->
+        <nav class="dev-subnav" aria-label="Developer Navigation">
+            <a href="/developer/dashboard" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
+                <span>OVERVIEW</span>
+            </a>
+            <a href="/developer/sellers/applications" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'active' : '' %>" id="navDevApplications">
+                <span>SELLER APPLICATIONS</span>
+                <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
+                    <span class="dev-nav-badge-pending" id="badgePendingCount"><%= pendingSellersCount %></span>
+                <% } %>
+            </a>
+            <a href="/developer/people" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'active' : '' %>" id="navDevPeople">
+                <span>PEOPLE</span>
+            </a>
+        </nav>
+
+        <!-- ===================================================================
+             HEADER & NOTICES
+             =================================================================== -->
+        <section class="dev-section-header">
+            <div>
+                <span class="dev-hero-kicker">ADMIRALTY CHARTER BOARD</span>
+                <h2 class="dev-section-title">Seller Charter Applications</h2>
+                <p class="dev-section-desc">Review and decide on merchant applications requesting sovereign trade charter rights in Pirate-Civ.</p>
+            </div>
+        </section>
+
+        <% if (typeof message !== 'undefined' && message) { %>
+            <div class="dev-notice dev-notice-success" role="alert">
+                <span><%= message %></span>
+            </div>
+        <% } %>
+
+        <% if (typeof error !== 'undefined' && error) { %>
+            <div class="dev-notice dev-notice-error" role="alert">
+                <span><%= error %></span>
+            </div>
+        <% } %>
+
+        <!-- ===================================================================
+             PENDING APPLICATIONS (PRIMARY ACTION)
+             =================================================================== -->
+        <div class="dev-block-header">
+            <h3 class="dev-grid-title" style="margin: 0;">
+                PENDING CHARTER REQUESTS
+                <span class="dev-count-tag">(<%= pendingApplications.length %>)</span>
+            </h3>
+        </div>
+
+        <% if (pendingApplications && pendingApplications.length > 0) { %>
+            <div class="dev-table-wrapper">
+                <table class="dev-table" id="tablePendingApplications">
+                    <thead>
+                        <tr>
+                            <th>SELLER</th>
+                            <th>EMAIL</th>
+                            <th>STORE / FLEET</th>
+                            <th>HOME ISLAND</th>
+                            <th>APPLIED DATE</th>
+                            <th>STATUS</th>
+                            <th style="text-align: right;">DECISION</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% pendingApplications.forEach(seller => { %>
+                            <tr id="app-row-<%= seller._id %>">
+                                <td>
+                                    <span class="dev-table-cell-bold"><%= seller.name %></span>
+                                </td>
+                                <td>
+                                    <span class="dev-table-cell-mono"><%= seller.email %></span>
+                                </td>
+                                <td>
+                                    <span class="dev-table-cell-brass"><%= seller.storeName || "Unspecified" %></span>
+                                </td>
+                                <td><%= seller.homeIsland || "Astrolabe" %></td>
+                                <td><%= new Date(seller.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
+                                <td>
+                                    <span class="dev-status-tag tag-pending">Pending</span>
+                                </td>
+                                <td style="text-align: right;">
+                                    <div class="dev-action-group">
+                                        <!-- APPROVE FORM -->
+                                        <form method="POST" action="/developer/sellers/<%= seller._id %>/approve" style="display: inline;">
+                                            <button type="submit" class="dev-btn dev-btn-approve" id="btnApprove-<%= seller._id %>">
+                                                <span>APPROVE</span>
+                                            </button>
+                                        </form>
+
+                                        <!-- REJECT FORM TRIGGER -->
+                                        <button type="button" class="dev-btn dev-btn-reject" onclick="openRejectDialog('<%= seller._id %>', '<%= seller.name %>')" id="btnRejectTrigger-<%= seller._id %>">
+                                            <span>REJECT</span>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <div class="dev-empty-state" id="emptyPendingApplications">
+                <span class="dev-empty-title">No Pending Charter Requests</span>
+                <p class="dev-empty-desc">All merchant applications have been reviewed. The Admiralty charter desk is up to date.</p>
+            </div>
+        <% } %>
+
+        <!-- ===================================================================
+             RESOLVED CHARTERS (APPROVED & REJECTED HISTORY)
+             =================================================================== -->
+        <div class="dev-block-header" style="margin-top: 48px;">
+            <h3 class="dev-grid-title" style="margin: 0;">
+                HISTORICAL CHARTER DECISIONS
+                <span class="dev-count-tag">(<%= resolvedApplications.length %>)</span>
+            </h3>
+        </div>
+
+        <% if (resolvedApplications && resolvedApplications.length > 0) { %>
+            <div class="dev-table-wrapper">
+                <table class="dev-table" id="tableResolvedApplications">
+                    <thead>
+                        <tr>
+                            <th>SELLER</th>
+                            <th>EMAIL</th>
+                            <th>STORE / FLEET</th>
+                            <th>HOME ISLAND</th>
+                            <th>DATE</th>
+                            <th>STATUS</th>
+                            <th>REJECTION REASON / NOTES</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% resolvedApplications.forEach(seller => { %>
+                            <tr>
+                                <td>
+                                    <span class="dev-table-cell-bold"><%= seller.name %></span>
+                                </td>
+                                <td>
+                                    <span class="dev-table-cell-mono"><%= seller.email %></span>
+                                </td>
+                                <td>
+                                    <span class="dev-table-cell-brass"><%= seller.storeName || "Unspecified" %></span>
+                                </td>
+                                <td><%= seller.homeIsland || "Astrolabe" %></td>
+                                <td><%= new Date(seller.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
+                                <td>
+                                    <% if (seller.sellerStatus === 'approved') { %>
+                                        <span class="dev-status-tag tag-approved">Approved</span>
+                                    <% } else if (seller.sellerStatus === 'rejected') { %>
+                                        <span class="dev-status-tag tag-rejected">Rejected</span>
+                                    <% } else { %>
+                                        <span class="dev-status-tag"><%= seller.sellerStatus || 'Chartered' %></span>
+                                    <% } %>
+                                </td>
+                                <td>
+                                    <span class="dev-table-reason"><%= seller.rejectionReason || "—" %></span>
+                                </td>
+                            </tr>
+                        <% }); %>
+                    </tbody>
+                </table>
+            </div>
+        <% } else { %>
+            <div class="dev-empty-state">
+                <p class="dev-empty-desc">No past charter decisions recorded.</p>
+            </div>
+        <% } %>
+
+    </div>
+
+    <!-- ===================================================================
+         REJECTION REASON CONTROLLED MODAL / DIALOG
+         =================================================================== -->
+    <div class="dev-modal-backdrop" id="rejectModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="modalRejectTitle">
+        <div class="dev-modal-card">
+            <h4 class="dev-modal-title" id="modalRejectTitle">Reject Merchant Charter</h4>
+            <p class="dev-modal-desc">
+                Provide a reason for rejecting the merchant charter application for <strong id="modalSellerName" style="color: var(--dev-gold-bright);"></strong>.
+            </p>
+            <form id="rejectForm" method="POST" action="">
+                <div class="dev-form-group">
+                    <label for="rejectReasonInput" class="dev-form-label">Rejection Reason</label>
+                    <input type="text" id="rejectReasonInput" name="reason" class="dev-form-input" placeholder="e.g. Incomplete merchant registry or unverified fleet port." required maxlength="240">
+                </div>
+                <div class="dev-modal-actions">
+                    <button type="button" class="dev-btn" onclick="closeRejectDialog()">CANCEL</button>
+                    <button type="submit" class="dev-btn dev-btn-reject" id="btnConfirmReject">CONFIRM REJECTION</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openRejectDialog(sellerId, sellerName) {
+            const modal = document.getElementById("rejectModal");
+            const form = document.getElementById("rejectForm");
+            const nameEl = document.getElementById("modalSellerName");
+            const input = document.getElementById("rejectReasonInput");
+
+            form.action = "/developer/sellers/" + sellerId + "/reject";
+            nameEl.textContent = sellerName;
+            input.value = "Application rejected by the Admiralty.";
+            modal.classList.add("active");
+            modal.setAttribute("aria-hidden", "false");
+            input.focus();
+        }
+
+        function closeRejectDialog() {
+            const modal = document.getElementById("rejectModal");
+            modal.classList.remove("active");
+            modal.setAttribute("aria-hidden", "true");
+        }
+
+        document.getElementById("rejectModal").addEventListener("click", function(e) {
+            if (e.target === this) {
+                closeRejectDialog();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

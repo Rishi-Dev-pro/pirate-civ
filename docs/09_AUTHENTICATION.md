@@ -117,30 +117,55 @@ To ensure strict role separation, prevent role injection, and eliminate ambiguou
 | **Buyer Sign-In** | `GET` / `POST` | `/buyer/login` | `views/buyer/login.ejs` | Accepts ONLY `role: 'buyer'`. Sellers receive 403 Forbidden with prompt to use Merchant Login. |
 | **Buyer Registration** | `GET` / `POST` | `/buyer/register` | `views/buyer/register.ejs` | Strictly forces `role: 'buyer'`. Ignores client `role` inputs. No `storeName` required. |
 | **Seller Sign-In** | `GET` / `POST` | `/seller/login` | `views/seller/login.ejs` | Accepts ONLY `role: 'seller'`. Buyers receive 403 Forbidden with prompt to use Explorer Login. |
-| **Seller Registration** | `GET` / `POST` | `/seller/register` | `views/seller/register.ejs` | Strictly forces `role: 'seller'`. Mandates `storeName`. Ignores client `role` inputs. |
+| **Seller Registration** | `GET` / `POST` | `/seller/register` | `views/seller/register.ejs` | Strictly forces `role: 'seller'`. Mandates `storeName`. Sets `sellerStatus: 'pending'`. |
 
-### 5.2 Deep Link Redirection Fix (F-01 Resolution)
+### 5.2 Seller Approval Lifecycle (`sellerStatus`)
+
+To prevent unvetted merchants from trading or listing cargo, all newly registered sellers start in a pending charter state:
+
+* **Field Definition (`models/user.js`):**
+  - `sellerStatus`: Enum `["pending", "approved", "rejected", null]`. Defaults to `null` for buyers.
+  - `rejectionReason`: Optional string providing context when an application is rejected.
+* **Access Rules (`middleware/roles.js`):**
+  - `sellerStatus === "pending"`: Blocked from protected seller routes with HTTP 403: *"Your Merchant Charter is awaiting approval from the Admiralty."*
+  - `sellerStatus === "rejected"`: Blocked from protected seller routes with HTTP 403: *"Your Merchant Charter application was rejected."* Displays rejection reason if present.
+  - `sellerStatus === "approved"`: Granted full access to Seller Command Deck, Products, and Order management.
+
+### 5.3 Deep Link Redirection Fix (F-01 Resolution)
 `req.session.returnTo` is captured into local variables **BEFORE** `req.session.regenerate()` is executed. Post-login redirection honors verified internal return destinations (rejecting open redirects, protocol-relative paths, and javascript URIs) while preventing buyers from inheriting seller destinations.
 
-### 5.3 Google OAuth 2.0 Integration Strategy
+### 5.4 Google OAuth 2.0 Integration Strategy
 
 1. **Flow Initiation:** User clicks *"Sign in with Google"* at `/auth/google?intent=buyer` or `/auth/google?intent=seller`.
 2. **Cryptographic State Signing:** Generates `stateToken = `${rand}.${roleIntent}.${hmacSignature}``, preventing intent drift across parallel tabs.
 3. **Consent & Callback:** Google redirects to `/auth/google/callback` with authorization code and signed state.
 4. **Identity Resolution:**
    - Existing user: links `googleId` if missing; **MongoDB `role` is NEVER altered**.
-   - New user: assigns `role` from verified state (`buyer` or `seller`).
+   - New user: assigns `role` from verified state (`buyer` or `seller`). If seller, sets `sellerStatus: 'pending'`.
 5. **Redirection:** Honors verified deep link or falls back to `/home` (buyer) or `/seller/dashboard` (seller).
 
 ---
 
-## 6. Protection Matrix
+## 6. Developer Realm Security (V1 Authorities)
+
+* **Identity & Canonical Role:** The Developer UI uses `"DEVELOPER"` terminology (`PIRATE-CIV // DEVELOPER REALM`, `THE DEVELOPER'S CHAMBER`). Internally, the database security role strictly remains `role: 'admin'`.
+* **Perimeter Defense:** The triple-click logo easter egg is a hidden entrance, not an authentication bypass. All Developer Realm routes require `[authMiddleware, requireAdmin]`.
+* **RBAC Isolation:** Buyers and sellers attempting to navigate to Developer Realm endpoints receive strict HTTP 403 Forbidden.
+* **Authority Scope:**
+  - **Seller Charters:** View pending/approved/rejected applications; approve or reject sellers server-side with strict validation.
+  - **People Registry:** Read-only view of buyers and sellers.
+  - **Marketplace Oversight:** Read-only view of seller products and buyer purchase history.
+
+---
+
+## 7. Protection Matrix
 
 | Route Pattern | `authMiddleware` | Role Middleware | Permitted Users |
 |---|:---:|:---:|---|
-| `/buyer/login`, `/buyer/register`, `/seller/login`, `/seller/register` | No (Guest) | N/A | Unauthenticated |
-| `/login`, `/register` (Compatibility Aliases) | Optional | N/A | Redirects to dedicated `/buyer/*` or `/seller/*` |
+| `/buyer/login`, `/buyer/register`, `/seller/login`, `/seller/register`, `/admin/login`, `/developer/login` | No (Guest) | N/A | Unauthenticated |
+| `/login`, `/register` (Compatibility Aliases) | Optional | N/A | Redirects to dedicated `/buyer/*`, `/seller/*`, or `/admin/*` |
 | `/`, `/about`, `/contact` | Optional | None | All |
 | `/home`, `/islands`, `/island/*`, `/product/*` | **Required** | None | Authenticated (Buyers & Sellers) |
 | `/cart`, `/checkout`, `/orders`, `/profile` | **Required** | `requireBuyer` | Buyers & Admins |
-| `/seller/dashboard`, `/seller/products/*`, `/seller/orders/*` | **Required** | `requireSeller` | Sellers & Admins |
+| `/seller/dashboard`, `/seller/products/*`, `/seller/orders/*` | **Required** | `requireSeller` | Approved Sellers & Admins |
+| `/developer/*`, `/admin/*` | **Required** | `requireAdmin` | Admins (Developer) Only |

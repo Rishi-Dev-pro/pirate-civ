@@ -14,11 +14,40 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Secret Developer Realm (Boxless Skull → Dedicated Developer Gate → Developer Realm Foundation) Completed & Verified**
+* **Active Status:** **Developer Realm V1 (Seller Approval + Buyer/Seller Marketplace Oversight) Completed & Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Developer Realm V1 Authorities (`controller/developer.js`, `routes/web.js`, `views/developer/*.ejs`, `public/css/developer.css`, `models/user.js`, `middleware/roles.js`):**
+  - **Seller Charter Approval Lifecycle (`models/user.js`, `controller/auth.js`, `controller/googleAuth.js`, `middleware/roles.js`):**
+    - Added `sellerStatus` enum (`pending`, `approved`, `rejected`, `null`) and `rejectionReason` to unified `User` model.
+    - New sellers register with `role: 'seller'` and `sellerStatus: 'pending'`. Buyers remain unaffected.
+    - `requireRole` and `requireSeller` middleware strictly intercept pending merchants (HTTP 403: *"Your Merchant Charter is awaiting approval from the Admiralty."*) and rejected merchants (HTTP 403: *"Your Merchant Charter application was rejected."*). Approved merchants retain normal seller portal access.
+  - **Seller Charter Applications Command (`views/developer/seller-applications.ejs`):**
+    - Central review desk showing pending and past applications: merchant name, email, store/fleet name, home island, registration date, and current status.
+    - Server-side `POST /developer/sellers/:id/approve` and `POST /developer/sellers/:id/reject` actions.
+    - Rejection modal for capturing controlled rejection reason.
+  - **People Registry (`views/developer/people.ejs`):**
+    - Census of Buyers and Sellers across the archipelago.
+    - Direct links to buyer purchase ledgers and seller warehouse listings.
+  - **Marketplace Oversight (Read-Only) (`views/developer/seller-products.ejs`, `views/developer/buyer-orders.ejs`):**
+    - Seller Products: Displays product name, price in Doubloons, stock, island, category, availability, and listed date.
+    - Buyer Purchases: Displays order identifier, date, item snapshots, quantities, Doubloon total, order status, and payment status.
+    - Strictly read-only oversight: zero edit/delete controls, no refund or payment controls, no arbitrary role manipulation.
+  - **Real Database Dashboard Telemetry (`views/developer/dashboard.ejs`):**
+    - Real MongoDB aggregates for pending seller applications, buyers, sellers, products, and orders.
+    - Glowing badge and prominent pending applications card for rapid action.
+  - **Security & Authorization (`routes/web.js`):**
+    - Protected by `[authMiddleware, requireAdmin]`.
+    - Non-admin authenticated accounts receive HTTP 403 Forbidden.
+    - Unauthenticated requests safely redirect to `/admin/login`.
+  - **Automated Validation:**
+    - 20/20 checks passed in `scratch/test_developer_realm_v1.js`.
+    - 100% passed on foundation test `scratch/test_developer_realm.js`.
+    - 72/72 passed on `scratch/test_buyer_commerce_flow.js`.
+    - 48/48 EJS templates and 31/31 JS files verified with clean syntax.
+
 * **Secret Developer Realm Foundation (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`, `public/images/gateway/pirate-civ-skull.png`, `middleware/auth.js`, `middleware/roles.js`, `controller/auth.js`, `routes/web.js`, `views/developer/dashboard.ejs`, `views/developer/login.ejs`, `public/css/developer.css`):**
   - **Skull Box Elimination:** Replaced bounded image edges with 40px padded alpha buffer in `pirate-civ-skull.png` to avoid rectangular `filter: drop-shadow` clipping. Stripped all `.secret-admin-skull-btn:focus-visible` gold border/outline and button backgrounds. The skull floats organically in pitch blackness with smooth breathing glow.
   - **Corrected Destination Route Chain:** Fixed `authMiddleware` and `requireRole` redirect fallthrough. Unauthenticated skull clicks now redirect specifically to `/admin/login` (Developer Gate) with `intent: 'admin'`, instead of falling through to `/buyer/login`.

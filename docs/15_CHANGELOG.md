@@ -2,6 +2,43 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-27] — Feature: Developer Realm V1 — Seller Approval + Buyer/Seller Marketplace Oversight
+* **Developer Realm V1 Authorities (`controller/developer.js`, `routes/web.js`, `views/developer/*.ejs`, `public/css/developer.css`, `models/user.js`, `middleware/roles.js`):**
+  - **Seller Charter Approval Lifecycle (`sellerStatus`):**
+    - Added `sellerStatus` field to unified `User` model (`enum: ["pending", "approved", "rejected", null]`, default `null`).
+    - Added `rejectionReason` field to unified `User` model (`default: null`).
+    - New seller registration via `registerSeller` and Google OAuth automatically sets `role: "seller"` and `sellerStatus: "pending"`.
+    - Buyer registration remains completely unaffected (`sellerStatus` is `null`).
+  - **Seller Access Rules & Gatekeeping (`middleware/roles.js`):**
+    - Updated `requireRole` and `requireSeller` to check `sellerStatus` when verifying seller authority.
+    - Sellers with `sellerStatus === "pending"` are blocked from protected seller routes with HTTP 403 and the message: *"Your Merchant Charter is awaiting approval from the Admiralty."*
+    - Sellers with `sellerStatus === "rejected"` are blocked with HTTP 403 and the message: *"Your Merchant Charter application was rejected."* displaying the rejection reason if provided.
+    - Sellers with `sellerStatus === "approved"` retain normal seller access.
+  - **Seller Charter Applications Command (`views/developer/seller-applications.ejs`):**
+    - Developer can view all pending applications and past charter decisions.
+    - Shows seller name, email, store/fleet name, home island, registration date, and charter status.
+    - Provides server-side `POST /developer/sellers/:id/approve` and `POST /developer/sellers/:id/reject` actions.
+    - Controlled rejection modal for specifying custom rejection reason.
+  - **People Registry (`views/developer/people.ejs`):**
+    - Clean census of Buyers and Sellers across the archipelago.
+    - Links to individual buyer purchase histories and seller product listings.
+  - **Marketplace Oversight (Read-Only) (`views/developer/seller-products.ejs`, `views/developer/buyer-orders.ejs`):**
+    - Seller Products: Lists product name, Doubloons price, stock, island, category, availability, and listing date.
+    - Buyer Purchases: Lists order ID, date, item snapshots, quantities, Doubloon total, order status, and payment status.
+    - Strictly read-only observation with zero modification, refund, deletion, or payment administration controls.
+  - **Real Database Dashboard Telemetry (`views/developer/dashboard.ejs`):**
+    - Displays real database aggregates for pending seller applications, buyers, sellers, products, and orders.
+    - Visually prominent glowing pending applications indicator badge and card.
+  - **Security & Authorization (`routes/web.js`):**
+    - All routes protected by `[authMiddleware, requireAdmin]`.
+    - Non-admin authenticated accounts receive HTTP 403 Forbidden.
+    - Unauthenticated requests safely redirect to `/admin/login`.
+  - **Automated Verification:**
+    - 20/20 checks passed in `scratch/test_developer_realm_v1.js`.
+    - 100% passed on foundation test `scratch/test_developer_realm.js`.
+    - 72/72 passed on `scratch/test_buyer_commerce_flow.js`.
+    - 48/48 EJS templates and 31/31 JS files verified with clean syntax.
+
 ## [2026-10-27] — Feature: Secret Developer Realm (Boxless Skull → Dedicated Developer Gate → Developer Realm Foundation)
 * **Secret Developer Entrance & Realm Foundation (`views/gateway.ejs`, `public/css/gateway.css`, `public/js/gateway.js`, `public/images/gateway/pirate-civ-skull.png`, `middleware/auth.js`, `middleware/roles.js`, `controller/auth.js`, `routes/web.js`, `views/developer/dashboard.ejs`, `views/developer/login.ejs`, `public/css/developer.css`):**
   - **Skull Box & Rectangular Constraint Elimination:**
