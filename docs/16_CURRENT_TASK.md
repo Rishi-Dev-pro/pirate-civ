@@ -19,20 +19,21 @@
 ---
 
 ## 🎯 2. Active State Summary
-* **Developer Realm Visual Reconstruction (`public/css/developer.css`, `views/developer/*.ejs`, `controller/developer.js`, `public/images/developer/*`):**
-  - Completely redesigned the Developer Realm based on the user-uploaded references and isolated asset sheets, transforming it from a generic AI/SaaS dashboard into an authentic, physical pirate admiralty command chamber hidden beneath Pirate-Civ.
-  - Extracted and deployed clean transparent assets: unfurled parchment sea chart, heraldic banners (Galleon, Kraken, Skull), red wax seals, mariner's compass, breathing lantern, brass anchors, and carved nautical timber navigation frame.
-  - Composed the layout around physical naval artifacts:
-    - **Top Command Deck:** Official Pirate-Civ crest, engraved brass header plaque, status capsule with cyan beacon, physical return/disconnect controls, and Architect medallion.
-    - **Left Nautical Rail:** Carved dark wood & brass frame with helm navigation links, nautical divider, diagnostic anchors, and Sovereign Architecture Foundation insignia.
-    - **Upper War Table Deck:** Physical unfurled parchment sea chart with live floating metric plaques (`MERCHANTS`, `PRODUCTS`, `ORDERS`) flanked by compass and lantern, paired with a pinned "REALM OVERVIEW" parchment scroll with red wax seal.
+* **Developer Realm Complete Visual Reconstruction (`public/css/developer.css`, `views/developer/*.ejs`, `controller/developer.js`, `public/images/developer/*`):**
+  - Completely redesigned the Developer Realm into an authentic physical maritime command room hidden beneath Pirate-Civ, strictly following the provided reference image (`media_1793097862843.jpg`) and asset sheets (`media_1793097879947.jpg`, `media_1793097915565.jpg`).
+  - Banished all generic SaaS/AI-generated dashboard patterns (no card-in-card grids, no boxy rectangular borders, no clunky SaaS widgets).
+  - Deployed transparent nautical assets and physical room composition:
+    - **Atmospheric Backdrop:** Gothic stone citadel arches looking out onto moonlit ocean with pirate ships (`chamber-arches-vista.webp`) and dark wood table foundation.
+    - **Top Command Deck:** Clean, floating engraved architectural insignia (Cinzel Decorative gold-embossed typography without box borders), Pirate-Civ skull logo, subtle cryptographic status capsule, return/disconnect buttons, and round gold Architect medallion.
+    - **Left Nautical Rail:** Antique carved timber navigation frame with top helm wheel, navigation links (`COMMAND CHAMBER`, `MERCHANT CHARTERS` with red wax badge, `THE PEOPLE`, `MARKETPLACE`), brass divider, secondary diagnostic links, and bottom anchor watermark with "SOVEREIGN ARCHITECTURE FOUNDATION".
+    - **Upper War Table Deck:** Natural unfurled archipelago sea chart (`archipelago-parchment-map.png`) lying on dark polished timber with realistic drop shadows, overlaid with 3 brass nautical pins (`MERCHANTS`, `PRODUCTS`, `ORDERS`), accompanied by brass lantern, books with candle, mariner compass, and spyglass. Flanked on the right by the weathered "REALM OVERVIEW" parchment scroll with authentic red wax seal.
     - **Lower Deck (Three Physical Manifests):**
-      1. `MERCHANT CHARTERS`: Physical parchment documents with heraldic banners, merchant metadata, and dual brass buttons (`[ ✓ APPROVE CHARTER ]` & `[ ✕ REJECT ]`).
-      2. `THE PEOPLE`: Admiralty census ledger with interactive tabs (BUYERS / SELLERS) and seafarer records.
-      3. `MARKETPLACE`: Cargo & trade ledger with interactive tabs (RECENT PRODUCTS / RECENT ORDERS) and live stock/status tracking.
-    - **Foundation Diagnostics:** Embedded ship command instruments for `[ SYSTEM ]`, `[ SECURITY ]`, `[ DATABASE ]`, `[ ROUTES ]`, `[ TESTS ]`, and `[ SERVICES ]`.
+      1. `MERCHANT CHARTERS`: Physical parchment document ledger with red wax seal, heraldic cloth banners (Galleon and Kraken), merchant credentials, and styled teal/crimson approval and rejection buttons.
+      2. `THE PEOPLE`: Admiralty census ledger with interactive switcher tabs (`BUYERS [count]` / `SELLERS [count]`) and seafarer records.
+      3. `MARKETPLACE`: Cargo & trade oversight manifest with interactive switcher tabs (`RECENT PRODUCTS [count]` / `RECENT ORDERS [count]`) and live stock/status tracking.
+    - **Architect's Command Telemetry:** Recessed antique brass telemetry plate strip embedded into chamber wainscoting for `[ SYSTEM ]`, `[ SECURITY ]`, `[ DATABASE ]`, `[ ROUTES ]`, `[ TESTS ]`, and `[ SERVICES ]`.
   - 100% preservation of all routes, controllers, middleware, security boundaries, and element IDs.
-  - Verified with 20/20 in `test_developer_realm_v1.js`, 100% in `test_developer_realm.js`, 72/72 in `test_buyer_commerce_flow.js`, and live browser CDP verification.
+  - Verified with 20/20 in `test_developer_realm_v1.js`, 7/7 (100%) in `test_developer_realm.js`, 72/72 in `test_buyer_commerce_flow.js`, and all 48 EJS templates compiled cleanly.
 
 * **Developer Realm V1 Authorities (`controller/developer.js`, `routes/web.js`, `views/developer/*.ejs`, `public/css/developer.css`, `models/user.js`, `middleware/roles.js`):**
   - **Seller Charter Approval Lifecycle (`models/user.js`, `controller/auth.js`, `controller/googleAuth.js`, `middleware/roles.js`):**

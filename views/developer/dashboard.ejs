@@ -12,39 +12,38 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Developer Realm Physical Nautical Stylesheet -->
-    <link rel="stylesheet" href="/css/developer.css?v=visual_reconstruction_v1">
+    <link rel="stylesheet" href="/css/developer.css?v=pirate_war_room_final">
 </head>
 
 <body class="dev-body">
 
     <!-- ===================================================================
-         ATMOSPHERIC BACKDROP LAYERS (OCEAN VISTA & COMMAND CHAMBER)
+         ATMOSPHERIC BACKDROP: CITADEL ARCHES OVERLOOKING MOONLIT SEA
          =================================================================== -->
     <div class="dev-atmosphere" aria-hidden="true">
         <div class="dev-vista-layer"></div>
+        <div class="dev-wood-table-base"></div>
         <div class="dev-vignette-layer"></div>
     </div>
 
     <div class="dev-chamber-frame">
 
         <!-- ===================================================================
-             TOP COMMAND DECK (ENGRAVED PLAQUE & CONTROLS)
+             TOP COMMAND DECK (ENGRAVED ARCHITECTURAL INSIGNIA & CONTROLS)
              =================================================================== -->
         <header class="dev-topbar" role="banner">
-            <!-- Left: Pirate-Civ Sovereign Emblem -->
+            <!-- Left: Pirate-Civ Crest -->
             <div class="dev-crest-container">
                 <a href="/developer/dashboard" class="dev-crest-link" title="Pirate-Civ Sovereign Developer Realm">
-                    <img src="/images/gateway/pirate-civ-logo.png" alt="Pirate-Civ Emblem" class="dev-crest-img">
+                    <img src="/images/gateway/pirate-civ-logo.png" alt="Pirate-Civ Sovereign Emblem" class="dev-crest-img">
                 </a>
             </div>
 
-            <!-- Center: Engraved Brass Command Plaque -->
-            <div class="dev-header-plaque-wrapper">
-                <div class="dev-header-plaque">
-                    <span class="dev-realm-subkicker">PIRATE-CIV // THE HIDDEN CHAMBER</span>
-                    <h1 class="dev-title-main">DEVELOPER REALM</h1>
-                    <span class="dev-title-tagline">THE ARCHITECT'S COMMAND OF THE ARCHIPELAGO</span>
-                </div>
+            <!-- Center: Engraved Architectural Insignia (Floating, No Box Border) -->
+            <div class="dev-header-insignia">
+                <span class="dev-realm-subkicker">PIRATE-CIV // THE HIDDEN CHAMBER</span>
+                <h1 class="dev-title-main">DEVELOPER REALM</h1>
+                <span class="dev-title-tagline">THE ARCHITECT'S COMMAND OF THE ARCHIPELAGO</span>
             </div>
 
             <!-- Right: Realm Security Pill & Admiralty Controls -->
@@ -64,7 +63,7 @@
                     <span>DISCONNECT</span>
                 </a>
 
-                <!-- Architect Profile Medallion -->
+                <!-- Architect Medallion -->
                 <div class="dev-architect-medallion" title="Logged in as Sovereign Architect">
                     <div class="dev-medallion-skull">
                         <img src="/images/developer/decorations/architect-badge.png" alt="Architect" class="dev-badge-icon" onerror="this.style.display='none'">
@@ -78,7 +77,7 @@
         <div class="dev-sr-only" aria-hidden="true">The Command Chamber Behind the Realm</div>
 
         <!-- ===================================================================
-             MAIN REALM STAGE: SIDEBAR + WAR ROOM DECK
+             MAIN REALM STAGE: NAUTICAL RAIL + PHYSICAL WAR TABLE
              =================================================================== -->
         <div class="dev-stage-layout">
 
@@ -87,7 +86,9 @@
                  =============================================================== -->
             <aside class="dev-nautical-rail" role="navigation" aria-label="Command Chamber Navigation">
                 <div class="dev-rail-frame">
-                    <div class="dev-rail-top-helm" aria-hidden="true"></div>
+                    <div class="dev-rail-top-helm">
+                        <span class="dev-helm-glyph">☸</span>
+                    </div>
 
                     <div class="dev-rail-nav-group">
                         <a href="/developer/dashboard" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
@@ -153,12 +154,14 @@
                         <span class="dev-watermark-text">SOVEREIGN ARCHITECTURE FOUNDATION</span>
                     </div>
 
-                    <div class="dev-rail-bottom-helm" aria-hidden="true"></div>
+                    <div class="dev-rail-bottom-helm">
+                        <span class="dev-helm-glyph">☸</span>
+                    </div>
                 </div>
             </aside>
 
             <!-- ===============================================================
-                 CENTER COMMAND REALM: WAR TABLE + PARCHMENT MANIFESTS
+                 CENTER COMMAND REALM: WAR TABLE + MANIFESTS
                  =============================================================== -->
             <main class="dev-command-realm" role="main">
 
@@ -166,9 +169,9 @@
                      UPPER DECK: CAPTAIN'S WAR TABLE & SEA CHART MAP
                      ----------------------------------------------------------- -->
                 <section class="dev-war-table-stage" aria-label="Archipelago Command Map and Overview">
-                    <!-- Physical Unfurled Sea Chart Map -->
-                    <div class="dev-map-parchment-wrapper">
-                        <div class="dev-map-table-surface">
+                    <!-- Physical Unfurled Sea Chart Map on Wooden War Table (No Box Border!) -->
+                    <div class="dev-map-table-surface">
+                        <div class="dev-map-artifact-container">
                             <img src="/images/developer/maps/archipelago-parchment-map.png" alt="Archipelago Command Map" class="dev-map-image">
 
                             <!-- Live Metric Brass Markers Overlaid on Sea Chart -->
@@ -200,10 +203,13 @@
                             <div class="dev-map-books-artifact" aria-hidden="true">
                                 <img src="/images/developer/decorations/books-candle.png" alt="" class="dev-artifact-books">
                             </div>
+                            <div class="dev-map-spyglass-artifact" aria-hidden="true">
+                                <img src="/images/developer/decorations/spyglass.png" alt="" class="dev-artifact-spyglass">
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Pinned Right: Realm Overview Parchment Scroll -->
+                    <!-- Pinned Right: Realm Overview Curled Parchment Scroll -->
                     <aside class="dev-realm-overview-parchment" aria-label="Realm Overview Ledger">
                         <div class="dev-overview-scroll-inner">
                             <div class="dev-overview-header">
@@ -276,7 +282,7 @@
                 <section class="dev-manifests-trio" aria-label="Physical Admiralty Ledgers">
 
                     <!-- =======================================================
-                         MANIFEST 1: MERCHANT CHARTERS (PENDING APPLICATIONS)
+                         MANIFEST 1: MERCHANT CHARTERS (ROPE-BOUND PARCHMENT)
                          ======================================================= -->
                     <div class="dev-parchment-manifest-panel manifest-charters" id="cardSellerApplicationsSummary">
                         <div class="dev-manifest-header">
@@ -348,7 +354,7 @@
                     </div>
 
                     <!-- =======================================================
-                         MANIFEST 2: THE PEOPLE (BUYERS & SELLERS CENSUS)
+                         MANIFEST 2: THE PEOPLE (ADMIRALTY CENSUS LEDGER)
                          ======================================================= -->
                     <div class="dev-parchment-manifest-panel manifest-people" id="cardPeopleSummary">
                         <div class="dev-manifest-header">
@@ -451,7 +457,7 @@
                     </div>
 
                     <!-- =======================================================
-                         MANIFEST 3: MARKETPLACE (CARGO & TRADE OVERSIGHT)
+                         MANIFEST 3: MARKETPLACE (MASTER CARGO LEDGER)
                          ======================================================= -->
                     <div class="dev-parchment-manifest-panel manifest-marketplace" id="cardMarketplaceSummary">
                         <div class="dev-manifest-header">
@@ -558,16 +564,17 @@
                 </section>
 
                 <!-- ===========================================================
-                     LOWER FOUNDATION: SOVEREIGN ARCHITECTURE INSTRUMENTS
+                     ARCHITECT'S TELEMETRY & COMMAND INSTRUMENTATION
+                     Embedded into Chamber Wainscoting (No SaaS Card Grid!)
                      =========================================================== -->
-                <section class="dev-foundation-section" aria-labelledby="foundationHeading">
-                    <div class="dev-foundation-bar">
+                <section class="dev-instrumentation-wainscot" aria-labelledby="foundationHeading">
+                    <div class="dev-instrumentation-header">
                         <img src="/images/developer/decorations/nautical-divider.png" alt="" class="dev-section-rule" aria-hidden="true">
-                        <h3 class="dev-foundation-heading" id="foundationHeading">SOVEREIGN ARCHITECTURE FOUNDATION</h3>
+                        <h3 class="dev-instrumentation-title" id="foundationHeading">ARCHITECT'S COMMAND INSTRUMENTATION</h3>
                         <img src="/images/developer/decorations/nautical-divider.png" alt="" class="dev-section-rule" aria-hidden="true">
                     </div>
 
-                    <div class="dev-instruments-grid">
+                    <div class="dev-instruments-row">
 
                         <!-- INSTRUMENT 1: SYSTEM CORE -->
                         <div class="dev-instrument-plaque" id="cardSystemCore">
@@ -575,22 +582,21 @@
                                 <span class="dev-instrument-tag">[ SYSTEM ]</span>
                                 <span class="dev-instrument-status status-active">Active</span>
                             </div>
-                            <p class="dev-instrument-desc">Runtime environment, kernel state, and host orchestration.</p>
                             <ul class="dev-instrument-kv">
                                 <li>
-                                    <span>Runtime Engine</span>
+                                    <span>Engine</span>
                                     <span class="val-mono">Node.js <%= (typeof systemStats !== 'undefined' && systemStats.nodeVersion) || process.version %></span>
                                 </li>
                                 <li>
-                                    <span>Environment Mode</span>
+                                    <span>Mode</span>
                                     <span class="val-mono"><%= (typeof systemStats !== 'undefined' && systemStats.envMode) || "development" %></span>
                                 </li>
                                 <li>
-                                    <span>Host Platform</span>
+                                    <span>Platform</span>
                                     <span class="val-mono"><%= (typeof systemStats !== 'undefined' && systemStats.platform) || process.platform %></span>
                                 </li>
                             </ul>
-                            <div class="dev-instrument-notice">Foundation Established // Diagnostics Ready</div>
+                            <div class="dev-instrument-footer">Runtime Kernel Online</div>
                         </div>
 
                         <!-- INSTRUMENT 2: SECURITY & PERIMETER -->
@@ -599,22 +605,21 @@
                                 <span class="dev-instrument-tag">[ SECURITY ]</span>
                                 <span class="dev-instrument-status status-secure">Secured</span>
                             </div>
-                            <p class="dev-instrument-desc">Cryptographic token vaults, signed cookies, and RBAC gatekeeper.</p>
                             <ul class="dev-instrument-kv">
                                 <li>
-                                    <span>Token Vault</span>
+                                    <span>Vault</span>
                                     <span class="val-mono">HMAC-SHA256 Signed</span>
                                 </li>
                                 <li>
-                                    <span>Session Cookie</span>
+                                    <span>Cookie</span>
                                     <span class="val-mono">HttpOnly + Signed</span>
                                 </li>
                                 <li>
-                                    <span>Active Identity</span>
+                                    <span>Identity</span>
                                     <span class="val-mono"><%= (typeof user !== 'undefined' && user.name) || "Developer" %></span>
                                 </li>
                             </ul>
-                            <div class="dev-instrument-notice">Foundation Established // Security Gatekeeper Online</div>
+                            <div class="dev-instrument-footer">Gatekeeper Enforced</div>
                         </div>
 
                         <!-- INSTRUMENT 3: DATABASE & REGISTRY -->
@@ -623,10 +628,9 @@
                                 <span class="dev-instrument-tag">[ DATABASE ]</span>
                                 <span class="dev-instrument-status status-active">Connected</span>
                             </div>
-                            <p class="dev-instrument-desc">Persistent document store housing users, islands, orders, and products.</p>
                             <ul class="dev-instrument-kv">
                                 <li>
-                                    <span>Document Engine</span>
+                                    <span>Store</span>
                                     <span class="val-mono">MongoDB / Mongoose</span>
                                 </li>
                                 <li>
@@ -634,11 +638,11 @@
                                     <span class="val-mono"><%= (typeof systemStats !== 'undefined' && systemStats.databaseStatus) || "Connected" %></span>
                                 </li>
                                 <li>
-                                    <span>Schema Models</span>
-                                    <span class="val-mono">User, Product, Order, Contact</span>
+                                    <span>Schemas</span>
+                                    <span class="val-mono">User, Product, Order</span>
                                 </li>
                             </ul>
-                            <div class="dev-instrument-notice">Foundation Established // Storage Tier Operational</div>
+                            <div class="dev-instrument-footer">Storage Tier Locked</div>
                         </div>
 
                         <!-- INSTRUMENT 4: NAVIGATION ARCHITECTURE -->
@@ -647,10 +651,9 @@
                                 <span class="dev-instrument-tag">[ ROUTES ]</span>
                                 <span class="dev-instrument-status status-active">Mapped</span>
                             </div>
-                            <p class="dev-instrument-desc">Application endpoint registry, role boundaries, and redirection maps.</p>
                             <ul class="dev-instrument-kv">
                                 <li>
-                                    <span>Gateway Route</span>
+                                    <span>Gateway</span>
                                     <span class="val-mono">GET /</span>
                                 </li>
                                 <li>
@@ -658,11 +661,11 @@
                                     <span class="val-mono">GET /home</span>
                                 </li>
                                 <li>
-                                    <span>Developer Deck</span>
+                                    <span>Command Deck</span>
                                     <span class="val-mono">GET /admin/dashboard</span>
                                 </li>
                             </ul>
-                            <div class="dev-instrument-notice">Foundation Established // Routing Engine Calibrated</div>
+                            <div class="dev-instrument-footer">Routing Verified</div>
                         </div>
 
                         <!-- INSTRUMENT 5: VERIFICATION MATRIX -->
@@ -671,22 +674,21 @@
                                 <span class="dev-instrument-tag">[ TESTS ]</span>
                                 <span class="dev-instrument-status status-active">Verified</span>
                             </div>
-                            <p class="dev-instrument-desc">Automated test suites, assertions, regression locks, and validation.</p>
                             <ul class="dev-instrument-kv">
                                 <li>
-                                    <span>Gateway Tests</span>
+                                    <span>Gateway</span>
                                     <span class="val-mono">100% Passed</span>
                                 </li>
                                 <li>
-                                    <span>Secret Entrance</span>
-                                    <span class="val-mono">Verified Clean</span>
+                                    <span>Entrance</span>
+                                    <span class="val-mono">Clean Alpha</span>
                                 </li>
                                 <li>
-                                    <span>RBAC Isolation</span>
-                                    <span class="val-mono">Strict 403 Enforced</span>
+                                    <span>Isolation</span>
+                                    <span class="val-mono">Strict 403 Lock</span>
                                 </li>
                             </ul>
-                            <div class="dev-instrument-notice">Foundation Established // Test Engine Ready</div>
+                            <div class="dev-instrument-footer">Verification Pass 100%</div>
                         </div>
 
                         <!-- INSTRUMENT 6: SERVICES & IMAGING -->
@@ -695,22 +697,21 @@
                                 <span class="dev-instrument-tag">[ SERVICES ]</span>
                                 <span class="dev-instrument-status status-active">Ready</span>
                             </div>
-                            <p class="dev-instrument-desc">Image optimization, file upload pipeline, and external APIs.</p>
                             <ul class="dev-instrument-kv">
                                 <li>
-                                    <span>Image Pipeline</span>
-                                    <span class="val-mono">Sharp WebP Processing</span>
+                                    <span>Images</span>
+                                    <span class="val-mono">Sharp WebP Pipeline</span>
                                 </li>
                                 <li>
-                                    <span>OAuth Service</span>
-                                    <span class="val-mono">Google HMAC Verified</span>
+                                    <span>OAuth</span>
+                                    <span class="val-mono">Google HMAC Enforced</span>
                                 </li>
                                 <li>
-                                    <span>File Transport</span>
+                                    <span>Transport</span>
                                     <span class="val-mono">Multipart / Multer</span>
                                 </li>
                             </ul>
-                            <div class="dev-instrument-notice">Foundation Established // Service Bus Mounted</div>
+                            <div class="dev-instrument-footer">Service Bus Calibrated</div>
                         </div>
 
                     </div>

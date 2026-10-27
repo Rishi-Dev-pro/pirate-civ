@@ -1,45 +1,46 @@
 /* ==========================================================================
-   PIRATE-CIV // DEVELOPER REALM — SOVEREIGN ARCHITECT COMMAND CHAMBER
-   Visual Reconstruction: Authentic Physical Pirate Admiralty Command Chamber
+   PIRATE-CIV // DEVELOPER REALM — SOVEREIGN COMMAND CHAMBER
+   Complete Physical Reconstruction: Ancient Pirate Admiralty War Room
    Materials: Aged Brass, Darkened Iron, Weathered Timber, Ancient Parchment,
-              Red Wax Seals, Rope Trims, Nautical Instruments & Sea Charts
+              Red Wax Seals, Rope Trims, Mariner Instruments & Sea Charts
    ========================================================================== */
 
 :root {
     /* Base Obsidian & Chamber Wood */
-    --dev-bg-pitch: #030508;
-    --dev-bg-navy: #05080e;
-    --dev-bg-chamber: #070b12;
-    --dev-bg-wood-dark: #120c08;
-    --dev-bg-wood-grain: #1a120c;
+    --dev-bg-pitch: #020306;
+    --dev-bg-navy: #04060c;
+    --dev-bg-chamber: #070a10;
+    --dev-bg-wood-dark: #0f0a06;
+    --dev-bg-wood-table: #140d08;
     
     /* Parchment Material Palette */
     --dev-parchment-base: #dfcfb2;
-    --dev-parchment-light: #ece0ca;
+    --dev-parchment-light: #faecd7;
     --dev-parchment-dark: #caa97e;
-    --dev-parchment-border: #91754f;
-    --dev-ink-primary: #23180d;
-    --dev-ink-secondary: #4a3824;
-    --dev-ink-muted: #6b553e;
+    --dev-parchment-border: #8b6b43;
+    --dev-ink-primary: #1f140a;
+    --dev-ink-secondary: #4a341e;
+    --dev-ink-muted: #6e5234;
     
     /* Aged Brass & Nautical Metals */
     --dev-brass-base: #b89742;
     --dev-brass-bright: #e5c46b;
     --dev-brass-highlight: #fff0aa;
-    --dev-brass-dim: #7d6325;
-    --dev-brass-shadow: #2f2307;
-    --dev-iron-border: #2e261f;
+    --dev-brass-dim: #7a5f22;
+    --dev-brass-shadow: #261b05;
+    --dev-iron-base: #1c1814;
+    --dev-iron-border: #2a2219;
     
     /* Regal Gem & Sea Accents */
     --dev-sea-teal: #1cb5c8;
     --dev-sea-teal-bright: #3de8fd;
     --dev-sea-teal-glow: rgba(28, 181, 200, 0.4);
-    --dev-sea-teal-bg: rgba(14, 45, 52, 0.85);
+    --dev-sea-teal-bg: rgba(12, 38, 44, 0.9);
     
-    --dev-crimson-seal: #8e1c1c;
+    --dev-crimson-seal: #8a1919;
     --dev-crimson-bright: #cf2d2d;
     --dev-crimson-glow: rgba(207, 45, 45, 0.35);
-    --dev-crimson-bg: rgba(48, 14, 16, 0.85);
+    --dev-crimson-bg: rgba(44, 12, 14, 0.9);
     
     /* Typography */
     --font-heading: 'Cinzel', serif;
@@ -53,7 +54,7 @@
 }
 
 /* ==========================================================================
-   1. GLOBAL BODY & ATMOSPHERIC LAYERS
+   1. GLOBAL BODY & PHYSICAL CHAMBER ATMOSPHERE
    ========================================================================== */
 body.dev-body {
     margin: 0;
@@ -65,12 +66,12 @@ body.dev-body {
     position: relative;
     overflow-x: hidden;
     background-image: 
-        radial-gradient(circle at 50% 18%, rgba(20, 36, 52, 0.4) 0%, transparent 60%),
-        linear-gradient(180deg, #020407 0%, #060a12 35%, #04070d 100%);
+        radial-gradient(ellipse at 50% 12%, rgba(20, 36, 52, 0.5) 0%, transparent 60%),
+        linear-gradient(180deg, #020306 0%, #060910 25%, #0d0805 70%, #080503 100%);
     background-attachment: fixed;
 }
 
-/* Screen reader utility strictly for accessible labels and automated tests */
+/* Screen reader utility strictly preserving test assertions */
 .dev-sr-only {
     position: absolute;
     width: 1px;
@@ -83,7 +84,7 @@ body.dev-body {
     border: 0;
 }
 
-/* Atmospheric Layer behind content */
+/* Atmospheric Layer 1: Stone Arches & Moonlit Sea Vista */
 .dev-atmosphere {
     position: fixed;
     inset: 0;
@@ -93,44 +94,61 @@ body.dev-body {
 
 .dev-vista-layer {
     position: absolute;
-    inset: 0;
-    background-image: url("/images/developer/backgrounds/chamber-arches-ocean.webp");
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60vh;
+    background-image: url("/images/developer/backgrounds/chamber-arches-vista.webp");
     background-size: cover;
     background-position: center top;
     background-repeat: no-repeat;
-    opacity: 0.18;
-    filter: contrast(1.15) brightness(0.65);
+    opacity: 0.65;
+    filter: contrast(1.15) brightness(0.85);
+    mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 55%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.85) 55%, transparent 100%);
+}
+
+.dev-wood-table-base {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 65vh;
+    background: 
+        radial-gradient(ellipse at 50% 40%, rgba(32, 20, 10, 0.7) 0%, transparent 70%),
+        linear-gradient(180deg, transparent 0%, rgba(18, 12, 7, 0.95) 40%, #0c0805 100%);
 }
 
 .dev-vignette-layer {
     position: absolute;
     inset: 0;
     background: 
-        radial-gradient(ellipse at 50% 30%, transparent 20%, rgba(2, 4, 7, 0.75) 70%, rgba(1, 2, 4, 0.96) 100%),
-        linear-gradient(180deg, rgba(2, 4, 7, 0.7) 0%, transparent 25%, rgba(2, 4, 7, 0.85) 85%, #010204 100%);
+        radial-gradient(ellipse at 50% 35%, transparent 35%, rgba(2, 3, 5, 0.75) 75%, rgba(1, 2, 4, 0.98) 100%),
+        linear-gradient(180deg, rgba(2, 3, 6, 0.6) 0%, transparent 15%, transparent 80%, #010203 100%);
 }
 
-/* Main Outer Chamber Wrapper */
+/* Main Outer Chamber Frame */
 .dev-chamber-frame {
     position: relative;
     z-index: 10;
-    max-width: 1680px;
+    max-width: 1720px;
     margin: 0 auto;
-    padding: 16px 24px 60px 24px;
+    padding: 16px 28px 60px 28px;
 }
 
 /* ==========================================================================
-   2. TOP COMMAND BAR (COMMAND DECK)
+   2. TOP COMMAND DECK (ENGRAVED ARCHITECTURAL INSIGNIA & CONTROLS)
+   No clunky yellow box! Floats naturally against the chamber arches!
    ========================================================================== */
 .dev-topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
-    padding: 10px 0 16px 0;
+    gap: 24px;
+    padding: 6px 0 18px 0;
     border-bottom: 2px solid transparent;
-    border-image: linear-gradient(90deg, transparent 0%, var(--dev-brass-dim) 20%, var(--dev-brass-bright) 50%, var(--dev-brass-dim) 80%, transparent 100%) 1;
-    margin-bottom: 20px;
+    border-image: linear-gradient(90deg, transparent 0%, rgba(184, 151, 66, 0.4) 20%, rgba(229, 196, 107, 0.8) 50%, rgba(184, 151, 66, 0.4) 80%, transparent 100%) 1;
+    margin-bottom: 22px;
 }
 
 /* Left: Crest Emblem */
@@ -144,37 +162,21 @@ body.dev-body {
 }
 
 .dev-crest-link:hover {
-    transform: scale(1.02);
-    filter: drop-shadow(0 0 10px rgba(229, 196, 107, 0.4));
+    transform: scale(1.03);
+    filter: drop-shadow(0 0 12px rgba(229, 196, 107, 0.5));
 }
 
 .dev-crest-img {
-    height: 64px;
+    height: 72px;
     width: auto;
     object-fit: contain;
-    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.9));
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.95));
 }
 
-/* Center: Engraved Header Plaque */
-.dev-header-plaque-wrapper {
+/* Center: Engraved Architectural Insignia (Floating, No Box Border) */
+.dev-header-insignia {
     flex: 1;
-    display: flex;
-    justify-content: center;
-}
-
-.dev-header-plaque {
-    background: 
-        linear-gradient(180deg, rgba(32, 22, 14, 0.95) 0%, rgba(14, 10, 7, 0.98) 100%);
-    border: 2px solid var(--dev-brass-base);
-    box-shadow: 
-        0 6px 20px rgba(0, 0, 0, 0.95),
-        inset 0 1px 0 var(--dev-brass-highlight),
-        inset 0 0 14px rgba(0, 0, 0, 0.9),
-        0 0 0 1px #050403;
-    border-radius: 4px;
-    padding: 10px 36px 8px 36px;
     text-align: center;
-    position: relative;
 }
 
 .dev-realm-subkicker {
@@ -185,37 +187,37 @@ body.dev-body {
     letter-spacing: 0.28em;
     color: var(--dev-brass-base);
     text-transform: uppercase;
-    text-shadow: 0 1px 2px #000;
+    text-shadow: 0 2px 4px #000;
     margin-bottom: 2px;
 }
 
 .dev-title-main {
     margin: 0;
     font-family: var(--font-decorative);
-    font-size: 1.85rem;
+    font-size: 2.1rem;
     font-weight: 900;
     letter-spacing: 0.16em;
     color: #fff;
     background: linear-gradient(180deg, #ffffff 0%, #fae6b2 45%, #d8af47 75%, #94711f 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.9));
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 12px rgba(200, 168, 78, 0.25));
     line-height: 1.1;
 }
 
 .dev-title-tagline {
     display: block;
     font-family: var(--font-heading);
-    font-size: 0.65rem;
-    font-weight: 600;
+    font-size: 0.66rem;
+    font-weight: 700;
     letter-spacing: 0.32em;
     color: var(--dev-brass-dim);
     text-transform: uppercase;
     margin-top: 3px;
-    text-shadow: 0 1px 2px #000;
+    text-shadow: 0 2px 4px #000;
 }
 
-/* Right: Actions */
+/* Right: Topbar Controls */
 .dev-topbar-actions {
     display: flex;
     align-items: center;
@@ -228,9 +230,9 @@ body.dev-body {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(8, 22, 28, 0.85);
-    border: 1px solid rgba(28, 181, 200, 0.5);
-    box-shadow: 0 0 12px rgba(28, 181, 200, 0.18), inset 0 0 8px rgba(0, 0, 0, 0.8);
+    background: rgba(6, 18, 24, 0.88);
+    border: 1px solid rgba(28, 181, 200, 0.55);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.8), 0 0 10px rgba(28, 181, 200, 0.2);
     border-radius: 4px;
     padding: 8px 14px;
     font-family: var(--font-mono);
@@ -251,7 +253,7 @@ body.dev-body {
 
 @keyframes beaconPulse {
     0%, 100% { opacity: 0.5; transform: scale(0.9); }
-    50% { opacity: 1; transform: scale(1.2); }
+    50% { opacity: 1; transform: scale(1.25); }
 }
 
 /* Action Buttons (Nautical) */
@@ -259,12 +261,12 @@ body.dev-body {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: linear-gradient(180deg, #2a1e12 0%, #150f08 100%);
+    background: linear-gradient(180deg, #2c1e13 0%, #150e08 100%);
     border: 1px solid var(--dev-brass-base);
     box-shadow: 
-        0 4px 12px rgba(0, 0, 0, 0.8),
+        0 4px 12px rgba(0, 0, 0, 0.85),
         inset 0 1px 0 var(--dev-brass-highlight),
-        inset 0 0 8px rgba(0, 0, 0, 0.7);
+        inset 0 0 8px rgba(0, 0, 0, 0.8);
     color: var(--dev-brass-bright);
     font-family: var(--font-heading);
     font-size: 0.76rem;
@@ -278,12 +280,10 @@ body.dev-body {
 }
 
 .dev-btn-nautical:hover {
-    background: linear-gradient(180deg, #3c2c1a 0%, #1d140a 100%);
+    background: linear-gradient(180deg, #3d2b1a 0%, #1c130a 100%);
     border-color: var(--dev-brass-highlight);
     color: #fff;
-    box-shadow: 
-        0 4px 14px rgba(229, 196, 107, 0.25),
-        inset 0 1px 0 var(--dev-brass-highlight);
+    box-shadow: 0 4px 16px rgba(229, 196, 107, 0.3);
     transform: translateY(-1px);
 }
 
@@ -292,7 +292,7 @@ body.dev-body {
     border-color: #8a2424;
     color: #fca5a5;
     box-shadow: 
-        0 4px 12px rgba(0, 0, 0, 0.8),
+        0 4px 12px rgba(0, 0, 0, 0.85),
         inset 0 1px 0 #cf4848;
 }
 
@@ -300,9 +300,7 @@ body.dev-body {
     background: linear-gradient(180deg, #4d181b 0%, #260a0c 100%);
     border-color: #cf2d2d;
     color: #fff;
-    box-shadow: 
-        0 4px 14px rgba(207, 45, 45, 0.35),
-        inset 0 1px 0 #ff6666;
+    box-shadow: 0 4px 16px rgba(207, 45, 45, 0.4);
 }
 
 /* Architect Medallion */
@@ -310,11 +308,11 @@ body.dev-body {
     display: flex;
     align-items: center;
     gap: 8px;
-    background: rgba(14, 10, 7, 0.9);
+    background: rgba(14, 10, 7, 0.92);
     border: 1px solid var(--dev-brass-dim);
     border-radius: 20px;
     padding: 4px 14px 4px 6px;
-    box-shadow: inset 0 0 6px #000;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8), inset 0 0 6px #000;
 }
 
 .dev-medallion-skull {
@@ -344,7 +342,7 @@ body.dev-body {
 }
 
 /* ==========================================================================
-   3. MAIN STAGE LAYOUT (RAIL + COMMAND REALM)
+   3. MAIN STAGE LAYOUT (NAUTICAL RAIL + WAR ROOM DECK)
    ========================================================================== */
 .dev-stage-layout {
     display: flex;
@@ -354,21 +352,37 @@ body.dev-body {
 
 /* Left Nautical Rail (Sidebar) */
 .dev-nautical-rail {
-    width: 230px;
+    width: 220px;
     flex-shrink: 0;
 }
 
 .dev-rail-frame {
     background: 
-        linear-gradient(180deg, rgba(22, 15, 10, 0.94) 0%, rgba(12, 8, 5, 0.98) 100%);
+        linear-gradient(180deg, rgba(20, 14, 9, 0.96) 0%, rgba(10, 7, 4, 0.98) 100%);
     border: 2px solid var(--dev-brass-base);
     box-shadow: 
-        0 10px 30px rgba(0, 0, 0, 0.95),
+        0 14px 36px rgba(0, 0, 0, 0.95),
         inset 0 1px 0 var(--dev-brass-highlight),
         inset 0 0 20px rgba(0, 0, 0, 0.9);
     border-radius: 6px;
-    padding: 20px 14px 22px 14px;
+    padding: 16px 12px 18px 12px;
     position: relative;
+}
+
+.dev-rail-top-helm,
+.dev-rail-bottom-helm {
+    text-align: center;
+    margin: 4px 0 12px 0;
+}
+
+.dev-rail-bottom-helm {
+    margin: 12px 0 0 0;
+}
+
+.dev-helm-glyph {
+    font-size: 1.35rem;
+    color: var(--dev-brass-base);
+    filter: drop-shadow(0 2px 4px #000);
 }
 
 /* Rail Navigation Links */
@@ -381,8 +395,8 @@ body.dev-body {
 .dev-rail-link {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
+    gap: 10px;
+    padding: 10px 12px;
     color: var(--dev-parchment-base);
     text-decoration: none;
     font-family: var(--font-heading);
@@ -397,14 +411,14 @@ body.dev-body {
 
 .dev-rail-link:hover {
     color: var(--dev-brass-bright);
-    background: rgba(184, 151, 66, 0.12);
-    border-color: rgba(184, 151, 66, 0.35);
+    background: rgba(184, 151, 66, 0.14);
+    border-color: rgba(184, 151, 66, 0.4);
 }
 
 .dev-rail-link.active {
     color: #fff;
     background: 
-        linear-gradient(90deg, rgba(184, 151, 66, 0.32) 0%, rgba(184, 151, 66, 0.12) 100%);
+        linear-gradient(90deg, rgba(184, 151, 66, 0.35) 0%, rgba(184, 151, 66, 0.12) 100%);
     border: 1px solid var(--dev-brass-bright);
     box-shadow: 
         inset 0 0 10px rgba(229, 196, 107, 0.25),
@@ -414,7 +428,7 @@ body.dev-body {
 .dev-rail-link.active::before {
     content: "";
     position: absolute;
-    left: -14px;
+    left: -12px;
     top: 50%;
     transform: translateY(-50%);
     width: 4px;
@@ -425,7 +439,7 @@ body.dev-body {
 }
 
 .dev-rail-icon {
-    font-size: 1rem;
+    font-size: 0.95rem;
     color: var(--dev-brass-bright);
 }
 
@@ -446,7 +460,7 @@ body.dev-body {
 
 /* Rail Divider */
 .dev-rail-divider {
-    margin: 16px 0;
+    margin: 14px 0;
     text-align: center;
 }
 
@@ -460,14 +474,14 @@ body.dev-body {
 .dev-rail-diagnostics-group {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 3px;
 }
 
 .dev-diag-link {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 7px 12px;
+    padding: 6px 10px;
     color: #8b99a8;
     text-decoration: none;
     font-family: var(--font-heading);
@@ -490,15 +504,15 @@ body.dev-body {
 
 /* Rail Bottom Watermark */
 .dev-rail-bottom-watermark {
-    margin-top: 24px;
-    padding-top: 16px;
+    margin-top: 18px;
+    padding-top: 14px;
     border-top: 1px solid rgba(184, 151, 66, 0.2);
     text-align: center;
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
 .dev-anchor-watermark {
-    width: 38px;
+    width: 34px;
     height: auto;
     filter: drop-shadow(0 2px 4px #000);
 }
@@ -510,7 +524,7 @@ body.dev-body {
     font-weight: 700;
     letter-spacing: 0.18em;
     color: var(--dev-brass-dim);
-    margin-top: 6px;
+    margin-top: 5px;
 }
 
 /* Center Command Realm */
@@ -521,57 +535,49 @@ body.dev-body {
 
 /* ==========================================================================
    4. UPPER DECK: CAPTAIN'S WAR TABLE & SEA CHART MAP
+   No rectangular border box! The parchment chart rests naturally on the table!
    ========================================================================== */
 .dev-war-table-stage {
     display: grid;
     grid-template-columns: 1fr 340px;
-    gap: 20px;
+    gap: 22px;
     margin-bottom: 24px;
+    align-items: stretch;
 }
 
-/* Unfurled Parchment Sea Chart */
-.dev-map-parchment-wrapper {
-    background: 
-        linear-gradient(180deg, #18120c 0%, #0d0905 100%);
-    border: 2px solid var(--dev-brass-base);
-    box-shadow: 
-        0 14px 40px rgba(0, 0, 0, 0.95),
-        inset 0 1px 0 var(--dev-brass-highlight),
-        inset 0 0 24px rgba(0, 0, 0, 0.95);
-    border-radius: 6px;
-    padding: 12px;
-    position: relative;
-    overflow: hidden;
-}
-
+/* Natural Unfurled Sea Chart Surface */
 .dev-map-table-surface {
     position: relative;
-    width: 100%;
     border-radius: 4px;
-    overflow: hidden;
-    background: #110e0a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dev-map-artifact-container {
+    position: relative;
+    width: 100%;
 }
 
 .dev-map-image {
     width: 100%;
-    height: 380px;
-    object-fit: cover;
-    object-position: center center;
+    height: auto;
+    max-height: 400px;
+    object-fit: contain;
     display: block;
-    filter: contrast(1.06) brightness(0.92);
-    border-radius: 4px;
+    filter: drop-shadow(0 16px 36px rgba(0, 0, 0, 0.95)) drop-shadow(0 4px 8px rgba(0, 0, 0, 0.8));
 }
 
-/* Overlaid Nautical Metric Markers on Sea Chart */
+/* Floating Brass Markers Pinned Directly to Sea Chart */
 .dev-map-marker {
     position: absolute;
     background: 
         linear-gradient(180deg, rgba(28, 20, 12, 0.95) 0%, rgba(12, 8, 4, 0.98) 100%);
     border: 1px solid var(--dev-brass-bright);
     box-shadow: 
-        0 4px 12px rgba(0, 0, 0, 0.9),
+        0 4px 14px rgba(0, 0, 0, 0.9),
         inset 0 1px 0 var(--dev-brass-highlight),
-        0 0 10px rgba(0, 0, 0, 0.8);
+        0 0 12px rgba(0, 0, 0, 0.8);
     border-radius: 4px;
     padding: 4px 10px;
     display: flex;
@@ -605,7 +611,7 @@ body.dev-body {
     font-size: 0.88rem;
     font-weight: 700;
     color: var(--dev-brass-highlight);
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.55);
     padding: 1px 6px;
     border-radius: 3px;
     border: 1px solid rgba(184, 151, 66, 0.3);
@@ -613,72 +619,87 @@ body.dev-body {
 
 /* Marker Positioning on Map */
 .marker-merchants {
-    top: 24%;
+    top: 22%;
     left: 20%;
 }
 
 .marker-products {
-    bottom: 22%;
+    bottom: 18%;
     left: 48%;
 }
 
 .marker-orders {
-    top: 28%;
+    top: 24%;
     right: 22%;
 }
 
-/* Decorative Table Artifacts */
+/* Decorative Table Artifacts around Map */
 .dev-map-compass-artifact {
     position: absolute;
-    bottom: 12px;
-    left: 12px;
+    bottom: 8px;
+    left: 8px;
     pointer-events: none;
-    z-index: 4;
+    z-index: 6;
 }
 
 .dev-artifact-compass {
-    width: 90px;
+    width: 95px;
     height: auto;
-    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.95));
-    opacity: 0.95;
+    filter: drop-shadow(0 8px 18px rgba(0, 0, 0, 0.95));
 }
 
 .dev-map-lantern-artifact {
     position: absolute;
-    top: 14px;
-    left: 14px;
+    top: 10px;
+    left: 10px;
     pointer-events: none;
-    z-index: 4;
+    z-index: 6;
 }
 
 .dev-artifact-lantern {
-    width: 65px;
+    width: 68px;
     height: auto;
-    filter: drop-shadow(0 0 16px rgba(255, 170, 40, 0.45));
+    filter: drop-shadow(0 0 18px rgba(255, 170, 40, 0.5));
     animation: lanternBreathe 4s infinite ease-in-out;
 }
 
 @keyframes lanternBreathe {
     0%, 100% { filter: drop-shadow(0 0 14px rgba(255, 170, 40, 0.35)); }
-    50% { filter: drop-shadow(0 0 24px rgba(255, 190, 70, 0.65)); }
+    50% { filter: drop-shadow(0 0 26px rgba(255, 190, 70, 0.7)); }
 }
 
 .dev-map-books-artifact {
     position: absolute;
-    top: 12px;
-    right: 12px;
+    top: 10px;
+    right: 10px;
     pointer-events: none;
-    z-index: 4;
+    z-index: 6;
 }
 
 .dev-artifact-books {
-    width: 80px;
+    width: 85px;
     height: auto;
     filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.9));
 }
 
+.dev-map-spyglass-artifact {
+    position: absolute;
+    bottom: 6px;
+    left: 28%;
+    pointer-events: none;
+    z-index: 4;
+}
+
+.dev-artifact-spyglass {
+    width: 140px;
+    height: auto;
+    transform: rotate(-8deg);
+    filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.9));
+    opacity: 0.9;
+}
+
 /* ==========================================================================
-   5. REALM OVERVIEW PARCHMENT SCROLL (PINNED RIGHT)
+   5. PINNED REALM OVERVIEW PARCHMENT SCROLL
    ========================================================================== */
 .dev-realm-overview-parchment {
     background: 
@@ -688,7 +709,7 @@ body.dev-body {
         0 14px 40px rgba(0, 0, 0, 0.95),
         inset 0 0 20px rgba(90, 60, 20, 0.25),
         inset 0 0 40px rgba(60, 40, 15, 0.15);
-    border-radius: 4px;
+    border-radius: 5px;
     padding: 18px 20px;
     color: var(--dev-ink-primary);
     position: relative;
@@ -745,8 +766,8 @@ body.dev-body {
     justify-content: space-between;
     padding: 6px 8px;
     border-radius: 3px;
-    background: rgba(255, 255, 255, 0.22);
-    border: 1px solid rgba(145, 117, 79, 0.3);
+    background: rgba(255, 255, 255, 0.25);
+    border: 1px solid rgba(145, 117, 79, 0.35);
 }
 
 .dev-overview-stat-row.stat-pending-row {
@@ -814,7 +835,7 @@ body.dev-body {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    margin-bottom: 36px;
+    margin-bottom: 28px;
 }
 
 .dev-parchment-manifest-panel {
@@ -1239,52 +1260,57 @@ body.dev-body {
 }
 
 /* ==========================================================================
-   7. LOWER FOUNDATION: SOVEREIGN ARCHITECTURE INSTRUMENTS
+   7. ARCHITECT'S TELEMETRY & COMMAND INSTRUMENTATION
+   Embedded into chamber wainscoting as recessed engineering plates.
+   No generic SaaS cards!
    ========================================================================== */
-.dev-foundation-section {
-    margin-top: 24px;
+.dev-instrumentation-wainscot {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(184, 151, 66, 0.25);
 }
 
-.dev-foundation-bar {
+.dev-instrumentation-header {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 16px;
-    margin-bottom: 20px;
+    margin-bottom: 16px;
 }
 
 .dev-section-rule {
     width: 160px;
     height: auto;
-    opacity: 0.6;
+    opacity: 0.55;
 }
 
-.dev-foundation-heading {
+.dev-instrumentation-title {
     margin: 0;
     font-family: var(--font-heading);
-    font-size: 0.88rem;
+    font-size: 0.82rem;
     font-weight: 800;
-    letter-spacing: 0.22em;
+    letter-spacing: 0.24em;
     color: var(--dev-brass-base);
     text-shadow: 0 1px 2px #000;
+    text-transform: uppercase;
 }
 
-.dev-instruments-grid {
+.dev-instruments-row {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 18px;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 12px;
 }
 
 .dev-instrument-plaque {
     background: 
-        linear-gradient(180deg, rgba(22, 16, 12, 0.92) 0%, rgba(12, 8, 6, 0.98) 100%);
+        linear-gradient(180deg, rgba(20, 14, 10, 0.95) 0%, rgba(10, 7, 5, 0.98) 100%);
     border: 1px solid var(--dev-brass-dim);
     box-shadow: 
-        0 8px 24px rgba(0, 0, 0, 0.9),
-        inset 0 1px 0 rgba(229, 196, 107, 0.25),
-        inset 0 0 14px rgba(0, 0, 0, 0.85);
+        0 6px 16px rgba(0, 0, 0, 0.85),
+        inset 0 1px 0 rgba(229, 196, 107, 0.2),
+        inset 0 0 10px rgba(0, 0, 0, 0.9);
     border-radius: 4px;
-    padding: 16px 18px;
+    padding: 12px 10px;
     display: flex;
     flex-direction: column;
 }
@@ -1293,52 +1319,45 @@ body.dev-body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .dev-instrument-tag {
     font-family: var(--font-heading);
-    font-size: 0.82rem;
+    font-size: 0.74rem;
     font-weight: 800;
-    letter-spacing: 0.14em;
+    letter-spacing: 0.1em;
     color: var(--dev-brass-bright);
 }
 
 .dev-instrument-status {
     font-family: var(--font-mono);
-    font-size: 0.68rem;
+    font-size: 0.62rem;
     font-weight: 700;
-    padding: 2px 7px;
-    border-radius: 3px;
+    padding: 1px 5px;
+    border-radius: 2px;
     text-transform: uppercase;
 }
 
 .dev-instrument-status.status-active {
-    background: rgba(28, 181, 200, 0.15);
+    background: rgba(28, 181, 200, 0.12);
     color: var(--dev-sea-teal-bright);
-    border: 1px solid rgba(28, 181, 200, 0.4);
+    border: 1px solid rgba(28, 181, 200, 0.35);
 }
 
 .dev-instrument-status.status-secure {
-    background: rgba(46, 160, 67, 0.15);
+    background: rgba(46, 160, 67, 0.12);
     color: #4ade80;
-    border: 1px solid rgba(46, 160, 67, 0.4);
-}
-
-.dev-instrument-desc {
-    font-size: 0.74rem;
-    color: #9aa8b8;
-    line-height: 1.4;
-    margin: 0 0 12px 0;
+    border: 1px solid rgba(46, 160, 67, 0.35);
 }
 
 .dev-instrument-kv {
     list-style: none;
     padding: 0;
-    margin: 0 0 12px 0;
+    margin: 0 0 8px 0;
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: 4px;
     flex: 1;
 }
 
@@ -1346,25 +1365,26 @@ body.dev-body {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    font-size: 0.72rem;
-    color: #b5c3d4;
-    padding: 4px 6px;
-    background: rgba(0, 0, 0, 0.35);
+    font-size: 0.68rem;
+    color: #9aa8b8;
+    padding: 2px 4px;
+    background: rgba(0, 0, 0, 0.4);
     border-radius: 2px;
 }
 
 .val-mono {
     font-family: var(--font-mono);
+    font-size: 0.65rem;
     color: var(--dev-brass-bright);
 }
 
-.dev-instrument-notice {
-    font-size: 0.66rem;
+.dev-instrument-footer {
+    font-size: 0.6rem;
     font-family: var(--font-heading);
     letter-spacing: 0.08em;
     color: var(--dev-brass-dim);
-    border-top: 1px solid rgba(184, 151, 66, 0.2);
-    padding-top: 8px;
+    border-top: 1px solid rgba(184, 151, 66, 0.15);
+    padding-top: 6px;
     text-align: center;
 }
 
@@ -1722,7 +1742,13 @@ body.dev-body {
 /* ==========================================================================
    10. RESPONSIVE MEDIA QUERIES
    ========================================================================== */
-@media (max-width: 1280px) {
+@media (max-width: 1400px) {
+    .dev-instruments-row {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 1200px) {
     .dev-war-table-stage {
         grid-template-columns: 1fr;
     }
@@ -1731,7 +1757,7 @@ body.dev-body {
         grid-template-columns: 1fr;
     }
     
-    .dev-instruments-grid {
+    .dev-instruments-row {
         grid-template-columns: repeat(2, 1fr);
     }
 }
@@ -1755,7 +1781,7 @@ body.dev-body {
         flex-wrap: wrap;
     }
     
-    .dev-instruments-grid {
+    .dev-instruments-row {
         grid-template-columns: 1fr;
     }
     
