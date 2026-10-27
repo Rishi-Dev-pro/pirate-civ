@@ -94,6 +94,7 @@ This document catalogues every HTTP route within Pirate-Civ, defining its method
 | `GET` | `/developer/logout`, `/admin/logout` | `auth.js::logoutDeveloper` | None | Destroys developer session/cookie and redirects strictly to Gateway (`/`) | No | None |
 | `GET` | `/developer/people/sellers/:id/products`, `/admin/people/sellers/:id/products` | `developer.js::renderDeveloperSellerProducts` | `authMiddleware`, `requireAdmin` | Read-only marketplace oversight of products listed by seller | Yes | Admin |
 | `GET` | `/developer/people/buyers/:id/orders`, `/admin/people/buyers/:id/orders` | `developer.js::renderBuyerPurchases` | `authMiddleware`, `requireAdmin` | Read-only marketplace oversight of orders placed by buyer | Yes | Admin |
+| `GET` | `/developer/cinematic`, `/admin/cinematic` | `developer.js::renderCinematicArchive` | `authMiddleware`, `requireAdmin` | Sovereign Cinematic Archive: full showcase MP4 video viewer with AAC stereo audio inside aged timber frame | Yes | Admin |
 
 ---
 

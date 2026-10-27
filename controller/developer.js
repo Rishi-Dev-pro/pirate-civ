@@ -344,3 +344,24 @@ export const renderMarketplace = async (req, res) => {
         return res.status(500).send("Error loading Developer Realm Marketplace manifest.");
     }
 };
+
+/**
+ * GET /developer/cinematic (and /admin/cinematic)
+ * Sovereign Cinematic Archive - Historical record of the Archipelago and Realm.
+ */
+export const renderCinematicArchive = async (req, res) => {
+    try {
+        const pendingSellersCount = await User.countDocuments({ role: "seller", sellerStatus: "pending" });
+        return res.render("developer/cinematic", {
+            page_title: "PIRATE-CIV // THE CINEMATIC ARCHIVE",
+            user: req.user,
+            activeNav: "cinematic",
+            pendingSellersCount,
+            videoSrc: "/videos/pirate_civ_cinematic_trailer.mp4",
+            posterSrc: "/videos/pirate_civ_cinematic_poster.jpg"
+        });
+    } catch (error) {
+        console.error("Developer Cinematic Archive Error:", error);
+        return res.status(500).send("Error loading Developer Realm Cinematic Archive.");
+    }
+};

@@ -107,6 +107,20 @@
                         <img src="/images/developer/decorations/nautical-divider.png" alt="" class="dev-divider-img">
                     </div>
 
+                    <!-- CINEMATIC ARCHIVE ENTRY -->
+                    <div class="dev-rail-archive-group">
+                        <a href="/developer/cinematic" class="dev-rail-link dev-rail-link-cinematic <%= (typeof activeNav !== 'undefined' && activeNav === 'cinematic') ? 'is-active active' : '' %>" id="navDevCinematic" <%- (typeof activeNav !== 'undefined' && activeNav === 'cinematic') ? 'aria-current="page"' : '' %>>
+                            <span class="dev-rail-custom-icon">
+                                <img src="/images/developer/icons/developer-cinematic-archive.webp" alt="" class="dev-rail-reel-img" aria-hidden="true">
+                            </span>
+                            <span class="dev-rail-label">CINEMATIC ARCHIVE</span>
+                        </a>
+                    </div>
+
+                    <div class="dev-rail-divider" aria-hidden="true">
+                        <img src="/images/developer/decorations/nautical-divider.png" alt="" class="dev-divider-img">
+                    </div>
+
                     <div class="dev-rail-diagnostics-group">
                         <a href="/developer/dashboard#cardSystemCore" class="dev-diag-link">
                             <span class="dev-diag-icon">⚙</span>

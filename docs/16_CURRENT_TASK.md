@@ -14,11 +14,19 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Developer Realm Command Chamber UX Repair (Map Removal + Single-Border Rail + Table Height Restoration) Completed & Fully Verified**
+* **Active Status:** **Developer Realm — Milestone 1: Cinematic Archive / MP4 Video Viewer with Audio Completed & Fully Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Developer Realm — Milestone 1: Cinematic Archive / MP4 Video Viewer with Audio (`views/developer/cinematic.ejs`, `controller/developer.js`, `routes/web.js`, `public/css/developer.css`, `public/videos/pirate_civ_cinematic_trailer.mp4`):**
+  - **Sovereign Cinematic Archive View (`views/developer/cinematic.ejs`):** Added dedicated archive viewing room styled with aged ship timber framing, oxidized brass rivet corner brackets, and dark maritime atmosphere. Includes kicker `THE HIDDEN ARCHIVE`, sovereign title `THE PIRATE-CIV CHRONICLE`, responsive HTML5 native video player with subtitle and audio controls (`controls`, `preload="metadata"`, `playsinline`), and archive information strip.
+  - **Full 1080p MP4 Video with AAC Stereo Audio:** Rendered and delivered `public/videos/pirate_civ_cinematic_trailer.mp4` (74.29 MB, 1080p H.264 video, 30fps, with AAC stereo audio at 192 kb/s, faststart enabled for instant web playback) accompanied by static poster `public/videos/pirate_civ_cinematic_poster.jpg`.
+  - **Custom Antique Brass Film Reel Asset:** Created antique oxidized brass film reel entwined with navigational parchment (`public/images/developer/icons/developer-cinematic-archive.webp` and `.png`) for the navigation rail, avoiding generic modern emojis or play icons.
+  - **Strict Deterministic Navigation & Active States:** Added `CINEMATIC ARCHIVE` navigation link (`#navDevCinematic`) across all 7 developer views. Enforces strict single-active state (`is-active active` and `aria-current="page"`) when viewing the archive, with zero duplicate active states.
+  - **Return Navigation:** Provided clean breadcrumb link (`#btnBackToDashboard`) returning to `← RETURN TO COMMAND CHAMBER` (`/developer/dashboard`).
+  - **Security & Authorization:** Guarded with `authMiddleware` and `requireAdmin` across canonical `/developer/cinematic` and `/admin/cinematic` alias.
+  - **Empirical Validation:** 100% pass on dedicated test suite `scratch/test_developer_cinematic_archive.js`, plus 100% pass across all existing regression suites (`test_developer_active_states_and_composition.js`, `test_developer_realm_v2.js`, and clean compilation of all 50 EJS templates and 31 JS files).
 * **Developer Realm — Surgical UI/UX Repair: Command Chamber Architecture & Zero AI-Slop (`views/developer/dashboard.ejs`, `views/developer/people.ejs`, `views/developer/marketplace.ejs`, `public/css/developer.css`):**
   - **Complete Map Removal from Main Command Chamber:**
     - Eradicated the misplaced map panel/widget ("ARCHIPELAGO SEA CHART") from `views/developer/dashboard.ejs`.

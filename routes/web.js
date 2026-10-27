@@ -181,7 +181,8 @@ import {
     renderPeople,
     renderDeveloperSellerProducts,
     renderBuyerPurchases,
-    renderMarketplace
+    renderMarketplace,
+    renderCinematicArchive
 } from "../controller/developer.js";
 
 // Canonical Dashboard & Aliases
@@ -193,6 +194,10 @@ router.get("/admin", authMiddleware, requireAdmin, (req, res) => res.redirect("/
 // Developer Disconnect (Destroys developer session and returns to Gateway /)
 router.get("/developer/logout", logoutDeveloper);
 router.get("/admin/logout", logoutDeveloper);
+
+// Cinematic Archive: Sovereign Video Reel
+router.get("/developer/cinematic", authMiddleware, requireAdmin, renderCinematicArchive);
+router.get("/admin/cinematic", authMiddleware, requireAdmin, renderCinematicArchive);
 
 // Seller Applications & Charter Approvals
 router.get("/developer/sellers/applications", authMiddleware, requireAdmin, renderSellerApplications);

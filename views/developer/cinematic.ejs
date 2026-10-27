@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= page_title || "PIRATE-CIV // THE CINEMATIC ARCHIVE" %></title>
+
+    <!-- Google Fonts: Cinzel Decorative, Cinzel & Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Cinzel+Decorative:wght@700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Developer Realm Physical Nautical Stylesheet -->
+    <link rel="stylesheet" href="/css/developer.css?v=pirate_cinematic_v1">
+</head>
+
+<body class="dev-body">
+
+    <!-- ===================================================================
+         ATMOSPHERIC BACKDROP: CITADEL ARCHES OVERLOOKING MOONLIT SEA
+         =================================================================== -->
+    <div class="dev-atmosphere" aria-hidden="true">
+        <div class="dev-vista-layer"></div>
+        <div class="dev-wood-table-base"></div>
+        <div class="dev-vignette-layer"></div>
+    </div>
+
+    <div class="dev-chamber-frame">
+
+        <!-- ===================================================================
+             TOP COMMAND DECK (ENGRAVED ARCHITECTURAL INSIGNIA & CONTROLS)
+             =================================================================== -->
+        <header class="dev-topbar" role="banner">
+            <!-- Left: Pirate-Civ Crest -->
+            <div class="dev-crest-container">
+                <a href="/developer/dashboard" class="dev-crest-link" title="Pirate-Civ Sovereign Developer Realm">
+                    <img src="/images/gateway/pirate-civ-logo.png" alt="Pirate-Civ Sovereign Emblem" class="dev-crest-img">
+                </a>
+            </div>
+
+            <!-- Center: Engraved Architectural Insignia -->
+            <div class="dev-header-insignia">
+                <span class="dev-realm-subkicker">PIRATE-CIV // THE HIDDEN CHAMBER</span>
+                <h1 class="dev-title-main">CINEMATIC ARCHIVE</h1>
+                <span class="dev-title-tagline">HISTORICAL AUDIOVISUAL CHRONICLE OF THE ARCHIPELAGO</span>
+            </div>
+
+            <!-- Right: Realm Security Pill & Admiralty Controls -->
+            <div class="dev-topbar-actions">
+                <div class="dev-status-capsule" title="Cryptographic Perimeter Online">
+                    <span class="dev-status-beacon"></span>
+                    <span class="dev-status-text">ARCHIVE UNLOCKED // ARCHITECT</span>
+                </div>
+
+                <!-- DISCONNECT: Returns strictly to / (Pirate-Civ Gateway character selection) -->
+                <a href="/developer/logout" class="dev-btn-nautical dev-btn-danger" id="btnDevDisconnect" title="Destroy developer session and return to Gateway">
+                    <span class="dev-btn-icon">⏻</span>
+                    <span>DISCONNECT</span>
+                </a>
+
+                <!-- Architect Medallion -->
+                <div class="dev-architect-medallion" title="Logged in as Sovereign Architect">
+                    <div class="dev-medallion-skull">
+                        <img src="/images/developer/decorations/architect-badge.png" alt="Architect" class="dev-badge-icon" onerror="this.style.display='none'">
+                    </div>
+                    <span class="dev-architect-title"><%= (typeof user !== 'undefined' && user.name) ? user.name : 'Architect' %></span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===================================================================
+             MAIN REALM STAGE: NAUTICAL RAIL + CINEMATIC ARCHIVE VIEWER
+             =================================================================== -->
+        <div class="dev-stage-layout">
+
+            <!-- LEFT NAUTICAL NAVIGATION RAIL -->
+            <aside class="dev-nautical-rail" role="navigation" aria-label="Command Chamber Navigation">
+                <div class="dev-rail-frame">
+                    <div class="dev-rail-top-helm">
+                        <span class="dev-helm-glyph">☸</span>
+                    </div>
+
+                    <div class="dev-rail-nav-group">
+                        <a href="/developer/dashboard" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'is-active active' : '' %>" <%- (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'aria-current="page"' : '' %>>
+                            <span class="dev-rail-icon">☸</span>
+                            <span class="dev-rail-label">COMMAND CHAMBER</span>
+                        </a>
+
+                        <a href="/developer/sellers/applications" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'is-active active' : '' %>" id="navDevApplications" <%- (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'aria-current="page"' : '' %>>
+                            <span class="dev-rail-icon">📜</span>
+                            <span class="dev-rail-label">MERCHANT CHARTERS</span>
+                            <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
+                                <span class="dev-rail-badge-alert" id="badgePendingCount"><%= pendingSellersCount %></span>
+                            <% } %>
+                        </a>
+
+                        <a href="/developer/people" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'is-active active' : '' %>" id="navDevPeople" <%- (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'aria-current="page"' : '' %>>
+                            <span class="dev-rail-icon">👥</span>
+                            <span class="dev-rail-label">THE PEOPLE</span>
+                        </a>
+
+                        <a href="/developer/marketplace" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'is-active active' : '' %>" id="navDevMarketplace" <%- (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'aria-current="page"' : '' %>>
+                            <span class="dev-rail-icon">🏛</span>
+                            <span class="dev-rail-label">MARKETPLACE</span>
+                        </a>
+                    </div>
+
+                    <!-- Brass Divider Ornament -->
+                    <div class="dev-rail-divider" aria-hidden="true">
+                        <img src="/images/developer/decorations/nautical-divider.png" alt="" class="dev-divider-img">
+                    </div>
+
+                    <!-- CINEMATIC ARCHIVE ENTRY -->
+                    <div class="dev-rail-archive-group">
+                        <a href="/developer/cinematic" class="dev-rail-link dev-rail-link-cinematic <%= (typeof activeNav !== 'undefined' && activeNav === 'cinematic') ? 'is-active active' : '' %>" id="navDevCinematic" <%- (typeof activeNav !== 'undefined' && activeNav === 'cinematic') ? 'aria-current="page"' : '' %>>
+                            <span class="dev-rail-custom-icon">
+                                <img src="/images/developer/icons/developer-cinematic-archive.webp" alt="" class="dev-rail-reel-img" aria-hidden="true">
+                            </span>
+                            <span class="dev-rail-label">CINEMATIC ARCHIVE</span>
+                        </a>
+                    </div>
+
+                    <!-- Brass Divider Ornament -->
+                    <div class="dev-rail-divider" aria-hidden="true">
+                        <img src="/images/developer/decorations/nautical-divider.png" alt="" class="dev-divider-img">
+                    </div>
+
+                    <!-- Diagnostics Group -->
+                    <div class="dev-rail-diagnostics-group">
+                        <a href="/developer/dashboard#cardSystemCore" class="dev-diag-link">
+                            <span class="dev-diag-icon">⚙</span>
+                            <span>SYSTEM</span>
+                        </a>
+                        <a href="/developer/dashboard#cardSecurityPerimeter" class="dev-diag-link">
+                            <span class="dev-diag-icon">🔒</span>
+                            <span>SECURITY</span>
+                        </a>
+                        <a href="/developer/dashboard#cardDatabaseRegistry" class="dev-diag-link">
+                            <span class="dev-diag-icon">🗄</span>
+                            <span>DATABASE</span>
+                        </a>
+                        <a href="/developer/dashboard#cardNavigationArchitecture" class="dev-diag-link">
+                            <span class="dev-diag-icon">⚯</span>
+                            <span>ROUTES</span>
+                        </a>
+                        <a href="/developer/dashboard#cardVerificationMatrix" class="dev-diag-link">
+                            <span class="dev-diag-icon">☑</span>
+                            <span>TESTS</span>
+                        </a>
+                        <a href="/developer/dashboard#cardServicesImaging" class="dev-diag-link">
+                            <span class="dev-diag-icon">⛭</span>
+                            <span>SERVICES</span>
+                        </a>
+                    </div>
+
+                    <div class="dev-rail-bottom-watermark">
+                        <img src="/images/developer/decorations/brass-anchor.png" alt="" class="dev-anchor-watermark" aria-hidden="true">
+                        <span class="dev-watermark-text">SOVEREIGN ARCHITECTURE FOUNDATION</span>
+                    </div>
+
+                    <div class="dev-rail-bottom-helm" aria-hidden="true">
+                        <span class="dev-helm-glyph">☸</span>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- MAIN CINEMATIC ARCHIVE VIEW -->
+            <main class="dev-command-realm" role="main">
+                
+                <!-- BREADCRUMB / RETURN TO COMMAND CHAMBER -->
+                <nav class="dev-breadcrumb-nav" aria-label="Breadcrumb">
+                    <a href="/developer/dashboard" class="dev-breadcrumb-link" id="btnBackToDashboard">&larr; RETURN TO COMMAND CHAMBER</a>
+                </nav>
+
+                <!-- ARCHIVE TITLE STAGE -->
+                <section class="dev-parchment-banner-stage">
+                    <div class="dev-parchment-title-card">
+                        <div class="dev-title-crest-row">
+                            <img src="/images/developer/icons/developer-cinematic-archive.webp" alt="Cinematic Charter" class="dev-parchment-wax-seal" style="border-radius: 50%;">
+                            <div>
+                                <span class="dev-hero-kicker">THE HIDDEN ARCHIVE</span>
+                                <h2 class="dev-section-title">THE PIRATE-CIV CHRONICLE</h2>
+                                <p class="dev-section-desc">A recorded voyage through the archipelago, its merchants, its cargo and the sovereign chamber.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- VIDEO PLAYER PRESENTATION FRAME -->
+                <section class="dev-cinematic-container" aria-label="Cinematic Showcase Player">
+                    <div class="dev-cinematic-player-frame">
+                        <div class="dev-cinematic-video-wrap">
+                            <video 
+                                id="playerPirateCivChronicle"
+                                class="dev-cinematic-video"
+                                controls
+                                preload="metadata"
+                                playsinline
+                                poster="<%= typeof posterSrc !== 'undefined' ? posterSrc : '/videos/pirate_civ_cinematic_poster.jpg' %>">
+                                <source src="<%= typeof videoSrc !== 'undefined' ? videoSrc : '/videos/pirate_civ_cinematic_trailer.mp4' %>" type="video/mp4">
+                                Your browser does not support HTML5 video.
+                            </video>
+                        </div>
+                    </div>
+
+                    <!-- ARCHIVE DETAILS INFORMATION STRIP -->
+                    <div class="dev-cinematic-info-strip">
+                        <div class="dev-cinematic-info-item">
+                            <span class="dev-info-label">Archive Record</span>
+                            <span class="dev-info-val">SOV-CHRONICLE-01</span>
+                        </div>
+                        <div class="dev-cinematic-info-item">
+                            <span class="dev-info-label">Civilization</span>
+                            <span class="dev-info-val">PIRATE-CIV ARCHIPELAGO</span>
+                        </div>
+                        <div class="dev-cinematic-info-item">
+                            <span class="dev-info-label">Classification</span>
+                            <span class="dev-info-val">REAL APPLICATION CAPTURE</span>
+                        </div>
+                        <div class="dev-cinematic-info-item">
+                            <span class="dev-info-label">Master Format</span>
+                            <span class="dev-info-val">1080P FULL HD // 75 SECONDS</span>
+                        </div>
+                        <div class="dev-cinematic-badge">
+                            <span class="dev-cinematic-badge-pulse" aria-hidden="true"></span>
+                            <span>SOVEREIGN ARCHIVE</span>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+        </div>
+    </div>
+</body>
+
+</html>
