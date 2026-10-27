@@ -2,6 +2,17 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-27] — Visual Redesign: Developer Realm V1 — Cinematic Sovereign Chamber Overhaul
+* **Cinematic Sovereign Chamber Visual Redesign (`public/css/developer.css`, `views/developer/*.ejs`, `public/images/developer-chamber-bg.jpg`):**
+  - **Sovereign Command Atmosphere:** Replaced plain black/grid background with a full-screen, atmospheric midnight fortress chamber asset (`/images/developer-chamber-bg.jpg`) featuring grand stone arches overlooking a stormy ocean, silhouette galleons, warm lanterns, and glowing constellation charts.
+  - **Atmospheric Layering & Contrast:** Built dark obsidian and midnight blue gradient overlays (`rgba(4, 7, 12, 0.55)` to `rgba(2, 3, 5, 0.96)`) with radial vignettes and subtle nautical grid texture, guaranteeing 100% WCAG contrast and readability over translucent glass/obsidian panels (`backdrop-filter: blur(12px)`).
+  - **Command Deck Header:** Replaced generic text with sovereign architect identity (`PIRATE-CIV // THE HIDDEN CHAMBER`, `THE DEVELOPER'S REALM`), animated beacon status pill, and physical-styled nautical brass buttons (`[ ⚓ RETURN TO SEA CHART ]`, `[ ⏻ DISCONNECT ]`).
+  - **Brass Chart Navigation Strip:** Replaced generic admin tabs with a brass nautical navigation strip featuring diamond pips (`◆ COMMAND CHAMBER`, `◆ MERCHANT CHARTERS`, `◆ THE PEOPLE`), active illumination, and a glowing crimson pending applications counter badge.
+  - **Ancient Command Instruments:** Restyled dashboard metric cards into brass-framed navigation instruments (`MERCHANT CHARTERS`, `THE PEOPLE OF THE ARCHIPELAGO`, `MARKETPLACE CARGO LEDGER`) with aged brass numerals and corner filigree.
+  - **Maritime Manifests & Ledgers:** Restyled Seller Applications, People Registry, Seller Products, and Buyer Orders as authentic Admiralty manifests and voyage ledgers with `min-width: 960px` horizontal scroll protections and wax seal status tags.
+  - **Cipher Vault Login Gate:** Elevated `/developer/login` into a subterranean cipher vault with aged brass corner trim and glowing cipher inputs.
+  - **Zero Functional Mutation:** Preserved 100% of routes, controllers, middleware, security boundaries, and element IDs. All 20 requirements in `test_developer_realm_v1.js` verified passing.
+
 ## [2026-10-27] — Feature: Developer Realm V1 — Seller Approval + Buyer/Seller Marketplace Oversight
 * **Developer Realm V1 Authorities (`controller/developer.js`, `routes/web.js`, `views/developer/*.ejs`, `public/css/developer.css`, `models/user.js`, `middleware/roles.js`):**
   - **Seller Charter Approval Lifecycle (`sellerStatus`):**

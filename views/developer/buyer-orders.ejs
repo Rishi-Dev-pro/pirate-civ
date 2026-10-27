@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= page_title || "PIRATE-CIV // BUYER ORDERS" %></title>
+    <title><%= page_title || "PIRATE-CIV // BUYER VOYAGE RECORD" %></title>
 
     <!-- Google Fonts: Cinzel & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Developer Realm Stylesheet -->
-    <link rel="stylesheet" href="/css/developer.css?v=dev_realm_v1">
+    <link rel="stylesheet" href="/css/developer.css?v=cinematic_chamber_v2">
 </head>
 
 <body class="dev-body">
@@ -20,12 +20,15 @@
     <div class="dev-container">
 
         <!-- ===================================================================
-             TOP COMMAND BAR
+             TOP COMMAND BAR (COMMAND DECK)
              =================================================================== -->
         <header class="dev-topbar" role="banner">
             <div class="dev-branding">
-                <span class="dev-realm-tag">PIRATE-CIV // SOVEREIGN ARCHITECT</span>
-                <h1 class="dev-title-main">DEVELOPER REALM</h1>
+                <span class="dev-realm-tag">PIRATE-CIV // THE HIDDEN CHAMBER</span>
+                <h1 class="dev-title-main">
+                    <span>DEVELOPER REALM</span>
+                    <span class="dev-title-subtext">SOVEREIGN ARCHITECT</span>
+                </h1>
             </div>
 
             <div class="dev-actions">
@@ -35,30 +38,30 @@
                 </div>
 
                 <a href="/home" class="dev-btn" id="btnReturnSeaChart">
-                    <span>RETURN TO SEA CHART</span>
+                    <span>⚓ RETURN TO SEA CHART</span>
                 </a>
 
                 <a href="/logout" class="dev-btn dev-btn-disconnect" id="btnDevDisconnect">
-                    <span>DISCONNECT</span>
+                    <span>⏻ DISCONNECT</span>
                 </a>
             </div>
         </header>
 
         <!-- ===================================================================
-             REALM NAVIGATION
+             BRASS NAUTICAL NAVIGATION STRIP
              =================================================================== -->
         <nav class="dev-subnav" aria-label="Developer Navigation">
             <a href="/developer/dashboard" class="dev-nav-item">
-                <span>OVERVIEW</span>
+                <span>COMMAND CHAMBER</span>
             </a>
             <a href="/developer/sellers/applications" class="dev-nav-item">
-                <span>SELLER APPLICATIONS</span>
+                <span>MERCHANT CHARTERS</span>
                 <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
                     <span class="dev-nav-badge-pending"><%= pendingSellersCount %></span>
                 <% } %>
             </a>
             <a href="/developer/people" class="dev-nav-item active">
-                <span>PEOPLE</span>
+                <span>THE PEOPLE</span>
             </a>
         </nav>
 
@@ -101,48 +104,60 @@
                 <table class="dev-table" id="tableBuyerOrders">
                     <thead>
                         <tr>
-                            <th>ORDER ID</th>
+                            <th>VOYAGE / ORDER ID</th>
                             <th>DATE</th>
-                            <th>ITEMS PURCHASED</th>
-                            <th>QTY</th>
-                            <th>TOTAL</th>
+                            <th>CARGO MANIFEST ITEMS</th>
+                            <th>TOTAL DOUBLOONS</th>
                             <th>ORDER STATUS</th>
                             <th>PAYMENT STATUS</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% orders.forEach(order => { %>
-                            <% const totalQty = Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + (item.quantity || 1), 0) : 0; %>
                             <tr>
                                 <td>
-                                    <span class="dev-table-cell-mono" style="font-weight: 600; color: var(--dev-gold-bright);"><%= order._id %></span>
+                                    <span class="dev-table-cell-mono" style="color: var(--dev-brass-bright); font-weight: 700;"><%= order._id %></span>
                                 </td>
-                                <td><%= new Date(order.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
                                 <td>
-                                    <% if (Array.isArray(order.items) && order.items.length > 0) { %>
+                                    <%= new Date(order.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %>
+                                </td>
+                                <td>
+                                    <% if (order.items && order.items.length > 0) { %>
                                         <div style="display: flex; flex-direction: column; gap: 4px;">
                                             <% order.items.forEach(item => { %>
-                                                <div style="font-size: 0.8rem;">
-                                                    <span style="color: var(--dev-parchment); font-weight: 500;"><%= item.name %></span>
-                                                    <span style="color: var(--dev-muted);"> &times; <%= item.quantity %> (<%= item.price %> Dbl)</span>
+                                                <div style="font-size: 0.82rem;">
+                                                    <span class="dev-table-cell-bold"><%= item.name %></span>
+                                                    <span style="color: var(--dev-muted);"> &times; <%= item.quantity %></span>
+                                                    <span style="color: var(--dev-brass-bright);">(<%= item.lineTotal || (item.price * item.quantity) %> Doubloons)</span>
                                                 </div>
                                             <% }); %>
                                         </div>
                                     <% } else { %>
-                                        <span style="color: var(--dev-muted);">No items recorded</span>
+                                        <span style="color: var(--dev-muted);">No recorded items</span>
                                     <% } %>
                                 </td>
                                 <td>
-                                    <span class="dev-table-cell-mono"><%= totalQty %></span>
+                                    <span class="dev-table-cell-bold" style="color: var(--dev-gold-bright); font-size: 0.92rem;"><%= order.totalDoubloons || order.subtotal || 0 %> Doubloons</span>
                                 </td>
                                 <td>
-                                    <span class="dev-table-cell-brass"><%= order.totalDoubloons || order.subtotal || 0 %> Doubloons</span>
+                                    <% if (order.status === 'delivered') { %>
+                                        <span class="dev-status-tag tag-delivered">Delivered</span>
+                                    <% } else if (order.status === 'processing') { %>
+                                        <span class="dev-status-tag tag-pending">processing</span>
+                                    <% } else if (order.status === 'cancelled') { %>
+                                        <span class="dev-status-tag tag-rejected">Cancelled</span>
+                                    <% } else { %>
+                                        <span class="dev-status-tag"><%= order.status || 'Pending' %></span>
+                                    <% } %>
                                 </td>
                                 <td>
-                                    <span class="dev-status-tag tag-<%= order.status || 'pending' %>"><%= order.status || 'pending' %></span>
-                                </td>
-                                <td>
-                                    <span class="dev-status-tag tag-<%= order.paymentStatus || 'pending' %>"><%= order.paymentStatus || 'pending' %></span>
+                                    <% if (order.paymentStatus === 'paid') { %>
+                                        <span class="dev-status-tag tag-approved">paid</span>
+                                    <% } else if (order.paymentStatus === 'failed') { %>
+                                        <span class="dev-status-tag tag-rejected">Failed</span>
+                                    <% } else { %>
+                                        <span class="dev-status-tag"><%= order.paymentStatus || 'Unpaid' %></span>
+                                    <% } %>
                                 </td>
                             </tr>
                         <% }); %>
@@ -151,8 +166,8 @@
             </div>
         <% } else { %>
             <div class="dev-empty-state">
-                <span class="dev-empty-title">No Purchases Recorded</span>
-                <p class="dev-empty-desc">This buyer has not completed any voyages or purchases in the marketplace yet.</p>
+                <span class="dev-empty-title">No Recorded Purchases</span>
+                <p class="dev-empty-desc">This explorer has not yet concluded any trade voyages or orders across the archipelago.</p>
             </div>
         <% } %>
 

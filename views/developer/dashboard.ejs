@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= page_title || "PIRATE-CIV // DEVELOPER REALM" %></title>
+    <title><%= page_title || "PIRATE-CIV // THE DEVELOPER REALM" %></title>
 
     <!-- Google Fonts: Cinzel & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Developer Realm Stylesheet -->
-    <link rel="stylesheet" href="/css/developer.css?v=dev_realm_v1">
+    <link rel="stylesheet" href="/css/developer.css?v=cinematic_chamber_v2">
 </head>
 
 <body class="dev-body">
@@ -20,12 +20,15 @@
     <div class="dev-container">
 
         <!-- ===================================================================
-             TOP COMMAND BAR
+             TOP COMMAND BAR (COMMAND DECK)
              =================================================================== -->
         <header class="dev-topbar" role="banner">
             <div class="dev-branding">
-                <span class="dev-realm-tag">PIRATE-CIV // SOVEREIGN ARCHITECT</span>
-                <h1 class="dev-title-main">DEVELOPER REALM</h1>
+                <span class="dev-realm-tag">PIRATE-CIV // THE HIDDEN CHAMBER</span>
+                <h1 class="dev-title-main">
+                    <span>DEVELOPER REALM</span>
+                    <span class="dev-title-subtext">SOVEREIGN ARCHITECT</span>
+                </h1>
             </div>
 
             <div class="dev-actions">
@@ -35,48 +38,49 @@
                 </div>
 
                 <a href="/home" class="dev-btn" id="btnReturnSeaChart">
-                    <span>RETURN TO SEA CHART</span>
+                    <span>⚓ RETURN TO SEA CHART</span>
                 </a>
 
                 <a href="/logout" class="dev-btn dev-btn-disconnect" id="btnDevDisconnect">
-                    <span>DISCONNECT</span>
+                    <span>⏻ DISCONNECT</span>
                 </a>
             </div>
         </header>
 
         <!-- ===================================================================
-             REALM NAVIGATION
+             BRASS NAUTICAL NAVIGATION STRIP
              =================================================================== -->
         <nav class="dev-subnav" aria-label="Developer Navigation">
             <a href="/developer/dashboard" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
-                <span>OVERVIEW</span>
+                <span>COMMAND CHAMBER</span>
             </a>
             <a href="/developer/sellers/applications" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'active' : '' %>" id="navDevApplications">
-                <span>SELLER APPLICATIONS</span>
+                <span>MERCHANT CHARTERS</span>
                 <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
                     <span class="dev-nav-badge-pending" id="badgePendingCount"><%= pendingSellersCount %></span>
                 <% } %>
             </a>
             <a href="/developer/people" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'active' : '' %>" id="navDevPeople">
-                <span>PEOPLE</span>
+                <span>THE PEOPLE</span>
             </a>
         </nav>
 
         <!-- ===================================================================
-             DEVELOPER HERO BANNER
+             MAIN HERO / COMMAND CHAMBER INTRO
              =================================================================== -->
         <section class="dev-hero-section" aria-labelledby="devHeroHeading">
+            <div class="dev-hero-watermark" aria-hidden="true"></div>
             <span class="dev-hero-kicker">THE DEVELOPER'S CHAMBER</span>
             <h2 class="dev-hero-heading" id="devHeroHeading">The Command Chamber Behind the Realm</h2>
             <p class="dev-hero-desc">
-                Welcome, Architect. You stand in the subterranean control chamber of Pirate-Civ.
-                Every sea chart, cargo ledger, merchant charter, and cipher engine in the archipelago originates here.
-                This is your sovereign workspace.
+                "The sea charts, merchant charters and cargo ledgers of Pirate-Civ converge here."
+                Welcome, Architect. You stand within the subterranean sovereign war room beneath the citadel.
+                Every trade manifest, storehouse cache, and cryptographic cipher in the archipelago originates from this chamber.
             </p>
         </section>
 
         <!-- ===================================================================
-             V1 SOVEREIGN AUTHORITIES: SUMMARY PANELS
+             V1 SOVEREIGN INSTRUMENTS: SUMMARY PANELS
              =================================================================== -->
         <h3 class="dev-grid-title">MARKETPLACE OVERSIGHT & CHARTERS</h3>
 

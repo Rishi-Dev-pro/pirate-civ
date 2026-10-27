@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= page_title || "PIRATE-CIV // SELLER PRODUCTS" %></title>
+    <title><%= page_title || "PIRATE-CIV // MERCHANT CARGO MANIFEST" %></title>
 
     <!-- Google Fonts: Cinzel & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Developer Realm Stylesheet -->
-    <link rel="stylesheet" href="/css/developer.css?v=dev_realm_v1">
+    <link rel="stylesheet" href="/css/developer.css?v=cinematic_chamber_v2">
 </head>
 
 <body class="dev-body">
@@ -20,12 +20,15 @@
     <div class="dev-container">
 
         <!-- ===================================================================
-             TOP COMMAND BAR
+             TOP COMMAND BAR (COMMAND DECK)
              =================================================================== -->
         <header class="dev-topbar" role="banner">
             <div class="dev-branding">
-                <span class="dev-realm-tag">PIRATE-CIV // SOVEREIGN ARCHITECT</span>
-                <h1 class="dev-title-main">DEVELOPER REALM</h1>
+                <span class="dev-realm-tag">PIRATE-CIV // THE HIDDEN CHAMBER</span>
+                <h1 class="dev-title-main">
+                    <span>DEVELOPER REALM</span>
+                    <span class="dev-title-subtext">SOVEREIGN ARCHITECT</span>
+                </h1>
             </div>
 
             <div class="dev-actions">
@@ -35,30 +38,30 @@
                 </div>
 
                 <a href="/home" class="dev-btn" id="btnReturnSeaChart">
-                    <span>RETURN TO SEA CHART</span>
+                    <span>⚓ RETURN TO SEA CHART</span>
                 </a>
 
                 <a href="/logout" class="dev-btn dev-btn-disconnect" id="btnDevDisconnect">
-                    <span>DISCONNECT</span>
+                    <span>⏻ DISCONNECT</span>
                 </a>
             </div>
         </header>
 
         <!-- ===================================================================
-             REALM NAVIGATION
+             BRASS NAUTICAL NAVIGATION STRIP
              =================================================================== -->
         <nav class="dev-subnav" aria-label="Developer Navigation">
             <a href="/developer/dashboard" class="dev-nav-item">
-                <span>OVERVIEW</span>
+                <span>COMMAND CHAMBER</span>
             </a>
             <a href="/developer/sellers/applications" class="dev-nav-item">
-                <span>SELLER APPLICATIONS</span>
+                <span>MERCHANT CHARTERS</span>
                 <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
                     <span class="dev-nav-badge-pending"><%= pendingSellersCount %></span>
                 <% } %>
             </a>
             <a href="/developer/people" class="dev-nav-item active">
-                <span>PEOPLE</span>
+                <span>THE PEOPLE</span>
             </a>
         </nav>
 
@@ -101,45 +104,53 @@
                 <table class="dev-table" id="tableSellerProducts">
                     <thead>
                         <tr>
-                            <th>PRODUCT</th>
-                            <th>PRICE</th>
-                            <th>STOCK</th>
-                            <th>ISLAND</th>
+                            <th>CARGO WARES</th>
+                            <th>ISLAND / PORT</th>
                             <th>CATEGORY</th>
+                            <th>PRICE</th>
+                            <th>STOCK LEVEL</th>
                             <th>AVAILABILITY</th>
                             <th>LISTED DATE</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <% products.forEach(prod => { %>
+                        <% products.forEach(product => { %>
                             <tr>
                                 <td>
                                     <div style="display: flex; align-items: center; gap: 12px;">
-                                        <% if (prod.image) { %>
-                                            <img src="<%= prod.image %>" alt="<%= prod.name %>" style="width: 36px; height: 36px; object-fit: contain; border-radius: 3px; background: rgba(0,0,0,0.5); border: 1px solid var(--dev-border-subtle);">
+                                        <% if (product.image) { %>
+                                            <img src="<%= product.image %>" alt="" style="width: 38px; height: 38px; border-radius: 4px; object-fit: cover; border: 1px solid var(--dev-border-subtle);">
                                         <% } %>
                                         <div>
-                                            <span class="dev-table-cell-bold"><%= prod.name %></span>
-                                            <div style="font-size: 0.72rem; color: var(--dev-muted); font-family: monospace;"><%= prod.slug %></div>
+                                            <span class="dev-table-cell-bold"><%= product.name %></span>
+                                            <% if (product.slug) { %>
+                                                <div class="dev-table-cell-mono" style="font-size: 0.72rem; color: var(--dev-muted);"><%= product.slug %></div>
+                                            <% } %>
                                         </div>
                                     </div>
                                 </td>
                                 <td>
-                                    <span class="dev-table-cell-brass"><%= prod.price %> Doubloons</span>
+                                    <span class="dev-table-cell-brass"><%= product.island || "Unspecified" %></span>
                                 </td>
                                 <td>
-                                    <span class="dev-table-cell-mono <%= prod.stock <= 0 ? 'text-danger' : '' %>"><%= prod.stock %> units</span>
+                                    <span style="text-transform: capitalize;"><%= product.category || "General" %></span>
                                 </td>
-                                <td><%= prod.island %></td>
-                                <td><%= prod.category %></td>
                                 <td>
-                                    <% if (prod.isAvailable) { %>
+                                    <span class="dev-table-cell-bold" style="color: var(--dev-gold-bright);"><%= product.price %> Doubloons</span>
+                                </td>
+                                <td>
+                                    <span><%= product.stock %> units</span>
+                                </td>
+                                <td>
+                                    <% if (product.isAvailable) { %>
                                         <span class="dev-status-tag tag-approved">Available</span>
                                     <% } else { %>
-                                        <span class="dev-status-tag tag-rejected">Unlisted</span>
+                                        <span class="dev-status-tag tag-rejected">Depleted</span>
                                     <% } %>
                                 </td>
-                                <td><%= new Date(prod.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
+                                <td>
+                                    <%= new Date(product.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %>
+                                </td>
                             </tr>
                         <% }); %>
                     </tbody>
@@ -147,8 +158,8 @@
             </div>
         <% } else { %>
             <div class="dev-empty-state">
-                <span class="dev-empty-title">No Products Listed</span>
-                <p class="dev-empty-desc">This merchant currently has no wares in their warehouse inventory.</p>
+                <span class="dev-empty-title">No Wares Registered in Merchant Hold</span>
+                <p class="dev-empty-desc">This merchant currently has no active products listed in the marketplace ledger.</p>
             </div>
         <% } %>
 

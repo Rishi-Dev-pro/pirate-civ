@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= page_title || "PIRATE-CIV // SELLER CHARTERS" %></title>
+    <title><%= page_title || "PIRATE-CIV // MERCHANT CHARTER REGISTRY" %></title>
 
     <!-- Google Fonts: Cinzel & Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -12,7 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- Developer Realm Stylesheet -->
-    <link rel="stylesheet" href="/css/developer.css?v=dev_realm_v1">
+    <link rel="stylesheet" href="/css/developer.css?v=cinematic_chamber_v2">
 </head>
 
 <body class="dev-body">
@@ -20,12 +20,15 @@
     <div class="dev-container">
 
         <!-- ===================================================================
-             TOP COMMAND BAR
+             TOP COMMAND BAR (COMMAND DECK)
              =================================================================== -->
         <header class="dev-topbar" role="banner">
             <div class="dev-branding">
-                <span class="dev-realm-tag">PIRATE-CIV // SOVEREIGN ARCHITECT</span>
-                <h1 class="dev-title-main">DEVELOPER REALM</h1>
+                <span class="dev-realm-tag">PIRATE-CIV // THE HIDDEN CHAMBER</span>
+                <h1 class="dev-title-main">
+                    <span>DEVELOPER REALM</span>
+                    <span class="dev-title-subtext">SOVEREIGN ARCHITECT</span>
+                </h1>
             </div>
 
             <div class="dev-actions">
@@ -35,41 +38,41 @@
                 </div>
 
                 <a href="/home" class="dev-btn" id="btnReturnSeaChart">
-                    <span>RETURN TO SEA CHART</span>
+                    <span>⚓ RETURN TO SEA CHART</span>
                 </a>
 
                 <a href="/logout" class="dev-btn dev-btn-disconnect" id="btnDevDisconnect">
-                    <span>DISCONNECT</span>
+                    <span>⏻ DISCONNECT</span>
                 </a>
             </div>
         </header>
 
         <!-- ===================================================================
-             REALM NAVIGATION
+             BRASS NAUTICAL NAVIGATION STRIP
              =================================================================== -->
         <nav class="dev-subnav" aria-label="Developer Navigation">
             <a href="/developer/dashboard" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
-                <span>OVERVIEW</span>
+                <span>COMMAND CHAMBER</span>
             </a>
             <a href="/developer/sellers/applications" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'active' : '' %>" id="navDevApplications">
-                <span>SELLER APPLICATIONS</span>
+                <span>MERCHANT CHARTERS</span>
                 <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
                     <span class="dev-nav-badge-pending" id="badgePendingCount"><%= pendingSellersCount %></span>
                 <% } %>
             </a>
             <a href="/developer/people" class="dev-nav-item <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'active' : '' %>" id="navDevPeople">
-                <span>PEOPLE</span>
+                <span>THE PEOPLE</span>
             </a>
         </nav>
 
         <!-- ===================================================================
-             HEADER & NOTICES
+             ADMIRALTY CHARTER BOARD HEADER & NOTICES
              =================================================================== -->
         <section class="dev-section-header">
             <div>
                 <span class="dev-hero-kicker">ADMIRALTY CHARTER BOARD</span>
-                <h2 class="dev-section-title">Seller Charter Applications</h2>
-                <p class="dev-section-desc">Review and decide on merchant applications requesting sovereign trade charter rights in Pirate-Civ.</p>
+                <h2 class="dev-section-title">Merchant Charter Applications</h2>
+                <p class="dev-section-desc">Review and decide on merchant applications requesting sovereign trade charter rights across the Pirate-Civ archipelago.</p>
             </div>
         </section>
 
@@ -86,7 +89,7 @@
         <% } %>
 
         <!-- ===================================================================
-             PENDING APPLICATIONS (PRIMARY ACTION)
+             PENDING CHARTER APPLICATIONS (PRIMARY ACTION)
              =================================================================== -->
         <div class="dev-block-header">
             <h3 class="dev-grid-title" style="margin: 0;">
@@ -100,26 +103,26 @@
                 <table class="dev-table" id="tablePendingApplications">
                     <thead>
                         <tr>
-                            <th>SELLER</th>
+                            <th>CAPTAIN / SELLER</th>
                             <th>EMAIL</th>
                             <th>STORE / FLEET</th>
                             <th>HOME ISLAND</th>
                             <th>APPLIED DATE</th>
                             <th>STATUS</th>
-                            <th style="text-align: right;">DECISION</th>
+                            <th style="text-align: right;">ADMIRALTY DECISION</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% pendingApplications.forEach(seller => { %>
                             <tr id="app-row-<%= seller._id %>">
                                 <td>
-                                    <span class="dev-table-cell-bold"><%= seller.name %></span>
+                                    <span class="dev-table-cell-bold">⚓ <%= seller.name %></span>
                                 </td>
                                 <td>
                                     <span class="dev-table-cell-mono"><%= seller.email %></span>
                                 </td>
                                 <td>
-                                    <span class="dev-table-cell-brass"><%= seller.storeName || "Unspecified" %></span>
+                                    <span class="dev-table-cell-brass"><%= seller.storeName || "Unspecified Fleet" %></span>
                                 </td>
                                 <td><%= seller.homeIsland || "Astrolabe" %></td>
                                 <td><%= new Date(seller.createdAt).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" }) %></td>
@@ -131,13 +134,13 @@
                                         <!-- APPROVE FORM -->
                                         <form method="POST" action="/developer/sellers/<%= seller._id %>/approve" style="display: inline;">
                                             <button type="submit" class="dev-btn dev-btn-approve" id="btnApprove-<%= seller._id %>">
-                                                <span>APPROVE</span>
+                                                <span>⚓ APPROVE</span>
                                             </button>
                                         </form>
 
                                         <!-- REJECT FORM TRIGGER -->
                                         <button type="button" class="dev-btn dev-btn-reject" onclick="openRejectDialog('<%= seller._id %>', '<%= seller.name %>')" id="btnRejectTrigger-<%= seller._id %>">
-                                            <span>REJECT</span>
+                                            <span>✕ REJECT</span>
                                         </button>
                                     </div>
                                 </td>
@@ -149,14 +152,14 @@
         <% } else { %>
             <div class="dev-empty-state" id="emptyPendingApplications">
                 <span class="dev-empty-title">No Pending Charter Requests</span>
-                <p class="dev-empty-desc">All merchant applications have been reviewed. The Admiralty charter desk is up to date.</p>
+                <p class="dev-empty-desc">All merchant applications have been reviewed. The Admiralty charter desk is currently up to date.</p>
             </div>
         <% } %>
 
         <!-- ===================================================================
              RESOLVED CHARTERS (APPROVED & REJECTED HISTORY)
              =================================================================== -->
-        <div class="dev-block-header" style="margin-top: 48px;">
+        <div class="dev-block-header" style="margin-top: 52px;">
             <h3 class="dev-grid-title" style="margin: 0;">
                 HISTORICAL CHARTER DECISIONS
                 <span class="dev-count-tag">(<%= resolvedApplications.length %>)</span>
@@ -210,7 +213,7 @@
             </div>
         <% } else { %>
             <div class="dev-empty-state">
-                <p class="dev-empty-desc">No past charter decisions recorded.</p>
+                <p class="dev-empty-desc">No past charter decisions recorded in the Admiralty archives.</p>
             </div>
         <% } %>
 

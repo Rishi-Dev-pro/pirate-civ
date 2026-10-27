@@ -19,6 +19,12 @@
 ---
 
 ## 🎯 2. Active State Summary
+* **Developer Realm V1 — Cinematic Sovereign Chamber Overhaul (`public/css/developer.css`, `views/developer/*.ejs`, `public/images/developer-chamber-bg.jpg`):**
+  - Completed visual redesign transforming the Developer Realm into the sovereign command chamber beneath the Pirate-Civ citadel.
+  - Implemented bespoke 16:9 night fortress chamber background (`/images/developer-chamber-bg.jpg`), multi-layer obsidian/navy vignettes, brass corner brackets, chart navigation rail (`◆ COMMAND CHAMBER`, `◆ MERCHANT CHARTERS`, `◆ THE PEOPLE`), ancient command instruments, and Admiralty manifests.
+  - 100% preservation of all routes, controllers, middleware, security boundaries, and element IDs.
+  - Verification: 20/20 in `test_developer_realm_v1.js`, 100% in `test_developer_realm.js`, 72/72 in `test_buyer_commerce_flow.js`, and verified live in browser via CDP subagent.
+
 * **Developer Realm V1 Authorities (`controller/developer.js`, `routes/web.js`, `views/developer/*.ejs`, `public/css/developer.css`, `models/user.js`, `middleware/roles.js`):**
   - **Seller Charter Approval Lifecycle (`models/user.js`, `controller/auth.js`, `controller/googleAuth.js`, `middleware/roles.js`):**
     - Added `sellerStatus` enum (`pending`, `approved`, `rejected`, `null`) and `rejectionReason` to unified `User` model.
