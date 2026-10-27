@@ -253,7 +253,7 @@ export const renderDeveloperSellerProducts = async (req, res) => {
         return res.render("developer/seller-products", {
             page_title: `PIRATE-CIV // ${seller.storeName || seller.name} WAREHOUSE`,
             user: req.user,
-            activeNav: "marketplace",
+            activeNav: "people",
             pendingSellersCount,
             seller,
             products
@@ -290,7 +290,7 @@ export const renderBuyerPurchases = async (req, res) => {
         return res.render("developer/buyer-orders", {
             page_title: `PIRATE-CIV // ${buyer.name} VOYAGE LEDGER`,
             user: req.user,
-            activeNav: "marketplace",
+            activeNav: "people",
             pendingSellersCount,
             buyer,
             orders

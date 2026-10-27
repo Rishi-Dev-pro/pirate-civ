@@ -77,12 +77,12 @@
                     <div class="dev-rail-top-helm" aria-hidden="true"></div>
 
                     <div class="dev-rail-nav-group">
-                        <a href="/developer/dashboard" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
+                        <a href="/developer/dashboard" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'is-active active' : '' %>" <%- (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'aria-current="page"' : '' %>>
                             <span class="dev-rail-icon">☸</span>
                             <span class="dev-rail-label">COMMAND CHAMBER</span>
                         </a>
 
-                        <a href="/developer/sellers/applications" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'active' : '' %>" id="navDevApplications">
+                        <a href="/developer/sellers/applications" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'is-active active' : '' %>" id="navDevApplications" <%- (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'aria-current="page"' : '' %>>
                             <span class="dev-rail-icon">📜</span>
                             <span class="dev-rail-label">MERCHANT CHARTERS</span>
                             <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
@@ -90,12 +90,12 @@
                             <% } %>
                         </a>
 
-                        <a href="/developer/people" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'active' : '' %>" id="navDevPeople">
+                        <a href="/developer/people" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'is-active active' : '' %>" id="navDevPeople" <%- (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'aria-current="page"' : '' %>>
                             <span class="dev-rail-icon">👥</span>
                             <span class="dev-rail-label">THE PEOPLE</span>
                         </a>
 
-                        <a href="/developer/marketplace" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'active' : '' %>" id="navDevMarketplace">
+                        <a href="/developer/marketplace" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'is-active active' : '' %>" id="navDevMarketplace" <%- (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'aria-current="page"' : '' %>>
                             <span class="dev-rail-icon">🏛</span>
                             <span class="dev-rail-label">MARKETPLACE</span>
                         </a>
@@ -158,12 +158,12 @@
                 </section>
 
                 <!-- INTERACTIVE TAB SWITCHER -->
-                <div class="dev-ledger-tabs" role="tablist" style="margin-bottom: 24px;">
-                    <button type="button" class="dev-tab-btn <%= (typeof activeTab === 'undefined' || activeTab === 'buyers') ? 'active' : '' %>" id="tabPeopleBuyers" onclick="switchPeopleTab('buyers')">
+                <div class="dev-ledger-tabs" role="tablist" aria-label="People Census Ledger Views" style="margin-bottom: 24px;">
+                    <button type="button" role="tab" aria-selected="<%= (typeof activeTab === 'undefined' || activeTab === 'buyers') ? 'true' : 'false' %>" aria-controls="deckPeopleBuyers" class="dev-tab-btn dev-local-tab <%= (typeof activeTab === 'undefined' || activeTab === 'buyers') ? 'is-active active' : '' %>" id="tabPeopleBuyers" onclick="switchPeopleTab('buyers')">
                         <span>👤 BUYERS / EXPLORERS</span>
                         <span class="dev-tab-count"><%= buyers ? buyers.length : 0 %></span>
                     </button>
-                    <button type="button" class="dev-tab-btn <%= (typeof activeTab !== 'undefined' && activeTab === 'sellers') ? 'active' : '' %>" id="tabPeopleSellers" onclick="switchPeopleTab('sellers')">
+                    <button type="button" role="tab" aria-selected="<%= (typeof activeTab !== 'undefined' && activeTab === 'sellers') ? 'true' : 'false' %>" aria-controls="deckPeopleSellers" class="dev-tab-btn dev-local-tab <%= (typeof activeTab !== 'undefined' && activeTab === 'sellers') ? 'is-active active' : '' %>" id="tabPeopleSellers" onclick="switchPeopleTab('sellers')">
                         <span>⚓ SELLERS / MERCHANTS</span>
                         <span class="dev-tab-count"><%= sellers ? sellers.length : 0 %></span>
                     </button>
@@ -307,13 +307,17 @@
             const deckS = document.getElementById('deckPeopleSellers');
 
             if (type === 'buyers') {
-                tabB.classList.add('active');
-                tabS.classList.remove('active');
+                tabB.classList.add('is-active', 'active');
+                tabB.setAttribute('aria-selected', 'true');
+                tabS.classList.remove('is-active', 'active');
+                tabS.setAttribute('aria-selected', 'false');
                 deckB.style.display = 'block';
                 deckS.style.display = 'none';
             } else {
-                tabS.classList.add('active');
-                tabB.classList.remove('active');
+                tabS.classList.add('is-active', 'active');
+                tabS.setAttribute('aria-selected', 'true');
+                tabB.classList.remove('is-active', 'active');
+                tabB.setAttribute('aria-selected', 'false');
                 deckS.style.display = 'block';
                 deckB.style.display = 'none';
             }

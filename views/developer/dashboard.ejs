@@ -87,12 +87,12 @@
                     </div>
 
                     <div class="dev-rail-nav-group">
-                        <a href="/developer/dashboard" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
+                        <a href="/developer/dashboard" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'is-active active' : '' %>" <%- (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'aria-current="page"' : '' %>>
                             <span class="dev-rail-icon">☸</span>
                             <span class="dev-rail-label">COMMAND CHAMBER</span>
                         </a>
 
-                        <a href="/developer/sellers/applications" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'active' : '' %>" id="navDevApplications">
+                        <a href="/developer/sellers/applications" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'is-active active' : '' %>" id="navDevApplications" <%- (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'aria-current="page"' : '' %>>
                             <span class="dev-rail-icon">📜</span>
                             <span class="dev-rail-label">MERCHANT CHARTERS</span>
                             <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
@@ -100,12 +100,12 @@
                             <% } %>
                         </a>
 
-                        <a href="/developer/people" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'active' : '' %>" id="navDevPeople">
+                        <a href="/developer/people" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'is-active active' : '' %>" id="navDevPeople" <%- (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'aria-current="page"' : '' %>>
                             <span class="dev-rail-icon">👥</span>
                             <span class="dev-rail-label">THE PEOPLE</span>
                         </a>
 
-                        <a href="/developer/marketplace" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'active' : '' %>" id="navDevMarketplace">
+                        <a href="/developer/marketplace" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'is-active active' : '' %>" id="navDevMarketplace" <%- (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'aria-current="page"' : '' %>>
                             <span class="dev-rail-icon">🏛</span>
                             <span class="dev-rail-label">MARKETPLACE</span>
                         </a>
@@ -162,50 +162,24 @@
             <main class="dev-command-realm" role="main">
 
                 <!-- -----------------------------------------------------------
-                     UPPER DECK: CAPTAIN'S WAR TABLE & SEA CHART MAP
+                     UPPER DECK: ATMOSPHERIC INTRODUCTION + COMMAND OVERVIEW
                      ----------------------------------------------------------- -->
-                <section class="dev-war-table-stage" aria-label="Archipelago Command Map and Overview">
-                    <!-- Physical Unfurled Sea Chart Map on Wooden War Table (No Box Border!) -->
-                    <div class="dev-map-table-surface">
-                        <div class="dev-map-artifact-container">
-                            <img src="/images/developer/maps/archipelago-parchment-map.png" alt="Archipelago Command Map" class="dev-map-image">
-
-                            <!-- Live Metric Brass Markers Overlaid on Sea Chart -->
-                            <div class="dev-map-marker marker-merchants" title="Active Registered Merchants">
-                                <span class="dev-marker-icon">⚓</span>
-                                <span class="dev-marker-title">MERCHANTS</span>
-                                <span class="dev-marker-count"><%= (typeof stats !== 'undefined' && stats.sellersCount) || 0 %></span>
-                            </div>
-
-                            <div class="dev-map-marker marker-products" title="Provisions & Relics in Island Vaults">
-                                <span class="dev-marker-icon">📦</span>
-                                <span class="dev-marker-title">PRODUCTS</span>
-                                <span class="dev-marker-count"><%= (typeof stats !== 'undefined' && stats.productsCount) || 0 %></span>
-                            </div>
-
-                            <div class="dev-map-marker marker-orders" title="Active Voyages & Dispatched Cargo">
-                                <span class="dev-marker-icon">🧭</span>
-                                <span class="dev-marker-title">ORDERS</span>
-                                <span class="dev-marker-count"><%= (typeof stats !== 'undefined' && stats.ordersCount) || 0 %></span>
-                            </div>
-
-                            <!-- Decorative Sea Chart Table Artifacts -->
-                            <div class="dev-map-compass-artifact" aria-hidden="true">
-                                <img src="/images/developer/decorations/mariner-compass.png" alt="" class="dev-artifact-compass">
-                            </div>
-                            <div class="dev-map-lantern-artifact" aria-hidden="true">
-                                <img src="/images/developer/decorations/brass-lantern.png" alt="" class="dev-artifact-lantern">
-                            </div>
-                            <div class="dev-map-books-artifact" aria-hidden="true">
-                                <img src="/images/developer/decorations/books-candle.png" alt="" class="dev-artifact-books">
-                            </div>
-                            <div class="dev-map-spyglass-artifact" aria-hidden="true">
-                                <img src="/images/developer/decorations/spyglass.png" alt="" class="dev-artifact-spyglass">
-                            </div>
+                <section class="dev-command-hero" aria-labelledby="chamberHeading">
+                    <div class="dev-command-hero-inner">
+                        <div class="dev-hero-kicker-row">
+                            <span class="dev-hero-kicker">SOVEREIGN ARCHITECT ARCHIVE</span>
+                            <span class="dev-hero-coords">COORDINATES // 18°28'N 64°56'W // CRYPTOGRAPHIC VAULT</span>
                         </div>
+                        <h2 class="dev-chamber-title" id="chamberHeading">COMMAND CHAMBER</h2>
+                        <p class="dev-chamber-lead">
+                            The sovereign engineering and administrative command war room of Pirate-Civ. Oversee charter ratifications, trade manifest ledgers, seafarer census registries, and runtime foundation modules across the archipelago.
+                        </p>
                     </div>
+                </section>
 
-                    <!-- Pinned Right: Realm Overview Curled Parchment Scroll -->
+                <!-- REAL OPERATIONAL OVERVIEW & FRAMED ENVIRONMENTAL CHART -->
+                <section class="dev-war-table-stage" aria-label="Archipelago Operational Overview and Navigational Chart">
+                    <!-- Left: REAL OPERATIONAL INFORMATION (Realm Overview Ledger) -->
                     <aside class="dev-realm-overview-parchment" aria-label="Realm Overview Ledger">
                         <div class="dev-overview-scroll-inner">
                             <div class="dev-overview-header">
@@ -266,10 +240,25 @@
                             </ul>
 
                             <div class="dev-overview-footer-text">
-                                Live overview of the archipelago. Monitor merchant charters, trade activity and the flow of the Pirate-Civ economy from this chamber.
+                                Live operational telemetries of the archipelago. Monitor merchant charters, trade activity, and economic flow from this chamber.
                             </div>
                         </div>
                     </aside>
+
+                    <!-- Right: Secondary Environmental Chart Panel (Framed, Contained, No Collage) -->
+                    <div class="dev-framed-chart-panel" aria-label="Mounted Archipelago Navigational Chart">
+                        <div class="dev-chart-frame-header">
+                            <span class="dev-chart-frame-glyph">⚓</span>
+                            <span class="dev-chart-frame-title">ARCHIPELAGO SEA CHART</span>
+                            <span class="dev-chart-frame-tag">SECTOR 7</span>
+                        </div>
+                        <div class="dev-chart-frame-viewport">
+                            <img src="/images/developer/maps/archipelago-parchment-map.png" alt="Archipelago Sea Chart" class="dev-mounted-chart-img">
+                        </div>
+                        <div class="dev-chart-frame-footer">
+                            <span>SOVEREIGN ARCHIPELAGO REGISTER // SIX TRADE ISLANDS</span>
+                        </div>
+                    </div>
                 </section>
 
                 <!-- -----------------------------------------------------------
@@ -364,12 +353,12 @@
                         </div>
 
                         <!-- Census Switcher Tabs -->
-                        <div class="dev-ledger-tabs" role="tablist">
-                            <button type="button" class="dev-tab-btn active" id="tabBuyers" onclick="switchPeopleTab('buyers')">
+                        <div class="dev-ledger-tabs" role="tablist" aria-label="People Census Ledger Views">
+                            <button type="button" role="tab" aria-selected="true" aria-controls="deckBuyers" class="dev-tab-btn dev-local-tab is-active active" id="tabBuyers" onclick="switchPeopleTab('buyers')">
                                 <span>BUYERS</span>
                                 <span class="dev-tab-count"><%= (typeof stats !== 'undefined' && stats.buyersCount) || 0 %></span>
                             </button>
-                            <button type="button" class="dev-tab-btn" id="tabSellers" onclick="switchPeopleTab('sellers')">
+                            <button type="button" role="tab" aria-selected="false" aria-controls="deckSellers" class="dev-tab-btn dev-local-tab" id="tabSellers" onclick="switchPeopleTab('sellers')">
                                 <span>SELLERS</span>
                                 <span class="dev-tab-count"><%= (typeof stats !== 'undefined' && stats.sellersCount) || 0 %></span>
                             </button>
@@ -467,12 +456,12 @@
                         </div>
 
                         <!-- Marketplace Switcher Tabs -->
-                        <div class="dev-ledger-tabs" role="tablist">
-                            <button type="button" class="dev-tab-btn active" id="tabProducts" onclick="switchMarketplaceTab('products')">
+                        <div class="dev-ledger-tabs" role="tablist" aria-label="Marketplace Manifest Views">
+                            <button type="button" role="tab" aria-selected="true" aria-controls="deckProducts" class="dev-tab-btn dev-local-tab is-active active" id="tabProducts" onclick="switchMarketplaceTab('products')">
                                 <span>RECENT PRODUCTS</span>
                                 <span class="dev-tab-count"><%= (typeof stats !== 'undefined' && stats.productsCount) || 0 %></span>
                             </button>
-                            <button type="button" class="dev-tab-btn" id="tabOrders" onclick="switchMarketplaceTab('orders')">
+                            <button type="button" role="tab" aria-selected="false" aria-controls="deckOrders" class="dev-tab-btn dev-local-tab" id="tabOrders" onclick="switchMarketplaceTab('orders')">
                                 <span>RECENT ORDERS</span>
                                 <span class="dev-tab-count"><%= (typeof stats !== 'undefined' && stats.ordersCount) || 0 %></span>
                             </button>
@@ -727,13 +716,17 @@
             const deckS = document.getElementById('deckSellers');
 
             if (type === 'buyers') {
-                tabB.classList.add('active');
-                tabS.classList.remove('active');
+                tabB.classList.add('is-active', 'active');
+                tabB.setAttribute('aria-selected', 'true');
+                tabS.classList.remove('is-active', 'active');
+                tabS.setAttribute('aria-selected', 'false');
                 deckB.style.display = 'block';
                 deckS.style.display = 'none';
             } else {
-                tabS.classList.add('active');
-                tabB.classList.remove('active');
+                tabS.classList.add('is-active', 'active');
+                tabS.setAttribute('aria-selected', 'true');
+                tabB.classList.remove('is-active', 'active');
+                tabB.setAttribute('aria-selected', 'false');
                 deckS.style.display = 'block';
                 deckB.style.display = 'none';
             }
@@ -746,13 +739,17 @@
             const deckO = document.getElementById('deckOrders');
 
             if (type === 'products') {
-                tabP.classList.add('active');
-                tabO.classList.remove('active');
+                tabP.classList.add('is-active', 'active');
+                tabP.setAttribute('aria-selected', 'true');
+                tabO.classList.remove('is-active', 'active');
+                tabO.setAttribute('aria-selected', 'false');
                 deckP.style.display = 'block';
                 deckO.style.display = 'none';
             } else {
-                tabO.classList.add('active');
-                tabP.classList.remove('active');
+                tabO.classList.add('is-active', 'active');
+                tabO.setAttribute('aria-selected', 'true');
+                tabP.classList.remove('is-active', 'active');
+                tabP.setAttribute('aria-selected', 'false');
                 deckO.style.display = 'block';
                 deckP.style.display = 'none';
             }

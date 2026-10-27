@@ -77,12 +77,12 @@
                     <div class="dev-rail-top-helm" aria-hidden="true"></div>
 
                     <div class="dev-rail-nav-group">
-                        <a href="/developer/dashboard" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'active' : '' %>">
+                        <a href="/developer/dashboard" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'is-active active' : '' %>" <%- (typeof activeNav !== 'undefined' && activeNav === 'dashboard') ? 'aria-current="page"' : '' %>>
                             <span class="dev-rail-icon">☸</span>
                             <span class="dev-rail-label">COMMAND CHAMBER</span>
                         </a>
 
-                        <a href="/developer/sellers/applications" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'active' : '' %>" id="navDevApplications">
+                        <a href="/developer/sellers/applications" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'is-active active' : '' %>" id="navDevApplications" <%- (typeof activeNav !== 'undefined' && activeNav === 'applications') ? 'aria-current="page"' : '' %>>
                             <span class="dev-rail-icon">📜</span>
                             <span class="dev-rail-label">MERCHANT CHARTERS</span>
                             <% if (typeof pendingSellersCount !== 'undefined' && pendingSellersCount > 0) { %>
@@ -90,12 +90,12 @@
                             <% } %>
                         </a>
 
-                        <a href="/developer/people" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'active' : '' %>" id="navDevPeople">
+                        <a href="/developer/people" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'is-active active' : '' %>" id="navDevPeople" <%- (typeof activeNav !== 'undefined' && activeNav === 'people') ? 'aria-current="page"' : '' %>>
                             <span class="dev-rail-icon">👥</span>
                             <span class="dev-rail-label">THE PEOPLE</span>
                         </a>
 
-                        <a href="/developer/marketplace" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'active' : '' %>" id="navDevMarketplace">
+                        <a href="/developer/marketplace" class="dev-rail-link <%= (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'is-active active' : '' %>" id="navDevMarketplace" <%- (typeof activeNav !== 'undefined' && activeNav === 'marketplace') ? 'aria-current="page"' : '' %>>
                             <span class="dev-rail-icon">🏛</span>
                             <span class="dev-rail-label">MARKETPLACE</span>
                         </a>

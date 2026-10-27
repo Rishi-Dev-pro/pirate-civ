@@ -14,11 +14,34 @@
 
 ## 📍 1. Current Phase
 * **Active Phase:** **Phase 6.3 — Premium Pirate UX + Navigation + Role Separation + Commerce Completion**
-* **Active Status:** **Developer Realm V2 (Surgical Functional Repair + Authentic Pirate-Civ Visual Overhaul) Completed & Fully Verified**
+* **Active Status:** **Developer Realm Surgical UI/UX Correction (Active States + Map Composition) Completed & Verified**
 
 ---
 
 ## 🎯 2. Active State Summary
+* **Developer Realm — Surgical UI/UX Correction: Active States & Map Composition (`views/developer/*.ejs`, `controller/developer.js`, `public/css/developer.css`):**
+  - **Single Authoritative Active Navigation Item:**
+    - Guaranteed strictly one primary rail navigation link (`COMMAND CHAMBER`, `MERCHANT CHARTERS`, `THE PEOPLE`, `MARKETPLACE`) active per page.
+    - Set authoritative `aria-current="page"` on the active primary item.
+    - Child pages (`/developer/people/sellers/:id/products` and `/developer/people/buyers/:id/orders`) now cleanly inherit parent section `activeNav = 'people'`, and hardcoded active classes were eradicated.
+  - **Local Tab Scoping & Isolation:**
+    - Refactored local switchers (e.g. Buyers / Sellers on People, Listed Cargo / Recent Orders on Marketplace) to use `.dev-local-tab` and `.dev-tab-btn`, with ARIA role `tab` and `aria-selected` attributes.
+    - Scoped active CSS classes to `.dev-rail-link.is-active, .dev-rail-link.active` and `.dev-tab-btn.is-active, .dev-tab-btn.active` to eliminate cross-component active state pollution.
+  - **Eliminated AI-Slop Map Collage Composition:**
+    - Fully removed floating decorative images (`mariner-compass.png`, animated `brass-lantern.png`, `books-candle.png`, `spyglass.png`) and floating arbitrary badge tags (`dev-map-marker-pin`) that crowded and cropped the central war table.
+  - **Atmospheric Command Chamber & Contained Secondary Chart:**
+    - Integrated atmospheric intro header (`.dev-command-hero`) with physical brass/dark timber framing and sovereign command text.
+    - Re-housed the sea chart into a contained environmental panel (`.dev-framed-chart-panel`) with `object-fit: contain`, dark wooden border, brass corner rivets, and nautical chart footer coordinates.
+    - Preserved 100% of authentic database counters (`statPendingCount`, `statBuyersCount`, `statSellersCount`, `statProductsCount`, `statOrdersCount`) and foundation telemetry modules.
+  - **Validation & Test Coverage:**
+    - Custom test suite `scratch/test_developer_active_states_and_composition.js`: 100% pass across all 6 Developer Realm views.
+    - `scratch/test_developer_realm_v2.js`: 13/13 passed (100%).
+    - `scratch/test_developer_realm_v1.js`: 20/20 passed (100%).
+    - `scratch/test_developer_realm.js`: 7/7 passed (100%).
+    - `scratch/test_buyer_commerce_flow.js`: 72/72 passed (100%).
+    - Clean compilation across all 49 EJS templates and 31 JS files.
+    - Visual verification in browser subagent completed across desktop viewports with recordings saved.
+
 * **Developer Realm V2 — Surgical Functional Repair + Authentic Visual Overhaul (`public/css/developer.css`, `controller/auth.js`, `controller/developer.js`, `routes/web.js`, `views/developer/*.ejs`, `scratch/test_developer_realm_v2.js`):**
   - **Marketplace Section Operational (`views/developer/marketplace.ejs`, `controller/developer.js`, `routes/web.js`):**
     - Created dedicated `/developer/marketplace` and `/admin/marketplace` routes with `renderMarketplace` controller.
