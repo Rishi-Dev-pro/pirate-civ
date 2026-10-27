@@ -162,101 +162,89 @@
             <main class="dev-command-realm" role="main">
 
                 <!-- -----------------------------------------------------------
-                     UPPER DECK: ATMOSPHERIC INTRODUCTION + COMMAND OVERVIEW
+                     COMMAND CHAMBER INTRO & REALM OPERATIONAL OVERVIEW
+                     Structure:
+                     1. Developer Realm Identity / Command Chamber Intro
+                     2. Realm Status / Operational Overview
+                     (No map widget, no fake coordinates, no AI clutter)
                      ----------------------------------------------------------- -->
-                <section class="dev-command-hero" aria-labelledby="chamberHeading">
-                    <div class="dev-command-hero-inner">
-                        <div class="dev-hero-kicker-row">
-                            <span class="dev-hero-kicker">SOVEREIGN ARCHITECT ARCHIVE</span>
-                            <span class="dev-hero-coords">COORDINATES // 18°28'N 64°56'W // CRYPTOGRAPHIC VAULT</span>
+                <section class="dev-command-intro" aria-labelledby="chamberHeading">
+                    <div class="dev-command-intro-inner">
+                        <div class="dev-intro-kicker-row">
+                            <span class="dev-intro-kicker">COMMAND DECK</span>
+                            <span class="dev-intro-badge">OPERATIONAL ARCHIVE</span>
                         </div>
                         <h2 class="dev-chamber-title" id="chamberHeading">COMMAND CHAMBER</h2>
                         <p class="dev-chamber-lead">
-                            The sovereign engineering and administrative command war room of Pirate-Civ. Oversee charter ratifications, trade manifest ledgers, seafarer census registries, and runtime foundation modules across the archipelago.
+                            Central command war room of the Pirate-Civ archipelago. Review and ratify merchant charters, inspect the seafarer registry, and monitor marketplace cargo and trade.
                         </p>
                     </div>
                 </section>
 
-                <!-- REAL OPERATIONAL OVERVIEW & FRAMED ENVIRONMENTAL CHART -->
-                <section class="dev-war-table-stage" aria-label="Archipelago Operational Overview and Navigational Chart">
-                    <!-- Left: REAL OPERATIONAL INFORMATION (Realm Overview Ledger) -->
-                    <aside class="dev-realm-overview-parchment" aria-label="Realm Overview Ledger">
-                        <div class="dev-overview-scroll-inner">
-                            <div class="dev-overview-header">
-                                <img src="/images/developer/decorations/red-wax-seal.png" alt="" class="dev-wax-seal-icon" aria-hidden="true">
-                                <h2 class="dev-overview-title">REALM OVERVIEW</h2>
+                <!-- REALM STATUS / OPERATIONAL OVERVIEW (Full-Width Physical Admiralty Ledger) -->
+                <section class="dev-realm-overview-panel" aria-label="Realm Operational Overview">
+                    <div class="dev-overview-panel-header">
+                        <div class="dev-overview-title-block">
+                            <img src="/images/developer/decorations/red-wax-seal.png" alt="" class="dev-wax-seal-icon" aria-hidden="true">
+                            <h3 class="dev-overview-title">REALM OVERVIEW</h3>
+                        </div>
+                        <span class="dev-overview-tag">ARCHIPELAGO TELEMETRY</span>
+                    </div>
+
+                    <div class="dev-overview-grid">
+                        <!-- 1. PENDING CHARTERS (WITH WAX SEAL HIGHLIGHT) -->
+                        <div class="dev-overview-card <%= (typeof stats !== 'undefined' && stats.pendingSellersCount > 0) ? 'card-pending-alert' : '' %>">
+                            <div class="dev-card-icon-wrap">
+                                <span class="dev-card-glyph">📜</span>
                             </div>
-
-                            <ul class="dev-overview-stats-list">
-                                <!-- PENDING CHARTERS WITH WAX EMBLEM -->
-                                <li class="dev-overview-stat-row stat-pending-row">
-                                    <div class="dev-overview-stat-label">
-                                        <span class="dev-seal-bullet">A</span>
-                                        <span>Pending Merchant Charters</span>
-                                    </div>
-                                    <!-- REQUIRED STRING MATCH: id="statPendingCount">${realPendingCount}</div> -->
-                                    <div class="dev-stat-value val-alert" id="statPendingCount"><%= (typeof stats !== 'undefined' && stats.pendingSellersCount) || 0 %></div>
-                                </li>
-
-                                <!-- ACTIVE BUYERS -->
-                                <li class="dev-overview-stat-row">
-                                    <div class="dev-overview-stat-label">
-                                        <span class="dev-row-icon">👤</span>
-                                        <span>Active Buyers</span>
-                                    </div>
-                                    <!-- REQUIRED STRING MATCH: id="statBuyersCount">${realBuyersCount}</span> -->
-                                    <div class="dev-stat-value"><span id="statBuyersCount"><%= (typeof stats !== 'undefined' && stats.buyersCount) || 0 %></span></div>
-                                </li>
-
-                                <!-- REGISTERED SELLERS -->
-                                <li class="dev-overview-stat-row">
-                                    <div class="dev-overview-stat-label">
-                                        <span class="dev-row-icon">🛡</span>
-                                        <span>Registered Sellers</span>
-                                    </div>
-                                    <!-- REQUIRED STRING MATCH: id="statSellersCount">${realSellersCount}</span> -->
-                                    <div class="dev-stat-value"><span id="statSellersCount"><%= (typeof stats !== 'undefined' && stats.sellersCount) || 0 %></span></div>
-                                </li>
-
-                                <!-- LISTED PRODUCTS -->
-                                <li class="dev-overview-stat-row">
-                                    <div class="dev-overview-stat-label">
-                                        <span class="dev-row-icon">📦</span>
-                                        <span>Listed Products</span>
-                                    </div>
-                                    <!-- REQUIRED STRING MATCH: id="statProductsCount">${realProductsCount}</span> -->
-                                    <div class="dev-stat-value"><span id="statProductsCount"><%= (typeof stats !== 'undefined' && stats.productsCount) || 0 %></span></div>
-                                </li>
-
-                                <!-- CUSTOMER ORDERS -->
-                                <li class="dev-overview-stat-row">
-                                    <div class="dev-overview-stat-label">
-                                        <span class="dev-row-icon">📜</span>
-                                        <span>Customer Orders</span>
-                                    </div>
-                                    <!-- REQUIRED STRING MATCH: id="statOrdersCount">${realOrdersCount}</span> -->
-                                    <div class="dev-stat-value"><span id="statOrdersCount"><%= (typeof stats !== 'undefined' && stats.ordersCount) || 0 %></span></div>
-                                </li>
-                            </ul>
-
-                            <div class="dev-overview-footer-text">
-                                Live operational telemetries of the archipelago. Monitor merchant charters, trade activity, and economic flow from this chamber.
+                            <div class="dev-card-info">
+                                <span class="dev-card-label">Pending Charters</span>
+                                <div class="dev-stat-value val-alert" id="statPendingCount"><%= (typeof stats !== 'undefined' && stats.pendingSellersCount) || 0 %></div>
                             </div>
                         </div>
-                    </aside>
 
-                    <!-- Right: Secondary Environmental Chart Panel (Framed, Contained, No Collage) -->
-                    <div class="dev-framed-chart-panel" aria-label="Mounted Archipelago Navigational Chart">
-                        <div class="dev-chart-frame-header">
-                            <span class="dev-chart-frame-glyph">⚓</span>
-                            <span class="dev-chart-frame-title">ARCHIPELAGO SEA CHART</span>
-                            <span class="dev-chart-frame-tag">SECTOR 7</span>
+                        <!-- 2. ACTIVE BUYERS -->
+                        <div class="dev-overview-card">
+                            <div class="dev-card-icon-wrap">
+                                <span class="dev-card-glyph">👤</span>
+                            </div>
+                            <div class="dev-card-info">
+                                <span class="dev-card-label">Active Buyers</span>
+                                <div class="dev-stat-value"><span id="statBuyersCount"><%= (typeof stats !== 'undefined' && stats.buyersCount) || 0 %></span></div>
+                            </div>
                         </div>
-                        <div class="dev-chart-frame-viewport">
-                            <img src="/images/developer/maps/archipelago-parchment-map.png" alt="Archipelago Sea Chart" class="dev-mounted-chart-img">
+
+                        <!-- 3. REGISTERED SELLERS -->
+                        <div class="dev-overview-card">
+                            <div class="dev-card-icon-wrap">
+                                <span class="dev-card-glyph">🛡</span>
+                            </div>
+                            <div class="dev-card-info">
+                                <span class="dev-card-label">Chartered Sellers</span>
+                                <div class="dev-stat-value"><span id="statSellersCount"><%= (typeof stats !== 'undefined' && stats.sellersCount) || 0 %></span></div>
+                            </div>
                         </div>
-                        <div class="dev-chart-frame-footer">
-                            <span>SOVEREIGN ARCHIPELAGO REGISTER // SIX TRADE ISLANDS</span>
+
+                        <!-- 4. LISTED PRODUCTS -->
+                        <div class="dev-overview-card">
+                            <div class="dev-card-icon-wrap">
+                                <span class="dev-card-glyph">📦</span>
+                            </div>
+                            <div class="dev-card-info">
+                                <span class="dev-card-label">Listed Cargo</span>
+                                <div class="dev-stat-value"><span id="statProductsCount"><%= (typeof stats !== 'undefined' && stats.productsCount) || 0 %></span></div>
+                            </div>
+                        </div>
+
+                        <!-- 5. CUSTOMER ORDERS -->
+                        <div class="dev-overview-card">
+                            <div class="dev-card-icon-wrap">
+                                <span class="dev-card-glyph">🧭</span>
+                            </div>
+                            <div class="dev-card-info">
+                                <span class="dev-card-label">Customer Orders</span>
+                                <div class="dev-stat-value"><span id="statOrdersCount"><%= (typeof stats !== 'undefined' && stats.ordersCount) || 0 %></span></div>
+                            </div>
                         </div>
                     </div>
                 </section>

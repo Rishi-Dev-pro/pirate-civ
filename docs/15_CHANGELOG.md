@@ -2,6 +2,29 @@
 
 All notable changes, milestones, bug fixes, and architectural adjustments to Pirate-Civ are documented here in reverse chronological order.
 
+## [2026-10-28] — Surgical UI/UX Repair: Developer Realm Command Chamber Architecture & Zero AI-Slop
+* **Developer Realm Command Chamber Surgical UX Repair (`views/developer/dashboard.ejs`, `views/developer/people.ejs`, `views/developer/marketplace.ejs`, `public/css/developer.css`):**
+  - **Complete Map Removal from Main Command Chamber:**
+    - Eradicated the misplaced map panel/widget ("ARCHIPELAGO SEA CHART") from the main dashboard war table.
+    - Preserved the underlying high-resolution map asset (`public/images/developer/maps/archipelago-parchment-map.png`) on disk for sovereign archives without polluting the command chamber dashboard layout.
+  - **Reconstructed Command Chamber Hierarchy:**
+    - Restructured the dashboard into an authentic, uncluttered Admiralty hierarchy:
+      1. Header (Admiralty security beacon, citadel indicator, Disconnect action).
+      2. Developer Realm Identity & Intro (`.dev-command-intro` with Cinzel typography and restrained description).
+      3. Operational Overview (`.dev-realm-overview-panel` with an authoritative 5-metric horizontal ledger grid: Pending Charters, Active Buyers, Chartered Sellers, Listed Cargo, Customer Orders).
+      4. Three Primary Command Areas (`Merchant Charters`, `The People`, `Marketplace`).
+      5. Optional System / Foundation Information (6 subterranean foundation telemetry modules).
+    - Preserved all required element IDs (`id="statPendingCount"`, `id="statBuyersCount"`, `id="statSellersCount"`, `id="statProductsCount"`, `id="statOrdersCount"`).
+  - **Eliminated Rail Double-Border Glitch:**
+    - Removed the conflicting `.dev-rail-link.is-active::before` pseudo-element (`position: absolute; left: -12px;`) that clashed with `.dev-rail-frame`'s padding and created duplicate yellow border lines.
+    - Replaced with a unified, crisp 3px oxidized-brass left border accent (`border-left: 3px solid var(--dev-brass-bright)`).
+  - **Eradicated Table Clipping:**
+    - Removed restrictive `dev-table-scroll-region` (`max-height: 520px; overflow-y: auto;`) from `#tableBuyers`, `#tableSellers`, `#tableMarketProducts`, and `#tableMarketOrders` on the People and Marketplace pages.
+    - Full-page tables now naturally expand to document height with native window scrolling, eliminating cramped nested scrollboxes while retaining horizontal scroll protection (`overflow-x: auto`) for mobile.
+  - **Validation & Strict Determinism:**
+    - 100% pass across all regression test suites (`test_developer_active_states_and_composition.js`, `test_developer_realm_v2.js`, `test_developer_realm_v1.js`, `test_developer_realm.js`, `test_buyer_commerce_flow.js`).
+    - Clean compilation across all 49 EJS templates and 31 JS files.
+
 ## [2026-10-27] — UI/UX Correction: Developer Realm — Navigation Active States & Command Chamber Composition
 * **Developer Realm Surgical UI/UX Refinement (`views/developer/*.ejs`, `controller/developer.js`, `public/css/developer.css`):**
   - **Deterministic Navigation State Architecture:**
